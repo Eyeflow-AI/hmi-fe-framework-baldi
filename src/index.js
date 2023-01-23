@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import StoreWrapper from './store/Wrapper';
 import reportWebVitals from './reportWebVitals';
 import metadata from './metadata.json';
 
@@ -10,10 +11,11 @@ console.log("App metadatada", metadata);
 prepareLocale(metadata.locale);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
 root.render(
-  <React.StrictMode>
+  <StoreWrapper>
     <App />
-  </React.StrictMode>
+  </StoreWrapper>
 );
 
 // If you want to start measuring performance in your app, pass a function
