@@ -5,6 +5,7 @@ const config = {
             "id": "Login",
             "localeId": "login",
             "path": "/login",
+            "authenticated": false,
             "acl": [],
             "active": true,
             "options": {}
@@ -13,6 +14,7 @@ const config = {
             "id": "Monitor",
             "localeId": "monitor",
             "path": "/app/monitor",
+            "authenticated": true,
             "acl": [],
             "active": true,
             "options": {}
@@ -21,6 +23,7 @@ const config = {
             "id": "Dashboard",
             "localeId": "dashboard",
             "path": "/app/dashboard",
+            "authenticated": true,
             "acl": [],
             "active": true,
             "options": {}
