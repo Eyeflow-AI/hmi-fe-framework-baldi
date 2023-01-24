@@ -13,7 +13,7 @@ import Fade from '@mui/material/Fade';
 
 const styleSx = {
   modalBox : {
-    // background: theme.palette.background.paper,
+    bgcolor: 'background.paper',
     opacity: '93%',
     borderRadius: '8px'
   }
