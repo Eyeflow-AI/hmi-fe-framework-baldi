@@ -20,6 +20,7 @@ import { useTranslation } from "react-i18next";
 const styleSx = {
   mainBox: {
     display: 'flex',
+    flexDirection: 'column',
     height: '100vh',
     width: '100vw',
     justifyContent: 'center',
@@ -29,20 +30,20 @@ const styleSx = {
     bgcolor: 'background.paper',
     boxShadow: 2,
     borderRadius: '12px',
-    padding: (theme) => theme.spacing("5em", "15em", "5em", "15em"),
+    padding: (theme) => theme.spacing(2, 5, 2, 5),
+    marginTop: 1,
     alignItems: 'center',
-    maxWidth: '100%',
-    maxHeight: '100%',
+    width: 350,
+    // maxWidth: '100%',
+    // maxHeight: '100%',
     display: 'flex',
     flexDirection: 'column',
   },
   cardMedia: {
-    maxWidth: '25em',
+    maxWidth: '22em',
   },
   form: {
-    maxWidth: '30em',
-    width: '100%',
-    marginTop: 40,
+    // width: '100%',
   },
 };
 
@@ -83,82 +84,69 @@ export default function Login() {
         setModalOpen={setModalOpen}
         width={300}
       />
-      <Box sx={styleSx.mainBox}>
         <Fade in={true} timeout={800}>
-          <Box sx={styleSx.loginBox}>
+          <Box sx={styleSx.mainBox}>
             <CardMedia
               sx={styleSx.cardMedia}
               image={LogoEyeflowInspection}
               title="Eyeflow Inspection"
               component="img"
             />
+            <Box sx={styleSx.loginBox}>
+              <form style={styleSx.form}>
+                <Grid container direction='column' alignItems="center" spacing={2} sx={{width: 340}}>
+                  <Grid item>
+                    <TextField
+                      variant="outlined"
+                      margin="normal"
+                      required
+                      fullWidth
+                      id="email"
+                      label="Usuário"
+                      name="user"
+                      // autoComplete="email"
+                      autoComplete="off"
+                      autoFocus
+                      onChange={(event) => setUser(event.currentTarget.value)}
+                      sx={{width: 300}}
+                    />
+                  </Grid>
 
-            <form style={styleSx.form}>
-              <Grid container direction='column' spacing={2}>
-                <Grid item>
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="email"
-                    label="Usuário"
-                    name="user"
-                    // autoComplete="email"
-                    autoComplete="off"
-                    autoFocus
-                    onChange={(event) => setUser(event.currentTarget.value)}
-                  />
-                </Grid>
+                  <Grid item>
+                    <TextField
+                      variant="outlined"
+                      margin="normal"
+                      required
+                      fullWidth
+                      name="password"
+                      label="Password"
+                      type="password"
+                      id="password"
+                      // autoComplete="current-password"
+                      autoComplete="off"
+                      onChange={(event) => setPassword(event.currentTarget.value)}
+                      sx={{width: 300}}
+                    />
+                  </Grid>
 
-                <Grid item>
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    type="password"
-                    id="password"
-                    // autoComplete="current-password"
-                    autoComplete="off"
-                    onChange={(event) => setPassword(event.currentTarget.value)}
-                  />
-                </Grid>
-
-                <Grid item>
-                  <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                      <Button
-                        type="submit"
-                        onClick={loginButton.onClick}
-                        fullWidth
-                        variant="contained"
-                      >
-                        {t('Login')}
-                      </Button>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Button
-                        type="reset"
-                        onClick={cancelButton.onClick}
-                        fullWidth
-                        variant="outlined"
-                      >
-                        {t('Cancel')}
-                      </Button>
-                    </Grid>
+                  <Grid item>
+                    <Button
+                      type="submit"
+                      onClick={loginButton.onClick}
+                      variant="contained"
+                      sx={{width: 300, marginTop: 1}}
+                    >
+                      {t('Login')}
+                    </Button>
                   </Grid>
                 </Grid>
-              </Grid>
-            </form>
-            <Box mt={8}>
-              <SiliconCopyright/>
+              </form>
+              <Box sx={{marginTop: 2}}>
+                <SiliconCopyright/>
+              </Box>
             </Box>
           </Box>
         </Fade>
-      </Box>
-    </>
+      </>
   );
 }
