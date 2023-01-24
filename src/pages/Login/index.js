@@ -20,7 +20,7 @@ const styleSx = {
   mainBox: {
     display: 'flex',
     flexDirection: 'column',
-    height: '100vh',
+    height: '85vh',
     width: '100vw',
     justifyContent: 'center',
     alignItems: 'center'

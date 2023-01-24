@@ -3,13 +3,12 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import StoreWrapper from './store/Wrapper';
 import reportWebVitals from './reportWebVitals';
-import metadata from './metadata.json';
 
 import {prepare as prepareLocale} from './locale';
 import './reset.css';
 
-console.log("App metadatada", metadata);
-prepareLocale(metadata.locale);
+console.log("App config", window.app_config);
+prepareLocale(window.app_config.locale);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 

@@ -8,14 +8,14 @@ import AppBar from '../../components/AppBar';
 const styleSx = {};
 
 
-export default function Monitor() {
+export default function Dashboard() {
 
 
   return (
     <>
       <AppBar />
       <Box sx={styleSx.mainBox}>
-        TODO: Monitor
+        TODO: Dashboard
       </Box>
     </>
   );
