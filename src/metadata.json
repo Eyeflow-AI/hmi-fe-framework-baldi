@@ -1,13 +1,35 @@
 {
-  "pages": [
-    {"id": "Login", "localeId": "login", "acl": [], "active": true, "options": {}},
-    {"id": "Monitor", "localeId": "monitor", "acl": [], "active": false, "options": {}}
-  ],
-  "locale": {
-    "default": "en",
-    "languageList": [
-      {"id": "en", "label": "English", "active": true},
-      {"id": "pt", "label": "Português", "active": true}
-    ]
-  }
+    "pages": [
+        {
+            "id": "Login",
+            "localeId": "login",
+            "path": "/login",
+            "acl": [],
+            "active": true,
+            "options": {}
+        },
+        {
+            "id": "Monitor",
+            "localeId": "monitor",
+            "path": "/app/monitor",
+            "acl": [],
+            "active": false,
+            "options": {}
+        }
+    ],
+    "locale": {
+        "default": "en",
+        "languageList": [
+            {
+                "id": "en",
+                "label": "English",
+                "active": true
+            },
+            {
+                "id": "pt",
+                "label": "Português",
+                "active": true
+            }
+        ]
+    }
 }

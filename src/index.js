@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import metadata from './metadata.json';
 
 import {prepare as prepareLocale} from './locale';
+import './reset.css';
 
 console.log("App metadatada", metadata);
 prepareLocale(metadata.locale);
