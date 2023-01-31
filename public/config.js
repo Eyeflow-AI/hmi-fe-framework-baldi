@@ -11,13 +11,15 @@ const config = {
             "options": {}
         },
         "Monitor": {
-            "id": "Monitor",
+            "id": "Monitor1",
             "localeId": "monitor",
             "path": "/app/monitor",
             "authenticated": true,
             "acl": [],
             "active": true,
-            "options": {}
+            "options": {
+                "getEventSleepTime": 30000
+            }
         },
         "Dashboard": {
             "id": "Dashboard",
@@ -36,6 +38,9 @@ const config = {
                 {page:"Monitor"},
                 {page:"Dashboard"},
             ]
+        },
+        "EventMenuBox": {
+            "itemHeight": 160
         }
     },
     "locale": {

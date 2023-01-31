@@ -59,6 +59,7 @@ const avatarSx = {
   cursor: 'pointer',
   color: (theme) => theme.palette.getContrastText(deepOrange[500]),
   backgroundColor: deepOrange[500],
+  boxShadow: 1
 };
 
 const endBoxSx = {

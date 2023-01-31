@@ -1,15 +1,17 @@
-import React from 'react'
+import React, {useState} from 'react'
 
 
 import Box from '@mui/material/Box';
 
 
 import AppBar from '../../components/AppBar';
-import EventMenuList from '../../components/EventMenuList';
+import EventMenuBox from '../../components/EventMenuBox';
+import GetEvents from '../../utils/Hooks/GetEvents';
 
 
+// const PAGE_OPTIONS = window.app_config.pages.Monitor.options;
 const APPBAR_HEIGHT = window.app_config.components.AppBar.height;
-console.log({APPBAR_HEIGHT})
+
 
 const styleSx = {
   mainBox: {
@@ -22,7 +24,6 @@ const styleSx = {
   eventMenuBox: Object.assign({}, window.app_config.style.box, {
     width: 200,
     bgcolor: 'white',
-    borderRadius: 2,
   }),
   dataBox: Object.assign({}, window.app_config.style.box, {
     bgcolor: 'white',
@@ -35,16 +36,23 @@ const styleSx = {
 
 export default function Monitor() {
 
+  const {events} = GetEvents({date: new Date(), sleepTime: 30000});
+  const [selectedEvent, setSelectedEvent] = useState(null);
+
+  const onChangeEvent = (inspectionId) => {
+    //TODO
+    setSelectedEvent({_id: inspectionId});
+  };
 
   return (
     <>
       <AppBar />
       <Box id="monitor-main-box" sx={styleSx.mainBox}>
         <Box id="monitor-event-menu-box" sx={styleSx.eventMenuBox}>
-          Menu
+          <EventMenuBox events={events} selectedEvent={selectedEvent} onChangeEvent={onChangeEvent}/>
         </Box>
         <Box id="monitor-data-box" sx={styleSx.dataBox}>
-          Data
+
         </Box>
       </Box>
     </>
