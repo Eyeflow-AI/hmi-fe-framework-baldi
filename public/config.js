@@ -1,5 +1,5 @@
 const config = {
-    "ws_url": "http://localhost:6040",
+    "ws_url": "http://localhost:6030",
     "pages": {
         "Login": {
             "id": "Login",

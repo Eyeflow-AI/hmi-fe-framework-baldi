@@ -12,7 +12,8 @@ const eventsInitialValue = Array.from(Array(20).keys()).map((index) => {
     index,
     _id: `foo-bar-${index}`,
     id: `foo-bar-${index}`,
-    event_time
+    event_time,
+    conformity: index % 2 == 0
 }});
 
 

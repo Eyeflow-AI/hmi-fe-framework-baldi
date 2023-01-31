@@ -27,12 +27,14 @@ const styleSx = {
     boxShadow: 'inset 0 2px 4px #00000040',
     margin: 1,
     borderRadius: window.app_config.style.box.borderRadius,
-    bgcolor: colors.eyeflow.blue.medium
+    // bgcolor: colors.eyeflow.blue.medium
+    bgcolor: '#DBDBDB'
   },
   itemSx: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: 'space-between',
     boxShadow: 2,
     width: '100%',
     height: '100%',
@@ -51,7 +53,10 @@ const styleSx = {
     alignItems: 'center',
     paddingLeft: 1,
     paddingRight: 1,
-  }
+  },
+  itemFooter: {
+    paddingBottom: 0.2,
+  },
 }
 
 styleSx.selectedItemSx = Object.assign({}, styleSx.itemSx, {
@@ -102,15 +107,17 @@ export default function EventMenuList({
               </Typography>
             </Box>
             <Box>
-              <Typography>
-                {timeString}
+              <Typography >
+                {id}
               </Typography>
             </Box>
           </Box>
 
-          <Typography>
-            {id}
-          </Typography>
+          <Box sx={styleSx.itemFooter}>
+            <Typography variant="subtitle2">
+              {eventTimeString}
+            </Typography>
+          </Box>
         </Box>
       </div>
     )

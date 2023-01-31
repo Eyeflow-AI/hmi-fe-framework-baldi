@@ -68,10 +68,11 @@ export default function Login() {
     dispatch(login({username: user, password: password}))
       .then(unwrapResult)
       .catch((err) => {
+        console.log({err});
         if (err.message === "Network Error") {
           setErrMessage("Network Error");
         }
-        else if (err.message === "TODO: Invalid username and password") {
+        else if (err.message === "Wrong username/password") {
           setErrMessage("Invalid username/password");
         }
         else {

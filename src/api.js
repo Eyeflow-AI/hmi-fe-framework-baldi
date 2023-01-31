@@ -1,40 +1,13 @@
 import axios from 'axios';
-import store from './store';
-import authSlice from './store/slices/auth';
+
 
 export const instance = axios.create({
-    baseURL: window.WS_URL,
+    baseURL: window.app_config.ws_url,
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
     }
 });
-
-instance.interceptors.request.use(
-  (config) => {
-    if (!config.headers.Authorization) {
-      let token = store.getState()?.auth?.user?.token;
-      config.headers.Authorization =  token ? `Bearer ${token}` : '';
-    };
-
-    return config;
-  }
-);
-
-instance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-      let errMessage = error?.response?.data?.err;
-
-      if (errMessage === 'jwt expired') {
-          store.dispatch(authSlice.actions.logout());
-      }
-      else {
-          return Promise.reject(error);
-      };
-}
-);
-
 
 function request (request, setLoading) {
   return new Promise((resolve, reject) => {
