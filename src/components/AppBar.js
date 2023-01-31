@@ -19,7 +19,6 @@ import Select from '@mui/material/Select';
 // Internal
 import appSlice, { getTabList, getAppbarTab, getStation } from '../store/slices/app';
 import authSlice, {getUserInitials,  getUserAccessControl} from '../store/slices/auth';
-import LogoEyeflowInspection from '../assets/EyeFlowInspection-mask.png';
 
 // Third-party
 import { useLocation, useNavigate } from "react-router-dom";
@@ -140,7 +139,7 @@ export default function CustomAppBar() {
           <Grid item>
             <CardMedia
               sx={cardMediaSx}
-              image={LogoEyeflowInspection}
+              image={"/assets/EyeFlowInspection-mask.png"}
               title="Eyeflow Inspection"
               component="img"
             />

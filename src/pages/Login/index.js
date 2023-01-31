@@ -10,7 +10,6 @@ import Fade from '@mui/material/Fade';
 import CardMedia from '@mui/material/CardMedia';
 
 import SiliconCopyright from '../../components/SiliconCopyright';
-import LogoEyeflowInspection from '../../assets/EyeFlowInspection-mask.png';
 import login from '../../store/thunks/login';
 
 // Third-Party
@@ -96,7 +95,7 @@ export default function Login() {
       <Box sx={styleSx.mainBox}>
         <CardMedia
           sx={styleSx.cardMedia}
-          image={LogoEyeflowInspection}
+          image={"/assets/EyeFlowInspection-mask.png"}
           title="Eyeflow Inspection"
           component="img"
         />

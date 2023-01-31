@@ -9,7 +9,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 
 
 import { colors } from 'sdk-fe-eyeflow';
-import dateFormat from '../utils/dateFormat';
+import dateFormat from 'sdk-fe-eyeflow/functions/dateFormat';
 
 
 const styleSx = {
@@ -41,7 +41,7 @@ const styleSx = {
     borderRadius: '4px',
     cursor: 'pointer',
     color: 'white',
-    textShadow: '1px 1px #606060',
+    textShadow: '1px 1px 2px #404040',
     '&:hover': {
       boxShadow: (theme) => `${theme.shadows[2]}, inset 0 0 0 2px black`,
     },
@@ -53,6 +53,13 @@ const styleSx = {
     alignItems: 'center',
     paddingLeft: 1,
     paddingRight: 1,
+  },
+  itemImageBox: {
+    paddingLeft: 1.5,
+    paddingRight: 1.5,
+  },
+  itemImage: {
+    height: "auto", width: "100%"
   },
   itemFooter: {
     paddingBottom: 0.2,
@@ -78,14 +85,18 @@ export default function EventMenuList({
     let itemData = events[index];
     let selected = selectedEvent?._id === itemData._id;
     let eventIndex = itemData.index ?? 0;
-    let eventTimeString = dateFormat(itemData.event_time);
+    let thumbURL = itemData.thumbURL ?? '';
+    let status = itemData.status ?? '';
+    let eventTimeString = dateFormat(itemData.event_time, "default");
     let [dateString, timeString] = eventTimeString.split(" ");
     let id = itemData.id ?? '';
     let conformity = Boolean(itemData.conformity);
     let boxStyle = Object.assign(
-      {backgroundColor: conformity ? colors.green : colors.red},
+      {backgroundColor: colors.statuses[status]},
+      // {backgroundColor: conformity ? "#58DB99" : "#c63e4c"},
       selected ? styleSx.selectedItemSx : styleSx.itemSx
     );
+    // "ok", "nok", "repaired", "unindentified"
 
     const customStyle = Object.assign(
       {display: 'flex', justifyContent: 'center', padding: 4},
@@ -107,12 +118,18 @@ export default function EventMenuList({
               </Typography>
             </Box>
             <Box>
-              <Typography >
+              <Typography variant='h6'>
                 {id}
               </Typography>
             </Box>
           </Box>
 
+          {thumbURL && (
+          <Box sx={styleSx.itemImageBox}>
+            <img alt="" src={thumbURL} style={styleSx.itemImage}/>
+          </Box>
+          )}
+          
           <Box sx={styleSx.itemFooter}>
             <Typography variant="subtitle2">
               {eventTimeString}

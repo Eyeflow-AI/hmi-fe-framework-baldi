@@ -36,7 +36,7 @@ const styleSx = {
 
 export default function Monitor() {
 
-  const {events} = GetEvents({date: new Date(), sleepTime: 30000});
+  const {events} = GetEvents({sleepTime: 30000});
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   const onChangeEvent = (inspectionId) => {

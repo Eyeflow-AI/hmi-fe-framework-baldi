@@ -19,7 +19,7 @@
     "react-virtualized-auto-sizer": "^1.0.7",
     "react-window": "^1.8.8",
     "redux-persist": "^6.0.0",
-    "sdk-fe-eyeflow": "^0.0.4",
+    "sdk-fe-eyeflow": "^0.0.9",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
