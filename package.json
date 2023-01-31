@@ -16,6 +16,7 @@
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.7.0",
     "react-scripts": "5.0.1",
+    "react-virtualized-auto-sizer": "^1.0.7",
     "react-window": "^1.8.8",
     "redux-persist": "^6.0.0",
     "sdk-fe-eyeflow": "^0.0.4",

@@ -28,14 +28,11 @@ import { useTranslation } from "react-i18next";
 import { colors } from 'sdk-fe-eyeflow';
 
 
-const APPBAR_HEIGHT = 64;
+const APPBAR_HEIGHT = window.app_config.components.AppBar.height;
 
 const appBarSx = {
-//   background : (theme) => theme.palette.background.paper,
   background: colors.eyeflow.blue.medium,
   color: 'white',
-  // background : theme.palette.primary.main,
-  boxShadow: 1,
   display: 'flex',
   alignItems: 'center',
   marginBottom: '4px',
@@ -43,7 +40,6 @@ const appBarSx = {
   width: '100%',
   position: 'fixed',
   height: APPBAR_HEIGHT,
-  // borderRadius: '4px',
 };
 
 const appBarGridSx = {

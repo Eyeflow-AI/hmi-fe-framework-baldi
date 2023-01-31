@@ -31,6 +31,7 @@ const config = {
     },
     "components": {
         "AppBar": {
+            "height": 64,
             "tabList": [
                 {page:"Monitor"},
                 {page:"Dashboard"},
@@ -51,6 +52,12 @@ const config = {
                 "active": true
             }
         ]
+    },
+    "style": {
+        "box": {
+            "borderRadius": 1,
+            "boxShadow": 2,
+        }
     }
 };
 

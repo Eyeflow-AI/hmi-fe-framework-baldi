@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { Login, Monitor, Dashboard } from './pages';
+import { Login, Monitor1, Dashboard } from './pages';
 
 const defaultAppURL = "/app/monitor";
 
@@ -10,6 +10,8 @@ function NotFound() {
     </>
   )
 };
+
+const Monitor = () => <Monitor1 />;
 
 const routes = ({authenticated, hasUserManagementPermission, hasCaptureImagesPermission}) => [
   {
