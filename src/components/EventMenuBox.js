@@ -1,8 +1,9 @@
 // React
-import React, {useMemo} from 'react';
+import React, {useMemo, useState} from 'react';
 
 
 import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import {FixedSizeList as List} from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -10,6 +11,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 
 import { colors } from 'sdk-fe-eyeflow';
 import dateFormat from 'sdk-fe-eyeflow/functions/dateFormat';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 
 
 const styleSx = {
@@ -20,7 +22,13 @@ const styleSx = {
     width: '100%'
   },
   filterBox: {
-    height: 200,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 80,
+    paddingLeft: 1,
+    paddingRight: 1,
+    paddingTop: 1,
   },
   listBox: {
     height: '100%',
@@ -38,12 +46,12 @@ const styleSx = {
     boxShadow: 2,
     width: '100%',
     height: '100%',
-    borderRadius: '4px',
+    borderRadius: 1,
     cursor: 'pointer',
     color: 'white',
     textShadow: '1px 1px 2px #404040',
     '&:hover': {
-      boxShadow: (theme) => `${theme.shadows[2]}, inset 0 0 0 2px black`,
+      boxShadow: (theme) => `${theme.shadows[3]}, inset 0 0 0 2px black`,
     },
   },
   itemHeader: {
@@ -59,7 +67,7 @@ const styleSx = {
     paddingRight: 1.5,
   },
   itemImage: {
-    height: "auto", width: "100%"
+    height: "auto", width: "100%" //TODO: Fix height in Fire Fox
   },
   itemFooter: {
     paddingBottom: 0.2,
@@ -73,12 +81,15 @@ styleSx.selectedItemSx = Object.assign({}, styleSx.itemSx, {
 export default function EventMenuList({
   events,
   selectedEvent,
+  queryParams,
+  onChangeParams,
   onChangeEvent,
   config
 }) {
 
 
   const eventsLength = events?.length ?? 0;
+  const [dateValue, setDateValue] = useState(new Date());
 
   function ItemRenderer({ index, style }) {
 
@@ -93,10 +104,8 @@ export default function EventMenuList({
     let conformity = Boolean(itemData.conformity);
     let boxStyle = Object.assign(
       {backgroundColor: colors.statuses[status]},
-      // {backgroundColor: conformity ? "#58DB99" : "#c63e4c"},
       selected ? styleSx.selectedItemSx : styleSx.itemSx
     );
-    // "ok", "nok", "repaired", "unindentified"
 
     const customStyle = Object.assign(
       {display: 'flex', justifyContent: 'center', padding: 4},
@@ -140,10 +149,20 @@ export default function EventMenuList({
     )
   };
 
+  const handleDateChange = (newValue) => {
+    setDateValue(newValue);
+  };
+
   return (
     <Box id="event-menu-box" sx={styleSx.mainBox}>
       <Box id="filter-box" sx={styleSx.filterBox} >
-
+        <DesktopDatePicker
+          label="TODO"
+          inputFormat="yyyy/MM/dd"
+          value={dateValue}
+          onChange={handleDateChange}
+          renderInput={(params) => <TextField {...params} />}
+        />
       </Box>
       <Box id="list-box" sx={styleSx.listBox}>
         <AutoSizer>

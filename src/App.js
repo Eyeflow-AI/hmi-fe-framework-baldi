@@ -1,6 +1,9 @@
 import React, {useEffect} from 'react';
 
 import { useDispatch } from 'react-redux';
+import AdapterDateFNS from '@date-io/date-fns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+
 import { BrowserRouter, useRoutes } from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
@@ -42,9 +45,11 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <BrowserRouter>
-        <Routes />
-      </BrowserRouter>
+      <LocalizationProvider dateAdapter={AdapterDateFNS}>
+        <BrowserRouter>
+          <Routes />
+        </BrowserRouter>
+      </LocalizationProvider>
     </ThemeProvider>
   );
 };

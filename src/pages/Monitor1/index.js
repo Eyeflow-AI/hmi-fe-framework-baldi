@@ -7,6 +7,7 @@ import Box from '@mui/material/Box';
 import AppBar from '../../components/AppBar';
 import EventMenuBox from '../../components/EventMenuBox';
 import GetEvents from '../../utils/Hooks/GetEvents';
+import dateFormat from 'sdk-fe-eyeflow/functions/dateFormat';
 
 
 const PAGE_CONFIG = window.app_config.pages.Monitor;
@@ -36,6 +37,7 @@ const styleSx = {
 
 export default function Monitor() {
 
+  const [queryParams, setQueryParams] = useState({date: dateFormat(new Date(), "isoDate")});
   const {events} = GetEvents({sleepTime: 30000});
   const [selectedEvent, setSelectedEvent] = useState(null);
 
@@ -53,6 +55,8 @@ export default function Monitor() {
             events={events}
             selectedEvent={selectedEvent}
             onChangeEvent={onChangeEvent}
+            queryParams={queryParams}
+            onChangeParams={setQueryParams}
             config={PAGE_CONFIG.components.EventMenuBox}
           />
         </Box>
