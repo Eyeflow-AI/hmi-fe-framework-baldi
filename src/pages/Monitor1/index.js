@@ -9,7 +9,7 @@ import EventMenuBox from '../../components/EventMenuBox';
 import GetEvents from '../../utils/Hooks/GetEvents';
 
 
-// const PAGE_OPTIONS = window.app_config.pages.Monitor.options;
+const PAGE_CONFIG = window.app_config.pages.Monitor;
 const APPBAR_HEIGHT = window.app_config.components.AppBar.height;
 
 
@@ -22,7 +22,7 @@ const styleSx = {
     overflow: 'hidden',
   },
   eventMenuBox: Object.assign({}, window.app_config.style.box, {
-    width: 200,
+    width: PAGE_CONFIG.options.eventMenuWidth ?? 200,
     bgcolor: 'white',
   }),
   dataBox: Object.assign({}, window.app_config.style.box, {
@@ -49,7 +49,12 @@ export default function Monitor() {
       <AppBar />
       <Box id="monitor-main-box" sx={styleSx.mainBox}>
         <Box id="monitor-event-menu-box" sx={styleSx.eventMenuBox}>
-          <EventMenuBox events={events} selectedEvent={selectedEvent} onChangeEvent={onChangeEvent}/>
+          <EventMenuBox
+            events={events}
+            selectedEvent={selectedEvent}
+            onChangeEvent={onChangeEvent}
+            config={PAGE_CONFIG.components.EventMenuBox}
+          />
         </Box>
         <Box id="monitor-data-box" sx={styleSx.dataBox}>
 

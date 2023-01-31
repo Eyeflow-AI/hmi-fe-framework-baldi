@@ -12,9 +12,6 @@ import { colors } from 'sdk-fe-eyeflow';
 import dateFormat from '../utils/dateFormat';
 
 
-const EVENT_MENU_BOX_CONFIG = window.app_config.components.EventMenuBox;
-
-
 const styleSx = {
   mainBox: {
     display: 'flex',
@@ -47,6 +44,14 @@ const styleSx = {
       boxShadow: (theme) => `${theme.shadows[2]}, inset 0 0 0 2px black`,
     },
   },
+  itemHeader: {
+    display: 'flex',
+    width: '100%',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingLeft: 1,
+    paddingRight: 1,
+  }
 }
 
 styleSx.selectedItemSx = Object.assign({}, styleSx.itemSx, {
@@ -63,17 +68,14 @@ export default function EventMenuList({
 
   const eventsLength = events?.length ?? 0;
 
-  const newConfig = useMemo(() => {
-    return Object.assign({}, EVENT_MENU_BOX_CONFIG, config);
-  }, [config]);
-
   function ItemRenderer({ index, style }) {
 
     let itemData = events[index];
     let selected = selectedEvent?._id === itemData._id;
-    let event_index = itemData.index ?? 0;
-    let event_time = dateFormat(itemData.event_time);
-    let label = itemData.label ?? '';
+    let eventIndex = itemData.index ?? 0;
+    let eventTimeString = dateFormat(itemData.event_time);
+    let [dateString, timeString] = eventTimeString.split(" ");
+    let id = itemData.id ?? '';
     let conformity = Boolean(itemData.conformity);
     let boxStyle = Object.assign(
       {backgroundColor: conformity ? colors.green : colors.red},
@@ -93,14 +95,21 @@ export default function EventMenuList({
           sx={boxStyle}
           onClick={onItemClick}
         >
-          <Typography variant='h6'>
-            {event_index}
-          </Typography>
+          <Box sx={styleSx.itemHeader}>
+            <Box>
+              <Typography variant='h6'>
+                {eventIndex}
+              </Typography>
+            </Box>
+            <Box>
+              <Typography>
+                {timeString}
+              </Typography>
+            </Box>
+          </Box>
+
           <Typography>
-            {event_time}
-          </Typography>
-          <Typography>
-            {label}
+            {id}
           </Typography>
         </Box>
       </div>
@@ -118,7 +127,7 @@ export default function EventMenuList({
           <List
             height={height}
             width={width}
-            itemSize={newConfig.itemHeight}
+            itemSize={config?.itemHeight ?? 200}
             itemCount={eventsLength}
           >
             {ItemRenderer}

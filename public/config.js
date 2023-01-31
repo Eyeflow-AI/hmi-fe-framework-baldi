@@ -17,7 +17,13 @@ const config = {
             "authenticated": true,
             "acl": [],
             "active": true,
+            "components": {
+                "EventMenuBox": {
+                    "itemHeight": 160
+                }
+            },
             "options": {
+                "eventMenuWidth": 220,
                 "getEventSleepTime": 30000
             }
         },
@@ -38,9 +44,6 @@ const config = {
                 {page:"Monitor"},
                 {page:"Dashboard"},
             ]
-        },
-        "EventMenuBox": {
-            "itemHeight": 160
         }
     },
     "locale": {

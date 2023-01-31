@@ -11,7 +11,7 @@ const eventsInitialValue = Array.from(Array(20).keys()).map((index) => {
   return {
     index,
     _id: `foo-bar-${index}`,
-    label: `foo-bar-${index}`,
+    id: `foo-bar-${index}`,
     event_time
 }});
 
