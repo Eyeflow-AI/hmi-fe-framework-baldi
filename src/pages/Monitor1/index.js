@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 
 
 import Box from '@mui/material/Box';
@@ -49,6 +49,13 @@ export default function Monitor() {
       })
       .catch(console.error);
   };
+
+  useEffect(() => {
+    if (selectedEvent && events.findIndex((el) => el._id === selectedEvent._id) === -1) {
+      setSelectedEvent(null);
+    };
+  // eslint-disable-next-line
+  }, [events]);
 
   return (
     <>
