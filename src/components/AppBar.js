@@ -15,16 +15,18 @@ import { deepOrange } from '@mui/material/colors';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
+import TranslateIcon from '@mui/icons-material/Translate';
 
 // Internal
 import appSlice, { getTabList, getAppbarTab, getStation } from '../store/slices/app';
-import authSlice, {getUserInitials,  getUserAccessControl} from '../store/slices/auth';
+import authSlice, { getUserInitials, getUserAccessControl } from '../store/slices/auth';
 
 // Third-party
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from "react-i18next";
 import { colors } from 'sdk-fe-eyeflow';
+import { IconButton, Tooltip } from '@mui/material';
 
 
 const APPBAR_HEIGHT = window.app_config.components.AppBar.height;
@@ -70,10 +72,10 @@ const stationTextSx = {
   paddingRight: 2,
 };
 
-const appBarPaddingStyle = {height: APPBAR_HEIGHT};
+const appBarPaddingStyle = { height: APPBAR_HEIGHT };
 
 const tabIndicatorProps = {
-  sx: {background: 'white'}
+  sx: { background: 'white' }
 };
 
 const pageList = window.app_config.components.AppBar.tabList.map((tabData) => {
@@ -89,7 +91,9 @@ export default function CustomAppBar() {
   const navigate = useNavigate();
 
   const [avatarAnchorEl, setAvatarAnchorEl] = useState(null);
+  const [languageAnchorEl, setLanguageAnchorEl] = useState(null);
   const avatarOpen = Boolean(avatarAnchorEl);
+  const languageOpen = Boolean(languageAnchorEl);
 
   // const open = Boolean(anchorEl);
   // const user = useSelector(getUser);
@@ -98,11 +102,17 @@ export default function CustomAppBar() {
   const appbarTab = useSelector(getAppbarTab);
   const userAccessControl = useSelector(getUserAccessControl);
   const userInitials = useSelector(getUserInitials);
-  
+
   const handleClickAvatar = (event) => setAvatarAnchorEl(event.currentTarget);
   const handleCloseAvatarMenu = (event) => setAvatarAnchorEl(null);
+
+  const handleClickLanguageMenu = (event) => setLanguageAnchorEl(event.currentTarget);
+  const handleCloseLanguageMenu = (event) => setLanguageAnchorEl(null);
+
+
+
   const handleClickUserSettings = () => navigate('/app/user-settings');
-  const handleTabChange = (event, newValue)  => {
+  const handleTabChange = (event, newValue) => {
     navigate(tabList[newValue].path);
   };
 
@@ -123,12 +133,12 @@ export default function CustomAppBar() {
     // eslint-disable-next-line
   }, [userAccessControl, dispatch, location?.pathname]);
 
-  const handleClickLogout = ()  => {
+  const handleClickLogout = () => {
     dispatch(authSlice.actions.logout());
   };
 
-  const onChangeLanguage = (event) => {
-    i18n.changeLanguage(event.target.value);
+  const onChangeLanguage = (language) => {
+    i18n.changeLanguage(language);
   };
 
   return (
@@ -152,14 +162,23 @@ export default function CustomAppBar() {
               TabIndicatorProps={tabIndicatorProps}
               textColor="inherit"
             >
-              {tabList.map(({localeId}, index) => (
-                <Tab key={index} label={t(localeId)}/>
+              {tabList.map(({ localeId }, index) => (
+                <Tab key={index} label={t(localeId)} />
               ))}
             </Tabs>
           </Grid>
 
           <Grid item>
+
             <Box sx={endBoxSx}>
+
+              <Tooltip title={t('language')}>
+                <IconButton
+                  onClick={handleClickLanguageMenu}
+                >
+                  <TranslateIcon />
+                </IconButton>
+              </Tooltip>
               <Typography variant='subtitle2' sx={stationTextSx}>
                 {station}
               </Typography>
@@ -189,26 +208,38 @@ export default function CustomAppBar() {
         onClose={handleCloseAvatarMenu}
         id="avatar-button"
       >
-          <FormControl fullWidth sx={{p: 1}}>
-            <InputLabel id="demo-simple-select-label">{t('Language')}</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={i18n.language}
-              label={t('Language')}
-              onChange={onChangeLanguage}
-            >
-              {languageList.map((languageData) => 
-                <MenuItem key={languageData.id} value={languageData.id}>{languageData.label}</MenuItem>
-              )}
-            </Select>
-          </FormControl>
         <MenuItem onClick={handleClickUserSettings}>
           {t('User Settings')}
         </MenuItem>
         <MenuItem onClick={handleClickLogout}>
           {t('Logout')}
         </MenuItem>
+      </Menu>
+      <Menu
+        anchorEl={languageAnchorEl}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={languageOpen}
+        onClose={handleCloseLanguageMenu}
+        id="language-menu-button"
+      >
+        {languageList.map((languageData) =>
+          <MenuItem
+            key={languageData.id}
+            value={languageData.id}
+            onClick={() => onChangeLanguage(languageData.id)}
+            selected={languageData.id === i18n.language}
+          >
+            {languageData.label}
+          </MenuItem>
+        )}
       </Menu>
     </>
   );

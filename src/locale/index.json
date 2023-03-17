@@ -9,6 +9,10 @@
   },
   "event_time": {
     "en": "Event Time",
-    "pt": "Tempo do Evento"
+    "pt": "Horário do Evento"
+  },
+  "language": {
+    "en": "Language",
+    "pt": "Idioma"
   }
 }
