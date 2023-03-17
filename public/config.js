@@ -20,6 +20,9 @@ const config = {
             "components": {
                 "EventMenuBox": {
                     "itemHeight": 160
+                },
+                "EventHeader": {
+                    "fields": []
                 }
             },
             "options": {

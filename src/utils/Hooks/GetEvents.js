@@ -4,7 +4,7 @@ import {useState, useEffect} from 'react';
 import API from '../../api';
 
 
-export default function GetEvents({date, sleepTime=30000}={}) {
+export default function GetEvents({queryParams, sleepTime=30000}={}) {
 
 
   const [tick, setTick] = useState(0);
@@ -18,11 +18,7 @@ export default function GetEvents({date, sleepTime=30000}={}) {
   }, []);
 
   useEffect(() => {
-    API.getEventList({
-      params: {
-      },
-      setLoading
-    })
+    API.getEventList({params: queryParams, setLoading})
       .then((response) => {
         let newEvents = response?.eventList ?? [];
         if (JSON.stringify(events) !== JSON.stringify(newEvents)) {
@@ -31,7 +27,7 @@ export default function GetEvents({date, sleepTime=30000}={}) {
       })
       .catch(console.log);
     // eslint-disable-next-line
-  }, [tick, date]);
+  }, [tick, queryParams]);
 
   return {events, loading, setEvents};
 };
