@@ -44,9 +44,12 @@ const config = {
         "AppBar": {
             "height": 64,
             "tabList": [
-                {page:"Monitor"},
-                {page:"Dashboard"},
+                { page: "Monitor" },
+                { page: "Dashboard" },
             ]
+        },
+        "FilterBar": {
+            "height": 80,
         }
     },
     "locale": {
