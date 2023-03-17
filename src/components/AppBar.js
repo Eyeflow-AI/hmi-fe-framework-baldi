@@ -150,7 +150,7 @@ export default function CustomAppBar() {
               value={appbarTab}
               onChange={handleTabChange}
               TabIndicatorProps={tabIndicatorProps}
-              textColor="white"
+              textColor="inherit"
             >
               {tabList.map(({localeId}, index) => (
                 <Tab key={index} label={t(localeId)}/>

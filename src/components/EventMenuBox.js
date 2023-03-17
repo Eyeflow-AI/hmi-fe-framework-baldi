@@ -12,6 +12,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { colors } from 'sdk-fe-eyeflow';
 import dateFormat from 'sdk-fe-eyeflow/functions/dateFormat';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { useTranslation } from "react-i18next";
 
 
 import getQueryDateString from '../utils/functions/getQueryDateString';
@@ -91,6 +92,8 @@ export default function EventMenuList({
 }) {
 
 
+  const { t } = useTranslation();
+
   const eventsLength = events?.length ?? 0;
   const [dateValue, setDateValue] = useState(new Date());
 
@@ -169,7 +172,7 @@ export default function EventMenuList({
     <Box id="event-menu-box" sx={styleSx.mainBox}>
       <Box id="filter-box" sx={styleSx.filterBox} >
         <DesktopDatePicker
-          label="TODO"
+          label={t("date")}
           inputFormat="yyyy/MM/dd"
           value={dateValue}
           onChange={handleDateChange}

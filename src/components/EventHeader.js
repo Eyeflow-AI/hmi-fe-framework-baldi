@@ -27,8 +27,8 @@ export default function EventHeader({data, config}) {
 
   return (
     <Box height={config.height} sx={styleSx.mainBox}>
-      {Boolean(data) && fields.map(({data, label}) => (
-        <Box>
+      {Boolean(data) && fields.map(({data, label}, index) => (
+        <Box key={index}>
           {t(label)} {JSON.stringify(data)}
         </Box>
       ))}
