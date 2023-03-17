@@ -12,9 +12,6 @@ import Grid from '@mui/material/Grid';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { deepOrange } from '@mui/material/colors';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
 import TranslateIcon from '@mui/icons-material/Translate';
 
 // Internal
@@ -175,6 +172,9 @@ export default function CustomAppBar() {
               <Tooltip title={t('language')}>
                 <IconButton
                   onClick={handleClickLanguageMenu}
+                  sx={{
+                    color: "white"
+                  }}
                 >
                   <TranslateIcon />
                 </IconButton>
