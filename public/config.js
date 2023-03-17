@@ -23,7 +23,7 @@ const config = {
                 },
                 "EventHeader": {
                     "height": 80,
-                    "fields": [{"label": "id", "field": "_id"}, {"label": "event_time", "field": "event_time"}]
+                    "fields": [{ "label": "id", "field": "_id" }, { "label": "event_time", "field": "event_time" }]
                 }
             },
             "options": {
@@ -39,6 +39,24 @@ const config = {
             "acl": [],
             "active": true,
             "options": {}
+        },
+        "History": {
+            "id": "History",
+            "localeId": "history",
+            "path": "/app/history",
+            "authenticated": true,
+            "acl": [],
+            "active": true,
+            "options": {}
+        },
+        "User Management": {
+            "id": "User Management",
+            "localeId": "userManagement",
+            "path": "/app/user-management",
+            "authenticated": true,
+            "acl": [],
+            "active": true,
+            "options": {}
         }
     },
     "components": {
@@ -47,6 +65,8 @@ const config = {
             "tabList": [
                 { page: "Monitor" },
                 { page: "Dashboard" },
+                { page: "History" },
+                { page: "User Management" },
             ]
         },
         "FilterBar": {

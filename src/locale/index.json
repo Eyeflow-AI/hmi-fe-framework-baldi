@@ -1,0 +1,14 @@
+{
+  "close": {
+    "pt": "Fechar",
+    "en": "Close"
+  },
+  "date": {
+    "pt": "Data",
+    "en": "Date"
+  },
+  "event_time": {
+    "en": "Event Time",
+    "pt": "Tempo do Evento"
+  }
+}
