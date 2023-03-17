@@ -1,5 +1,5 @@
 // React
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 
 import Box from '@mui/material/Box';
@@ -12,6 +12,9 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { colors } from 'sdk-fe-eyeflow';
 import dateFormat from 'sdk-fe-eyeflow/functions/dateFormat';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+
+
+import getQueryDateString from '../utils/functions/getQueryDateString';
 
 
 const styleSx = {
@@ -91,6 +94,14 @@ export default function EventMenuList({
   const eventsLength = events?.length ?? 0;
   const [dateValue, setDateValue] = useState(new Date());
 
+  useEffect(() => { //Update query params
+    onChangeParams((params) => {
+      let newParams = Boolean(params) ? {...params} : {};
+      Object.assign(newParams, {min_event_time: getQueryDateString(dateValue), max_event_time: getQueryDateString(dateValue, {dayTimeDelta: 1})});
+      return newParams;
+    });
+  }, [dateValue]);
+
   function ItemRenderer({ index, style }) {
 
     let itemData = events[index];
@@ -98,7 +109,7 @@ export default function EventMenuList({
     let eventIndex = itemData.index ?? 0;
     let thumbURL = itemData.thumbURL ?? '';
     let status = itemData.status ?? '';
-    let eventTimeString = dateFormat(itemData.event_time, "default");
+    let eventTimeString = dateFormat(itemData.event_time);
     let [dateString, timeString] = eventTimeString.split(" ");
     let id = itemData.id ?? '';
     let conformity = Boolean(itemData.conformity);

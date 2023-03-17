@@ -18,14 +18,16 @@ export default function GetEvents({queryParams, sleepTime=30000}={}) {
   }, []);
 
   useEffect(() => {
-    API.getEventList({params: queryParams, setLoading})
-      .then((response) => {
-        let newEvents = response?.eventList ?? [];
-        if (JSON.stringify(events) !== JSON.stringify(newEvents)) {
-          setEvents(newEvents);
-        };
-      })
-      .catch(console.log);
+    if (queryParams) {
+      API.getEventList({params: queryParams, setLoading})
+        .then((response) => {
+          let newEvents = response?.eventList ?? [];
+          if (JSON.stringify(events) !== JSON.stringify(newEvents)) {
+            setEvents(newEvents);
+          };
+        })
+        .catch(console.log);
+    }
     // eslint-disable-next-line
   }, [tick, queryParams]);
 

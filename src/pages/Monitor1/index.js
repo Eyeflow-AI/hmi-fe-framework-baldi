@@ -5,8 +5,10 @@ import Box from '@mui/material/Box';
 
 
 import AppBar from '../../components/AppBar';
+import EventHeader from '../../components/EventHeader';
 import EventMenuBox from '../../components/EventMenuBox';
 import GetEvents from '../../utils/Hooks/GetEvents';
+import getQueryDateString from '../../utils/functions/getQueryDateString';
 import dateFormat from 'sdk-fe-eyeflow/functions/dateFormat';
 
 
@@ -37,12 +39,11 @@ const styleSx = {
 
 export default function Monitor() {
 
-  const [queryParams, setQueryParams] = useState({date: dateFormat(new Date(), "isoDate")});
-  const {events} = GetEvents({sleepTime: 30000});
+  const [queryParams, setQueryParams] = useState(null);
+  const {events} = GetEvents({queryParams, sleepTime: 30000});
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   const onChangeEvent = (inspectionId) => {
-    //TODO
     setSelectedEvent({_id: inspectionId});
   };
 
@@ -61,7 +62,10 @@ export default function Monitor() {
           />
         </Box>
         <Box id="monitor-data-box" sx={styleSx.dataBox}>
-
+          <EventHeader
+            data={selectedEvent}
+            config={PAGE_CONFIG.components.EventHeader}
+          />
         </Box>
       </Box>
     </>
