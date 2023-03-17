@@ -26,12 +26,11 @@ const styleSx = {
     width: PAGE_CONFIG.options.eventMenuWidth ?? 200,
     bgcolor: 'white',
   }),
-  dataBox: Object.assign({}, window.app_config.style.box, {
-    bgcolor: 'white',
+  dataBox: {
     display: 'flex',
     flexGrow: 1,
     marginLeft: 1
-  }),
+  },
 };
 
 

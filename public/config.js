@@ -22,7 +22,8 @@ const config = {
                     "itemHeight": 160
                 },
                 "EventHeader": {
-                    "fields": []
+                    "height": 80,
+                    "fields": [{"label": "id", "field": "_id"}, {"label": "event_time", "field": "event_time"}]
                 }
             },
             "options": {

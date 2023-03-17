@@ -1,4 +1,5 @@
 {
-    "close": "close",
-    "date": "date"
+    "close": "Close",
+    "date": "Date",
+    "event_time": "Event Time"
 }
