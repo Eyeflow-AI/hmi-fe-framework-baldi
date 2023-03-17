@@ -8,7 +8,7 @@ export default function GetEvents({queryParams, sleepTime=30000}={}) {
 
 
   const [tick, setTick] = useState(0);
-  const [events, setEvents] = useState([]);
+  const [data, setData] = useState({eventList: [], hash: null});
   const [loading, setLoading] = useState(null);
   
   useEffect(() => {
@@ -21,9 +21,13 @@ export default function GetEvents({queryParams, sleepTime=30000}={}) {
     if (queryParams) {
       API.getEventList({params: queryParams, setLoading})
         .then((response) => {
-          let newEvents = response?.eventList ?? [];
-          if (JSON.stringify(events) !== JSON.stringify(newEvents)) {
-            setEvents(newEvents);
+          let hash = response.hash;
+
+          if (!Boolean(hash) || !Boolean(data.hash) || hash !== data.hash) {
+            setData(response);
+          }
+          else {
+            console.log(`List not updated. Hash ${data.hash}`);
           };
         })
         .catch(console.log);
@@ -31,5 +35,5 @@ export default function GetEvents({queryParams, sleepTime=30000}={}) {
     // eslint-disable-next-line
   }, [tick, queryParams]);
 
-  return {events, loading, setEvents};
+  return {events: data.eventList, loading, setData};
 };
