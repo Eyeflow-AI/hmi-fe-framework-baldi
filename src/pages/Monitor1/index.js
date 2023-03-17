@@ -8,8 +8,6 @@ import AppBar from '../../components/AppBar';
 import EventHeader from '../../components/EventHeader';
 import EventMenuBox from '../../components/EventMenuBox';
 import GetEvents from '../../utils/Hooks/GetEvents';
-import getQueryDateString from '../../utils/functions/getQueryDateString';
-import dateFormat from 'sdk-fe-eyeflow/functions/dateFormat';
 
 
 const PAGE_CONFIG = window.app_config.pages.Monitor;

@@ -100,6 +100,7 @@ export default function EventMenuList({
       Object.assign(newParams, {min_event_time: getQueryDateString(dateValue), max_event_time: getQueryDateString(dateValue, {dayTimeDelta: 1})});
       return newParams;
     });
+  // eslint-disable-next-line
   }, [dateValue]);
 
   function ItemRenderer({ index, style }) {
@@ -110,9 +111,9 @@ export default function EventMenuList({
     let thumbURL = itemData.thumbURL ?? '';
     let status = itemData.status ?? '';
     let eventTimeString = dateFormat(itemData.event_time);
-    let [dateString, timeString] = eventTimeString.split(" ");
+    // let [dateString, timeString] = eventTimeString.split(" ");
     let id = itemData.id ?? '';
-    let conformity = Boolean(itemData.conformity);
+    // let conformity = Boolean(itemData.conformity);
     let boxStyle = Object.assign(
       {backgroundColor: colors.statuses[status]},
       selected ? styleSx.selectedItemSx : styleSx.itemSx
