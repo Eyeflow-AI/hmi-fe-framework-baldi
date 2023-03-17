@@ -13,7 +13,7 @@ import API from '../../api';
 
 const PAGE_CONFIG = window.app_config.pages.Monitor;
 const APPBAR_HEIGHT = window.app_config.components.AppBar.height;
-
+const EVENT_MENU_WIDTH = PAGE_CONFIG.options.eventMenuWidth ?? 200;
 
 const styleSx = {
   mainBox: {
@@ -24,7 +24,7 @@ const styleSx = {
     overflow: 'hidden',
   },
   eventMenuBox: Object.assign({}, window.app_config.style.box, {
-    width: PAGE_CONFIG.options.eventMenuWidth ?? 200,
+    width: EVENT_MENU_WIDTH,
     bgcolor: 'white',
   }),
   dataBox: {
