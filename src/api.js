@@ -46,7 +46,7 @@ const API = {
   wsURL: window.WS_URL,
   login: ({username, password}, setLoading) => request(instance.post(`auth/login`, {username, password}), setLoading),
   getEventList: ({params}, setLoading) => request(instance.get(`event/list`, {params}), setLoading),
-
+  getEvent: ({eventId}, setLoading) => request(instance.get(`event/${eventId}`), setLoading),
 };
 
 

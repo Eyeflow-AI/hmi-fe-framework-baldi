@@ -8,6 +8,7 @@ import AppBar from '../../components/AppBar';
 import EventHeader from '../../components/EventHeader';
 import EventMenuBox from '../../components/EventMenuBox';
 import GetEvents from '../../utils/Hooks/GetEvents';
+import API from '../../api';
 
 
 const PAGE_CONFIG = window.app_config.pages.Monitor;
@@ -42,6 +43,11 @@ export default function Monitor() {
 
   const onChangeEvent = (inspectionId) => {
     setSelectedEvent({_id: inspectionId});
+    API.getEvent({eventId: inspectionId})
+      .then((data) => {
+        setSelectedEvent(data.event);
+      })
+      .catch(console.error);
   };
 
   return (
