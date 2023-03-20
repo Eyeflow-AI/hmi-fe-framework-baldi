@@ -14,5 +14,17 @@
   "language": {
     "en": "Language",
     "pt": "Idioma"
+  },
+  "start_date": {
+    "en": "Start Date",
+    "pt": "Data Inicial"
+  },
+  "end_date": {
+    "en": "End Date",
+    "pt": "Data Final"
+  },
+  "search": {
+    "en": "Search",
+    "pt": "Procurar"
   }
 }

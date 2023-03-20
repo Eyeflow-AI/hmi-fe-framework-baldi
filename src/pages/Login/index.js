@@ -1,5 +1,5 @@
 // React
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 // Design
 import Button from '@mui/material/Button';
@@ -59,7 +59,6 @@ const styleSx = {
 };
 
 export default function Login() {
-
   const dispatch = useDispatch();
 
   const { t } = useTranslation();
@@ -101,22 +100,8 @@ export default function Login() {
     setPassword(event.currentTarget.value);
   };
 
-  useEffect(() => {
-    const login = (e) => {
-      console.log({ e })
-      if (e.key === 'Enter') {
-        onClickLoginButton(e);
-      }
-    }
-
-    document.addEventListener("keypress", login);
-
-    return document.removeEventListener("keypress", login);
-    // eslint-disable-next-line
-  }, [])
-
   return (
-    <Fade in={true} timeout={800}>
+    <Fade in={true} timeout={800} >
       <Box sx={styleSx.mainBox}>
         <CardMedia
           sx={styleSx.cardMedia}
