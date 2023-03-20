@@ -1,19 +1,25 @@
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux';
+// React
+import React, { useEffect, useState } from 'react';
 
-import { unwrapResult } from '@reduxjs/toolkit'
+// Design
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Fade from '@mui/material/Fade';
 import CardMedia from '@mui/material/CardMedia';
+import CircularProgress from '@mui/material/CircularProgress';
 
+
+// Internal
 import SiliconCopyright from '../../components/SiliconCopyright';
 import login from '../../store/thunks/login';
 
 // Third-Party
 import { useTranslation } from "react-i18next";
+import { unwrapResult } from '@reduxjs/toolkit';
+import { useDispatch } from 'react-redux';
+
 
 const styleSx = {
   mainBox: {
@@ -24,7 +30,7 @@ const styleSx = {
     justifyContent: 'center',
     alignItems: 'center'
   },
-  loginBox : {
+  loginBox: {
     bgcolor: 'background.paper',
     boxShadow: 2,
     borderRadius: '12px',
@@ -60,14 +66,16 @@ export default function Login() {
 
   const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
+  const [loginLoading, setLoginLoading] = useState(false);
   const [errMessage, setErrMessage] = useState('');
 
   const onClickLoginButton = (event) => {
+    setLoginLoading(true);
     event.preventDefault();
-    dispatch(login({username: user, password: password}))
+    dispatch(login({ username: user, password: password }))
       .then(unwrapResult)
       .catch((err) => {
-        console.log({err});
+        console.log({ err });
         if (err.message === "Network Error") {
           setErrMessage("Network Error");
         }
@@ -77,7 +85,10 @@ export default function Login() {
         else {
           setErrMessage("Internal Server Error");
         };
-      });
+      })
+      .finally(() => {
+        setLoginLoading(false);
+      })
   };
 
   const onChangeUser = (event) => {
@@ -89,6 +100,20 @@ export default function Login() {
     setErrMessage('');
     setPassword(event.currentTarget.value);
   };
+
+  useEffect(() => {
+    const login = (e) => {
+      console.log({ e })
+      if (e.key === 'Enter') {
+        onClickLoginButton(e);
+      }
+    }
+
+    document.addEventListener("keypress", login);
+
+    return document.removeEventListener("keypress", login);
+    // eslint-disable-next-line
+  }, [])
 
   return (
     <Fade in={true} timeout={800}>
@@ -141,18 +166,24 @@ export default function Login() {
             </Grid>
 
             <Grid item>
-              <Button
-                type="submit"
-                onClick={onClickLoginButton}
-                variant="contained"
-                sx={styleSx.loginButton}
-              >
-                {t('Login')}
-              </Button>
+              {
+                loginLoading ?
+                  <CircularProgress />
+                  :
+
+                  <Button
+                    type="submit"
+                    onClick={onClickLoginButton}
+                    variant="contained"
+                    sx={styleSx.loginButton}
+                  >
+                    {t('Login')}
+                  </Button>
+              }
             </Grid>
           </Grid>
-          <Box sx={{marginTop: 2}}>
-            <SiliconCopyright/>
+          <Box sx={{ marginTop: 2 }}>
+            <SiliconCopyright />
           </Box>
         </Box>
       </Box>
