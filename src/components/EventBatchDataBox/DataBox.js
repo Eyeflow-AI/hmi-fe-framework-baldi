@@ -8,8 +8,6 @@ import Box from '@mui/material/Box';
 const styleSx = {
   dataBoxSx: Object.assign({}, window.app_config.style.box, {
     bgcolor: 'white',
-    width: "calc(100vw - 502px)",
-    height: '100%'
   }),
 };
 

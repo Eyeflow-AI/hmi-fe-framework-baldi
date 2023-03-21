@@ -13,11 +13,12 @@ const mainBoxSx ={
   // bgcolor: 'white',
   display: 'flex',
   alignItems: 'center',
-  gap: 1,
+  gap: 0.25,
   overflowX: 'auto',
   overflowY: 'hidden',
   width: "100%",
-  whiteSpace: "pre-wrap" //TODO: Remove this line. Debug only
+  whiteSpace: "pre-wrap", //TODO: Remove this line. Debug only
+  bgcolor: '#D0D0D0'
 };
 
 

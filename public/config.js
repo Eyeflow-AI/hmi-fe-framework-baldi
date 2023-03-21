@@ -42,7 +42,7 @@ const config = {
                             "height": "100%"
                         },
                         "DataBox": {
-                            "width": "calc(100vw - 502px)",
+                            "width": "calc(100vw - 496px)",
                             "height": "100%"
                         }
                     }

@@ -34,7 +34,7 @@ const styleSx = {
     flexDirection: 'column',
     flexGrow: 1,
     marginLeft: 1,
-    gap: 1
+    gap: 1,
   },
 };
 
