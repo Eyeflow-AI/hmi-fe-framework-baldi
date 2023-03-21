@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, Suspense} from 'react';
 
 import { useDispatch } from 'react-redux';
 import AdapterDateFNS from '@date-io/date-fns';
@@ -46,9 +46,11 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <LocalizationProvider dateAdapter={AdapterDateFNS}>
-        <BrowserRouter>
-          <Routes />
-        </BrowserRouter>
+        <Suspense fallback={<p> Loading...</p>}>
+          <BrowserRouter>
+            <Routes />
+          </BrowserRouter>
+        </Suspense>
       </LocalizationProvider>
     </ThemeProvider>
   );

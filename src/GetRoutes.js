@@ -1,7 +1,10 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, lazy} from 'react';
 
 import { Navigate, Outlet } from 'react-router-dom';
-import { Login, Monitor1, MonitorBatch, Dashboard } from './pages';
+const Login = lazy(() => import("./pages/Login"));
+const Monitor1 = lazy(() => import("./pages/Monitor1"));
+const MonitorBatch = lazy(() => import("./pages/MonitorBatch"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
 
 const defaultAppURL = "/app/monitor";
 

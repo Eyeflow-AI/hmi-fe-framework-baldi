@@ -36,6 +36,9 @@ const config = {
                 "EventBatchDataBox": {
                     "height": "100%",
                     "width": "100%",
+                    "components": {
+
+                    }
                 }
             },
             "options": {
