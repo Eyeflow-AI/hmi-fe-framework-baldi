@@ -121,7 +121,7 @@ export default function EventMenuList({
     let id = itemData.id ?? '';
     // let conformity = Boolean(itemData.conformity);
     let boxStyle = Object.assign(
-      {backgroundColor: colors.statuses[status]},
+      {backgroundColor: selected ? colors.statuses[status] : `${colors.statuses[status]}90`},
       selected ? styleSx.selectedItemSx : styleSx.itemSx
     );
 
