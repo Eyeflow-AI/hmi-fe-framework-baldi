@@ -43,6 +43,10 @@
     "en": "History",
     "pt": "Histórico"
   },
+  "management": {
+    "en": "Management",
+    "pt": "Gerenciamento"
+  },
   "userManagement": {
     "en": "User Management",
     "pt": "Gerenciamento de Usuários"

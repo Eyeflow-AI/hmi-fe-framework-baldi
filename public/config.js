@@ -57,10 +57,10 @@ const config = {
             "active": false,
             "options": {}
         },
-        "User Management": {
-            "id": "User Management",
-            "localeId": "userManagement",
-            "path": "/app/user-management",
+        "Management": {
+            "id": "Management",
+            "localeId": "management",
+            "path": "/app/management",
             "authenticated": true,
             "acl": [],
             "active": false,
@@ -74,7 +74,7 @@ const config = {
                 { page: "Monitor" },
                 { page: "Dashboard" },
                 { page: "History" },
-                { page: "User Management" },
+                { page: "Management" },
             ]
         },
         "FilterBar": {
