@@ -44,11 +44,13 @@ export default function Monitor() {
   const [queryParams, setQueryParams] = useState(null);
   const {batchList} = GetBatchList({queryParams, sleepTime: GET_EVENT_SLEEP_TIME});
   const [selectedBatch, setSelectedBatch] = useState(null);
+  const [selectedBatchCountData, setSelectedBatchCountData] = useState(null);
 
   const onChangeEvent = (batchId) => {
     API.getBatch({batchId})
       .then((data) => {
         setSelectedBatch(data.batch);
+        setSelectedBatchCountData(data.countData);
       })
       .catch(console.error);
   };
@@ -56,6 +58,7 @@ export default function Monitor() {
   useEffect(() => {
     if (selectedBatch && batchList.findIndex((el) => el._id === selectedBatch._id) === -1) {
       setSelectedBatch(null);
+      setSelectedBatchCountData(null);
     };
   // eslint-disable-next-line
   }, [batchList]);
@@ -82,6 +85,7 @@ export default function Monitor() {
           />
           <EventBatchDataBox
             data={selectedBatch}
+            countData={selectedBatchCountData}
             disabled={!selectedBatch}
             config={PAGE_CONFIG.components.EventBatchDataBox}
           />
