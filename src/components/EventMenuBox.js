@@ -112,6 +112,7 @@ export default function EventMenuList({
     let selected = selectedEvent?._id === itemData._id;
     let eventIndex = itemData.index ?? 0;
     let thumbURL = itemData.thumbURL ?? '';
+    let thumbStyle = Boolean(itemData.thumbStyle) ? itemData.thumbStyle : styleSx.itemImage;
     let status = itemData.status ?? '';
     let eventTimeString = dateFormat(itemData.event_time);
     // let [dateString, timeString] = eventTimeString.split(" ");
@@ -150,7 +151,7 @@ export default function EventMenuList({
 
           {thumbURL && (
           <Box sx={styleSx.itemImageBox}>
-            <img alt="" src={thumbURL} style={styleSx.itemImage}/>
+            <img alt="" src={thumbURL} style={thumbStyle}/>
           </Box>
           )}
           

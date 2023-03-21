@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 import AppBar from '../../components/AppBar';
 import EventHeader from '../../components/EventHeader';
 import EventMenuBox from '../../components/EventMenuBox';
-import GetEvents from '../../utils/Hooks/GetEvents';
+import GetBatchList from '../../utils/Hooks/GetBatchList';
 import API from '../../api';
 
 
@@ -38,7 +38,7 @@ const styleSx = {
 export default function Monitor() {
 
   const [queryParams, setQueryParams] = useState(null);
-  const {events} = GetEvents({queryParams, sleepTime: 30000});
+  const {events} = GetBatchList({queryParams, sleepTime: 30000});
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   const onChangeEvent = (inspectionId) => {

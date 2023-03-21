@@ -11,7 +11,7 @@ const config = {
             "options": {}
         },
         "Monitor": {
-            "id": "Monitor1",
+            "id": "MonitorBatch",
             "localeId": "monitor",
             "path": "/app/monitor",
             "authenticated": true,
@@ -54,7 +54,7 @@ const config = {
             "path": "/app/history",
             "authenticated": true,
             "acl": [],
-            "active": true,
+            "active": false,
             "options": {}
         },
         "User Management": {
@@ -63,7 +63,7 @@ const config = {
             "path": "/app/user-management",
             "authenticated": true,
             "acl": [],
-            "active": true,
+            "active": false,
             "options": {}
         }
     },
