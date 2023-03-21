@@ -95,7 +95,6 @@ export default function CustomAppBar() {
   const avatarOpen = Boolean(avatarAnchorEl);
   const languageOpen = Boolean(languageAnchorEl);
 
-  // const open = Boolean(anchorEl);
   // const user = useSelector(getUser);
   const tabList = useSelector(getTabList);
   const station = useSelector(getStation);

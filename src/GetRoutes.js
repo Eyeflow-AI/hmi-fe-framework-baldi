@@ -27,7 +27,7 @@ export default function Routes ({authenticated, hasUserManagementPermission, has
     for (let [key, value] of Object.entries(window.app_config.pages)) {
       let aclCondition = true; //TODO
       if (value.active && aclCondition && value.path.startsWith("/app")) {
-        console.log(`Loading page: ${value.id}`);
+        console.log(`Loading page: ${key}`);
         appRoutes.push({
           path: value.path,
           element: components[value.id]()
@@ -65,5 +65,5 @@ export default function Routes ({authenticated, hasUserManagementPermission, has
         element: <NotFound />,
       },
     ]
-  }, [authenticated, hasUserManagementPermission, hasCaptureImagesPermission]);
+  }, [authenticated, /*hasUserManagementPermission, hasCaptureImagesPermission*/]);
 };
