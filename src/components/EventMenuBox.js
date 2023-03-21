@@ -108,13 +108,15 @@ export default function EventMenuList({
 
   function ItemRenderer({ index, style }) {
 
+    let dateField = config?.dateField ?? "event_time";
+
     let itemData = events[index];
     let selected = selectedEvent?._id === itemData._id;
     let eventIndex = itemData.index ?? 0;
     let thumbURL = itemData.thumbURL ?? '';
     let thumbStyle = Boolean(itemData.thumbStyle) ? itemData.thumbStyle : styleSx.itemImage;
     let status = itemData.status ?? '';
-    let eventTimeString = dateFormat(itemData.event_time);
+    let eventTimeString = Boolean(itemData[dateField]) ? dateFormat(itemData[dateField]) : "";
     // let [dateString, timeString] = eventTimeString.split(" ");
     let id = itemData.id ?? '';
     // let conformity = Boolean(itemData.conformity);

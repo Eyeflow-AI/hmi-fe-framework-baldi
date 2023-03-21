@@ -19,7 +19,8 @@ const config = {
             "active": true,
             "components": {
                 "EventMenuBox": {
-                    "itemHeight": 160
+                    "itemHeight": 160,
+                    "dateField": "startTime",
                 },
                 "EventHeader": {
                     "height": 80,
