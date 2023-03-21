@@ -41,8 +41,13 @@ export default function EventBatchDataBox({data, countData, config, disabled}) {
 
   return (
     <Box width={config.width} height={config.height} sx={disabled ? styleSx.mainBoxDisabled : styleSx.mainBox}>
-      <GraphBox countData={countData} config={config?.components?.GraphBox}/>
-      <DataBox data={data} config={config?.components?.DataBox}/>
+      {(config.components.GraphBox?.active ?? true) && (
+        <GraphBox countData={countData} config={config?.components?.GraphBox}/>
+      )}
+
+      {(config.components.DataBox?.active ?? true) && (
+        <DataBox data={data} config={config?.components?.DataBox}/>
+      )}
     </Box>
   );
 };

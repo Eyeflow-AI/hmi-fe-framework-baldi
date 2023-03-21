@@ -38,12 +38,14 @@ const config = {
                     "width": "100%",
                     "components": {
                         "GraphBox": {
-                            "width": 250,
+                            // "width": 250,
+                            "width": "100%",
                             "height": "100%"
                         },
                         "DataBox": {
                             "width": "calc(100vw - 496px)",
-                            "height": "100%"
+                            "height": "100%",
+                            "active": false,
                         }
                     }
                 }
