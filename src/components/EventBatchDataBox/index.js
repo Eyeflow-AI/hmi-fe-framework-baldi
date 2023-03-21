@@ -5,6 +5,10 @@ import React from 'react';
 import Box from '@mui/material/Box';
 
 
+import DataBox from './DataBox';
+import GraphBox from './GraphBox';
+
+
 const mainBoxSx ={
   // bgcolor: 'white',
   display: 'flex',
@@ -36,12 +40,8 @@ export default function EventBatchDataBox({data, countData, config, disabled}) {
 
   return (
     <Box width={config.width} height={config.height} sx={disabled ? styleSx.mainBoxDisabled : styleSx.mainBox}>
-      <Box sx={styleSx.graphBoxSx}>
-        {JSON.stringify(countData, null, 1)}
-      </Box>
-      <Box sx={styleSx.dataBoxSx}>
-        {JSON.stringify(data, null, 1)}
-      </Box>
+      <GraphBox countData={countData} config={config?.components?.GraphBox}/>
+      <DataBox data={data} config={config?.components?.DataBox}/>
     </Box>
   );
 };

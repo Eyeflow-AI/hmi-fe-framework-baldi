@@ -37,7 +37,14 @@ const config = {
                     "height": "100%",
                     "width": "100%",
                     "components": {
-
+                        "GraphBox": {
+                            "width": 250,
+                            "height": "100%"
+                        },
+                        "DataBox": {
+                            "width": "calc(100vw - 502px)",
+                            "height": "100%"
+                        }
                     }
                 }
             },
