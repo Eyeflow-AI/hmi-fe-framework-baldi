@@ -21,11 +21,9 @@ export function prepare(locale) {
       }
     })
   })
-  console.log({ wordsByLanguages })
   const resources = {};
   locale.languageList.forEach(({ id, active }) => {
     if (active) {
-      console.log({ id })
       resources[id] = { translation: wordsByLanguages[id] };
     };
   });

@@ -13,7 +13,7 @@ import { instance } from './api';
 import { getStationList, setStation } from './store/slices/app';
 import getStationListThunk from './store/thunks/stationList';
 
-import routes from './routes';
+import GetRoutes from './GetRoutes';
 
 import theme from './theme';
 import addInterceptors from './api/addInterceptors';
@@ -29,7 +29,7 @@ function App() {
   const hasCaptureImagesPermission = useSelector(getHasCaptureImagesPermission);
   const stationList = useSelector(getStationList);
 
-  const Routes = () => useRoutes(routes({authenticated, hasUserManagementPermission, hasCaptureImagesPermission}));
+  const Routes = () => useRoutes(GetRoutes({authenticated, hasUserManagementPermission, hasCaptureImagesPermission}));
 
   useEffect(() => {
     dispatch(getStationListThunk())
