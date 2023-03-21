@@ -9,21 +9,24 @@ import Typography from '@mui/material/Typography';
 import { useTranslation } from "react-i18next";
 import { dateFormat } from 'sdk-fe-eyeflow';
 
+const mainBoxSx = Object.assign(
+  {},
+  window.app_config.style.box,
+  {
+    bgcolor: 'white',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 1,
+    paddingLeft: 1,
+    overflowX: 'auto',
+    overflowY: 'hidden',
+    width: "100%",
+  }
+);
+
 const styleSx = {
-  mainBox: Object.assign(
-    {},
-    window.app_config.style.box,
-    {
-      bgcolor: 'white',
-      display: 'flex',
-      alignItems: 'center',
-      gap: 1,
-      paddingLeft: 1,
-      overflowX: 'auto',
-      overflowY: 'hidden',
-      width: "100%",
-    }
-  ),
+  mainBox: mainBoxSx,
+  mainBoxDisabled: Object.assign({}, mainBoxSx, {opacity: 0.8}),
   itemBox: {
     display: 'flex',
     flexDirection: 'column',
@@ -37,7 +40,7 @@ const styleSx = {
   }
 };
 
-export default function EventHeader({data, width, config}) {
+export default function EventHeader({data, width, config, disabled}) {
 
   const { t } = useTranslation();
 
@@ -60,7 +63,7 @@ export default function EventHeader({data, width, config}) {
   }, [data, config]);
 
   return (
-    <Box width={config.width} height={config.height} sx={styleSx.mainBox}>
+    <Box width={config.width} height={config.height} sx={disabled ? styleSx.mainBoxDisabled : styleSx.mainBox}>
       {Boolean(data) && fields.map(({data, label}, index) => (
         <Box key={index} sx={styleSx.itemBox}>
           <Box>

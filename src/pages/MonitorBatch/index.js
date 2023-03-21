@@ -38,7 +38,7 @@ const styleSx = {
 export default function Monitor() {
 
   const [queryParams, setQueryParams] = useState(null);
-  const {batchList} = GetBatchList({queryParams, sleepTime: 30000});
+  const {batchList} = GetBatchList({queryParams, sleepTime: window.app_config.pages?.Monitor?.options?.getEventSleepTime ?? 30000});
   const [selectedBatch, setSelectedBatch] = useState(null);
 
   const onChangeEvent = (batchId) => {
@@ -73,6 +73,7 @@ export default function Monitor() {
         <Box id="monitor-data-box" sx={styleSx.dataBox}>
           <EventHeader
             data={selectedBatch}
+            disabled={!selectedBatch}
             config={PAGE_CONFIG.components.EventHeader}
           />
         </Box>
