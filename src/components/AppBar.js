@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 
 // Design
-import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -58,7 +58,12 @@ const avatarSx = {
   cursor: 'pointer',
   color: (theme) => theme.palette.getContrastText(deepOrange[500]),
   backgroundColor: deepOrange[500],
-  boxShadow: 1
+  boxShadow: 1,
+  width: 46,
+  height: 46,
+  "&:hover, &.Mui-focusVisible": {
+    backgroundColor: deepOrange[600],
+  }
 };
 
 const endBoxSx = {
@@ -180,17 +185,20 @@ export default function CustomAppBar() {
                 {station}
               </Typography>
 
-              <Avatar
+              <IconButton
                 onClick={handleClickAvatar}
                 sx={avatarSx}
               >
                 {userInitials}
-              </Avatar>
+              </IconButton>
+
             </Box>
           </Grid>
         </Grid>
       </Box>
+
       <div id='appbar-padding' style={appBarPaddingStyle} />
+
       <Menu
         anchorEl={avatarAnchorEl}
         anchorOrigin={{
@@ -213,17 +221,9 @@ export default function CustomAppBar() {
           {t('Logout')}
         </MenuItem>
       </Menu>
+
       <Menu
         anchorEl={languageAnchorEl}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        keepMounted
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
         open={languageOpen}
         onClose={handleCloseLanguageMenu}
         id="language-menu-button"
