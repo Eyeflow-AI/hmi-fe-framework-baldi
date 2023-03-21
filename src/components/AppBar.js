@@ -11,6 +11,8 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
 import { deepOrange } from '@mui/material/colors';
 import TranslateIcon from '@mui/icons-material/Translate';
 
@@ -23,7 +25,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from "react-i18next";
 import { colors } from 'sdk-fe-eyeflow';
-import { IconButton, Tooltip } from '@mui/material';
 
 
 const APPBAR_HEIGHT = window.app_config.components.AppBar.height;
@@ -64,6 +65,8 @@ const endBoxSx = {
   display: 'flex',
   alignItems: 'center'
 };
+
+const languageIconSx =  {color: "white"};
 
 const stationTextSx = {
   paddingRight: 2,
@@ -106,8 +109,6 @@ export default function CustomAppBar() {
   const handleClickLanguageMenu = (event) => setLanguageAnchorEl(event.currentTarget);
   const handleCloseLanguageMenu = (event) => setLanguageAnchorEl(null);
 
-
-
   const handleClickUserSettings = () => navigate('/app/user-settings');
   const handleTabChange = (event, newValue) => {
     navigate(tabList[newValue].path);
@@ -136,6 +137,7 @@ export default function CustomAppBar() {
 
   const onChangeLanguage = (language) => {
     i18n.changeLanguage(language);
+    handleCloseLanguageMenu();
   };
 
   return (
@@ -169,19 +171,16 @@ export default function CustomAppBar() {
 
             <Box sx={endBoxSx}>
 
-              <Tooltip title={t('language')}>
-                <IconButton
-                  onClick={handleClickLanguageMenu}
-                  sx={{
-                    color: "white"
-                  }}
-                >
-                  <TranslateIcon />
-                </IconButton>
+              <Tooltip title={t('language')} onClick={handleClickLanguageMenu} sx={languageIconSx}>
+                <Button endIcon={<TranslateIcon />}>
+                  {i18n.language}
+                </Button>
               </Tooltip>
+
               <Typography variant='subtitle2' sx={stationTextSx}>
                 {station}
               </Typography>
+
               <Avatar
                 onClick={handleClickAvatar}
                 sx={avatarSx}

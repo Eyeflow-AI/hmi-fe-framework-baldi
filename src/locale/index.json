@@ -34,5 +34,9 @@
   "search": {
     "en": "Search",
     "pt": "Procurar"
+  },
+  "station": {
+    "en": "Station",
+    "pt": "Estação"
   }
 }
