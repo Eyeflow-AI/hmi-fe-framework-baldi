@@ -17,6 +17,7 @@ const mainBoxSx = Object.assign(
     overflowX: 'auto',
     overflowY: 'hidden',
     width: "100%",
+    whiteSpace: "pre-wrap" //TODO: Remove this line. Debug only
   }
 );
 
@@ -29,6 +30,7 @@ export default function EventBatchDataBox({data, config, disabled}) {
 
   return (
     <Box width={config.width} height={config.height} sx={disabled ? styleSx.mainBoxDisabled : styleSx.mainBox}>
+      {JSON.stringify(data, null, 2)}
     </Box>
   );
 };
