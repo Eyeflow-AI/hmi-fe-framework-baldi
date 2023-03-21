@@ -38,24 +38,23 @@ const styleSx = {
 export default function Monitor() {
 
   const [queryParams, setQueryParams] = useState(null);
-  const {events} = GetBatchList({queryParams, sleepTime: 30000});
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const {batchList} = GetBatchList({queryParams, sleepTime: 30000});
+  const [selectedBatch, setSelectedBatch] = useState(null);
 
-  const onChangeEvent = (inspectionId) => {
-    setSelectedEvent({_id: inspectionId});
-    API.getEvent({eventId: inspectionId})
+  const onChangeEvent = (batchId) => {
+    API.getBatch({batchId})
       .then((data) => {
-        setSelectedEvent(data.event);
+        setSelectedBatch(data.batch);
       })
       .catch(console.error);
   };
 
   useEffect(() => {
-    if (selectedEvent && events.findIndex((el) => el._id === selectedEvent._id) === -1) {
-      setSelectedEvent(null);
+    if (selectedBatch && batchList.findIndex((el) => el._id === selectedBatch._id) === -1) {
+      setSelectedBatch(null);
     };
   // eslint-disable-next-line
-  }, [events]);
+  }, [batchList]);
 
   return (
     <>
@@ -63,8 +62,8 @@ export default function Monitor() {
       <Box id="monitor-main-box" sx={styleSx.mainBox}>
         <Box id="monitor-event-menu-box" sx={styleSx.eventMenuBox}>
           <EventMenuBox
-            events={events}
-            selectedEvent={selectedEvent}
+            events={batchList}
+            selectedEvent={selectedBatch}
             onChangeEvent={onChangeEvent}
             queryParams={queryParams}
             onChangeParams={setQueryParams}
@@ -73,7 +72,7 @@ export default function Monitor() {
         </Box>
         <Box id="monitor-data-box" sx={styleSx.dataBox}>
           <EventHeader
-            data={selectedEvent}
+            data={selectedBatch}
             config={PAGE_CONFIG.components.EventHeader}
           />
         </Box>

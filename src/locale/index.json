@@ -19,9 +19,17 @@
     "en": "Start Date",
     "pt": "Data Inicial"
   },
+  "start_time": {
+    "en": "Start Time",
+    "pt": "Hora Início"
+  },
   "end_date": {
     "en": "End Date",
     "pt": "Data Final"
+  },
+  "end_time": {
+    "en": "End Time",
+    "pt": "Hora Fim"
   },
   "search": {
     "en": "Search",

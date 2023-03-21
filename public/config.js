@@ -25,12 +25,10 @@ const config = {
                 "EventHeader": {
                     "height": 80,
                     "fields": [
-                        { "label": "id", "field": "_id" },
-                        { "label": "event_time", "field": "event_time" },
-                        // { "label": "event_time", "field": "event_time" },
-                        // { "label": "event_time", "field": "event_time" },
-                        // { "label": "event_time", "field": "event_time" },
-                        // { "label": "event_time", "field": "event_time" },
+                        { "label": "_id", "field": "_id" },
+                        { "label": "id", "field": "id" },
+                        { "label": "start_time", "field": "startTime" },
+                        { "label": "end_time", "field": "endTime" },
                         // { "label": "event_time", "field": "event_time" }
                     ]
                 }

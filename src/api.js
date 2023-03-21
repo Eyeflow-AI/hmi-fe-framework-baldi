@@ -46,6 +46,7 @@ const API = {
   wsURL: window.WS_URL,
   login: ({username, password}, setLoading) => request(instance.post(`auth/login`, {username, password}), setLoading),
   getBatchList: ({params}, setLoading) => request(instance.get(`batch/list`, {params}), setLoading),
+  getBatch: ({batchId}, setLoading) => request(instance.get(`batch/${batchId}`), setLoading),
   getEventList: ({params}, setLoading) => request(instance.get(`event/list`, {params}), setLoading),
   getEvent: ({eventId}, setLoading) => request(instance.get(`event/${eventId}`), setLoading),
 };

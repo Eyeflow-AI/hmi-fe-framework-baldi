@@ -8,7 +8,7 @@ export default function GetBatchList({queryParams, sleepTime=30000}={}) {
 
 
   const [tick, setTick] = useState(0);
-  const [data, setData] = useState({eventList: [], hash: null});
+  const [data, setData] = useState({batchList: [], hash: null});
   const [loading, setLoading] = useState(null);
   
   useEffect(() => {
@@ -35,5 +35,5 @@ export default function GetBatchList({queryParams, sleepTime=30000}={}) {
     // eslint-disable-next-line
   }, [tick, queryParams]);
 
-  return {events: data.eventList, loading, setData};
+  return {batchList: data.batchList, loading, setData};
 };
