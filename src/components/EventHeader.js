@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 
 
 import { useTranslation } from "react-i18next";
-
+import { dateFormat } from 'sdk-fe-eyeflow';
 
 const styleSx = {
   mainBox: Object.assign(
@@ -43,7 +43,19 @@ export default function EventHeader({data, width, config}) {
 
   const {fields} = useMemo(() => {
     return {
-      fields: config.fields.map(({label, field}) => ({label, field, data: data?.[field] ?? ""}))
+      fields: config.fields.map(({label, field, type}) => {
+        let thisData = "";
+        if (Boolean(data?.[field])) {
+          if (type === "date") {
+            thisData = dateFormat(new Date(data[field]));
+          }
+          else {
+            thisData = data[field];
+          };
+        };
+
+        return {label, field, data: thisData};
+      })
     };
   }, [data, config]);
 

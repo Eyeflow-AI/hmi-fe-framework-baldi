@@ -27,8 +27,9 @@ const config = {
                     "fields": [
                         { "label": "_id", "field": "_id" },
                         { "label": "id", "field": "id" },
-                        { "label": "start_time", "field": "startTime" },
-                        { "label": "end_time", "field": "endTime" },
+                        { "label": "start_time", "field": "startTime", "type": "date" },
+                        { "label": "end_time", "field": "endTime", "type": "date" },
+                        { "label": "station", "field": "station" },
                         // { "label": "event_time", "field": "event_time" }
                     ]
                 }
