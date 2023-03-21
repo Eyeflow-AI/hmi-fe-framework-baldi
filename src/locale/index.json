@@ -38,5 +38,13 @@
   "station": {
     "en": "Station",
     "pt": "Estação"
+  },
+  "history": {
+    "en": "History",
+    "pt": "Histórico"
+  },
+  "userManagement": {
+    "en": "User Management",
+    "pt": "Gerenciamento de Usuários"
   }
 }
