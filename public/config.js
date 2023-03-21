@@ -32,6 +32,10 @@ const config = {
                         { "label": "station", "field": "station" },
                         // { "label": "event_time", "field": "event_time" }
                     ]
+                },
+                "EventBatchDataBox": {
+                    "height": "100%",
+                    "width": "100%",
                 }
             },
             "options": {

@@ -40,7 +40,7 @@ const styleSx = {
   }
 };
 
-export default function EventHeader({data, width, config, disabled}) {
+export default function EventHeader({data, config, disabled}) {
 
   const { t } = useTranslation();
 

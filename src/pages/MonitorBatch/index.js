@@ -7,6 +7,7 @@ import Box from '@mui/material/Box';
 import AppBar from '../../components/AppBar';
 import EventHeader from '../../components/EventHeader';
 import EventMenuBox from '../../components/EventMenuBox';
+import EventBatchDataBox from '../../components/EventBatchDataBox';
 import GetBatchList from '../../utils/Hooks/GetBatchList';
 import API from '../../api';
 
@@ -14,6 +15,7 @@ import API from '../../api';
 const PAGE_CONFIG = window.app_config.pages.Monitor;
 const APPBAR_HEIGHT = window.app_config.components.AppBar.height;
 const EVENT_MENU_WIDTH = PAGE_CONFIG.options.eventMenuWidth ?? 200;
+const GET_EVENT_SLEEP_TIME = window.app_config.pages?.Monitor?.options?.getEventSleepTime ?? 30000;
 
 const styleSx = {
   mainBox: {
@@ -29,8 +31,10 @@ const styleSx = {
   }),
   dataBox: {
     display: 'flex',
+    flexDirection: 'column',
     flexGrow: 1,
-    marginLeft: 1
+    marginLeft: 1,
+    gap: 1
   },
 };
 
@@ -38,7 +42,7 @@ const styleSx = {
 export default function Monitor() {
 
   const [queryParams, setQueryParams] = useState(null);
-  const {batchList} = GetBatchList({queryParams, sleepTime: window.app_config.pages?.Monitor?.options?.getEventSleepTime ?? 30000});
+  const {batchList} = GetBatchList({queryParams, sleepTime: GET_EVENT_SLEEP_TIME});
   const [selectedBatch, setSelectedBatch] = useState(null);
 
   const onChangeEvent = (batchId) => {
@@ -75,6 +79,11 @@ export default function Monitor() {
             data={selectedBatch}
             disabled={!selectedBatch}
             config={PAGE_CONFIG.components.EventHeader}
+          />
+          <EventBatchDataBox
+            data={selectedBatch}
+            disabled={!selectedBatch}
+            config={PAGE_CONFIG.components.EventBatchDataBox}
           />
         </Box>
       </Box>
