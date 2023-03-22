@@ -13,7 +13,7 @@ const config = {
         "Monitor": {
             "id": "MonitorBatch",
             "localeId": "monitor",
-            "path": "/app/monitor",
+            "path": "/app/:stationSlugLabel/monitor",
             "authenticated": true,
             "acl": [],
             "active": true,
@@ -58,7 +58,7 @@ const config = {
         "Dashboard": {
             "id": "Dashboard",
             "localeId": "dashboard",
-            "path": "/app/dashboard",
+            "path": "/app/:stationSlugLabel/dashboard",
             "authenticated": true,
             "acl": [],
             "active": true,
@@ -67,7 +67,7 @@ const config = {
         "History": {
             "id": "History",
             "localeId": "history",
-            "path": "/app/history",
+            "path": "/app/:stationSlugLabel/history",
             "authenticated": true,
             "acl": [],
             "active": true,
@@ -76,7 +76,7 @@ const config = {
         "Management": {
             "id": "Management",
             "localeId": "management",
-            "path": "/app/management",
+            "path": "/app/:stationSlugLabel/management",
             "authenticated": true,
             "acl": [],
             "active": true,

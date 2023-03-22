@@ -1,6 +1,9 @@
 import React, { useMemo, lazy } from 'react';
 
 import { Navigate, Outlet } from 'react-router-dom';
+
+import updatePath from './utils/functions/updatePath';
+
 const Login = lazy(() => import("./pages/Login"));
 const Monitor1 = lazy(() => import("./pages/Monitor1"));
 const MonitorBatch = lazy(() => import("./pages/MonitorBatch"));
@@ -8,7 +11,7 @@ const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Management = lazy(() => import("./pages/Management"));
 const History = lazy(() => import("./pages/History"));
 
-const defaultAppURL = "/app/monitor";
+const defaultAppURL = "/app/:stationSlugLabel/monitor";
 
 function NotFound() {
   return (
@@ -30,18 +33,21 @@ const components = {
 export default function Routes({ station, authenticated, hasUserManagementPermission, hasCaptureImagesPermission }) {
 
   return useMemo(() => {
+
     let appRoutes = [];
+    let updatedDefaultAppUrl = updatePath(defaultAppURL, station);
     for (let [key, value] of Object.entries(window.app_config.pages)) {
       let aclCondition = true; //TODO
       if (value.active && aclCondition && value.path.startsWith("/app")) {
-        console.log(`Loading page: ${key}. Station: ${station?.label}`);
+        let updatedPath = updatePath(value.path, station);
+        console.log(`Loading page: ${key}. Station: ${station?.label}. Path: ${updatedPath}`);
         appRoutes.push({
-          path: value.path,
+          path: updatedPath,
           element: components[value.id]()
         })
       };
     };
-    appRoutes.push({ path: '/app', element: <Navigate to={defaultAppURL} /> });
+    appRoutes.push({ path: '/app', element: <Navigate to={updatedDefaultAppUrl} /> });
 
     return [
       {

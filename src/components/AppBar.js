@@ -18,6 +18,7 @@ import TranslateIcon from '@mui/icons-material/Translate';
 // Internal
 import appSlice, { getTabList, getAppbarTab, getStation, getStationList, setStationId } from '../store/slices/app';
 import authSlice, { getUserInitials, getUserAccessControl } from '../store/slices/auth';
+import updatePath from '../utils/functions/updatePath';
 
 // Third-party
 import { useLocation, useNavigate } from "react-router-dom";
@@ -116,9 +117,9 @@ export default function CustomAppBar() {
   const handleClickLanguageMenu = (event) => setLanguageAnchorEl(event.currentTarget);
   const handleCloseLanguageMenu = (event) => setLanguageAnchorEl(null);
 
-  const handleClickUserSettings = () => navigate('/app/user-settings');
+  const handleClickUserSettings = () => navigate(updatePath('/app/user-settings', station)); //TODO
   const handleTabChange = (event, newValue) => {
-    navigate(tabList[newValue].path);
+    navigate(updatePath(tabList[newValue].path, station));
   };
 
   useEffect(() => {
@@ -129,14 +130,16 @@ export default function CustomAppBar() {
       };
     });
 
-    const locationId = newTabList.findIndex((element) => (element.extraPath || []).concat(element.path).includes(location.pathname));
+    const locationId = newTabList.findIndex(
+      (element) => (element.extraPath || []).concat(updatePath(element.path, station)).includes(location.pathname)
+    );
     dispatch(appSlice.actions.setAppbarTabValue(locationId !== -1 ? locationId : false));
 
     if (JSON.stringify(tabList) !== JSON.stringify(newTabList)) {
       dispatch(appSlice.actions.setTabListValue(newTabList));
     };
     // eslint-disable-next-line
-  }, [userAccessControl, dispatch, location?.pathname]);
+  }, [station, userAccessControl, dispatch, location?.pathname]);
 
   const handleClickLogout = () => {
     dispatch(authSlice.actions.logout());
