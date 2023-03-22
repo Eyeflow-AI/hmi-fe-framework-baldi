@@ -70,7 +70,7 @@ const config = {
             "path": "/app/history",
             "authenticated": true,
             "acl": [],
-            "active": false,
+            "active": true,
             "options": {}
         },
         "Management": {
@@ -79,7 +79,7 @@ const config = {
             "path": "/app/management",
             "authenticated": true,
             "acl": [],
-            "active": false,
+            "active": true,
             "options": {}
         }
     },
