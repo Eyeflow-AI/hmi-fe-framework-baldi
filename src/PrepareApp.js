@@ -23,8 +23,13 @@ function PrepareApp({children}) {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!stationId && stationList?.[0]?._id) {
-      dispatch(setStationId(stationList[0]._id));
+    if (stationList?.length > 0) {
+      if ( !stationId || (stationId && stationList.findIndex((el) => el._id === stationId) === -1 ) ) {
+        dispatch(setStationId(stationList[0]._id));
+      };
+    }
+    else {
+      dispatch(setStationId(""));
     };
   }, [dispatch, stationId, stationList]);
 
