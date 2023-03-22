@@ -50,5 +50,17 @@
   "userManagement": {
     "en": "User Management",
     "pt": "Gerenciamento de Usuários"
+  },
+  "users": {
+    "en": "Users",
+    "pt": "Usuários"
+  },
+  "general": {
+    "en": "General",
+    "pt": "Geral"
+  },
+  "alarms": {
+    "en": "Alarms",
+    "pt": "Alarmes"
   }
 }
