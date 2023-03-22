@@ -9,6 +9,8 @@ import EventHeader from '../../components/EventHeader';
 import EventMenuBox from '../../components/EventMenuBox';
 import EventBatchDataBox from '../../components/EventBatchDataBox';
 import GetBatchList from '../../utils/Hooks/GetBatchList';
+import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
+
 import API from '../../api';
 
 
@@ -41,6 +43,7 @@ const styleSx = {
 
 export default function Monitor() {
 
+  const {_id: stationId} = GetSelectedStation();
   const [queryParams, setQueryParams] = useState(null);
   const {batchList} = GetBatchList({queryParams, sleepTime: GET_EVENT_SLEEP_TIME});
   const [selectedBatch, setSelectedBatch] = useState(null);
@@ -63,6 +66,17 @@ export default function Monitor() {
   // eslint-disable-next-line
   }, [batchList]);
 
+  const onChangeParams = (newValue) => {
+    setQueryParams((params) => {
+      let newParams = Boolean(params) ? {...params} : {};
+      Object.assign(newParams, newValue);
+      if (!newParams.hasOwnProperty("station")) {
+        newParams["station"] = stationId;
+      };
+      return newParams;
+    });
+  };
+
   return (
     <>
       <AppBar />
@@ -73,7 +87,7 @@ export default function Monitor() {
             selectedEvent={selectedBatch}
             onChangeEvent={onChangeEvent}
             queryParams={queryParams}
-            onChangeParams={setQueryParams}
+            onChangeParams={onChangeParams}
             config={PAGE_CONFIG.components.EventMenuBox}
           />
         </Box>

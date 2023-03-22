@@ -98,11 +98,7 @@ export default function EventMenuList({
   const [dateValue, setDateValue] = useState(new Date());
 
   useEffect(() => { //Update query params
-    onChangeParams((params) => {
-      let newParams = Boolean(params) ? {...params} : {};
-      Object.assign(newParams, {min_event_time: getQueryDateString(dateValue), max_event_time: getQueryDateString(dateValue, {dayTimeDelta: 1})});
-      return newParams;
-    });
+    onChangeParams({min_event_time: getQueryDateString(dateValue), max_event_time: getQueryDateString(dateValue, {dayTimeDelta: 1})});
   // eslint-disable-next-line
   }, [dateValue]);
 
