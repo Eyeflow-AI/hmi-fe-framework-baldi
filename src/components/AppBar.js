@@ -68,10 +68,11 @@ const avatarSx = {
 
 const endBoxSx = {
   display: 'flex',
-  alignItems: 'center'
+  alignItems: 'center',
+  gap: 1
 };
 
-const languageIconSx =  {color: "white"};
+const languageIconSx =  {color: "white", marginLeft: -1, marginRight: 1};
 
 const stationTextSx = {
   paddingRight: 2,
@@ -175,15 +176,15 @@ export default function CustomAppBar() {
 
             <Box sx={endBoxSx}>
 
+              <Typography variant='subtitle2' sx={stationTextSx}>
+                {station?.label}
+              </Typography>
+
               <Tooltip title={t('language')} onClick={handleClickLanguageMenu} sx={languageIconSx}>
                 <Button endIcon={<TranslateIcon />}>
                   {i18n.language}
                 </Button>
               </Tooltip>
-
-              <Typography variant='subtitle2' sx={stationTextSx}>
-                {station}
-              </Typography>
 
               <IconButton
                 onClick={handleClickAvatar}

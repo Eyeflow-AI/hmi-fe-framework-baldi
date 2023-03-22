@@ -5,7 +5,7 @@ import stationList from '../thunks/stationList';
 export const initialState = {
   appbarTab: -1,
 
-  station: "",
+  stationId: "",
   stationList: [],
   loadingStationList: false,
 
@@ -22,8 +22,8 @@ const appSlice = createSlice({
     setTabListValue: (state, action) => {
       state.tabList = action.payload;
     },
-    setStation: (state, action) => {
-      state.station = action.payload;
+    setStationId: (state, action) => {
+      state.stationId = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -41,12 +41,15 @@ const appSlice = createSlice({
   },
 });
 
-export const getStation = (state) => state.app.station;
-export const getStationList = (state) => state.app.stationList;
+export const getStation = (state) => (Boolean(state.app.stationId) && state.app.stationList.length > 0)
+                                     ? (state.app.stationList.find(el => el._id === state.app.stationId) ?? null)
+                                     : null;
+export const getStationId = (state) => state.app.stationId;
+export const getStationList = (state) => state.app.stationList ?? [];
 
 export const getAppbarTab = (state) => state.app.appbarTab;
-export const getTabList = (state) => state.app.tabList;
+export const getTabList = (state) => state.app.tabList ?? [];
 
-export const setStation = appSlice.actions.setStation;
+export const setStationId = appSlice.actions.setStationId;
 
 export default appSlice;

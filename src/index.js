@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import StoreWrapper from './store/Wrapper';
+import { BrowserRouter } from 'react-router-dom';
+
 import reportWebVitals from './reportWebVitals';
 
 import {prepare as prepareLocale} from './locale';
@@ -14,7 +16,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <StoreWrapper>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </StoreWrapper>
 );
 
