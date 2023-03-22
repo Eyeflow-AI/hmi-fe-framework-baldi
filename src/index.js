@@ -23,10 +23,11 @@ root.render(
   <StoreWrapper>
     <LocalizationProvider dateAdapter={AdapterDateFNS}>
       <ThemeProvider theme={theme}>
-        <PrepareApp />
         <CssBaseline />
         <BrowserRouter>
-          <App />
+          <PrepareApp>
+            <App />
+          </PrepareApp>
         </BrowserRouter>
       </ThemeProvider>
     </LocalizationProvider>

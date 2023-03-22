@@ -27,14 +27,14 @@ const components = {
   History: () => <History />,
 };
 
-export default function Routes({ authenticated, hasUserManagementPermission, hasCaptureImagesPermission }) {
+export default function Routes({ station, authenticated, hasUserManagementPermission, hasCaptureImagesPermission }) {
 
   return useMemo(() => {
     let appRoutes = [];
     for (let [key, value] of Object.entries(window.app_config.pages)) {
       let aclCondition = true; //TODO
       if (value.active && aclCondition && value.path.startsWith("/app")) {
-        console.log(`Loading page: ${key}`);
+        console.log(`Loading page: ${key}. Station: ${station?.label}`);
         appRoutes.push({
           path: value.path,
           element: components[value.id]()
@@ -72,5 +72,5 @@ export default function Routes({ authenticated, hasUserManagementPermission, has
         element: <NotFound />,
       },
     ]
-  }, [authenticated, /*hasUserManagementPermission, hasCaptureImagesPermission*/]);
+  }, [station, authenticated, /*hasUserManagementPermission, hasCaptureImagesPermission*/]);
 };

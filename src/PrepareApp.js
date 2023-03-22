@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useEffect, Fragment, Suspense} from 'react';
 
 import { useDispatch } from 'react-redux';
 
@@ -11,7 +11,7 @@ import addInterceptors from './api/addInterceptors';
 
 addInterceptors(instance);
 
-function PrepareApp() {
+function PrepareApp({children}) {
 
   const dispatch = useDispatch();
 
@@ -28,7 +28,14 @@ function PrepareApp() {
     };
   }, [dispatch, stationId, stationList]);
 
-  return null;
+  return (
+    <Suspense fallback={<p> Loading...</p>}>
+      {stationId
+      ? children
+      : "Missing station list"
+      }
+    </Suspense>
+  );
 };
 
 export default PrepareApp;

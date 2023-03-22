@@ -147,7 +147,10 @@ export default function CustomAppBar() {
     handleCloseLanguageMenu();
   };
 
-  const onChangeStation = (newStationId) => () => dispatch(setStationId(newStationId));
+  const onChangeStation = (newStationId) => () => {
+    dispatch(setStationId(newStationId));
+    handleCloseStationMenu();
+  };
 
   return (
     <>
