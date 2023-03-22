@@ -6,6 +6,7 @@ const Monitor1 = lazy(() => import("./pages/Monitor1"));
 const MonitorBatch = lazy(() => import("./pages/MonitorBatch"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Management = lazy(() => import("./pages/Management"));
+const History = lazy(() => import("./pages/History"));
 
 const defaultAppURL = "/app/monitor";
 
@@ -23,6 +24,7 @@ const components = {
   MonitorBatch: () => <MonitorBatch />,
   Dashboard: () => <Dashboard />,
   Management: () => <Management />,
+  History: () => <History />,
 };
 
 export default function Routes({ authenticated, hasUserManagementPermission, hasCaptureImagesPermission }) {

@@ -30,7 +30,7 @@ const styleSx = {
 };
 
 
-export default function Management() {
+export default function History() {
 
   const { t } = useTranslation();
 
@@ -39,7 +39,7 @@ export default function Management() {
     <>
       <AppBar />
       <Box sx={styleSx.dataBox}>
-        TODO: Management
+        TODO: History
       </Box>
     </>
   );
