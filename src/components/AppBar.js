@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 
 // Design
 import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import CardMedia from '@mui/material/CardMedia';
@@ -17,7 +16,7 @@ import { deepOrange } from '@mui/material/colors';
 import TranslateIcon from '@mui/icons-material/Translate';
 
 // Internal
-import appSlice, { getTabList, getAppbarTab, getStation } from '../store/slices/app';
+import appSlice, { getTabList, getAppbarTab, getStation, getStationList, setStationId } from '../store/slices/app';
 import authSlice, { getUserInitials, getUserAccessControl } from '../store/slices/auth';
 
 // Third-party
@@ -72,14 +71,9 @@ const endBoxSx = {
   gap: 1
 };
 
+const stationButtonSx = {color: "white", textTransform: "none"};
 const languageIconSx =  {color: "white", marginLeft: -1, marginRight: 1};
-
-const stationTextSx = {
-  paddingRight: 2,
-};
-
 const appBarPaddingStyle = { height: APPBAR_HEIGHT };
-
 const tabIndicatorProps = {
   sx: { background: 'white' }
 };
@@ -96,20 +90,28 @@ export default function CustomAppBar() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [avatarAnchorEl, setAvatarAnchorEl] = useState(null);
+  const [stationAnchorEl, setStationAnchorEl] = useState(null);
   const [languageAnchorEl, setLanguageAnchorEl] = useState(null);
-  const avatarOpen = Boolean(avatarAnchorEl);
+  const [avatarAnchorEl, setAvatarAnchorEl] = useState(null);
+
+  const stationOpen = Boolean(stationAnchorEl);
   const languageOpen = Boolean(languageAnchorEl);
+  const avatarOpen = Boolean(avatarAnchorEl);
+
 
   // const user = useSelector(getUser);
   const tabList = useSelector(getTabList);
   const station = useSelector(getStation);
+  const stationList = useSelector(getStationList);
   const appbarTab = useSelector(getAppbarTab);
   const userAccessControl = useSelector(getUserAccessControl);
   const userInitials = useSelector(getUserInitials);
 
   const handleClickAvatar = (event) => setAvatarAnchorEl(event.currentTarget);
   const handleCloseAvatarMenu = (event) => setAvatarAnchorEl(null);
+
+  const handleClickStation = (event) => setStationAnchorEl(event.currentTarget);
+  const handleCloseStationMenu = (event) => setStationAnchorEl(null);
 
   const handleClickLanguageMenu = (event) => setLanguageAnchorEl(event.currentTarget);
   const handleCloseLanguageMenu = (event) => setLanguageAnchorEl(null);
@@ -145,6 +147,8 @@ export default function CustomAppBar() {
     handleCloseLanguageMenu();
   };
 
+  const onChangeStation = (newStationId) => () => dispatch(setStationId(newStationId));
+
   return (
     <>
       <Box sx={appBarSx}>
@@ -176,9 +180,11 @@ export default function CustomAppBar() {
 
             <Box sx={endBoxSx}>
 
-              <Typography variant='subtitle2' sx={stationTextSx}>
-                {station?.label}
-              </Typography>
+              <Tooltip title={t('station')} onClick={handleClickStation} sx={stationButtonSx}>
+                <Button>
+                  {station?.label}
+                </Button>
+              </Tooltip>
 
               <Tooltip title={t('language')} onClick={handleClickLanguageMenu} sx={languageIconSx}>
                 <Button endIcon={<TranslateIcon />}>
@@ -201,6 +207,42 @@ export default function CustomAppBar() {
       <div id='appbar-padding' style={appBarPaddingStyle} />
 
       <Menu
+        anchorEl={stationAnchorEl}
+        open={stationOpen}
+        onClose={handleCloseStationMenu}
+        id="station-menu"
+      >
+        {stationList.map((stationData) =>
+        <MenuItem
+          key={stationData._id}
+          value={stationData._id}
+          onClick={onChangeStation(stationData._id)}
+          selected={stationData._id === station._id}
+        >
+          {stationData.label}
+        </MenuItem>
+        )}
+      </Menu>
+
+      <Menu
+        anchorEl={languageAnchorEl}
+        open={languageOpen}
+        onClose={handleCloseLanguageMenu}
+        id="language-menu-button"
+      >
+        {languageList.map((languageData) =>
+          <MenuItem
+            key={languageData.id}
+            value={languageData.id}
+            onClick={() => onChangeLanguage(languageData.id)}
+            selected={languageData.id === i18n.language}
+          >
+            {languageData.label}
+          </MenuItem>
+        )}
+      </Menu>
+
+      <Menu
         anchorEl={avatarAnchorEl}
         anchorOrigin={{
           vertical: 'bottom',
@@ -221,24 +263,6 @@ export default function CustomAppBar() {
         <MenuItem onClick={handleClickLogout}>
           {t('Logout')}
         </MenuItem>
-      </Menu>
-
-      <Menu
-        anchorEl={languageAnchorEl}
-        open={languageOpen}
-        onClose={handleCloseLanguageMenu}
-        id="language-menu-button"
-      >
-        {languageList.map((languageData) =>
-          <MenuItem
-            key={languageData.id}
-            value={languageData.id}
-            onClick={() => onChangeLanguage(languageData.id)}
-            selected={languageData.id === i18n.language}
-          >
-            {languageData.label}
-          </MenuItem>
-        )}
       </Menu>
     </>
   );

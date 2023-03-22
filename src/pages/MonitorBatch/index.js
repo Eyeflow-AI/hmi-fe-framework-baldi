@@ -66,6 +66,12 @@ export default function Monitor() {
   // eslint-disable-next-line
   }, [batchList]);
 
+  useEffect(() => {
+    if (queryParams && queryParams.station !== stationId) {
+      setQueryParams((params) => Object.assign({}, params, {station: stationId}));
+    };
+  }, [stationId, queryParams]);
+
   const onChangeParams = (newValue) => {
     setQueryParams((params) => {
       let newParams = Boolean(params) ? {...params} : {};
