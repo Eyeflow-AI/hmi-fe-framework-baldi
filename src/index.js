@@ -15,15 +15,14 @@ import { prepare as prepareLocale } from './locale';
 import './reset.css';
 
 import API from './api';
+
 API.get.configForFE()
   .then((response) => {
     let config = response;
-
-    Object.freeze(config);
-
-    window.app_config = Object.assign(window.app_config, config);
-
+    Object.assign(window.app_config, config);
+    Object.freeze(window.app_config);
     console.log("App config", window.app_config);
+
     prepareLocale(window.app_config.locale);
 
     const root = ReactDOM.createRoot(document.getElementById('root'));

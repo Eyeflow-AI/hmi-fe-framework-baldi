@@ -12,8 +12,6 @@ import getOriginalURLPath from './utils/functions/getOriginalURLPath';
 
 addInterceptors(instance);
 
-const pagePathList = Object.entries(window.app_config.pages).map(([key, value]) => value.path);
-
 function PrepareApp({children}) {
 
   const dispatch = useDispatch();
@@ -29,24 +27,26 @@ function PrepareApp({children}) {
   }, [dispatch]);
 
   useEffect(() => {
-    if (stationList?.length > 0) {
+    if (location.pathname && stationList?.length > 0) {
       let thisMatch = getOriginalURLPath(location.pathname);
       if (thisMatch) {
-        // Change station on URL change
-        if (location.state?.changeType !== "click" && thisMatch.params.stationSlugLabel && thisMatch.params.stationSlugLabel !== stationSlugLabel) {
-          console.log("Changing station because URL Changed");
-          let newStation = stationList.find((el) => el.slugLabel === thisMatch.params.stationSlugLabel);
-          if (newStation) {
-            dispatch(setStationId(newStation._id));
-          }
-          else {
-            console.error("Something went wrong");
-          };
+        if (thisMatch.params.stationSlugLabel !== ":stationSlugLabel") {
+          // Change station on URL change
+          if (location.state?.changeType !== "click" && thisMatch.params.stationSlugLabel && thisMatch.params.stationSlugLabel !== stationSlugLabel) {
+            console.warn("Changing station because URL Changed");
+            let newStation = stationList.find((el) => el.slugLabel === thisMatch.params.stationSlugLabel);
+            if (newStation) {
+              dispatch(setStationId(newStation._id));
+            }
+            else {
+              console.error(`Could not find slug label ${thisMatch.params.stationSlugLabel} in`, stationList, {url: location.pathname});
+            };
+          }  
         }
       }
       else {
         //TODO Error handling
-        console.error("Something went wrong");
+        console.error(`Could not find match for ${location.pathname}`);
       }
     };
   }, [stationList, location, stationSlugLabel]);

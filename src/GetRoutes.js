@@ -22,7 +22,6 @@ function NotFound() {
   )
 };
 
-
 const components = {
   Monitor1: () => <Monitor1 />,
   MonitorBatch: () => <MonitorBatch />,
@@ -38,6 +37,7 @@ export default function Routes({ station, authenticated, hasUserManagementPermis
 
     let appRoutes = [];
     let updatedDefaultAppUrl = updatePath(defaultAppURL, station);
+    console.log(`Default APP URL: ${updatedDefaultAppUrl}`);
     for (let [key, value] of Object.entries(window.app_config.pages)) {
       let aclCondition = true; //TODO
       if (value.active && aclCondition && value.path.startsWith("/app")) {
