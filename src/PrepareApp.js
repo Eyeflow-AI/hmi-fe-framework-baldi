@@ -9,11 +9,13 @@ import getStationListThunk from './store/thunks/stationList';
 
 import addInterceptors from './api/addInterceptors';
 import getOriginalURLPath from './utils/functions/getOriginalURLPath';
+import LoadingPage from './components/LoadingPage';
 
 addInterceptors(instance);
 
 
 function PrepareApp({ children }) {
+
   const dispatch = useDispatch();
   const location = useLocation();
 
@@ -63,7 +65,7 @@ function PrepareApp({ children }) {
   }, [dispatch, stationId, stationList]);
 
   return (
-    <Suspense fallback={<p> Loading...</p>}>
+    <Suspense fallback={<LoadingPage />}>
       {stationId
         ? children
         : "Missing station list"
