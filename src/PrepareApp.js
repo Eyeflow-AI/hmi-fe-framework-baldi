@@ -7,6 +7,8 @@ import { instance } from './api';
 import { getStationList, getStation, setStationId } from './store/slices/app';
 import getStationListThunk from './store/thunks/stationList';
 
+import { prepare as prepareLocale } from './locale';
+
 import addInterceptors from './api/addInterceptors';
 import getOriginalURLPath from './utils/functions/getOriginalURLPath';
 
@@ -23,6 +25,23 @@ function PrepareApp({children}) {
   const station = useSelector(getStation);
   const stationId = station?._id ?? null;
   const stationSlugLabel = station?.slugLabel ?? "";
+
+  useEffect(() => {
+    API.get.configForFE()
+      .then((response) => {
+        console.log({ response })
+        let config = response.data;
+        console.log({ response })
+        console.log({ config })
+
+        Object.freeze(config);
+
+        window.app_config = Object.assign(window.app_config, config);
+
+        prepareLocale(window.app_config.locale);
+      })
+      .catch(console.log)
+  }, [])
 
   useEffect(() => {
     dispatch(getStationListThunk());
@@ -65,8 +84,8 @@ function PrepareApp({children}) {
   return (
     <Suspense fallback={<p> Loading...</p>}>
       {stationId
-      ? children
-      : "Missing station list"
+        ? children
+        : "Missing station list"
       }
     </Suspense>
   );
