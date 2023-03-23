@@ -20,7 +20,7 @@ API.get.configForFE()
     let config = response;
 
     Object.freeze(config);
-
+    console.log({ config })
     window.app_config = Object.assign(window.app_config, config);
 
     console.log("App config", window.app_config);
