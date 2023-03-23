@@ -44,7 +44,7 @@ function request(request, setLoading) {
 };
 
 const API = {
-  wsURL: window.WS_URL,
+  wsURL: window.app_config.ws_url,
   post: {
     login: ({ username, password }, setLoading) => request(instance.post(`auth/login`, { username, password }), setLoading),
 

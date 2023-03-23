@@ -59,9 +59,9 @@ const avatarSx = {
   cursor: 'pointer',
   color: (theme) => theme.palette.getContrastText(deepOrange[500]),
   backgroundColor: deepOrange[500],
-  boxShadow: 1,
   width: 46,
   height: 46,
+  marginLeft: -1,
   "&:hover, &.Mui-focusVisible": {
     backgroundColor: deepOrange[600],
   }
@@ -70,7 +70,7 @@ const avatarSx = {
 const endBoxSx = {
   display: 'flex',
   alignItems: 'center',
-  gap: 1
+  gap: 2
 };
 
 const stationButtonSx = {color: "white", textTransform: "none"};
@@ -193,13 +193,13 @@ export default function CustomAppBar() {
             <Box sx={endBoxSx}>
 
               <Tooltip title={t('station')} onClick={handleClickStation} sx={stationButtonSx}>
-                <Button>
+                <Button color="inherit" variant="outlined" size='small'>
                   {station?.label}
                 </Button>
               </Tooltip>
 
               <Tooltip title={t('language')} onClick={handleClickLanguageMenu} sx={languageIconSx}>
-                <Button endIcon={<TranslateIcon />}>
+                <Button color="inherit" variant="outlined" size='small' endIcon={<TranslateIcon />}>
                   {i18n.language}
                 </Button>
               </Tooltip>

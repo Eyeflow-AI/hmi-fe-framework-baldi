@@ -1,7 +1,7 @@
 import { useEffect, Suspense } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, matchPath } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { instance } from './api';
 import { getStationList, getStation, setStationId } from './store/slices/app';
@@ -9,12 +9,13 @@ import getStationListThunk from './store/thunks/stationList';
 
 import addInterceptors from './api/addInterceptors';
 import getOriginalURLPath from './utils/functions/getOriginalURLPath';
+import LoadingPage from './components/LoadingPage';
 
 addInterceptors(instance);
 
 
-
 function PrepareApp({ children }) {
+
   const dispatch = useDispatch();
   const location = useLocation();
 
@@ -28,27 +29,29 @@ function PrepareApp({ children }) {
   }, [dispatch]);
 
   useEffect(() => {
-    if (stationList?.length > 0) {
+    if (location.pathname && stationList?.length > 0) {
       let thisMatch = getOriginalURLPath(location.pathname);
       if (thisMatch) {
-        // Change station on URL change
-        if (location.state?.changeType !== "click" && thisMatch.params.stationSlugLabel && thisMatch.params.stationSlugLabel !== stationSlugLabel) {
-          console.log("Changing station because URL Changed");
-          let newStation = stationList.find((el) => el.slugLabel === thisMatch.params.stationSlugLabel);
-          if (newStation) {
-            dispatch(setStationId(newStation._id));
-          }
-          else {
-            console.error("Something went wrong");
-          };
+        if (thisMatch.params.stationSlugLabel !== ":stationSlugLabel") {
+          // Change station on URL change
+          if (location.state?.changeType !== "click" && thisMatch.params.stationSlugLabel && thisMatch.params.stationSlugLabel !== stationSlugLabel) {
+            console.warn("Changing station because URL Changed");
+            let newStation = stationList.find((el) => el.slugLabel === thisMatch.params.stationSlugLabel);
+            if (newStation) {
+              dispatch(setStationId(newStation._id));
+            }
+            else {
+              console.error(`Could not find slug label ${thisMatch.params.stationSlugLabel} in`, stationList, {url: location.pathname});
+            };
+          }  
         }
       }
       else {
         //TODO Error handling
-        console.error("Something went wrong");
+        console.error(`Could not find match for ${location.pathname}`);
       }
     };
-  }, [stationList, location, stationSlugLabel]);
+  }, [dispatch, stationList, location, stationSlugLabel]);
 
   useEffect(() => {
     if (stationList?.length > 0) {
@@ -62,7 +65,7 @@ function PrepareApp({ children }) {
   }, [dispatch, stationId, stationList]);
 
   return (
-    <Suspense fallback={<p> Loading...</p>}>
+    <Suspense fallback={<LoadingPage />}>
       {stationId
         ? children
         : "Missing station list"

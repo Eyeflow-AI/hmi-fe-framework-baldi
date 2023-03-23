@@ -22,7 +22,6 @@ function NotFound() {
   )
 };
 
-
 const components = {
   Monitor1: () => <Monitor1 />,
   MonitorBatch: () => <MonitorBatch />,
@@ -38,10 +37,12 @@ export default function Routes({ station, authenticated, hasUserManagementPermis
 
     let appRoutes = [];
     let updatedDefaultAppUrl = updatePath(defaultAppURL, station);
+    // console.log(`Default APP URL: ${updatedDefaultAppUrl}`);
+    // eslint-disable-next-line
     for (let [key, value] of Object.entries(window.app_config.pages)) {
       let aclCondition = true; //TODO
       if (value.active && aclCondition && value.path.startsWith("/app")) {
-        console.log(`Loading page: ${key}. Station: ${station?.label}. Path: ${value.path}`);
+        // console.log(`Loading page: ${key}. Station: ${station?.label}. Path: ${value.path}`);
         appRoutes.push({
           path: value.path,
           element: components[value.id]()
@@ -55,20 +56,10 @@ export default function Routes({ station, authenticated, hasUserManagementPermis
         path: '/app',
         element: authenticated ? <Outlet /> : <Navigate to="/login" />,
         children: appRoutes
-        // [
-        //   { path: '/app/monitor', element: <Monitor1 /> },
-        //   { path: '/app/dashboard', element: <Dashboard /> },
-        // { path: '/app/batch', element: <IHM /> },
-        // { path: '/app/search', element: <Search /> },
-        // { path: '/app/get-images', element: hasCaptureImagesPermission ? <GetImages /> : <Navigate to={defaultAppURL} />},
-        // { path: '/app/user-management', element: hasUserManagementPermission ? <UserManagement /> : <Navigate to={defaultAppURL} />},
-        // { path: '/app/user-settings', element: <UserSettings /> },
-        // { path: '/app', element: <Navigate to={defaultAppURL} /> },
-        // ],
       },
       {
         path: '/',
-        element: !authenticated ? <Outlet /> : <Navigate to={defaultAppURL} />,
+        element: !authenticated ? <Outlet /> : <Navigate to={updatedDefaultAppUrl} />,
         children: [
           { path: '/login', element: <Login /> },
           { path: '/', element: <Navigate to="/login" /> },
