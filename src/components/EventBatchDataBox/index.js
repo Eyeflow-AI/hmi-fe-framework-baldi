@@ -25,16 +25,6 @@ const mainBoxSx ={
 const styleSx = {
   mainBox: mainBoxSx,
   mainBoxDisabled: Object.assign({}, mainBoxSx, {opacity: 0.8}),
-  graphBoxSx: Object.assign({}, window.app_config.style.box, {
-    bgcolor: 'white',
-    width: 250,
-    height: '100%'
-  }),
-  dataBoxSx: Object.assign({}, window.app_config.style.box, {
-    bgcolor: 'white',
-    width: "calc(100vw - 502px)",
-    height: '100%'
-  }),
 };
 
 export default function EventBatchDataBox({data, countData, config, disabled}) {

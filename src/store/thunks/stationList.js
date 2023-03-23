@@ -4,7 +4,7 @@ import API from '../../api';
 const stationList = createAsyncThunk(
   'station/list',
   (user, thunkApi) => {
-    return API.get.stations()
+    return API.getStations()
       .then((data) => data)
       .catch((err) => thunkApi.rejectWithValue({message: err.message}))
   }

@@ -1,7 +1,8 @@
 import axios from 'axios';
 
+
 export const instance = axios.create({
-    baseURL: window.WS_URL,
+    baseURL: window.app_config.ws_url,
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -44,6 +45,11 @@ function request (request, setLoading) {
 const API = {
   wsURL: window.WS_URL,
   login: ({username, password}, setLoading) => request(instance.post(`auth/login`, {username, password}), setLoading),
+  getBatchList: ({params}, setLoading) => request(instance.get(`batch/list`, {params}), setLoading),
+  getBatch: ({batchId}, setLoading) => request(instance.get(`batch/${batchId}`), setLoading),
+  getEventList: ({params}, setLoading) => request(instance.get(`event/list`, {params}), setLoading),
+  getEvent: ({eventId}, setLoading) => request(instance.get(`event/${eventId}`), setLoading),
+  getStations: (_, setLoading) => request(instance.get(`station/list`), setLoading),
 };
 
 

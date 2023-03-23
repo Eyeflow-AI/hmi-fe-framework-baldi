@@ -40,6 +40,6 @@ export const getUserAccessControl = (state) => state.auth.user?.tokenPayload?.pa
 export const getHasUserManagementPermission = (state) => Boolean(state.auth.user?.tokenPayload?.payload?.accessControl?.userManagement);
 export const getHasCaptureImagesPermission = (state) => Boolean(state.auth.user?.tokenPayload?.payload?.accessControl?.captureImages);
 export const getUserAuthenticated = (state) => Boolean(state.auth.user);
-export const getLoadingLogin = (state) => state.auth.fetching;
+export const getLoadingLogin = (state) => state.auth.loadingLogin;
 
 export default authSlice;

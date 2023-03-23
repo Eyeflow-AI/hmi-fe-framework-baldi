@@ -7,18 +7,23 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Fade from '@mui/material/Fade';
+import MenuItem from '@mui/material/MenuItem';
 import CardMedia from '@mui/material/CardMedia';
 import CircularProgress from '@mui/material/CircularProgress';
-
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
 
 // Internal
 import SiliconCopyright from '../../components/SiliconCopyright';
 import login from '../../store/thunks/login';
+import { getStationList, getStationId, setStationId } from '../../store/slices/app';
+import { getLoadingLogin } from '../../store/slices/auth';
 
 // Third-Party
 import { useTranslation } from "react-i18next";
 import { unwrapResult } from '@reduxjs/toolkit';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 const styleSx = {
@@ -63,13 +68,15 @@ export default function Login() {
 
   const { t } = useTranslation();
 
+  const stationList = useSelector(getStationList);
+  const stationId = useSelector(getStationId);
+  const loginLoading = useSelector(getLoadingLogin);
+
   const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
-  const [loginLoading, setLoginLoading] = useState(false);
   const [errMessage, setErrMessage] = useState('');
 
   const onClickLoginButton = (event) => {
-    setLoginLoading(true);
     event.preventDefault();
     dispatch(login({ username: user, password: password }))
       .then(unwrapResult)
@@ -79,15 +86,12 @@ export default function Login() {
           setErrMessage("Network Error");
         }
         else if (err.message === "Wrong username/password") {
-          setErrMessage("Invalid username/password");
+          setErrMessage("invalid_username/password");
         }
         else {
           setErrMessage("Internal Server Error");
         };
-      })
-      .finally(() => {
-        setLoginLoading(false);
-      })
+      });
   };
 
   const onChangeUser = (event) => {
@@ -98,6 +102,10 @@ export default function Login() {
   const onChangePassword = (event) => {
     setErrMessage('');
     setPassword(event.currentTarget.value);
+  };
+
+  const onChangeStation = (event) => {
+    dispatch(setStationId(event.target.value));
   };
 
   return (
@@ -118,7 +126,7 @@ export default function Login() {
                 required
                 fullWidth
                 id="email"
-                label="Usuário"
+                label={t("user")}
                 name="user"
                 // autoComplete="email"
                 autoComplete="off"
@@ -144,18 +152,32 @@ export default function Login() {
                   autoComplete="off"
                   onChange={onChangePassword}
                   sx={styleSx.textfield}
-                  helperText={errMessage}
+                  helperText={t(errMessage)}
                   error={Boolean(errMessage)}
                 />
               </Box>
             </Grid>
 
             <Grid item>
-              {
-                loginLoading ?
-                  <CircularProgress />
-                  :
+              <FormControl sx={styleSx.textfield}>
+                <InputLabel>{t("station")}</InputLabel>
+                <Select
+                  value={stationId}
+                  label={t("station")}
+                  onChange={onChangeStation}
+                >
+                  {stationList.map(({_id, label}) => (
+                    <MenuItem key={_id} value={_id}>{label}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
 
+            <Grid item>
+              {
+                loginLoading
+                ? <CircularProgress />
+                : (
                   <Button
                     type="submit"
                     onClick={onClickLoginButton}
@@ -164,6 +186,7 @@ export default function Login() {
                   >
                     {t('Login')}
                   </Button>
+                )
               }
             </Grid>
           </Grid>

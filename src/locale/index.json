@@ -47,6 +47,10 @@
     "en": "Management",
     "pt": "Gerenciamento"
   },
+  "user": {
+    "en": "User",
+    "pt": "Usuário"
+  },
   "userManagement": {
     "en": "User Management",
     "pt": "Gerenciamento de Usuários"
@@ -62,5 +66,8 @@
   "alarms": {
     "en": "Alarms",
     "pt": "Alarmes"
+  "invalid_username/password": {
+    "en": "Invalid Username/Password",
+    "pt": "Usuário e/ou Senha Inválidos"
   }
 }

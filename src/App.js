@@ -1,59 +1,20 @@
-import React, {useEffect, Suspense} from 'react';
-
-import { useDispatch } from 'react-redux';
-import AdapterDateFNS from '@date-io/date-fns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-
-import { BrowserRouter, useRoutes } from 'react-router-dom';
-import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider } from '@mui/material/styles';
+import { useRoutes } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { getUserAuthenticated, getHasUserManagementPermission, getHasCaptureImagesPermission } from './store/slices/auth';
-import { instance } from './api';
-import { getStationList, setStation } from './store/slices/app';
-import getStationListThunk from './store/thunks/stationList';
+import { getStation } from './store/slices/app';
 
 import GetRoutes from './GetRoutes';
 
-import theme from './theme';
-import addInterceptors from './api/addInterceptors';
-
-addInterceptors(instance);
 
 function App() {
-
-  const dispatch = useDispatch();
 
   const authenticated = useSelector(getUserAuthenticated);
   const hasUserManagementPermission = useSelector(getHasUserManagementPermission);
   const hasCaptureImagesPermission = useSelector(getHasCaptureImagesPermission);
-  const stationList = useSelector(getStationList);
+  const station = useSelector(getStation);
 
-  const Routes = () => useRoutes(GetRoutes({authenticated, hasUserManagementPermission, hasCaptureImagesPermission}));
-
-  useEffect(() => {
-    dispatch(getStationListThunk())
-  }, [dispatch]);
-
-  useEffect(() => {
-    //TODO select station logic
-    if (stationList?.[0]?.label) {
-      dispatch(setStation(stationList[0].label));
-    };
-  }, [dispatch, stationList]);
-
-  return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <LocalizationProvider dateAdapter={AdapterDateFNS}>
-        <Suspense fallback={<p> Loading...</p>}>
-          <BrowserRouter>
-            <Routes />
-          </BrowserRouter>
-        </Suspense>
-      </LocalizationProvider>
-    </ThemeProvider>
-  );
+  const routesList = GetRoutes({station, authenticated, hasUserManagementPermission, hasCaptureImagesPermission});
+  return useRoutes(routesList);
 };
 
 export default App;
