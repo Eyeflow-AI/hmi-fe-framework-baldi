@@ -19,6 +19,7 @@ import TranslateIcon from '@mui/icons-material/Translate';
 import appSlice, { getTabList, getAppbarTab, getStation, getStationList, setStationId } from '../store/slices/app';
 import authSlice, { getUserInitials, getUserAccessControl } from '../store/slices/auth';
 import updatePath from '../utils/functions/updatePath';
+import getOriginalURLPath from '../utils/functions/getOriginalURLPath';
 
 // Third-party
 import { useLocation, useNavigate } from "react-router-dom";
@@ -117,12 +118,13 @@ export default function CustomAppBar() {
   const handleClickLanguageMenu = (event) => setLanguageAnchorEl(event.currentTarget);
   const handleCloseLanguageMenu = (event) => setLanguageAnchorEl(null);
 
-  const handleClickUserSettings = () => navigate(updatePath('/app/user-settings', station)); //TODO
+  const handleClickUserSettings = () => navigate(updatePath('/app/user-settings', station), {state: {changeType: "click"}}); //TODO
   const handleTabChange = (event, newValue) => {
-    navigate(updatePath(tabList[newValue].path, station));
+    navigate(updatePath(tabList[newValue].path, station), {state: {changeType: "click"}});
   };
 
   useEffect(() => {
+
     let newTabList = [];
     pageList.forEach((el) => {
       if (el.acl.length === 0 || el.acl.some((el) => Boolean(userAccessControl?.[el]))) {
@@ -139,7 +141,7 @@ export default function CustomAppBar() {
       dispatch(appSlice.actions.setTabListValue(newTabList));
     };
     // eslint-disable-next-line
-  }, [station, userAccessControl, dispatch, location?.pathname]);
+  }, [station, userAccessControl, dispatch, location.pathname]);
 
   const handleClickLogout = () => {
     dispatch(authSlice.actions.logout());
@@ -150,8 +152,12 @@ export default function CustomAppBar() {
     handleCloseLanguageMenu();
   };
 
-  const onChangeStation = (newStationId) => () => {
-    dispatch(setStationId(newStationId));
+  const onChangeStation = (newStation) => () => {
+    dispatch(setStationId(newStation._id));
+    let originalURL = getOriginalURLPath(location.pathname);
+    if (originalURL?.params?.hasOwnProperty("stationSlugLabel")) {
+      navigate(updatePath(originalURL.pattern.path, newStation), {state: {changeType: "click"}});
+    };
     handleCloseStationMenu();
   };
 
@@ -222,7 +228,7 @@ export default function CustomAppBar() {
         <MenuItem
           key={stationData._id}
           value={stationData._id}
-          onClick={onChangeStation(stationData._id)}
+          onClick={onChangeStation(stationData)}
           selected={stationData._id === station._id}
         >
           {stationData.label}
