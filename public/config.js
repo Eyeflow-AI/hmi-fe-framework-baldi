@@ -81,6 +81,15 @@ const config = {
             "acl": [],
             "active": true,
             "options": {}
+        },
+        "Tools": {
+            "id": "Tools",
+            "localeId": "tools",
+            "path": "/app/tools",
+            "authenticated": true,
+            "acl": [],
+            "active": true,
+            "options": {}
         }
     },
     "components": {
@@ -91,6 +100,7 @@ const config = {
                 { page: "Dashboard" },
                 { page: "History" },
                 { page: "Management" },
+                { page: "Tools" },
             ]
         },
         "FilterBar": {
