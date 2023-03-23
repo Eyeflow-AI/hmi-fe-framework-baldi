@@ -41,10 +41,9 @@ export default function Routes({ station, authenticated, hasUserManagementPermis
     for (let [key, value] of Object.entries(window.app_config.pages)) {
       let aclCondition = true; //TODO
       if (value.active && aclCondition && value.path.startsWith("/app")) {
-        let updatedPath = updatePath(value.path, station);
-        console.log(`Loading page: ${key}. Station: ${station?.label}. Path: ${updatedPath}`);
+        console.log(`Loading page: ${key}. Station: ${station?.label}. Path: ${value.path}`);
         appRoutes.push({
-          path: updatedPath,
+          path: value.path,
           element: components[value.id]()
         })
       };
