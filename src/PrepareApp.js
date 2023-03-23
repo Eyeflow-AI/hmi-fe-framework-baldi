@@ -1,7 +1,7 @@
-import {useEffect, Suspense} from 'react';
+import { useEffect, Suspense } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, matchPath } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { instance } from './api';
 import { getStationList, getStation, setStationId } from './store/slices/app';
@@ -12,8 +12,8 @@ import getOriginalURLPath from './utils/functions/getOriginalURLPath';
 
 addInterceptors(instance);
 
-function PrepareApp({children}) {
 
+function PrepareApp({ children }) {
   const dispatch = useDispatch();
   const location = useLocation();
 
@@ -49,11 +49,11 @@ function PrepareApp({children}) {
         console.error(`Could not find match for ${location.pathname}`);
       }
     };
-  }, [stationList, location, stationSlugLabel]);
+  }, [dispatch, stationList, location, stationSlugLabel]);
 
   useEffect(() => {
     if (stationList?.length > 0) {
-      if ( !stationId || (stationId && stationList.findIndex((el) => el._id === stationId) === -1 ) ) {
+      if (!stationId || (stationId && stationList.findIndex((el) => el._id === stationId) === -1)) {
         dispatch(setStationId(stationList[0]._id));
       };
     }
