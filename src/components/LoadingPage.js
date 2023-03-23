@@ -19,7 +19,7 @@ export default function LoadingPage() {
 
   return (
     <Box sx={style.mainBox}>
-      <img src={"/assets/EyeFlowInspection-mask.png"} style={style.image}/>
+      <img alt="" src={"/assets/EyeFlowInspection-mask.png"} style={style.image}/>
     </Box>
   );
 };
