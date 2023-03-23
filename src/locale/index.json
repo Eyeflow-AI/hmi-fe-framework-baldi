@@ -74,5 +74,17 @@
   "tools": {
     "en": "Tools",
     "pt": "Ferramentas"
+  },
+  "Dot Editor": {
+    "en": "Dot Editor",
+    "pt": "Editor de Pontos"
+  },
+  "Box Editor": {
+    "en": "Box Editor",
+    "pt": "Editor de Caixas"
+  },
+  "Images Capturer": {
+    "en": "Images Capturer",
+    "pt": "Capturador de Imagens"
   }
 }
