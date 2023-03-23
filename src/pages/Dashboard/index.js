@@ -107,7 +107,13 @@ export default function Dashboard() {
         </Box>
       </Box>
       <Box sx={styleSx.dataBox}>
-        TODO: Dashboard
+        TODO: Dashboard <br />
+        * Anomalies Evolution (line)<br />
+        * Anomalies Counting (bar)<br />
+        * Parts Counting ok/nok (bar)<br />
+        * Top 10 anomalies (table)<br />
+        * Parts ok/nok evolution (line)<br />
+        *
       </Box>
     </>
   );

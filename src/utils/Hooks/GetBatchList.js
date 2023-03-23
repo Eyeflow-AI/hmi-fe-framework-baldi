@@ -1,16 +1,16 @@
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 
 
 import API from '../../api';
 
 
-export default function GetBatchList({queryParams, sleepTime=30000}={}) {
+export default function GetBatchList({ queryParams, sleepTime = 30000 } = {}) {
 
 
   const [tick, setTick] = useState(0);
-  const [data, setData] = useState({batchList: [], hash: null});
+  const [data, setData] = useState({ batchList: [], hash: null });
   const [loading, setLoading] = useState(null);
-  
+
   useEffect(() => {
     const interval = setInterval(() => setTick(oldValue => oldValue + 1), sleepTime);
     return () => clearInterval(interval);
@@ -19,7 +19,7 @@ export default function GetBatchList({queryParams, sleepTime=30000}={}) {
 
   useEffect(() => {
     if (queryParams) {
-      API.getBatchList({params: queryParams, setLoading})
+      API.get.batchList({ params: queryParams, setLoading })
         .then((response) => {
           let hash = response.hash;
 
@@ -35,5 +35,5 @@ export default function GetBatchList({queryParams, sleepTime=30000}={}) {
     // eslint-disable-next-line
   }, [tick, queryParams]);
 
-  return {batchList: data.batchList, loading, setData};
+  return { batchList: data.batchList, loading, setData };
 };

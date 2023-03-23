@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 
 
 import Box from '@mui/material/Box';
@@ -43,14 +43,14 @@ const styleSx = {
 
 export default function Monitor() {
 
-  const {_id: stationId} = GetSelectedStation();
+  const { _id: stationId } = GetSelectedStation();
   const [queryParams, setQueryParams] = useState(null);
-  const {batchList} = GetBatchList({queryParams, sleepTime: GET_EVENT_SLEEP_TIME});
+  const { batchList } = GetBatchList({ queryParams, sleepTime: GET_EVENT_SLEEP_TIME });
   const [selectedBatch, setSelectedBatch] = useState(null);
   const [selectedBatchCountData, setSelectedBatchCountData] = useState(null);
 
   const onChangeEvent = (batchId) => {
-    API.getBatch({batchId})
+    API.get.batch({ batchId })
       .then((data) => {
         setSelectedBatch(data.batch);
         setSelectedBatchCountData(data.countData);
@@ -63,18 +63,18 @@ export default function Monitor() {
       setSelectedBatch(null);
       setSelectedBatchCountData(null);
     };
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [batchList]);
 
   useEffect(() => {
     if (queryParams && queryParams.station !== stationId) {
-      setQueryParams((params) => Object.assign({}, params, {station: stationId}));
+      setQueryParams((params) => Object.assign({}, params, { station: stationId }));
     };
   }, [stationId, queryParams]);
 
   const onChangeParams = (newValue) => {
     setQueryParams((params) => {
-      let newParams = Boolean(params) ? {...params} : {};
+      let newParams = Boolean(params) ? { ...params } : {};
       Object.assign(newParams, newValue);
       if (!newParams.hasOwnProperty("station")) {
         newParams["station"] = stationId;

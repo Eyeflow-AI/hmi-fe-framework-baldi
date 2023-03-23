@@ -11,28 +11,44 @@ import CssBaseline from '@mui/material/CssBaseline';
 
 import reportWebVitals from './reportWebVitals';
 import theme from './theme';
-import {prepare as prepareLocale} from './locale';
+import { prepare as prepareLocale } from './locale';
 import './reset.css';
 
-console.log("App config", window.app_config);
-prepareLocale(window.app_config.locale);
+import API from './api';
+API.get.configForFE()
+  .then((response) => {
+    console.log({ response })
+    let config = response;
+    console.log({ response })
+    console.log({ config })
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+    Object.freeze(config);
 
-root.render(
-  <StoreWrapper>
-    <LocalizationProvider dateAdapter={AdapterDateFNS}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <BrowserRouter>
-          <PrepareApp>
-            <App />
-          </PrepareApp>
-        </BrowserRouter>
-      </ThemeProvider>
-    </LocalizationProvider>
-  </StoreWrapper>
-);
+    window.app_config = Object.assign(window.app_config, config);
+
+    console.log("App config", window.app_config);
+    prepareLocale(window.app_config.locale);
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+
+    root.render(
+      <StoreWrapper>
+        <LocalizationProvider dateAdapter={AdapterDateFNS}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <BrowserRouter>
+              <PrepareApp>
+                <App />
+              </PrepareApp>
+            </BrowserRouter>
+          </ThemeProvider>
+        </LocalizationProvider>
+      </StoreWrapper>
+    );
+  })
+  .catch(console.log)
+
+
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
