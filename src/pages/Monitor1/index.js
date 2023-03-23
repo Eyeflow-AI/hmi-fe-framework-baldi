@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 
 
 import Box from '@mui/material/Box';
@@ -38,12 +38,12 @@ const styleSx = {
 export default function Monitor() {
 
   const [queryParams, setQueryParams] = useState(null);
-  const {events} = GetEvents({queryParams, sleepTime: 30000});
+  const { events } = GetEvents({ queryParams, sleepTime: 30000 });
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   const onChangeEvent = (inspectionId) => {
-    setSelectedEvent({_id: inspectionId});
-    API.getEvent({eventId: inspectionId})
+    setSelectedEvent({ _id: inspectionId });
+    API.get.event({ eventId: inspectionId })
       .then((data) => {
         setSelectedEvent(data.event);
       })
@@ -54,7 +54,7 @@ export default function Monitor() {
     if (selectedEvent && events.findIndex((el) => el._id === selectedEvent._id) === -1) {
       setSelectedEvent(null);
     };
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [events]);
 
   return (

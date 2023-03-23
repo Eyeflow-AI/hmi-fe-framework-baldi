@@ -70,5 +70,9 @@
   "invalid_username/password": {
     "en": "Invalid Username/Password",
     "pt": "Usuário e/ou Senha Inválidos"
+  },
+  "tools": {
+    "en": "Tools",
+    "pt": "Ferramentas"
   }
 }

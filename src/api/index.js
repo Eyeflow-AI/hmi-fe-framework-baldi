@@ -2,21 +2,21 @@ import axios from 'axios';
 
 
 export const instance = axios.create({
-    baseURL: window.app_config.ws_url,
-    headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-    }
+  baseURL: window.app_config.ws_url,
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  }
 });
 
-function request (request, setLoading) {
+function request(request, setLoading) {
   return new Promise((resolve, reject) => {
     if (Boolean(setLoading)) {
       setLoading(true);
     };
     request.then((result) => {
       if (result.data) {
-        
+
         resolve(result.data);
       }
       else {
@@ -27,29 +27,42 @@ function request (request, setLoading) {
         else {
           errMessage = 'Request Failed.';
         };
-        
+
         reject(new Error(errMessage));
       };
     })
-    .catch((err) => {
-      reject(err)
-    })
-    .finally(() => {
-      if (Boolean(setLoading)) {
+      .catch((err) => {
+        reject(err)
+      })
+      .finally(() => {
+        if (Boolean(setLoading)) {
           setLoading(false);
-      ;}
-    });
+          ;
+        }
+      });
   })
 };
 
 const API = {
   wsURL: window.WS_URL,
-  login: ({username, password}, setLoading) => request(instance.post(`auth/login`, {username, password}), setLoading),
-  getBatchList: ({params}, setLoading) => request(instance.get(`batch/list`, {params}), setLoading),
-  getBatch: ({batchId}, setLoading) => request(instance.get(`batch/${batchId}`), setLoading),
-  getEventList: ({params}, setLoading) => request(instance.get(`event/list`, {params}), setLoading),
-  getEvent: ({eventId}, setLoading) => request(instance.get(`event/${eventId}`), setLoading),
-  getStations: (_, setLoading) => request(instance.get(`station/list`), setLoading),
+  post: {
+    login: ({ username, password }, setLoading) => request(instance.post(`auth/login`, { username, password }), setLoading),
+
+  },
+  get: {
+    batchList: ({ params }, setLoading) => request(instance.get(`batch/list`, { params }), setLoading),
+    batch: ({ batchId }, setLoading) => request(instance.get(`batch/${batchId}`), setLoading),
+    eventList: ({ params }, setLoading) => request(instance.get(`event/list`, { params }), setLoading),
+    event: ({ eventId }, setLoading) => request(instance.get(`event/${eventId}`), setLoading),
+    stations: (_, setLoading) => request(instance.get(`station/list`), setLoading),
+    configForFE: (setLoading) => request(instance.get(`config/config-for-fe`), setLoading),
+  },
+  put: {
+
+  },
+  delete: {
+
+  }
 };
 
 

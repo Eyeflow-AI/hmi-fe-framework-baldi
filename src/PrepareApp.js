@@ -1,4 +1,4 @@
-import {useEffect, Fragment, Suspense} from 'react';
+import { useEffect, Fragment, Suspense } from 'react';
 
 import { useDispatch } from 'react-redux';
 
@@ -7,11 +7,14 @@ import { instance } from './api';
 import { getStationList, getStationId, setStationId } from './store/slices/app';
 import getStationListThunk from './store/thunks/stationList';
 
+import { prepare as prepareLocale } from './locale';
+
 import addInterceptors from './api/addInterceptors';
+import API from './api';
 
 addInterceptors(instance);
 
-function PrepareApp({children}) {
+function PrepareApp({ children }) {
 
   const dispatch = useDispatch();
 
@@ -19,12 +22,29 @@ function PrepareApp({children}) {
   const stationId = useSelector(getStationId);
 
   useEffect(() => {
+    API.get.configForFE()
+      .then((response) => {
+        console.log({ response })
+        let config = response.data;
+        console.log({ response })
+        console.log({ config })
+
+        Object.freeze(config);
+
+        window.app_config = Object.assign(window.app_config, config);
+
+        prepareLocale(window.app_config.locale);
+      })
+      .catch(console.log)
+  }, [])
+
+  useEffect(() => {
     dispatch(getStationListThunk());
   }, [dispatch]);
 
   useEffect(() => {
     if (stationList?.length > 0) {
-      if ( !stationId || (stationId && stationList.findIndex((el) => el._id === stationId) === -1 ) ) {
+      if (!stationId || (stationId && stationList.findIndex((el) => el._id === stationId) === -1)) {
         dispatch(setStationId(stationList[0]._id));
       };
     }
@@ -36,8 +56,8 @@ function PrepareApp({children}) {
   return (
     <Suspense fallback={<p> Loading...</p>}>
       {stationId
-      ? children
-      : "Missing station list"
+        ? children
+        : "Missing station list"
       }
     </Suspense>
   );
