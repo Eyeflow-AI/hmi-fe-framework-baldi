@@ -17,10 +17,7 @@ import './reset.css';
 import API from './api';
 API.get.configForFE()
   .then((response) => {
-    console.log({ response })
     let config = response;
-    console.log({ response })
-    console.log({ config })
 
     Object.freeze(config);
 

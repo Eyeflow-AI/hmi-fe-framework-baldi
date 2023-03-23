@@ -7,10 +7,7 @@ import { instance } from './api';
 import { getStationList, getStationId, setStationId } from './store/slices/app';
 import getStationListThunk from './store/thunks/stationList';
 
-import { prepare as prepareLocale } from './locale';
-
 import addInterceptors from './api/addInterceptors';
-import API from './api';
 
 addInterceptors(instance);
 
@@ -20,23 +17,6 @@ function PrepareApp({ children }) {
 
   const stationList = useSelector(getStationList);
   const stationId = useSelector(getStationId);
-
-  useEffect(() => {
-    API.get.configForFE()
-      .then((response) => {
-        console.log({ response })
-        let config = response.data;
-        console.log({ response })
-        console.log({ config })
-
-        Object.freeze(config);
-
-        window.app_config = Object.assign(window.app_config, config);
-
-        prepareLocale(window.app_config.locale);
-      })
-      .catch(console.log)
-  }, [])
 
   useEffect(() => {
     dispatch(getStationListThunk());
