@@ -10,6 +10,7 @@ const MonitorBatch = lazy(() => import("./pages/MonitorBatch"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Management = lazy(() => import("./pages/Management"));
 const History = lazy(() => import("./pages/History"));
+const Tools = lazy(() => import("./pages/Tools"));
 
 const defaultAppURL = "/app/:stationSlugLabel/monitor";
 
@@ -28,6 +29,7 @@ const components = {
   Dashboard: () => <Dashboard />,
   Management: () => <Management />,
   History: () => <History />,
+  Tools: () => <Tools />,
 };
 
 export default function Routes({ station, authenticated, hasUserManagementPermission, hasCaptureImagesPermission }) {

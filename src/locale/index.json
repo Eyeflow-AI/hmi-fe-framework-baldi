@@ -55,6 +55,17 @@
     "en": "User Management",
     "pt": "Gerenciamento de Usuários"
   },
+  "users": {
+    "en": "Users",
+    "pt": "Usuários"
+  },
+  "general": {
+    "en": "General",
+    "pt": "Geral"
+  },
+  "alarms": {
+    "en": "Alarms",
+    "pt": "Alarmes"
   "invalid_username/password": {
     "en": "Invalid Username/Password",
     "pt": "Usuário e/ou Senha Inválidos"
