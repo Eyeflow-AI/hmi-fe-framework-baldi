@@ -107,15 +107,15 @@
     "en": "Produced",
     "pt": "Produzido"
   },
-  "Dot Editor": {
+  "dot_editor": {
     "en": "Dot Editor",
     "pt": "Editor de Pontos"
   },
-  "Box Editor": {
+  "box_editor": {
     "en": "Box Editor",
     "pt": "Editor de Caixas"
   },
-  "Images Capturer": {
+  "images_capturer": {
     "en": "Images Capturer",
     "pt": "Capturador de Imagens"
   }
