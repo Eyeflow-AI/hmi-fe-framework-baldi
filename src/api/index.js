@@ -55,7 +55,7 @@ const API = {
     eventList: ({ params }, setLoading) => request(instance.get(`event/list`, { params }), setLoading),
     event: ({ eventId }, setLoading) => request(instance.get(`event/${eventId}`), setLoading),
     stations: (_, setLoading) => request(instance.get(`station/list`), setLoading),
-    configForFE: (setLoading) => request(instance.get(`config/config-for-fe`), setLoading),
+    configForFE: (setLoading) => request(instance.get(`config/fe`), setLoading),
   },
   put: {
 

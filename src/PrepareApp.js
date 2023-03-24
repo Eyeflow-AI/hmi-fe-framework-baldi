@@ -1,4 +1,4 @@
-import { useEffect, Suspense } from 'react';
+import { useEffect, Fragment } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
@@ -6,13 +6,10 @@ import { useLocation } from 'react-router-dom';
 import { instance } from './api';
 import { getStationList, getStation, setStationId } from './store/slices/app';
 import getStationListThunk from './store/thunks/stationList';
-
 import addInterceptors from './api/addInterceptors';
 import getOriginalURLPath from './utils/functions/getOriginalURLPath';
-import LoadingPage from './components/LoadingPage';
 
 addInterceptors(instance);
-
 
 function PrepareApp({ children }) {
 
@@ -65,12 +62,12 @@ function PrepareApp({ children }) {
   }, [dispatch, stationId, stationList]);
 
   return (
-    <Suspense fallback={<LoadingPage />}>
+    <Fragment>
       {stationId
         ? children
         : "Missing station list"
       }
-    </Suspense>
+    </Fragment>
   );
 };
 

@@ -3,8 +3,8 @@ import API from '../../api';
 
 const login = createAsyncThunk(
   'auth/login',
-  (user, thunkApi) => {
-    return API.post.login({ username: user.username, password: user.password })
+  (payload, thunkApi) => {
+    return API.post.login({ username: payload.username, password: payload.password })
       .then((data) => data)
       .catch((err) => {
         let errMessage = err?.response?.data?.err ?? err?.response?.data?.message ?? err.message;

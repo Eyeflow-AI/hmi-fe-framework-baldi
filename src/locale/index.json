@@ -74,5 +74,37 @@
   "tools": {
     "en": "Tools",
     "pt": "Ferramentas"
+  },
+  "part": {
+    "en": "Part",
+    "pt": "Peça"
+  },
+  "parts": {
+    "en": "Parts",
+    "pt": "Peças"
+  },
+  "parts_per_box": {
+    "en": "Parts per Box",
+    "pt": "Peças por Caixa"
+  },
+  "box": {
+    "en": "Box",
+    "pt": "Caixa"
+  },
+  "current_batch": {
+    "en": "Current Batch",
+    "pt": "Lote Atual"
+  },
+  "speed": {
+    "en": "Speed",
+    "pt": "Velocidade"
+  },
+  "last_hour": {
+    "en": "Last Hour",
+    "pt": "Última Hora"
+  },
+  "produced": {
+    "en": "Produced",
+    "pt": "Produzido"
   }
 }
