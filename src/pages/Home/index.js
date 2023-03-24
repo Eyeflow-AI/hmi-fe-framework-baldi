@@ -32,18 +32,19 @@ const styleSx = {
 
 function ToolButton ({data, onButtonClick}) {
 
+  const { t } = useTranslation();
+
   const onClick = () => onButtonClick(data);
 
   return (
     <Box sx={styleSx.toolButton} onClick={onClick}>
-      {data.id}
+      {t(data.localeId)}
     </Box>
   )
 };
 
 export default function Home({pageOptions}) {
 
-  const { t } = useTranslation();
   const station = GetSelectedStation();
   const navigate = useNavigate();
 
