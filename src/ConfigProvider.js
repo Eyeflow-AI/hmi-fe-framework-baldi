@@ -28,10 +28,10 @@ function ConfigProvider({ children, getConfigSleepTime=10*60*1000 }) {
 
   useEffect(() => {
     if (feConfig) {
-      console.log("App config", feConfig);
-      Object.assign(window.app_config, feConfig);
-      console.log(window.app_config)
-      prepareLocale(window.app_config.locale);
+      Object.assign(window.app_config, feConfig.feConfig);
+      console.log("App config", window.app_config);
+      console.log("App Locale", feConfig.locale.locale)
+      prepareLocale(window.app_config.locale, feConfig.locale.locale);
       setConfigLoaded(true);
     };
   }, [feConfig]);
