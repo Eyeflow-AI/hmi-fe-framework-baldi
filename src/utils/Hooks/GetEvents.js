@@ -2,21 +2,16 @@ import {useState, useEffect} from 'react';
 
 
 import API from '../../api';
+import Clock from './Clock';
 
 
 export default function GetEvents({queryParams, sleepTime=30000}={}) {
 
 
-  const [tick, setTick] = useState(0);
+  const {clock} = Clock({sleepTime});
   const [data, setData] = useState({eventList: [], hash: null});
   const [loading, setLoading] = useState(null);
   
-  useEffect(() => {
-    const interval = setInterval(() => setTick(oldValue => oldValue + 1), sleepTime);
-    return () => clearInterval(interval);
-    // eslint-disable-next-line
-  }, []);
-
   useEffect(() => {
     if (queryParams) {
       API.getEventList({params: queryParams, setLoading})
@@ -33,7 +28,7 @@ export default function GetEvents({queryParams, sleepTime=30000}={}) {
         .catch(console.log);
     }
     // eslint-disable-next-line
-  }, [tick, queryParams]);
+  }, [clock, queryParams]);
 
   return {events: data.eventList, loading, setData};
 };

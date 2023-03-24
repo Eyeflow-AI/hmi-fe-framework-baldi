@@ -1,34 +1,28 @@
-import React from 'react';
+import React, {lazy, Suspense} from 'react';
 import ReactDOM from 'react-dom/client';
-import PrepareApp from './PrepareApp';
-import App from './App';
+
+import ConfigProvider from './ConfigProvider';
 import StoreWrapper from './store/Wrapper';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import AdapterDateFNS from '@date-io/date-fns';
 import CssBaseline from '@mui/material/CssBaseline';
+import LoadingPage from './components/LoadingPage';
 
 import reportWebVitals from './reportWebVitals';
 import theme from './theme';
-import { prepare as prepareLocale } from './locale';
 import './reset.css';
 
-import API from './api';
+const App = lazy(() => import("./App"));
+const PrepareApp = lazy(() => import("./PrepareApp"));
 
-API.get.configForFE()
-  .then((response) => {
-    let config = response;
-    Object.assign(window.app_config, config);
-    Object.freeze(window.app_config);
-    console.log("App config", window.app_config);
+const root = ReactDOM.createRoot(document.getElementById('root'));
 
-    prepareLocale(window.app_config.locale);
-
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-
-    root.render(
-      <StoreWrapper>
+root.render(
+  <StoreWrapper>
+    <Suspense fallback={<LoadingPage />}>
+      <ConfigProvider>
         <LocalizationProvider dateAdapter={AdapterDateFNS}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -39,10 +33,10 @@ API.get.configForFE()
             </BrowserRouter>
           </ThemeProvider>
         </LocalizationProvider>
-      </StoreWrapper>
-    );
-  })
-  .catch(console.log)
+      </ConfigProvider>
+    </Suspense>
+  </StoreWrapper>
+);
 
 
 

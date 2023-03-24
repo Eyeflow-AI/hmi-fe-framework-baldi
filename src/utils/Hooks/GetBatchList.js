@@ -2,20 +2,16 @@ import { useState, useEffect } from 'react';
 
 
 import API from '../../api';
+import Clock from './Clock';
 
 
 export default function GetBatchList({ queryParams, sleepTime = 30000 } = {}) {
 
 
-  const [tick, setTick] = useState(0);
   const [data, setData] = useState({ batchList: [], hash: null });
   const [loading, setLoading] = useState(null);
+  const {clock} = Clock({sleepTime});
 
-  useEffect(() => {
-    const interval = setInterval(() => setTick(oldValue => oldValue + 1), sleepTime);
-    return () => clearInterval(interval);
-    // eslint-disable-next-line
-  }, []);
 
   useEffect(() => {
     if (queryParams) {
@@ -33,7 +29,7 @@ export default function GetBatchList({ queryParams, sleepTime = 30000 } = {}) {
         .catch(console.log);
     }
     // eslint-disable-next-line
-  }, [tick, queryParams]);
+  }, [clock, queryParams]);
 
   return { batchList: data.batchList, loading, setData };
 };
