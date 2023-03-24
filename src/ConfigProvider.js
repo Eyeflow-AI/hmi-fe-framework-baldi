@@ -28,6 +28,7 @@ function ConfigProvider({ children, getConfigSleepTime=10*60*1000 }) {
 
   useEffect(() => {
     if (feConfig) {
+      // TODO: Reset everything
       Object.assign(window.app_config, feConfig.feConfig);
       console.log("App config", window.app_config);
       console.log("App Locale", feConfig.locale.locale)
