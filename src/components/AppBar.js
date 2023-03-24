@@ -16,7 +16,7 @@ import { deepOrange } from '@mui/material/colors';
 import TranslateIcon from '@mui/icons-material/Translate';
 
 // Internal
-import appSlice, { getTabList, getAppbarTab, getStation, getStationList, setStationId } from '../store/slices/app';
+import appSlice, {  getAppbarTab, getStation, getStationList, setStationId } from '../store/slices/app';
 import authSlice, { getUserInitials, getUserAccessControl } from '../store/slices/auth';
 import updatePath from '../utils/functions/updatePath';
 import getOriginalURLPath from '../utils/functions/getOriginalURLPath';
@@ -29,6 +29,7 @@ import { colors } from 'sdk-fe-eyeflow';
 
 
 const APPBAR_HEIGHT = window.app_config.components.AppBar.height;
+const HOME_URL = "/app/:stationSlugLabel/home";
 
 const appBarSx = {
   background: colors.eyeflow.blue.medium,
@@ -76,13 +77,7 @@ const endBoxSx = {
 const stationButtonSx = {color: "white", textTransform: "none"};
 const languageIconSx =  {color: "white", marginLeft: -1, marginRight: 1};
 const appBarPaddingStyle = { height: APPBAR_HEIGHT };
-const tabIndicatorProps = {
-  sx: { background: 'white' }
-};
 
-const pageList = window.app_config.components.AppBar.tabList.map((tabData) => {
-  return window.app_config.pages[tabData.page];
-});
 const languageList = window.app_config.locale.languageList.filter((el) => el.active);
 
 export default function CustomAppBar() {
@@ -102,11 +97,8 @@ export default function CustomAppBar() {
 
 
   // const user = useSelector(getUser);
-  const tabList = useSelector(getTabList);
   const station = useSelector(getStation);
   const stationList = useSelector(getStationList);
-  const appbarTab = useSelector(getAppbarTab);
-  const userAccessControl = useSelector(getUserAccessControl);
   const userInitials = useSelector(getUserInitials);
 
   const handleClickAvatar = (event) => setAvatarAnchorEl(event.currentTarget);
@@ -118,30 +110,8 @@ export default function CustomAppBar() {
   const handleClickLanguageMenu = (event) => setLanguageAnchorEl(event.currentTarget);
   const handleCloseLanguageMenu = (event) => setLanguageAnchorEl(null);
 
+  const handleClickEyeflow = () => navigate(updatePath(HOME_URL, station), {state: {changeType: "click"}});
   const handleClickUserSettings = () => navigate(updatePath('/app/user-settings', station), {state: {changeType: "click"}}); //TODO
-  const handleTabChange = (event, newValue) => {
-    navigate(updatePath(tabList[newValue].path, station), {state: {changeType: "click"}});
-  };
-
-  useEffect(() => {
-
-    let newTabList = [];
-    pageList.forEach((el) => {
-      if (el.acl.length === 0 || el.acl.some((el) => Boolean(userAccessControl?.[el]))) {
-        newTabList.push(el);
-      };
-    });
-
-    const locationId = newTabList.findIndex(
-      (element) => (element.extraPath || []).concat(updatePath(element.path, station)).includes(location.pathname)
-    );
-    dispatch(appSlice.actions.setAppbarTabValue(locationId !== -1 ? locationId : false));
-
-    if (JSON.stringify(tabList) !== JSON.stringify(newTabList)) {
-      dispatch(appSlice.actions.setTabListValue(newTabList));
-    };
-    // eslint-disable-next-line
-  }, [station, userAccessControl, dispatch, location.pathname]);
 
   const handleClickLogout = () => {
     dispatch(authSlice.actions.logout());
@@ -172,20 +142,8 @@ export default function CustomAppBar() {
               image={"/assets/EyeFlowInspection-mask.png"}
               title="Eyeflow Inspection"
               component="img"
+              onClick={handleClickEyeflow}
             />
-          </Grid>
-
-          <Grid item>
-            <Tabs
-              value={appbarTab}
-              onChange={handleTabChange}
-              TabIndicatorProps={tabIndicatorProps}
-              textColor="inherit"
-            >
-              {tabList.map(({ localeId }, index) => (
-                <Tab key={index} label={t(localeId)} />
-              ))}
-            </Tabs>
           </Grid>
 
           <Grid item>

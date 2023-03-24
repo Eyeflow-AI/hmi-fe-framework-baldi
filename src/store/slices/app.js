@@ -4,13 +4,10 @@ import feConfig from '../thunks/feConfig';
 
 // VARIABLES
 export const initialState = {
-  appbarTab: -1,
-
   stationId: "",
   stationList: [],
   loadingStationList: false,
 
-  tabList: [],
   feConfig: null,
   loadingFeConfig: false
 };
@@ -19,12 +16,6 @@ const appSlice = createSlice({
   name: 'app',
   initialState,
   reducers: {
-    setAppbarTabValue: (state, action) => {
-      state.appbarTab = action.payload;
-    },
-    setTabListValue: (state, action) => {
-      state.tabList = action.payload;
-    },
     setStationId: (state, action) => {
       state.stationId = action.payload;
     },
@@ -47,7 +38,7 @@ const appSlice = createSlice({
       })
       .addCase(feConfig.fulfilled, (state, action) => {
         state.loadingFeConfig = false;
-        if (state.feConfig?.event_time !== action.payload?.event_time) {
+        if (state.feConfig?.datetime !== action.payload?.datetime) {
           state.feConfig = action.payload ?? null;
         };
       })
@@ -62,9 +53,6 @@ export const getStation = (state) => (Boolean(state.app.stationId) && state.app.
                                      : null;
 export const getStationId = (state) => state.app.stationId;
 export const getStationList = (state) => state.app.stationList ?? [];
-
-export const getAppbarTab = (state) => state.app.appbarTab;
-export const getTabList = (state) => state.app.tabList ?? [];
 
 export const getFeConfig = (state) => state.app.feConfig;
 
