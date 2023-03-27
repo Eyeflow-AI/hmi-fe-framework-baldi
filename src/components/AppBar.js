@@ -1,12 +1,11 @@
 // React
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 // Design
 import IconButton from '@mui/material/IconButton';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
 import CardMedia from '@mui/material/CardMedia';
 import Box from '@mui/material/Box';
+import ButtonBase from '@mui/material/ButtonBase';
 import Grid from '@mui/material/Grid';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -16,8 +15,8 @@ import { deepOrange } from '@mui/material/colors';
 import TranslateIcon from '@mui/icons-material/Translate';
 
 // Internal
-import appSlice, {  getAppbarTab, getStation, getStationList, setStationId } from '../store/slices/app';
-import authSlice, { getUserInitials, getUserAccessControl } from '../store/slices/auth';
+import { getStation, getStationList, setStationId } from '../store/slices/app';
+import authSlice, { getUserInitials } from '../store/slices/auth';
 import updatePath from '../utils/functions/updatePath';
 import getOriginalURLPath from '../utils/functions/getOriginalURLPath';
 
@@ -25,14 +24,12 @@ import getOriginalURLPath from '../utils/functions/getOriginalURLPath';
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from "react-i18next";
-import { colors } from 'sdk-fe-eyeflow';
 
 
 const APPBAR_HEIGHT = window.app_config.components.AppBar.height;
 const HOME_URL = "/app/:stationSlugLabel/home";
 
 const appBarSx = {
-  background: colors.eyeflow.blue.medium,
   color: 'white',
   display: 'flex',
   alignItems: 'center',
@@ -137,13 +134,15 @@ export default function CustomAppBar() {
         <Grid container sx={appBarGridSx} >
 
           <Grid item>
-            <CardMedia
-              sx={cardMediaSx}
-              image={"/assets/EyeFlowInspection-mask.png"}
-              title="Eyeflow Inspection"
-              component="img"
-              onClick={handleClickEyeflow}
-            />
+            <ButtonBase>
+              <CardMedia
+                sx={cardMediaSx}
+                image={"/assets/EyeFlowInspection-mask.png"}
+                title="Eyeflow Inspection"
+                component="img"
+                onClick={handleClickEyeflow}
+              />
+            </ButtonBase>
           </Grid>
 
           <Grid item>

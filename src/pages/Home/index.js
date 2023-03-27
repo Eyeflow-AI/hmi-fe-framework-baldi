@@ -5,6 +5,7 @@ import React, {useMemo} from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 
+import AppBar from '../../components/AppBar';
 import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
 import updatePath from '../../utils/functions/updatePath';
 import ToolButton from '../../components/ToolButton';
@@ -17,9 +18,9 @@ const style = {
   mainBox: {
     height: '100vh',
     width: '100vw',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    // display: 'flex',
+    // justifyContent: 'center',
+    // alignItems: 'center',
   },
 };
 
@@ -50,7 +51,14 @@ export default function Home({pageOptions}) {
   return (
     <>
       <Box sx={style.mainBox}>
-        <Grid container justifyContent={"center"} spacing={1}>
+        <AppBar />
+        <Grid
+          container
+          justifyContent={"center"}
+          alignItems={"center"}
+          spacing={1}
+          height={`calc(100vh - ${window.app_config.components.AppBar.height}px)`}
+        >
           {pageList.map((pageData, index) =>
           <Grid item key={`tool-${index}`}>
             <ToolButton pageData={pageData} onButtonClick={onButtonClick}/>
