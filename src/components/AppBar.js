@@ -1,12 +1,11 @@
 // React
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 // Design
 import IconButton from '@mui/material/IconButton';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
 import CardMedia from '@mui/material/CardMedia';
 import Box from '@mui/material/Box';
+import ButtonBase from '@mui/material/ButtonBase';
 import Grid from '@mui/material/Grid';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -16,8 +15,8 @@ import { deepOrange } from '@mui/material/colors';
 import TranslateIcon from '@mui/icons-material/Translate';
 
 // Internal
-import appSlice, { getTabList, getAppbarTab, getStation, getStationList, setStationId } from '../store/slices/app';
-import authSlice, { getUserInitials, getUserAccessControl } from '../store/slices/auth';
+import { getStation, getStationList, setStationId } from '../store/slices/app';
+import authSlice, { getUserInitials } from '../store/slices/auth';
 import updatePath from '../utils/functions/updatePath';
 import getOriginalURLPath from '../utils/functions/getOriginalURLPath';
 
@@ -25,13 +24,12 @@ import getOriginalURLPath from '../utils/functions/getOriginalURLPath';
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from "react-i18next";
-import { colors } from 'sdk-fe-eyeflow';
 
 
 const APPBAR_HEIGHT = window.app_config.components.AppBar.height;
+const HOME_URL = "/app/:stationSlugLabel/home";
 
 const appBarSx = {
-  background: colors.eyeflow.blue.medium,
   color: 'white',
   display: 'flex',
   alignItems: 'center',
@@ -70,19 +68,13 @@ const avatarSx = {
 const endBoxSx = {
   display: 'flex',
   alignItems: 'center',
-  gap: 2
+  gap: 4
 };
 
 const stationButtonSx = {color: "white", textTransform: "none"};
 const languageIconSx =  {color: "white", marginLeft: -1, marginRight: 1};
 const appBarPaddingStyle = { height: APPBAR_HEIGHT };
-const tabIndicatorProps = {
-  sx: { background: 'white' }
-};
 
-const pageList = window.app_config.components.AppBar.tabList.map((tabData) => {
-  return window.app_config.pages[tabData.page];
-});
 const languageList = window.app_config.locale.languageList.filter((el) => el.active);
 
 export default function CustomAppBar() {
@@ -102,11 +94,8 @@ export default function CustomAppBar() {
 
 
   // const user = useSelector(getUser);
-  const tabList = useSelector(getTabList);
   const station = useSelector(getStation);
   const stationList = useSelector(getStationList);
-  const appbarTab = useSelector(getAppbarTab);
-  const userAccessControl = useSelector(getUserAccessControl);
   const userInitials = useSelector(getUserInitials);
 
   const handleClickAvatar = (event) => setAvatarAnchorEl(event.currentTarget);
@@ -118,30 +107,8 @@ export default function CustomAppBar() {
   const handleClickLanguageMenu = (event) => setLanguageAnchorEl(event.currentTarget);
   const handleCloseLanguageMenu = (event) => setLanguageAnchorEl(null);
 
+  const handleClickEyeflow = () => navigate(updatePath(HOME_URL, station), {state: {changeType: "click"}});
   const handleClickUserSettings = () => navigate(updatePath('/app/user-settings', station), {state: {changeType: "click"}}); //TODO
-  const handleTabChange = (event, newValue) => {
-    navigate(updatePath(tabList[newValue].path, station), {state: {changeType: "click"}});
-  };
-
-  useEffect(() => {
-
-    let newTabList = [];
-    pageList.forEach((el) => {
-      if (el.acl.length === 0 || el.acl.some((el) => Boolean(userAccessControl?.[el]))) {
-        newTabList.push(el);
-      };
-    });
-
-    const locationId = newTabList.findIndex(
-      (element) => (element.extraPath || []).concat(updatePath(element.path, station)).includes(location.pathname)
-    );
-    dispatch(appSlice.actions.setAppbarTabValue(locationId !== -1 ? locationId : false));
-
-    if (JSON.stringify(tabList) !== JSON.stringify(newTabList)) {
-      dispatch(appSlice.actions.setTabListValue(newTabList));
-    };
-    // eslint-disable-next-line
-  }, [station, userAccessControl, dispatch, location.pathname]);
 
   const handleClickLogout = () => {
     dispatch(authSlice.actions.logout());
@@ -167,25 +134,15 @@ export default function CustomAppBar() {
         <Grid container sx={appBarGridSx} >
 
           <Grid item>
-            <CardMedia
-              sx={cardMediaSx}
-              image={"/assets/EyeFlowInspection-mask.png"}
-              title="Eyeflow Inspection"
-              component="img"
-            />
-          </Grid>
-
-          <Grid item>
-            <Tabs
-              value={appbarTab}
-              onChange={handleTabChange}
-              TabIndicatorProps={tabIndicatorProps}
-              textColor="inherit"
-            >
-              {tabList.map(({ localeId }, index) => (
-                <Tab key={index} label={t(localeId)} />
-              ))}
-            </Tabs>
+            <ButtonBase>
+              <CardMedia
+                sx={cardMediaSx}
+                image={"/assets/EyeFlowInspection-mask.png"}
+                title="Home"
+                component="img"
+                onClick={handleClickEyeflow}
+              />
+            </ButtonBase>
           </Grid>
 
           <Grid item>

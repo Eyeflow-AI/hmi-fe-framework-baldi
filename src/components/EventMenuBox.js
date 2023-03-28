@@ -9,7 +9,7 @@ import {FixedSizeList as List} from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
 
-import { colors } from 'sdk-fe-eyeflow';
+import colors from 'sdk-fe-eyeflow/functions/colors';
 import dateFormat from 'sdk-fe-eyeflow/functions/dateFormat';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { useTranslation } from "react-i18next";
@@ -83,6 +83,7 @@ styleSx.selectedItemSx = Object.assign({}, styleSx.itemSx, {
 });
 
 export default function EventMenuList({
+  type,
   events,
   selectedEvent,
   queryParams,
@@ -114,8 +115,9 @@ export default function EventMenuList({
     let status = itemData.status ?? '';
     let eventTimeString = Boolean(itemData[dateField]) ? dateFormat(itemData[dateField]) : "";
     // let [dateString, timeString] = eventTimeString.split(" ");
-    let id = itemData.id ?? '';
+    let label = itemData.label ?? '';
     // let conformity = Boolean(itemData.conformity);
+
     let boxStyle = Object.assign(
       {backgroundColor: selected ? colors.statuses[status] : `${colors.statuses[status]}90`},
       selected ? styleSx.selectedItemSx : styleSx.itemSx
@@ -142,7 +144,7 @@ export default function EventMenuList({
             </Box>
             <Box>
               <Typography variant='h6'>
-                {id}
+                {label}
               </Typography>
             </Box>
           </Box>

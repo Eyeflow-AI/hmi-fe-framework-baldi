@@ -5,6 +5,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 import updatePath from './utils/functions/updatePath';
 
 const Login = lazy(() => import("./pages/Login"));
+const Home = lazy(() => import("./pages/Home"));
 const Monitor1 = lazy(() => import("./pages/Monitor1"));
 const MonitorBatch = lazy(() => import("./pages/MonitorBatch"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -12,7 +13,7 @@ const Management = lazy(() => import("./pages/Management"));
 const History = lazy(() => import("./pages/History"));
 const Tools = lazy(() => import("./pages/Tools"));
 
-const defaultAppURL = "/app/:stationSlugLabel/monitor";
+const homeURL = "/app/:stationSlugLabel/home";
 
 function NotFound() {
   return (
@@ -23,12 +24,13 @@ function NotFound() {
 };
 
 const components = {
-  Monitor1: () => <Monitor1 />,
-  MonitorBatch: () => <MonitorBatch />,
-  Dashboard: () => <Dashboard />,
-  Management: () => <Management />,
-  History: () => <History />,
-  Tools: () => <Tools />,
+  Home: (pageOptions) => <Home pageOptions={pageOptions}/>,
+  Monitor1: (pageOptions) => <Monitor1 pageOptions={pageOptions}/>,
+  MonitorBatch: (pageOptions) => <MonitorBatch pageOptions={pageOptions}/>,
+  Dashboard: (pageOptions) => <Dashboard pageOptions={pageOptions}/>,
+  Management: (pageOptions) => <Management pageOptions={pageOptions}/>,
+  History: (pageOptions) => <History pageOptions={pageOptions}/>,
+  Tools: (pageOptions) => <Tools pageOptions={pageOptions}/>,
 };
 
 export default function Routes({ station, authenticated, hasUserManagementPermission, hasCaptureImagesPermission }) {
@@ -36,20 +38,19 @@ export default function Routes({ station, authenticated, hasUserManagementPermis
   return useMemo(() => {
 
     let appRoutes = [];
-    let updatedDefaultAppUrl = updatePath(defaultAppURL, station);
-    // console.log(`Default APP URL: ${updatedDefaultAppUrl}`);
-    // eslint-disable-next-line
+    let updatedHomeURL = updatePath(homeURL, station);
+
     for (let [key, value] of Object.entries(window.app_config.pages)) {
       let aclCondition = true; //TODO
       if (value.active && aclCondition && value.path.startsWith("/app")) {
         // console.log(`Loading page: ${key}. Station: ${station?.label}. Path: ${value.path}`);
         appRoutes.push({
           path: value.path,
-          element: components[value.id]()
+          element: components[value.id](value)
         })
       };
     };
-    appRoutes.push({ path: '/app', element: <Navigate to={updatedDefaultAppUrl} /> });
+    appRoutes.push({ path: '/app', element: <Navigate to={updatedHomeURL} /> });
 
     return [
       {
@@ -59,7 +60,7 @@ export default function Routes({ station, authenticated, hasUserManagementPermis
       },
       {
         path: '/',
-        element: !authenticated ? <Outlet /> : <Navigate to={updatedDefaultAppUrl} />,
+        element: !authenticated ? <Outlet /> : <Navigate to={updatedHomeURL} />,
         children: [
           { path: '/login', element: <Login /> },
           { path: '/', element: <Navigate to="/login" /> },

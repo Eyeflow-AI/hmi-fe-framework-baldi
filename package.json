@@ -1,6 +1,6 @@
 {
   "name": "edge-fe-framework",
-  "version": "0.2.5",
+  "version": "0.3.1",
   "private": true,
   "dependencies": {
     "@date-io/date-fns": "^2.16.0",
@@ -9,6 +9,9 @@
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.13",
     "@mui/x-date-pickers": "^5.0.16",
+    "@nivo/bar": "^0.80.0",
+    "@nivo/core": "^0.80.0",
+    "@nivo/pie": "^0.80.0",
     "@reduxjs/toolkit": "^1.9.1",
     "axios": "^1.2.3",
     "date-fns": "^2.29.3",
@@ -23,7 +26,7 @@
     "react-virtualized-auto-sizer": "^1.0.7",
     "react-window": "^1.8.8",
     "redux-persist": "^6.0.0",
-    "sdk-fe-eyeflow": "^0.0.13",
+    "sdk-fe-eyeflow": "^0.0.15",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
