@@ -67,7 +67,7 @@ export default function EventHeader({data, config, disabled}) {
   return (
     <Box width={config.width} height={config.height} sx={disabled ? styleSx.mainBoxDisabled : styleSx.mainBox}>
       {Boolean(data) && fields.map(({data, label}, index) => (
-        <LabelBox title={t(label)} label={data} />
+        <LabelBox key={index} title={t(label)} label={data} />
       ))}
     </Box>
   );

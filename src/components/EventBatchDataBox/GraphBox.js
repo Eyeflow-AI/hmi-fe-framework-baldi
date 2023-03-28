@@ -59,17 +59,17 @@ export default function GraphBox({data, config}) {
 
     let partsPieData = [
       {
-        "id": "ok",
-        "label": "OK",
-        "value": partsOk,
-        "color": colors.statuses.ok
-      },
-      {
         "id": "ng",
         "label": "NG",
         "value": partsNg,
-        "color": colors.statuses.ng
-      }
+        "color": colors.eyeflow.red.dark
+      },
+      {
+        "id": "ok",
+        "label": "OK",
+        "value": partsOk,
+        "color": colors.eyeflow.green.light
+      },
     ];
 
     const dataList = [ //TODO get from config
@@ -95,7 +95,7 @@ export default function GraphBox({data, config}) {
   return (
     <Box width={config?.width ?? 250} height={config?.height ?? '100%'} sx={styleSx.mainBoxSx}>
       <Box id="graph-info-box" sx={styleSx.infoBox}>
-        {dataList.map(({field, label}) => <LabelBox title={field} label={label}/>)}
+        {dataList.map(({field, label}, index) => <LabelBox key={index} title={field} label={label}/>)}
       </Box>
       
       <Box id="graph-graph-box" sx={styleSx.graphBoxSx}>
@@ -103,6 +103,7 @@ export default function GraphBox({data, config}) {
           Peças
           <Box width={500} height={300}>
             <ResponsivePie
+              colors={{ datum: 'data.color' }}
               data={partsPieData}
               margin={{ top: 40, right: 120, bottom: 40, left: 120 }}
             />
