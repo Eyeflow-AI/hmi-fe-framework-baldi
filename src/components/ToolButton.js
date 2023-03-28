@@ -8,7 +8,7 @@ import ButtonBase from '@mui/material/ButtonBase';
 
 // Third-party
 import { useTranslation } from "react-i18next";
-
+import {colors} from 'sdk-fe-eyeflow';
 
 const style = {
   toolButton: Object.assign({}, window.app_config.style.box, {
@@ -19,12 +19,12 @@ const style = {
     alignItems: 'center',
     paddingTop: 4,
     color: 'white',
-    bgcolor: "secondary"
+    bgcolor: "primary.main"
   }),
   toolImage: {
     width: 80,
     height: 80,
-    fill: "#fff"
+    filter:"invert(1)"
   },
 };
 
