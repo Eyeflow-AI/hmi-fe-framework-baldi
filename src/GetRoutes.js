@@ -44,7 +44,7 @@ export default function Routes({ station, authenticated, hasUserManagementPermis
         // console.log(`Loading page: ${key}. Station: ${station?.label}. Path: ${value.path}`);
         appRoutes.push({
           path: value.path,
-          element: components[value.id](value)
+          element: components[value.component](value)
         })
       };
     };
