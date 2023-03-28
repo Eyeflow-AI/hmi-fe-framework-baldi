@@ -115,7 +115,7 @@ export default function EventMenuList({
     let status = itemData.status ?? '';
     let eventTimeString = Boolean(itemData[dateField]) ? dateFormat(itemData[dateField]) : "";
     // let [dateString, timeString] = eventTimeString.split(" ");
-    let id = itemData.id ?? '';
+    let label = itemData.label ?? '';
     // let conformity = Boolean(itemData.conformity);
 
     let boxStyle = Object.assign(
@@ -144,7 +144,7 @@ export default function EventMenuList({
             </Box>
             <Box>
               <Typography variant='h6'>
-                {id}
+                {label}
               </Typography>
             </Box>
           </Box>

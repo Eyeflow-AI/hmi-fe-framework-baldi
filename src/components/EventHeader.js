@@ -3,7 +3,9 @@ import React, {useMemo} from 'react';
 
 
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+
+
+import LabelBox from './LabelBox';
 
 
 import { useTranslation } from "react-i18next";
@@ -65,18 +67,7 @@ export default function EventHeader({data, config, disabled}) {
   return (
     <Box width={config.width} height={config.height} sx={disabled ? styleSx.mainBoxDisabled : styleSx.mainBox}>
       {Boolean(data) && fields.map(({data, label}, index) => (
-        <Box key={index} sx={styleSx.itemBox}>
-          <Box>
-            <Typography variant="subtitle2">
-              {t(label)}
-            </Typography>
-          </Box>
-          <Box>
-            <Typography noWrap={true}>
-              {data}
-            </Typography>
-          </Box>
-        </Box>
+        <LabelBox title={t(label)} label={data} />
       ))}
     </Box>
   );

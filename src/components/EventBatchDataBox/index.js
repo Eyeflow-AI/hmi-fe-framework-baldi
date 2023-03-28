@@ -27,15 +27,15 @@ const styleSx = {
   mainBoxDisabled: Object.assign({}, mainBoxSx, {opacity: 0.8}),
 };
 
-export default function EventBatchDataBox({data, countData, config, disabled}) {
+export default function EventBatchDataBox({data, config, disabled}) {
 
   return (
     <Box width={config.width} height={config.height} sx={disabled ? styleSx.mainBoxDisabled : styleSx.mainBox}>
-      {(config.components.GraphBox?.active ?? true) && (
-        <GraphBox countData={countData} config={config?.components?.GraphBox}/>
+      {(data && (config.components.GraphBox?.active ?? true)) && (
+        <GraphBox data={data} config={config?.components?.GraphBox}/>
       )}
 
-      {(config.components.DataBox?.active ?? true) && (
+      {(data && (config.components.DataBox?.active ?? true)) && (
         <DataBox data={data} config={config?.components?.DataBox}/>
       )}
     </Box>
