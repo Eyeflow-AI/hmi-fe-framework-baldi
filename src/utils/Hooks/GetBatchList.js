@@ -5,7 +5,7 @@ import API from '../../api';
 import Clock from './Clock';
 
 
-export default function GetBatchList({ queryParams, sleepTime = 30000 } = {}) {
+export default function GetBatchList({ stationId, queryParams, sleepTime = 30000 } = {}) {
 
 
   const [data, setData] = useState({ batchList: [], hash: null });
@@ -15,7 +15,7 @@ export default function GetBatchList({ queryParams, sleepTime = 30000 } = {}) {
 
   useEffect(() => {
     if (queryParams) {
-      API.get.batchList({ params: queryParams, setLoading })
+      API.get.batchList({ stationId, params: queryParams}, setLoading)
         .then((response) => {
           let hash = response.hash;
 

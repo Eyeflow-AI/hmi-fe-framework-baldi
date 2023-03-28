@@ -56,7 +56,7 @@ export default function Home({pageOptions}) {
           container
           justifyContent={"center"}
           alignItems={"center"}
-          spacing={1}
+          spacing={4}
           height={`calc(100vh - ${window.app_config.components.AppBar.height}px)`}
         >
           {pageList.map((pageData, index) =>

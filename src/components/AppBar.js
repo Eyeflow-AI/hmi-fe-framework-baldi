@@ -68,7 +68,7 @@ const avatarSx = {
 const endBoxSx = {
   display: 'flex',
   alignItems: 'center',
-  gap: 2
+  gap: 4
 };
 
 const stationButtonSx = {color: "white", textTransform: "none"};
@@ -138,7 +138,7 @@ export default function CustomAppBar() {
               <CardMedia
                 sx={cardMediaSx}
                 image={"/assets/EyeFlowInspection-mask.png"}
-                title="Eyeflow Inspection"
+                title="Home"
                 component="img"
                 onClick={handleClickEyeflow}
               />
