@@ -4,14 +4,13 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 import updatePath from './utils/functions/updatePath';
 
+const Menu = lazy(() => import("./pages/Menu"));
 const Login = lazy(() => import("./pages/Login"));
-const Home = lazy(() => import("./pages/Home"));
 const Monitor1 = lazy(() => import("./pages/Monitor1"));
 const MonitorBatch = lazy(() => import("./pages/MonitorBatch"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Management = lazy(() => import("./pages/Management"));
 const History = lazy(() => import("./pages/History"));
-const Tools = lazy(() => import("./pages/Tools"));
 
 const homeURL = "/app/:stationSlugLabel/home";
 
@@ -24,13 +23,12 @@ function NotFound() {
 };
 
 const components = {
-  Home: (pageOptions) => <Home pageOptions={pageOptions}/>,
+  Menu: (pageOptions) => <Menu pageOptions={pageOptions}/>,
   Monitor1: (pageOptions) => <Monitor1 pageOptions={pageOptions}/>,
   MonitorBatch: (pageOptions) => <MonitorBatch pageOptions={pageOptions}/>,
   Dashboard: (pageOptions) => <Dashboard pageOptions={pageOptions}/>,
   Management: (pageOptions) => <Management pageOptions={pageOptions}/>,
   History: (pageOptions) => <History pageOptions={pageOptions}/>,
-  Tools: (pageOptions) => <Tools pageOptions={pageOptions}/>,
 };
 
 export default function Routes({ station, authenticated, hasUserManagementPermission, hasCaptureImagesPermission }) {
