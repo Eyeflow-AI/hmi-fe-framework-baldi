@@ -150,13 +150,13 @@ export default function CustomAppBar() {
             <Box sx={endBoxSx}>
 
               <Tooltip title={t('station')} onClick={handleClickStation} sx={stationButtonSx}>
-                <Button color="primary" variant="contained" size='small'>
+                <Button color="inherit" variant="outlined" size='small'>
                   {station?.label}
                 </Button>
               </Tooltip>
 
               <Tooltip title={t('language')} onClick={handleClickLanguageMenu} sx={languageIconSx}>
-                <Button color="primary" variant="contained" size='small' endIcon={<TranslateIcon />}>
+                <Button color="inherit" variant="outlined" size='small' endIcon={<TranslateIcon />}>
                   {i18n.language}
                 </Button>
               </Tooltip>

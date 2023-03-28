@@ -8,7 +8,7 @@ import ButtonBase from '@mui/material/ButtonBase';
 
 // Third-party
 import { useTranslation } from "react-i18next";
-import {colors} from 'sdk-fe-eyeflow';
+
 
 const style = {
   toolButton: Object.assign({}, window.app_config.style.box, {
