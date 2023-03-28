@@ -52,6 +52,9 @@ export default function GraphBox({data, config}) {
       };
     };
 
+    // anomaliesPieData.push({id: "foo1", label: "foo1", value: 60});
+    // anomaliesPieData.push({id: "foo2", label: "foo2", value: 100});
+    // anomaliesPieData.push({id: "foo3", label: "foo3", value: 100});
     anomaliesPieData.sort((a, b) => b.label - a.label);
     let partsOk = data?.batch_data?.parts_ok ?? 0;
     let partsNg = data?.batch_data?.parts_ng ?? 0;

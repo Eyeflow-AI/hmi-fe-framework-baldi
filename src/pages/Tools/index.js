@@ -1,89 +1,69 @@
 // React
-import React, { useState, createElement } from 'react';
+import React, {useMemo} from 'react';
 
 // Design
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import SearchIcon from '@mui/icons-material/Search';
-import TextField from '@mui/material/TextField';
-import * as Icons from '@mui/icons-material';
+import Grid from '@mui/material/Grid';
 
-// Internal
 import AppBar from '../../components/AppBar';
+import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
+import updatePath from '../../utils/functions/updatePath';
+import ToolButton from '../../components/ToolButton';
 
 // Third-party
-import { useTranslation } from "react-i18next";
-import { Card, Grid } from '@mui/material';
+import { useNavigate } from "react-router-dom";
 
 
-const APPBAR_HEIGHT = window.app_config.components.AppBar.height;
-const FILTER_HEIGHT = window.app_config.components.FilterBar.height;
-
-const styleSx = {
-  dataBox: Object.assign({}, window.app_config.style.box, {
-    bgcolor: 'white',
-    display: 'flex',
-    flexGrow: 1,
-    margin: '10px 10px 0 10px',
-    // marginLeft: 1,
-    height: `calc(100vh - ${APPBAR_HEIGHT}px - 15px)`,
-  }),
+const style = {
+  mainBox: {
+    height: '100vh',
+    width: '100vw',
+    // display: 'flex',
+    // justifyContent: 'center',
+    // alignItems: 'center',
+  },
 };
 
 
-export default function Tools() {
+export default function Tools({pageOptions}) {
 
-  const { t } = useTranslation();
+  const station = GetSelectedStation();
+  const navigate = useNavigate();
 
-  const TOOLS = window?.app_config?.tools ?? {};
+  const {pageList} = useMemo(() => {
+    let pageList = [];
+    for (let pageData of (pageOptions?.options?.pageList ?? [])) {
+      if (window.app_config.pages.hasOwnProperty(pageData.page)) {
+        pageList.push({data: window.app_config.pages[pageData.page], icon: pageData.icon});
+      }
+      else {
+        console.error(`Missing page ${pageData.page} in feConfig`);
+      };
+    };
+    // let pageList = .map((page) => {window.app_config.pages[]});
+    return {pageList};
+  }, [pageOptions]);
 
-  const createElementIcon = (icon) => {
-    return createElement(
-      Icons[icon],
-      { sx: { fontSize: '80px' } }
-    )
-  }
+  const onButtonClick = (pageData) => {
+    navigate(updatePath(pageData.path, station), {state: {changeType: "click"}});
+  };
 
   return (
     <>
-      <AppBar />
-      <Box sx={styleSx.dataBox}>
+      <Box sx={style.mainBox}>
+        <AppBar />
         <Grid
           container
-          spacing={3}
-          sx={{
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
+          justifyContent={"center"}
+          alignItems={"center"}
+          spacing={4}
+          height={`calc(100vh - ${window.app_config.components.AppBar.height}px)`}
         >
-          {
-            Object.keys(TOOLS).map((tool) => (
-              <Grid item key={`${tool}-tool`}>
-                <Button
-                  variant='contained'
-                  sx={{
-                    width: '200px',
-                    height: '200px'
-                  }}
-                >
-                  <Box>
-                    <Box>
-                      {
-                        TOOLS[tool].icon ? createElementIcon(TOOLS[tool].icon) : null
-                      }
-                    </Box>
-                    <Box
-                      sx={{
-                        fontSize: '15px'
-                      }}
-                    >
-                      {t(TOOLS[tool].label)}
-                    </Box>
-                  </Box>
-                </Button>
-              </Grid>
-            ))
-          }
+          {pageList.map((pageData, index) =>
+          <Grid item key={`tool-${index}`}>
+            <ToolButton pageData={pageData} onButtonClick={onButtonClick}/>
+          </Grid>
+          )}
         </Grid>
       </Box>
     </>
