@@ -17,7 +17,7 @@ const style = {
     width: 200,
     height: 200,
     alignItems: 'center',
-    paddingTop: 4,
+    paddingTop: 3,
     color: 'white',
     bgcolor: "primary.main"
   }),
