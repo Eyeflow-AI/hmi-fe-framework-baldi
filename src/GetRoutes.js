@@ -38,6 +38,7 @@ export default function Routes({ station, authenticated, hasUserManagementPermis
     let appRoutes = [];
     let updatedHomeURL = updatePath(homeURL, station);
 
+    // eslint-disable-next-line
     for (let [key, value] of Object.entries(window.app_config.pages)) {
       let aclCondition = true; //TODO
       if (value.active && aclCondition && value.path.startsWith("/app")) {

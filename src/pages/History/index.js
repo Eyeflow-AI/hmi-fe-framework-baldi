@@ -12,7 +12,7 @@ import Box from '@mui/material/Box';
 import PageWrapper from '../../components/PageWrapper';
 
 // Third-party
-import { useTranslation } from "react-i18next";
+// import { useTranslation } from "react-i18next";
 
 
 // const FILTER_HEIGHT = window.app_config.components.FilterBar.height;

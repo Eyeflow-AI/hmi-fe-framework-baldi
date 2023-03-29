@@ -13,15 +13,6 @@ import ToolButton from '../../components/ToolButton';
 import { useNavigate } from "react-router-dom";
 
 
-const style = {
-  mainBox: {
-    height: '100vh',
-    width: '100vw',
-    display: 'flex',
-  },
-};
-
-
 export default function Home({pageOptions}) {
 
   const station = GetSelectedStation();

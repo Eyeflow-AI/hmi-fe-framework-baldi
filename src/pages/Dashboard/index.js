@@ -1,5 +1,5 @@
 // React
-import React, { useState, Fragment } from 'react';
+import React, { useState } from 'react';
 
 // Design
 import Box from '@mui/material/Box';

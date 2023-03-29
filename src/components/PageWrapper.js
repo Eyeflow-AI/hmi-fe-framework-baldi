@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 
 //Design
@@ -29,8 +29,8 @@ const style = {
 export default function PageWrapper({children}) {
 
   const {width, height} = GetWindowDimentions();
-  const pageBoxWidth = width - window.app_config.components.AppBar.width - 2 * paddingPx;
-  const pageBoxHeight = height - 2 * paddingPx;
+  const pageBoxWidth = width - window.app_config.components.AppBar.width - 2*paddingPx;
+  const pageBoxHeight = height - 2*paddingPx;
 
   return (
     <>
