@@ -6,6 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import CardMedia from '@mui/material/CardMedia';
 import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
+import Grid from '@mui/material/Grid';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
@@ -25,24 +26,31 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from "react-i18next";
 
 
+const APPBAR_HEIGHT = window.app_config.components.AppBar.height;
 const HOME_URL = "/app/:stationSlugLabel/home";
 
 const appBarSx = {
   color: 'white',
   display: 'flex',
-  flexDirection: 'column',
   alignItems: 'center',
-  // padding: '8px 16px 8px 25px',
-  boxShadow: 2,
-  height: '100%',
-  // position: 'fixed',
-  paddingTop: 1,
-  gap: 3
+  marginBottom: '4px',
+  padding: '8px 16px 8px 25px',
+  width: '100%',
+  position: 'fixed',
+  height: APPBAR_HEIGHT,
+};
+
+const appBarGridSx = {
+  justify: 'space-between',
+  alignItems: 'center',
+  wrap: 'nowrap',
+  width: '100%',
+  justifyContent: 'space-between',
 };
 
 const cardMediaSx = {
-  height: 'auto',
-  width: '50px'
+  height: '50px',
+  width: 'auto'
 };
 
 const avatarSx = {
@@ -51,13 +59,21 @@ const avatarSx = {
   backgroundColor: deepOrange[500],
   width: 46,
   height: 46,
+  marginLeft: -1,
   "&:hover, &.Mui-focusVisible": {
     backgroundColor: deepOrange[600],
   }
 };
 
-const stationButtonSx = { color: "white", textTransform: "none", whiteSpace: 'nowrap'};
-const languageIconSx =  { color: "white"};
+const endBoxSx = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 4
+};
+
+const stationButtonSx = {color: "white", textTransform: "none"};
+const languageIconSx =  {color: "white", marginLeft: -1, marginRight: 1};
+const appBarPaddingStyle = { height: APPBAR_HEIGHT };
 
 const languageList = window.app_config.locale.languageList.filter((el) => el.active);
 
@@ -114,37 +130,50 @@ export default function CustomAppBar() {
 
   return (
     <>
-      <Box width={window.app_config.components.AppBar.width ?? 64} sx={appBarSx}>
-        <ButtonBase>
-          <CardMedia
-            sx={cardMediaSx}
-            image={"/assets/EyeFlowLogo-mask.png"}
-            title="Home"
-            component="img"
-            onClick={handleClickEyeflow}
-          />
-        </ButtonBase>
+      <Box sx={appBarSx}>
+        <Grid container sx={appBarGridSx} >
 
-        <Tooltip title={t('station')} onClick={handleClickStation} sx={stationButtonSx}>
-          <Button fullWidth color="inherit" variant="outlined" size='small'>
-            {station?.label}
-          </Button>
-        </Tooltip>
+          <Grid item>
+            <ButtonBase>
+              <CardMedia
+                sx={cardMediaSx}
+                image={"/assets/EyeFlowInspection-mask.png"}
+                title="Home"
+                component="img"
+                onClick={handleClickEyeflow}
+              />
+            </ButtonBase>
+          </Grid>
 
-        <Tooltip title={t('language')} onClick={handleClickLanguageMenu} sx={languageIconSx}>
-          <Button fullWidth color="inherit" variant="outlined" size='small' endIcon={<TranslateIcon />}>
-            {i18n.language}
-          </Button>
-        </Tooltip>
+          <Grid item>
 
-        <IconButton
-          onClick={handleClickAvatar}
-          sx={avatarSx}
-        >
-          {userInitials}
-        </IconButton>
+            <Box sx={endBoxSx}>
 
+              <Tooltip title={t('station')} onClick={handleClickStation} sx={stationButtonSx}>
+                <Button color="inherit" variant="outlined" size='small'>
+                  {station?.label}
+                </Button>
+              </Tooltip>
+
+              <Tooltip title={t('language')} onClick={handleClickLanguageMenu} sx={languageIconSx}>
+                <Button color="inherit" variant="outlined" size='small' endIcon={<TranslateIcon />}>
+                  {i18n.language}
+                </Button>
+              </Tooltip>
+
+              <IconButton
+                onClick={handleClickAvatar}
+                sx={avatarSx}
+              >
+                {userInitials}
+              </IconButton>
+
+            </Box>
+          </Grid>
+        </Grid>
       </Box>
+
+      <div id='appbar-padding' style={appBarPaddingStyle} />
 
       <Menu
         anchorEl={stationAnchorEl}

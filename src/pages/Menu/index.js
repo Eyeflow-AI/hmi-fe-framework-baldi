@@ -2,27 +2,15 @@
 import React, {useMemo} from 'react';
 
 // Design
-import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 
-import AppBar from '../../components/AppBar';
+import PageWrapper from '../../components/PageWrapper';
 import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
 import updatePath from '../../utils/functions/updatePath';
 import ToolButton from '../../components/ToolButton';
 
 // Third-party
 import { useNavigate } from "react-router-dom";
-
-
-const style = {
-  mainBox: {
-    height: '100vh',
-    width: '100vw',
-    // display: 'flex',
-    // justifyContent: 'center',
-    // alignItems: 'center',
-  },
-};
 
 
 export default function Home({pageOptions}) {
@@ -49,15 +37,15 @@ export default function Home({pageOptions}) {
   };
 
   return (
-    <>
-      <Box sx={style.mainBox}>
-        <AppBar />
+    <PageWrapper>
+      {({width, height}) => 
         <Grid
           container
           justifyContent={"center"}
           alignItems={"center"}
           spacing={4}
-          height={`calc(100vh - ${window.app_config.components.AppBar.height}px)`}
+          width={width}
+          height={height}
         >
           {pageList.map((pageData, index) =>
           <Grid item key={`tool-${index}`}>
@@ -65,7 +53,7 @@ export default function Home({pageOptions}) {
           </Grid> 
           )}
         </Grid>
-      </Box>
-    </>
+      }
+    </PageWrapper>
   );
 }

@@ -9,8 +9,8 @@ import DataBox from './DataBox';
 import GraphBox from './GraphBox';
 
 
-const mainBoxSx ={
-  // bgcolor: 'white',
+const mainBoxSx = Object.assign({}, window.app_config.style.box, {
+  bgcolor: 'white',
   display: 'flex',
   alignItems: 'center',
   gap: 0.25,
@@ -18,8 +18,7 @@ const mainBoxSx ={
   overflowY: 'hidden',
   width: "100%",
   whiteSpace: "pre-wrap", //TODO: Remove this line. Debug only
-  bgcolor: '#D0D0D0'
-};
+});
 
 
 const styleSx = {
