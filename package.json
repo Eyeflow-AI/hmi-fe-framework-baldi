@@ -1,6 +1,6 @@
 {
   "name": "edge-fe-framework",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "private": true,
   "dependencies": {
     "@date-io/date-fns": "^2.16.0",
