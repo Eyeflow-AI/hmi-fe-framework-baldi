@@ -45,7 +45,7 @@ function PrepareApp({ children }) {
       }
       else {
         //TODO Error handling
-        console.error(`Could not find match for ${location.pathname}`);
+        console.warn(`Could not find match for ${location.pathname}. If you are not redirected, this is an error.`);
       }
     };
   }, [dispatch, stationList, location, stationSlugLabel]);
