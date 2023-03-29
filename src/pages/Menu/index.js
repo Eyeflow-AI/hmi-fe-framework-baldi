@@ -18,9 +18,7 @@ const style = {
   mainBox: {
     height: '100vh',
     width: '100vw',
-    // display: 'flex',
-    // justifyContent: 'center',
-    // alignItems: 'center',
+    display: 'flex',
   },
 };
 
@@ -57,7 +55,6 @@ export default function Home({pageOptions}) {
           justifyContent={"center"}
           alignItems={"center"}
           spacing={4}
-          height={`calc(100vh - ${window.app_config.components.AppBar.height}px)`}
         >
           {pageList.map((pageData, index) =>
           <Grid item key={`tool-${index}`}>

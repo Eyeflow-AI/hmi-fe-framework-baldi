@@ -18,7 +18,7 @@ import API from '../../api';
 const styleSx = {
   mainBox: {
     display: 'flex',
-    width: 'calc(100vw)',
+    height: '100vh',
     padding: 1,
     overflow: 'hidden',
   },
@@ -76,11 +76,11 @@ export default function Monitor({pageOptions}) {
       return newParams;
     });
   };
-
+  // width={`calc(100vw - ${window.app_config.components.AppBar.width}px)`}
   return (
     <>
-      <AppBar />
-      <Box id="monitor-main-box" sx={styleSx.mainBox} height={`calc(100vh - ${window.app_config.components.AppBar.height}px)`}>
+      <Box id="monitor-main-box" sx={styleSx.mainBox}>
+        <AppBar />
         <Box id="monitor-event-menu-box" sx={styleSx.eventMenuBox} width={pageOptions.options.eventMenuWidth}>
           <EventMenuBox
             type="batch"
