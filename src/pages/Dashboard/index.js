@@ -36,7 +36,6 @@ const styleSx = {
     display: 'flex',
     flexGrow: 1,
     padding: 1,
-    height: `calc(100vh - 25px - 80px)`,
   }),
 };
 
