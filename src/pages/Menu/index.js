@@ -2,10 +2,9 @@
 import React, {useMemo} from 'react';
 
 // Design
-import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 
-import AppBar from '../../components/AppBar';
+import PageWrapper from '../../components/PageWrapper';
 import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
 import updatePath from '../../utils/functions/updatePath';
 import ToolButton from '../../components/ToolButton';
@@ -47,14 +46,15 @@ export default function Home({pageOptions}) {
   };
 
   return (
-    <>
-      <Box sx={style.mainBox}>
-        <AppBar />
+    <PageWrapper>
+      {({width, height}) => 
         <Grid
           container
           justifyContent={"center"}
           alignItems={"center"}
           spacing={4}
+          width={width}
+          height={height}
         >
           {pageList.map((pageData, index) =>
           <Grid item key={`tool-${index}`}>
@@ -62,7 +62,7 @@ export default function Home({pageOptions}) {
           </Grid> 
           )}
         </Grid>
-      </Box>
-    </>
+      }
+    </PageWrapper>
   );
 }
