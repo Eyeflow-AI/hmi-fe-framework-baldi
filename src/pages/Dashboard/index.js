@@ -23,7 +23,6 @@ const FILTER_HEIGHT = window.app_config.components.FilterBar.height;
 const styleSx = {
   filterBox: Object.assign({}, window.app_config.style.box, {
     display: 'flex',
-    height: FILTER_HEIGHT,
     paddingLeft: 1,
     overflow: 'hidden',
     bgcolor: 'white',
@@ -40,7 +39,7 @@ const styleSx = {
 };
 
 
-export default function Dashboard() {
+export default function Dashboard({pageOptions}) {
 
   const { t } = useTranslation();
 
@@ -60,7 +59,7 @@ export default function Dashboard() {
     <PageWrapper>
       {({width, height}) => 
       <Box display="flex" flexDirection="column" width={width} height={height} gap={1}>
-        <Box width={width} sx={styleSx.filterBox}>
+        <Box height={FILTER_HEIGHT} width={width} sx={styleSx.filterBox}>
           <Box>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DateTimePicker
