@@ -1,29 +1,21 @@
-import Box from "@mui/material/Box";
+import { Fragment } from "react";
+
+// import { useSelector } from 'react-redux';
+// import { getUserAuthenticated } from '../store/slices/auth';
 
 
-// import AppBar from "./AppBar";
+// import PageWrapper from "./PageWrapper";
 
-
-const style = {
-  mainBox: {
-    height: "100vh",
-    width: "100vw",
-    // display: "flex",
-    // justifyContent: "center",
-    // alignItems: "center",
-  },
-  // image: {
-  //   width: "40vw",
-  //   height: "auto"
-  // }
-};
 
 export default function LoadingPage() {
 
+  // const authenticated = useSelector(getUserAuthenticated);
+
   return (
-    <Box sx={style.mainBox}>
-      {/* <AppBar /> */}
-      {/* <img alt="" src={"/assets/EyeFlowInspection-mask.png"} style={style.image}/> */}
-    </Box>
+    <Fragment>
+      {/* {authenticated && (
+        <PageWrapper />
+      )} */}
+    </Fragment>
   );
 };

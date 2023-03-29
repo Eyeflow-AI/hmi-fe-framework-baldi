@@ -1,5 +1,5 @@
 // React
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Design
 import IconButton from '@mui/material/IconButton';
@@ -59,8 +59,6 @@ const avatarSx = {
 const stationButtonSx = { color: "white", textTransform: "none", whiteSpace: 'nowrap'};
 const languageIconSx =  { color: "white"};
 
-const languageList = window.app_config.locale.languageList.filter((el) => el.active);
-
 export default function CustomAppBar() {
 
   const { t, i18n } = useTranslation();
@@ -71,6 +69,7 @@ export default function CustomAppBar() {
   const [stationAnchorEl, setStationAnchorEl] = useState(null);
   const [languageAnchorEl, setLanguageAnchorEl] = useState(null);
   const [avatarAnchorEl, setAvatarAnchorEl] = useState(null);
+  const [languageList, setLanguageList] = useState([]);
 
   const stationOpen = Boolean(stationAnchorEl);
   const languageOpen = Boolean(languageAnchorEl);
@@ -81,6 +80,10 @@ export default function CustomAppBar() {
   const station = useSelector(getStation);
   const stationList = useSelector(getStationList);
   const userInitials = useSelector(getUserInitials);
+
+  useEffect(() => {
+    setLanguageList(window.app_config.locale.languageList.filter((el) => el.active));
+  }, []);
 
   const handleClickAvatar = (event) => setAvatarAnchorEl(event.currentTarget);
   const handleCloseAvatarMenu = (event) => setAvatarAnchorEl(null);
