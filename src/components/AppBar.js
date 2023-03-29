@@ -8,13 +8,11 @@ import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import { deepOrange } from '@mui/material/colors';
-import TranslateIcon from '@mui/icons-material/Translate';
 
 // Internal
-import { getStation, getStationList, setStationId } from '../store/slices/app';
+import { getStation, getStationList, setStationId, getLanguageList, getAppBarButtonList } from '../store/slices/app';
 import authSlice, { getUserInitials } from '../store/slices/auth';
 import updatePath from '../utils/functions/updatePath';
 import getOriginalURLPath from '../utils/functions/getOriginalURLPath';
@@ -27,37 +25,40 @@ import { useTranslation } from "react-i18next";
 
 const HOME_URL = "/app/:stationSlugLabel/home";
 
-const appBarSx = {
-  color: 'white',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  // padding: '8px 16px 8px 25px',
-  boxShadow: 2,
-  height: '100%',
-  // position: 'fixed',
-  paddingTop: 1,
-  gap: 3
-};
 
-const cardMediaSx = {
-  height: 'auto',
-  width: '50px'
-};
-
-const avatarSx = {
-  cursor: 'pointer',
-  color: (theme) => theme.palette.getContrastText(deepOrange[500]),
-  backgroundColor: deepOrange[500],
-  width: 46,
-  height: 46,
-  "&:hover, &.Mui-focusVisible": {
-    backgroundColor: deepOrange[600],
+const style = {
+  appBar: {
+    color: 'white',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    // padding: '8px 16px 8px 25px',
+    boxShadow: 2,
+    height: '100%',
+    // position: 'fixed',
+    paddingTop: 1,
+    gap: 4
+  },
+  cardMedia: {
+    height: 'auto',
+    width: '50px'
+  },
+  buttonImage: {
+    height: 30,
+    width: 30,
+    filter:"invert(1)"
+  },
+  avatar: {
+    cursor: 'pointer',
+    color: (theme) => theme.palette.getContrastText(deepOrange[500]),
+    backgroundColor: deepOrange[500],
+    width: 46,
+    height: 46,
+    "&:hover, &.Mui-focusVisible": {
+      backgroundColor: deepOrange[600],
+    }
   }
-};
-
-const stationButtonSx = { color: "white", textTransform: "none", whiteSpace: 'nowrap'};
-const languageIconSx =  { color: "white"};
+}
 
 export default function CustomAppBar() {
 
@@ -66,24 +67,22 @@ export default function CustomAppBar() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const station = useSelector(getStation);
+  const stationList = useSelector(getStationList);
+  const languageList = useSelector(getLanguageList);
+  const appBarButtonList = useSelector(getAppBarButtonList);
+  const userInitials = useSelector(getUserInitials);
+
   const [stationAnchorEl, setStationAnchorEl] = useState(null);
   const [languageAnchorEl, setLanguageAnchorEl] = useState(null);
   const [avatarAnchorEl, setAvatarAnchorEl] = useState(null);
-  const [languageList, setLanguageList] = useState([]);
+  const [buttonList, setButtonList] = useState(appBarButtonList);
 
   const stationOpen = Boolean(stationAnchorEl);
   const languageOpen = Boolean(languageAnchorEl);
   const avatarOpen = Boolean(avatarAnchorEl);
 
-
   // const user = useSelector(getUser);
-  const station = useSelector(getStation);
-  const stationList = useSelector(getStationList);
-  const userInitials = useSelector(getUserInitials);
-
-  useEffect(() => {
-    setLanguageList(window.app_config.locale.languageList.filter((el) => el.active));
-  }, []);
 
   const handleClickAvatar = (event) => setAvatarAnchorEl(event.currentTarget);
   const handleCloseAvatarMenu = (event) => setAvatarAnchorEl(null);
@@ -115,12 +114,28 @@ export default function CustomAppBar() {
     handleCloseStationMenu();
   };
 
+  useEffect(() => {
+    // console.log(window.app_config.components.AppBar)
+    let newButtonList = appBarButtonList.map((buttonData) => {
+      let copyButtonData = {...buttonData};
+      if (copyButtonData.id === "station") {
+        copyButtonData.onClick = handleClickStation;
+      }
+      else if (copyButtonData.id === "language") {
+        copyButtonData.onClick = handleClickLanguageMenu;
+      };
+      return copyButtonData;
+    });
+
+    setButtonList(newButtonList);
+  }, [appBarButtonList]);
+
   return (
     <>
-      <Box width={window.app_config.components.AppBar.width ?? 64} sx={appBarSx}>
+      <Box width={window.app_config.components.AppBar.width ?? 64} sx={style.appBar}>
         <ButtonBase>
           <CardMedia
-            sx={cardMediaSx}
+            sx={style.cardMedia}
             image={"/assets/EyeFlowLogo-mask.png"}
             title="Home"
             component="img"
@@ -128,21 +143,17 @@ export default function CustomAppBar() {
           />
         </ButtonBase>
 
-        <Tooltip title={t('station')} onClick={handleClickStation} sx={stationButtonSx}>
-          <Button fullWidth color="inherit" variant="outlined" size='small'>
-            {station?.label}
-          </Button>
+        {buttonList.map((buttonProps, index) =>
+        <Tooltip key={index} title={t(buttonProps.label)}>
+          <IconButton onClick={buttonProps.onClick} size='small'>
+            <img alt="" src={buttonProps.icon} style={style.buttonImage}/>
+          </IconButton>
         </Tooltip>
-
-        <Tooltip title={t('language')} onClick={handleClickLanguageMenu} sx={languageIconSx}>
-          <Button fullWidth color="inherit" variant="outlined" size='small' endIcon={<TranslateIcon />}>
-            {i18n.language}
-          </Button>
-        </Tooltip>
+        )}
 
         <IconButton
           onClick={handleClickAvatar}
-          sx={avatarSx}
+          sx={style.avatar}
         >
           {userInitials}
         </IconButton>

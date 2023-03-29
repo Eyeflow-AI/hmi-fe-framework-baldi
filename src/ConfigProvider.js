@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import getStationListThunk from './store/thunks/stationList';
 import getFeConfigThunk from './store/thunks/feConfig';
-import {getFeConfig} from './store/slices/app';
+import {getFeConfig, setAppBarButtonList, setLanguageList} from './store/slices/app';
 import { prepare as prepareLocale } from './locale';
 
 import Clock from './utils/Hooks/Clock';
@@ -33,9 +33,11 @@ function ConfigProvider({ children, getConfigSleepTime=10*60*1000 }) {
       console.log("App config", window.app_config);
       console.log("App Locale", feConfig.locale.locale)
       prepareLocale(window.app_config.locale, feConfig.locale.locale);
+      dispatch(setAppBarButtonList((window?.app_config?.components?.AppBar?.button_list ?? []).map((buttonData) => Object.assign({}, buttonData))));
+      dispatch(setLanguageList(window.app_config.locale.languageList.filter((el) => el.active)));
       setConfigLoaded(true);
     };
-  }, [feConfig]);
+  }, [dispatch, feConfig]);
 
   return (
     <Fragment>
