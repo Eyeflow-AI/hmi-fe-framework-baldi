@@ -81,7 +81,7 @@ export default function EventMenuItem ({index, dateField, eventData, selected, o
                 {label}
               </Typography>
             </Box>
-            <Box class={status === "running" ? "animate-flicker" : undefined}>
+            <Box className={status === "running" ? "animate-flicker" : undefined}>
               <Typography variant='subtitle2'>
                 {status}
               </Typography>
