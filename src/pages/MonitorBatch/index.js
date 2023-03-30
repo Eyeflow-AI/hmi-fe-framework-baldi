@@ -37,7 +37,7 @@ export default function Monitor({pageOptions}) {
 
   const { _id: stationId } = GetSelectedStation();
   const [queryParams, setQueryParams] = useState(null);
-  const { batchList } = GetBatchList({ stationId, queryParams, sleepTime: pageOptions.options.getEventSleepTime });
+  const { batchList, loading: loadingBatchList } = GetBatchList({ stationId, queryParams, sleepTime: pageOptions.options.getEventSleepTime });
   const [selectedBatch, setSelectedBatch] = useState(null);
   const [selectedBatchCountData, setSelectedBatchCountData] = useState(null);
 
@@ -83,6 +83,7 @@ export default function Monitor({pageOptions}) {
             <EventMenuBox
               type="batch"
               events={batchList}
+              loadingData={loadingBatchList}
               selectedEvent={selectedBatch}
               onChangeEvent={onChangeEvent}
               queryParams={queryParams}

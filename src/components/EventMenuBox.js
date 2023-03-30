@@ -1,21 +1,23 @@
 // React
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, Fragment} from 'react';
 
 
+//Design
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
+
+//Internal
+import getQueryDateString from '../utils/functions/getQueryDateString';
+
+//Third-party
 import {FixedSizeList as List} from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
-
-
 import colors from 'sdk-fe-eyeflow/functions/colors';
 import dateFormat from 'sdk-fe-eyeflow/functions/dateFormat';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { useTranslation } from "react-i18next";
-
-
-import getQueryDateString from '../utils/functions/getQueryDateString';
 
 
 const styleSx = {
@@ -38,6 +40,7 @@ const styleSx = {
     height: '100%',
     boxShadow: 'inset 0 2px 4px #00000040',
     margin: 1,
+    alignItems: 'center',
     borderRadius: window.app_config.style.box.borderRadius,
     // bgcolor: colors.eyeflow.blue.medium
     bgcolor: '#DBDBDB'
@@ -87,6 +90,7 @@ export default function EventMenuList({
   events,
   selectedEvent,
   queryParams,
+  loadingData,
   onChangeParams,
   onChangeEvent,
   config
@@ -181,18 +185,39 @@ export default function EventMenuList({
         />
       </Box>
       <Box id="list-box" sx={styleSx.listBox}>
-        <AutoSizer>
-          {({ height, width }) => (
-          <List
-            height={height}
-            width={width}
-            itemSize={config?.itemHeight ?? 200}
-            itemCount={eventsLength}
-          >
-            {ItemRenderer}
-          </List>
-          )}
-        </AutoSizer>
+        {(eventsLength === 0 && loadingData)
+        ? (
+          <Box height="100%" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+            {`${t('loading')}...`}
+            <CircularProgress />
+          </Box>
+        )
+        : (
+          <Fragment>
+            {eventsLength === 0
+            ? (
+              <Box height="100%" display="flex" justifyContent="center" alignItems="center">
+                {t("no_data")}
+              </Box>
+            )
+            : (
+            <AutoSizer>
+              {({ height, width }) => (
+              <List
+                height={height}
+                width={width}
+                itemSize={config?.itemHeight ?? 200}
+                itemCount={eventsLength}
+              >
+                {ItemRenderer}
+              </List>
+              )}
+            </AutoSizer>
+            )
+            }
+          </Fragment>
+        )
+        }
       </Box>
     </Box>
   );
