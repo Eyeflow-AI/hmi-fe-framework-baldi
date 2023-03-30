@@ -6,6 +6,7 @@ import Box from '@mui/material/Box';
 
 
 import LabelBox from './LabelBox';
+import accessObjValueWithMongoNotation from '../utils/functions/accessObjValueWithMongoNotation';
 
 
 import { useTranslation } from "react-i18next";
@@ -48,14 +49,15 @@ export default function EventHeader({data, config, disabled}) {
 
   const {fields} = useMemo(() => {
     return {
-      fields: config.fields.map(({label, field, type}) => {
-        let thisData = "";
-        if (Boolean(data?.[field])) {
+      fields: config.fields.map(({label, field, type, defaultValue}) => {
+        let thisData = defaultValue ?? "";
+        let value = accessObjValueWithMongoNotation(data, field);
+        if (value) {
           if (type === "date") {
-            thisData = dateFormat(new Date(data[field]));
+            thisData = dateFormat(new Date(value));
           }
           else {
-            thisData = data[field];
+            thisData = value;
           };
         };
 

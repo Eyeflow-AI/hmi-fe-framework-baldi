@@ -11,6 +11,8 @@ import EventHeader from '../../components/EventHeader';
 import EventMenuBox from '../../components/EventMenuBox';
 import EventBatchDataBox from '../../components/EventBatchDataBox';
 import GetBatchList from '../../utils/Hooks/GetBatchList';
+import GetRunningBatch from '../../utils/Hooks/GetRunningBatch';
+
 import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
 import API from '../../api';
 
@@ -20,9 +22,6 @@ const style = {
     display: 'flex',
     overflow: 'hidden',
   },
-  eventMenuBox: Object.assign({}, window.app_config.style.box, {
-    bgcolor: 'white',
-  }),
   dataBox: {
     display: 'flex',
     flexDirection: 'column',
@@ -37,7 +36,10 @@ export default function Monitor({pageOptions}) {
 
   const { _id: stationId } = GetSelectedStation();
   const [queryParams, setQueryParams] = useState(null);
-  const { batchList } = GetBatchList({ stationId, queryParams, sleepTime: pageOptions.options.getEventSleepTime });
+
+  const { batchList, loading: loadingBatchList } = GetBatchList({ stationId, queryParams, sleepTime: pageOptions.options.getEventSleepTime });
+  const {runningBatch} = GetRunningBatch({stationId, sleepTime: pageOptions.options.getEventSleepTime});
+
   const [selectedBatch, setSelectedBatch] = useState(null);
   const [selectedBatchCountData, setSelectedBatchCountData] = useState(null);
 
@@ -51,7 +53,15 @@ export default function Monitor({pageOptions}) {
   };
 
   useEffect(() => {
-    if (selectedBatch && batchList.findIndex((el) => el._id === selectedBatch._id) === -1) {
+    if (!selectedBatch && runningBatch) {
+      onChangeEvent(runningBatch._id);
+    };
+    // eslint-disable-next-line
+  }, [selectedBatch, runningBatch]);
+
+  // useEffect(() => {console.log({runningBatch})}, [runningBatch]);
+  useEffect(() => {
+    if (selectedBatch && (selectedBatch._id !== runningBatch?._id) && batchList.findIndex((el) => el._id === selectedBatch._id) === -1) {
       setSelectedBatch(null);
       setSelectedBatchCountData(null);
     };
@@ -75,21 +85,30 @@ export default function Monitor({pageOptions}) {
     });
   };
 
+  const onClickCreateBatch = () => {
+    console.log("onClickCreateBatch");
+  };
+
   return (
     <PageWrapper>
       {({width, height}) => 
         <Box width={width} height={height} sx={style.mainBox}>
-          <Box id="monitor-event-menu-box" sx={style.eventMenuBox} width={pageOptions.options.eventMenuWidth}>
+          {/* <Box id="monitor-event-menu-box" width={pageOptions.options.eventMenuWidth}> */}
             <EventMenuBox
               type="batch"
+              width={pageOptions.options.eventMenuWidth}
+              onClickCreateBatch={onClickCreateBatch}
+              runningEvent={runningBatch}
               events={batchList}
+              loadingData={loadingBatchList}
               selectedEvent={selectedBatch}
               onChangeEvent={onChangeEvent}
               queryParams={queryParams}
               onChangeParams={onChangeParams}
               config={pageOptions.components.EventMenuBox}
+              height={height}
             />
-          </Box>
+          {/* </Box> */}
           <Box id="monitor-data-box" sx={style.dataBox}>
             <EventHeader
               data={selectedBatch}

@@ -15,7 +15,7 @@ const styleSx = {
     flexDirection: 'column',
     border: '1px solid rgba(133, 133, 133, 0.6)',
     borderRadius: 1,
-    height: 56,
+    height: 60,
     paddingTop: 0.2,
     paddingLeft: 0.8,
     paddingRight: 0.8,
@@ -23,19 +23,19 @@ const styleSx = {
   }
 };
 
-export default function EventHeader({title, label}) {
+export default function LabelBox({title, minWidth, label}) {
 
   const { t } = useTranslation();
 
   return (
-    <Box sx={styleSx.itemBox}>
+    <Box sx={styleSx.itemBox} minWidth={minWidth}>
       <Box>
         <Typography variant="subtitle2">
           {t(title)}
         </Typography>
       </Box>
       <Box>
-        <Typography noWrap={true}>
+        <Typography noWrap={true} variant="h6">
           {label}
         </Typography>
       </Box>
