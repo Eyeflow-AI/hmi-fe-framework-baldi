@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 //Third-party
 import colors from 'sdk-fe-eyeflow/functions/colors';
 import dateFormat from 'sdk-fe-eyeflow/functions/dateFormat';
-
+import '../../css/animateFlicker.css';
 
 const style = {
   itemSx: {
@@ -81,7 +81,7 @@ export default function EventMenuItem ({index, dateField, eventData, selected, o
                 {label}
               </Typography>
             </Box>
-            <Box>
+            <Box class={status === "running" ? "animate-flicker" : undefined}>
               <Typography variant='subtitle2'>
                 {status}
               </Typography>
