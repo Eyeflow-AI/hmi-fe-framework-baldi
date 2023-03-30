@@ -1,21 +1,18 @@
 // React
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Design
 import IconButton from '@mui/material/IconButton';
 import CardMedia from '@mui/material/CardMedia';
 import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
-import Grid from '@mui/material/Grid';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import { deepOrange } from '@mui/material/colors';
-import TranslateIcon from '@mui/icons-material/Translate';
 
 // Internal
-import { getStation, getStationList, setStationId } from '../store/slices/app';
+import { getStation, getStationList, setStationId, getLanguageList, getAppBarButtonList } from '../store/slices/app';
 import authSlice, { getUserInitials } from '../store/slices/auth';
 import updatePath from '../utils/functions/updatePath';
 import getOriginalURLPath from '../utils/functions/getOriginalURLPath';
@@ -26,56 +23,42 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from "react-i18next";
 
 
-const APPBAR_HEIGHT = window.app_config.components.AppBar.height;
 const HOME_URL = "/app/:stationSlugLabel/home";
 
-const appBarSx = {
-  color: 'white',
-  display: 'flex',
-  alignItems: 'center',
-  marginBottom: '4px',
-  padding: '8px 16px 8px 25px',
-  width: '100%',
-  position: 'fixed',
-  height: APPBAR_HEIGHT,
-};
 
-const appBarGridSx = {
-  justify: 'space-between',
-  alignItems: 'center',
-  wrap: 'nowrap',
-  width: '100%',
-  justifyContent: 'space-between',
-};
-
-const cardMediaSx = {
-  height: '50px',
-  width: 'auto'
-};
-
-const avatarSx = {
-  cursor: 'pointer',
-  color: (theme) => theme.palette.getContrastText(deepOrange[500]),
-  backgroundColor: deepOrange[500],
-  width: 46,
-  height: 46,
-  marginLeft: -1,
-  "&:hover, &.Mui-focusVisible": {
-    backgroundColor: deepOrange[600],
+const style = {
+  appBar: {
+    color: 'white',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    // padding: '8px 16px 8px 25px',
+    boxShadow: 2,
+    height: '100%',
+    // position: 'fixed',
+    paddingTop: 1,
+    gap: 4
+  },
+  cardMedia: {
+    height: 'auto',
+    width: '50px'
+  },
+  buttonImage: {
+    height: 30,
+    width: 30,
+    filter:"invert(1)"
+  },
+  avatar: {
+    cursor: 'pointer',
+    color: (theme) => theme.palette.getContrastText(deepOrange[500]),
+    backgroundColor: deepOrange[500],
+    width: 46,
+    height: 46,
+    "&:hover, &.Mui-focusVisible": {
+      backgroundColor: deepOrange[600],
+    }
   }
-};
-
-const endBoxSx = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: 4
-};
-
-const stationButtonSx = {color: "white", textTransform: "none"};
-const languageIconSx =  {color: "white", marginLeft: -1, marginRight: 1};
-const appBarPaddingStyle = { height: APPBAR_HEIGHT };
-
-const languageList = window.app_config.locale.languageList.filter((el) => el.active);
+}
 
 export default function CustomAppBar() {
 
@@ -84,19 +67,22 @@ export default function CustomAppBar() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const station = useSelector(getStation);
+  const stationList = useSelector(getStationList);
+  const languageList = useSelector(getLanguageList);
+  const appBarButtonList = useSelector(getAppBarButtonList);
+  const userInitials = useSelector(getUserInitials);
+
   const [stationAnchorEl, setStationAnchorEl] = useState(null);
   const [languageAnchorEl, setLanguageAnchorEl] = useState(null);
   const [avatarAnchorEl, setAvatarAnchorEl] = useState(null);
+  const [buttonList, setButtonList] = useState(appBarButtonList);
 
   const stationOpen = Boolean(stationAnchorEl);
   const languageOpen = Boolean(languageAnchorEl);
   const avatarOpen = Boolean(avatarAnchorEl);
 
-
   // const user = useSelector(getUser);
-  const station = useSelector(getStation);
-  const stationList = useSelector(getStationList);
-  const userInitials = useSelector(getUserInitials);
 
   const handleClickAvatar = (event) => setAvatarAnchorEl(event.currentTarget);
   const handleCloseAvatarMenu = (event) => setAvatarAnchorEl(null);
@@ -128,52 +114,51 @@ export default function CustomAppBar() {
     handleCloseStationMenu();
   };
 
+  useEffect(() => {
+    // console.log(window.app_config.components.AppBar)
+    let newButtonList = appBarButtonList.map((buttonData) => {
+      let copyButtonData = {...buttonData};
+      if (copyButtonData.id === "station") {
+        copyButtonData.onClick = handleClickStation;
+      }
+      else if (copyButtonData.id === "language") {
+        copyButtonData.onClick = handleClickLanguageMenu;
+      };
+      return copyButtonData;
+    });
+
+    setButtonList(newButtonList);
+  }, [appBarButtonList]);
+
   return (
     <>
-      <Box sx={appBarSx}>
-        <Grid container sx={appBarGridSx} >
+      <Box width={window.app_config.components.AppBar.width ?? 64} sx={style.appBar}>
+        <ButtonBase>
+          <CardMedia
+            sx={style.cardMedia}
+            image={"/assets/EyeFlowLogo-mask.png"}
+            title="Home"
+            component="img"
+            onClick={handleClickEyeflow}
+          />
+        </ButtonBase>
 
-          <Grid item>
-            <ButtonBase>
-              <CardMedia
-                sx={cardMediaSx}
-                image={"/assets/EyeFlowInspection-mask.png"}
-                title="Home"
-                component="img"
-                onClick={handleClickEyeflow}
-              />
-            </ButtonBase>
-          </Grid>
+        {buttonList.map((buttonProps, index) =>
+        <Tooltip key={index} title={t(buttonProps.label)}>
+          <IconButton onClick={buttonProps.onClick} size='small'>
+            <img alt="" src={buttonProps.icon} style={style.buttonImage}/>
+          </IconButton>
+        </Tooltip>
+        )}
 
-          <Grid item>
+        <IconButton
+          onClick={handleClickAvatar}
+          sx={style.avatar}
+        >
+          {userInitials}
+        </IconButton>
 
-            <Box sx={endBoxSx}>
-
-              <Tooltip title={t('station')} onClick={handleClickStation} sx={stationButtonSx}>
-                <Button color="inherit" variant="outlined" size='small'>
-                  {station?.label}
-                </Button>
-              </Tooltip>
-
-              <Tooltip title={t('language')} onClick={handleClickLanguageMenu} sx={languageIconSx}>
-                <Button color="inherit" variant="outlined" size='small' endIcon={<TranslateIcon />}>
-                  {i18n.language}
-                </Button>
-              </Tooltip>
-
-              <IconButton
-                onClick={handleClickAvatar}
-                sx={avatarSx}
-              >
-                {userInitials}
-              </IconButton>
-
-            </Box>
-          </Grid>
-        </Grid>
       </Box>
-
-      <div id='appbar-padding' style={appBarPaddingStyle} />
 
       <Menu
         anchorEl={stationAnchorEl}

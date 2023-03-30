@@ -1,6 +1,6 @@
 {
   "name": "edge-fe-framework",
-  "version": "0.3.1",
+  "version": "0.4.1",
   "private": true,
   "dependencies": {
     "@date-io/date-fns": "^2.16.0",
@@ -26,7 +26,7 @@
     "react-virtualized-auto-sizer": "^1.0.7",
     "react-window": "^1.8.8",
     "redux-persist": "^6.0.0",
-    "sdk-fe-eyeflow": "^0.0.15",
+    "sdk-fe-eyeflow": "^0.0.16",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

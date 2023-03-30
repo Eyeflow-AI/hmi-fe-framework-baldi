@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField';
 
 
 // Internal
-import AppBar from '../../components/AppBar';
+import PageWrapper from '../../components/PageWrapper';
 
 // Third-party
 import { useTranslation } from "react-i18next";
@@ -18,16 +18,12 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 
-const APPBAR_HEIGHT = window.app_config.components.AppBar.height;
 const FILTER_HEIGHT = window.app_config.components.FilterBar.height;
 
 const styleSx = {
   filterBox: Object.assign({}, window.app_config.style.box, {
     display: 'flex',
-    width: 'calc(100% - 20px)',
-    margin: '0 10px 0 10px',
-    height: FILTER_HEIGHT,
-    // padding: 1,
+    paddingLeft: 1,
     overflow: 'hidden',
     bgcolor: 'white',
     justifyContent: 'flex-start',
@@ -38,14 +34,12 @@ const styleSx = {
     bgcolor: 'white',
     display: 'flex',
     flexGrow: 1,
-    margin: '10px 10px 0 10px',
-    // marginLeft: 1,
-    height: `calc(100vh - ${APPBAR_HEIGHT}px - 15px - 80px)`,
+    padding: 1,
   }),
 };
 
 
-export default function Dashboard() {
+export default function Dashboard({pageOptions}) {
 
   const { t } = useTranslation();
 
@@ -62,59 +56,58 @@ export default function Dashboard() {
 
 
   return (
-    <>
-      <AppBar />
-      <Box sx={styleSx.filterBox}>
-        <Box
-          sx={{
-            marginLeft: 1
-          }}
-        >
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DateTimePicker
-              value={selectedStartDate}
-              onChange={setSelectedStartDate}
-              label={t('Start Date')}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider>
-        </Box>
-        <Box>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DateTimePicker
-              value={selectedEndDate}
-              onChange={setSelectedEndDate}
-              label={t('End Date')}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider>
-        </Box>
+    <PageWrapper>
+      {({width, height}) => 
+      <Box display="flex" flexDirection="column" width={width} height={height} gap={1}>
+        <Box height={FILTER_HEIGHT} width={width} sx={styleSx.filterBox}>
+          <Box>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DateTimePicker
+                value={selectedStartDate}
+                onChange={setSelectedStartDate}
+                label={t('Start Date')}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+          </Box>
+          <Box>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DateTimePicker
+                value={selectedEndDate}
+                onChange={setSelectedEndDate}
+                label={t('End Date')}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+          </Box>
 
-        <Box
-          sx={{
-            marginLeft: 'auto',
-            marginRight: 1
-          }}
-        >
-          <Button
-            variant="contained"
-            startIcon={<SearchIcon />}
-            onClick={startSearch}
-            disabled={loadingSearch}
+          <Box
+            sx={{
+              marginLeft: 'auto',
+              marginRight: 1
+            }}
           >
-            {t('search')}
-          </Button>
+            <Button
+              variant="contained"
+              startIcon={<SearchIcon />}
+              onClick={startSearch}
+              disabled={loadingSearch}
+            >
+              {t('search')}
+            </Button>
+          </Box>
+        </Box>
+        <Box width={width} sx={styleSx.dataBox}>
+          TODO: Dashboard <br />
+          * Anomalies Evolution (line)<br />
+          * Anomalies Counting (bar)<br />
+          * Parts Counting ok/nok (bar)<br />
+          * Top 10 anomalies (table)<br />
+          * Parts ok/nok evolution (line)<br />
+          *
         </Box>
       </Box>
-      <Box sx={styleSx.dataBox}>
-        TODO: Dashboard <br />
-        * Anomalies Evolution (line)<br />
-        * Anomalies Counting (bar)<br />
-        * Parts Counting ok/nok (bar)<br />
-        * Top 10 anomalies (table)<br />
-        * Parts ok/nok evolution (line)<br />
-        *
-      </Box>
-    </>
+      }
+    </PageWrapper>
   );
 }

@@ -9,7 +9,9 @@ export const initialState = {
   loadingStationList: false,
 
   feConfig: null,
-  loadingFeConfig: false
+  loadingFeConfig: false,
+  languageList: [],
+  appBarButtonList: [],
 };
   
 const appSlice = createSlice({
@@ -19,6 +21,22 @@ const appSlice = createSlice({
     setStationId: (state, action) => {
       state.stationId = action.payload;
     },
+    setLanguageList: (state, action) => {
+      if (Array.isArray(action.payload)) {
+        state.languageList = action.payload;
+      }
+      else {
+        state.languageList = [];
+      }
+    },
+    setAppBarButtonList: (state, action) => {
+      if (Array.isArray(action.payload)) {
+        state.appBarButtonList = action.payload;
+      }
+      else {
+        state.appBarButtonList = [];
+      }
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -56,6 +74,11 @@ export const getStationList = (state) => state.app.stationList ?? [];
 
 export const getFeConfig = (state) => state.app.feConfig;
 
+export const getLanguageList = (state) => state.app.languageList;
+export const getAppBarButtonList = (state) => state.app.appBarButtonList;
+
 export const setStationId = appSlice.actions.setStationId;
+export const setLanguageList = appSlice.actions.setLanguageList;
+export const setAppBarButtonList = appSlice.actions.setAppBarButtonList;
 
 export default appSlice;

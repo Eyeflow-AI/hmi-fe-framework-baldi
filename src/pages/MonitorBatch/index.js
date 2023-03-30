@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 
 
 //Internal
-import AppBar from '../../components/AppBar';
+import PageWrapper from '../../components/PageWrapper';
 import EventHeader from '../../components/EventHeader';
 import EventMenuBox from '../../components/EventMenuBox';
 import EventBatchDataBox from '../../components/EventBatchDataBox';
@@ -15,11 +15,9 @@ import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
 import API from '../../api';
 
 
-const styleSx = {
+const style = {
   mainBox: {
     display: 'flex',
-    width: 'calc(100vw)',
-    padding: 1,
     overflow: 'hidden',
   },
   eventMenuBox: Object.assign({}, window.app_config.style.box, {
@@ -78,34 +76,35 @@ export default function Monitor({pageOptions}) {
   };
 
   return (
-    <>
-      <AppBar />
-      <Box id="monitor-main-box" sx={styleSx.mainBox} height={`calc(100vh - ${window.app_config.components.AppBar.height}px)`}>
-        <Box id="monitor-event-menu-box" sx={styleSx.eventMenuBox} width={pageOptions.options.eventMenuWidth}>
-          <EventMenuBox
-            type="batch"
-            events={batchList}
-            selectedEvent={selectedBatch}
-            onChangeEvent={onChangeEvent}
-            queryParams={queryParams}
-            onChangeParams={onChangeParams}
-            config={pageOptions.components.EventMenuBox}
-          />
+    <PageWrapper>
+      {({width, height}) => 
+        <Box width={width} height={height} sx={style.mainBox}>
+          <Box id="monitor-event-menu-box" sx={style.eventMenuBox} width={pageOptions.options.eventMenuWidth}>
+            <EventMenuBox
+              type="batch"
+              events={batchList}
+              selectedEvent={selectedBatch}
+              onChangeEvent={onChangeEvent}
+              queryParams={queryParams}
+              onChangeParams={onChangeParams}
+              config={pageOptions.components.EventMenuBox}
+            />
+          </Box>
+          <Box id="monitor-data-box" sx={style.dataBox}>
+            <EventHeader
+              data={selectedBatch}
+              disabled={!selectedBatch}
+              config={pageOptions.components.EventHeader}
+            />
+            <EventBatchDataBox
+              data={selectedBatch}
+              countData={selectedBatchCountData}
+              disabled={!selectedBatch}
+              config={pageOptions.components.EventBatchDataBox}
+            />
+          </Box>
         </Box>
-        <Box id="monitor-data-box" sx={styleSx.dataBox}>
-          <EventHeader
-            data={selectedBatch}
-            disabled={!selectedBatch}
-            config={pageOptions.components.EventHeader}
-          />
-          <EventBatchDataBox
-            data={selectedBatch}
-            countData={selectedBatchCountData}
-            disabled={!selectedBatch}
-            config={pageOptions.components.EventBatchDataBox}
-          />
-        </Box>
-      </Box>
-    </>
+    }
+    </PageWrapper>
   );
 }
