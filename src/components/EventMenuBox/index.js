@@ -5,17 +5,15 @@ import React, {useEffect, useState, Fragment} from 'react';
 //Design
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
 
 //Internal
-import getQueryDateString from '../utils/functions/getQueryDateString';
+import getQueryDateString from '../../utils/functions/getQueryDateString';
+import EventMenuItem from './EventMenuItem';
 
 //Third-party
 import {FixedSizeList as List} from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import colors from 'sdk-fe-eyeflow/functions/colors';
-import dateFormat from 'sdk-fe-eyeflow/functions/dateFormat';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { useTranslation } from "react-i18next";
 
@@ -45,45 +43,7 @@ const styleSx = {
     // bgcolor: colors.eyeflow.blue.medium
     bgcolor: '#DBDBDB'
   },
-  itemSx: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    boxShadow: 2,
-    width: '100%',
-    height: '100%',
-    borderRadius: 1,
-    cursor: 'pointer',
-    color: 'white',
-    textShadow: '1px 1px 2px #404040',
-    '&:hover': {
-      boxShadow: (theme) => `${theme.shadows[3]}, inset 0 0 0 2px black`,
-    },
-  },
-  itemHeader: {
-    display: 'flex',
-    width: '100%',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingLeft: 1,
-    paddingRight: 1,
-  },
-  itemImageBox: {
-    paddingLeft: 1.5,
-    paddingRight: 1.5,
-  },
-  itemImage: {
-    height: "auto", width: "100%" //TODO: Fix height in Fire Fox
-  },
-  itemFooter: {
-    paddingBottom: 0.2,
-  },
 }
-
-styleSx.selectedItemSx = Object.assign({}, styleSx.itemSx, {
-  boxShadow: (theme) => `${theme.shadows[2]}, inset 0 0 0 2px black`,
-});
 
 export default function EventMenuList({
   type,
@@ -111,60 +71,24 @@ export default function EventMenuList({
 
     let dateField = config?.dateField ?? "event_time";
 
-    let itemData = events[index];
-    let selected = selectedEvent?._id === itemData._id;
-    let eventIndex = itemData.index ?? 0;
-    let thumbURL = itemData.thumbURL ?? '';
-    let thumbStyle = Boolean(itemData.thumbStyle) ? itemData.thumbStyle : styleSx.itemImage;
-    let status = itemData.status ?? '';
-    let eventTimeString = Boolean(itemData[dateField]) ? dateFormat(itemData[dateField]) : "";
-    // let [dateString, timeString] = eventTimeString.split(" ");
-    let label = itemData.label ?? '';
-    // let conformity = Boolean(itemData.conformity);
-
-    let boxStyle = Object.assign(
-      {backgroundColor: selected ? colors.statuses[status] : `${colors.statuses[status]}90`},
-      selected ? styleSx.selectedItemSx : styleSx.itemSx
-    );
+    let eventData = events[index];
+    let selected = selectedEvent?._id === eventData._id;
 
     const customStyle = Object.assign(
       {display: 'flex', justifyContent: 'center', padding: 4},
       style
     );
 
-    const onItemClick = () => onChangeEvent(itemData._id);
+    const onItemClick = () => onChangeEvent(eventData._id);
 
     return (
       <div key={`item-${index}`} style={customStyle}>
-        <Box
-          sx={boxStyle}
+        <EventMenuItem
+          dateField={dateField}
+          eventData={eventData}
+          selected={selected}
           onClick={onItemClick}
-        >
-          <Box sx={styleSx.itemHeader}>
-            <Box>
-              <Typography variant='h6'>
-                {eventIndex}
-              </Typography>
-            </Box>
-            <Box>
-              <Typography variant='h6'>
-                {label}
-              </Typography>
-            </Box>
-          </Box>
-
-          {thumbURL && (
-          <Box sx={styleSx.itemImageBox}>
-            <img alt="" src={thumbURL} style={thumbStyle}/>
-          </Box>
-          )}
-          
-          <Box sx={styleSx.itemFooter}>
-            <Typography variant="subtitle2">
-              {eventTimeString}
-            </Typography>
-          </Box>
-        </Box>
+        />
       </div>
     )
   };
