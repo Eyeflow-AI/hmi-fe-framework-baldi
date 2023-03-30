@@ -7,6 +7,7 @@ import Box from '@mui/material/Box';
 //Third party
 import { ResponsivePie } from '@nivo/pie'
 import { colors } from 'sdk-fe-eyeflow';
+import { useTranslation } from "react-i18next";
 
 //Internal
 import LabelBox from '../LabelBox';
@@ -15,31 +16,40 @@ const styleSx = {
   mainBoxSx: Object.assign({}, window.app_config.style.box, {
     bgcolor: 'white',
     display: 'flex',
-    flexDirection: 'column',
+    justifyContent: "space-between",
   }),
   infoBox: {
     display: 'flex',
-    width: '100%',
+    flexDirection: 'column',
+    height: '100%',
     gap: 1,
     padding: 1,
     paddingBottom: 10
   },
   graphBoxSx: {
     display: 'flex',
-    height: 200,
-    width: '100%',
-    justifyContent: "space-evenly"
+    flexDirection: 'column',
+    justifyContent: "center",
   },
   pieBoxSx: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: "center"
   },
+  footerBox: {
+    display: 'flex',
+    width: '100%',
+    justifyContent: 'center'
+  }
 };
 
 export default function GraphBox({data, config}) {
 
-  const {dataList, anomaliesPieData, partsPieData} = useMemo(() => {
+  const {t} = useTranslation();
+
+  const {
+    // partsOk, partsNg,
+    dataList, anomaliesPieData, partsPieData} = useMemo(() => {
     let anomaliesPieData = [];
     if (data?.batch_data?.hasOwnProperty("defects_count")) {
       for (let [classId, value] of Object.entries(data.batch_data.defects_count)) {
@@ -75,19 +85,24 @@ export default function GraphBox({data, config}) {
       },
     ];
 
+    let partsPerPack = data?.info?.parts_per_pack ?? 0;
+    let packQtt = data?.info?.pack_qtt ?? 0;
+    let totalQtt = partsPerPack * packQtt;
+
     const dataList = [ //TODO get from config
-      {field: "produced", label: partsProduced},
-      {field: "OK", label: partsOk},
-      {field: "NG", label: partsNg},
+      {field: "produced", label: `${partsProduced} (${(partsProduced/totalQtt*100).toFixed(2)}%)`},
       {field: "speed", label: "TODO"},
+      {field: "box", label: `${Math.floor(partsProduced/partsPerPack) + 1}/${packQtt}`},
+      {field: "OK", label: `${partsOk} (${(partsOk/partsProduced*100).toFixed(2)}%)`},
+      {field: "NG", label: `${partsNg} (${(partsNg/partsProduced*100).toFixed(2)}%)`},
     ];
 
     return {
       partsProduced: partsOk + partsNg,
       partsOk,
       partsNg,
-      packQtt: data?.info?.pack_qtt ?? 0,
-      partsPerPack: data?.info?.parts_per_pack ?? 0,
+      packQtt,
+      partsPerPack,
       anomaliesPieData,
       partsPieData,
       dataList,
@@ -97,23 +112,23 @@ export default function GraphBox({data, config}) {
 
   return (
     <Box width={config?.width ?? 250} height={config?.height ?? '100%'} sx={styleSx.mainBoxSx}>
-      <Box id="graph-info-box" sx={styleSx.infoBox}>
-        {dataList.map(({field, label}, index) => <LabelBox key={index} title={field} label={label}/>)}
+      <Box id="header-box" sx={styleSx.infoBox}>
+        {dataList.map(({field, label}, index) => <LabelBox minWidth={200} key={index} title={field} label={label}/>)}
       </Box>
       
-      <Box id="graph-graph-box" sx={styleSx.graphBoxSx}>
+      <Box id="graph-box" sx={styleSx.graphBoxSx}>
         <Box sx={styleSx.pieBoxSx}>
-          Peças
+          {t("parts")}
           <Box width={500} height={300}>
             <ResponsivePie
               colors={{ datum: 'data.color' }}
               data={partsPieData}
-              margin={{ top: 40, right: 120, bottom: 40, left: 120 }}
+              margin={{ top: 20, right: 120, bottom: 40, left: 120 }}
             />
           </Box>
         </Box>
         <Box sx={styleSx.pieBoxSx}>
-          Anomalias
+          {t("anomalies")}
           <Box width={500} height={300}>
             <ResponsivePie
               data={anomaliesPieData}

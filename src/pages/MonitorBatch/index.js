@@ -52,9 +52,16 @@ export default function Monitor({pageOptions}) {
       .catch(console.error);
   };
 
+  useEffect(() => {
+    if (!selectedBatch && runningBatch) {
+      onChangeEvent(runningBatch._id);
+    };
+    // eslint-disable-next-line
+  }, [selectedBatch, runningBatch]);
+
   // useEffect(() => {console.log({runningBatch})}, [runningBatch]);
   useEffect(() => {
-    if (selectedBatch && batchList.findIndex((el) => el._id === selectedBatch._id) === -1) {
+    if (selectedBatch && (selectedBatch._id !== runningBatch?._id) && batchList.findIndex((el) => el._id === selectedBatch._id) === -1) {
       setSelectedBatch(null);
       setSelectedBatchCountData(null);
     };

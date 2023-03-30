@@ -19,7 +19,7 @@ export default function GetBatchList({ stationId, queryParams, sleepTime = 30000
         .then((response) => {
           let hash = response.hash;
 
-          if (!Boolean(hash) || !Boolean(data.hash) || hash !== data.hash) {
+          if (hash !== data.hash) {
             setData(response);
           }
           else {
