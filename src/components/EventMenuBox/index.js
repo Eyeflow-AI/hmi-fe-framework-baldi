@@ -5,6 +5,7 @@ import React, {useEffect, useState, Fragment} from 'react';
 //Design
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import ButtonBase from '@mui/material/ButtonBase';
 import CircularProgress from '@mui/material/CircularProgress';
 
 //Internal
@@ -23,10 +24,23 @@ const styleSx = {
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    width: '100%',
     gap: 1
   },
-  defaultBox: Object.assign({}, window.app_config.style.box, {bgcolor: "white"}),
+  defaultBox: {bgcolor: "white", borderRadius: 1},
+  createBatchButton: Object.assign({}, window.app_config.style.box, {
+    bgcolor: 'primary.main',
+    display: 'flex',
+    flexDirection: 'column',
+    color: 'white',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }),
+  createBatchButtonIcon: {
+    height:30,
+    width:30,
+    filter: 'invert(1)',
+    marginBottom: '8px'
+  },
   menuBox: Object.assign({}, window.app_config.style.box, {
     bgcolor: 'white',
     width: '100%',
@@ -56,7 +70,9 @@ const styleSx = {
 
 export default function EventMenuList({
   type,
+  onClickCreateBatch,
   height,
+  width,
   runningEvent,
   events,
   selectedEvent,
@@ -75,6 +91,7 @@ export default function EventMenuList({
   const batchButtonBoxHeight = type === "batch" ? itemMenuHeight + 10 : 0;
   const menuBoxHeight = height - batchButtonBoxHeight;
   const dateField = config?.dateField ?? "event_time";
+  const startBatchIcon = config?.startBatchIcon;
 
   const [dateValue, setDateValue] = useState(new Date());
 
@@ -115,7 +132,7 @@ export default function EventMenuList({
 
 
   return (
-    <Box id="event-menu-box" sx={styleSx.mainBox}>
+    <Box id="event-menu-box" width={width} sx={styleSx.mainBox}>
       {type === "batch" && (
         <Box height={batchButtonBoxHeight} sx={styleSx.defaultBox}>
           {runningEvent
@@ -128,7 +145,14 @@ export default function EventMenuList({
             onClick={onEventClick(runningEvent)}
           />
           )
-          : "TODO"
+          : (
+          <ButtonBase>
+            <Box height={batchButtonBoxHeight} width={width} onClick={onClickCreateBatch} sx={styleSx.createBatchButton}>
+              <img alt="" src={startBatchIcon} style={styleSx.createBatchButtonIcon}/>
+              {t("new_batch")}
+            </Box>
+          </ButtonBase>
+          )
           }
         </Box>
       )}

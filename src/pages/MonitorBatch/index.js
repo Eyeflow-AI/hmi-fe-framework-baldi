@@ -85,13 +85,19 @@ export default function Monitor({pageOptions}) {
     });
   };
 
+  const onClickCreateBatch = () => {
+    console.log("onClickCreateBatch");
+  };
+
   return (
     <PageWrapper>
       {({width, height}) => 
         <Box width={width} height={height} sx={style.mainBox}>
-          <Box id="monitor-event-menu-box" width={pageOptions.options.eventMenuWidth}>
+          {/* <Box id="monitor-event-menu-box" width={pageOptions.options.eventMenuWidth}> */}
             <EventMenuBox
               type="batch"
+              width={pageOptions.options.eventMenuWidth}
+              onClickCreateBatch={onClickCreateBatch}
               runningEvent={runningBatch}
               events={batchList}
               loadingData={loadingBatchList}
@@ -102,7 +108,7 @@ export default function Monitor({pageOptions}) {
               config={pageOptions.components.EventMenuBox}
               height={height}
             />
-          </Box>
+          {/* </Box> */}
           <Box id="monitor-data-box" sx={style.dataBox}>
             <EventHeader
               data={selectedBatch}
