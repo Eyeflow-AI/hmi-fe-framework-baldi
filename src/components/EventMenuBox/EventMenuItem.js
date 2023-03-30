@@ -33,13 +33,11 @@ const style = {
     display: 'flex',
     width: '100%',
     justifyContent: 'space-between',
-    alignItems: 'center',
     paddingLeft: 1,
     paddingRight: 1,
   },
   itemImageBox: {
-    paddingLeft: 1.5,
-    paddingRight: 1.5,
+    marginTop: -2
   },
   itemImage: {
     height: "auto", width: "100%" //TODO: Fix height in Fire Fox
@@ -77,10 +75,17 @@ export default function EventMenuItem ({index, dateField, eventData, selected, o
               {index}
             </Typography>
           </Box>
-          <Box>
-            <Typography variant='h6'>
-              {label}
-            </Typography>
+          <Box display="flex" flexDirection="column" alignItems="end">
+            <Box>
+              <Typography variant='subtitle1'>
+                {label}
+              </Typography>
+            </Box>
+            <Box>
+              <Typography variant='subtitle2'>
+                {status}
+              </Typography>
+            </Box>
           </Box>
         </Box>
 
