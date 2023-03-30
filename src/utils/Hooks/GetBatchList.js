@@ -14,7 +14,7 @@ export default function GetBatchList({ stationId, queryParams, sleepTime = 30000
 
 
   useEffect(() => {
-    if (queryParams) {
+    if (queryParams && stationId) {
       API.get.batchList({ stationId, params: queryParams}, setLoading)
         .then((response) => {
           let hash = response.hash;
@@ -29,7 +29,7 @@ export default function GetBatchList({ stationId, queryParams, sleepTime = 30000
         .catch(console.log);
     }
     // eslint-disable-next-line
-  }, [clock, queryParams]);
+  }, [stationId, clock, queryParams]);
 
   return { batchList: data.batchList, loading, setData };
 };

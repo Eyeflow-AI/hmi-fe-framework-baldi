@@ -53,9 +53,8 @@ style.selectedItemSx = Object.assign({}, style.itemSx, {
   boxShadow: (theme) => `${theme.shadows[2]}, inset 0 0 0 2px black`,
 });
 
-export default function EventMenuItem ({dateField, eventData, selected, onClick}) {
+export default function EventMenuItem ({index, dateField, eventData, selected, onClick}) {
 
-  let eventIndex = eventData.index ?? 0;
   let thumbURL = eventData.thumbURL ?? '';
   let thumbStyle = Boolean(eventData.thumbStyle) ? eventData.thumbStyle : style.itemImage;
   let status = eventData.status ?? '';
@@ -75,7 +74,7 @@ export default function EventMenuItem ({dateField, eventData, selected, onClick}
         <Box sx={style.itemHeader}>
           <Box>
             <Typography variant='h6'>
-              {eventIndex}
+              {index}
             </Typography>
           </Box>
           <Box>
