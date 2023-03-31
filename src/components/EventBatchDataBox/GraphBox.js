@@ -3,6 +3,7 @@ import React, {useMemo} from 'react';
 
 //Design
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 //Third party
 import { ResponsivePie } from '@nivo/pie'
@@ -16,7 +17,7 @@ const styleSx = {
   mainBoxSx: Object.assign({}, window.app_config.style.box, {
     bgcolor: 'white',
     display: 'flex',
-    justifyContent: "space-between",
+    justifyContent: "space-evenly",
   }),
   infoBox: {
     display: 'flex',
@@ -24,7 +25,8 @@ const styleSx = {
     height: '100%',
     gap: 1,
     padding: 1,
-    paddingBottom: 10
+    paddingBottom: 10,
+    justifyContent: 'space-evenly'
   },
   graphBoxSx: {
     display: 'flex',
@@ -118,22 +120,40 @@ export default function GraphBox({data, config}) {
       
       <Box id="graph-box" sx={styleSx.graphBoxSx}>
         <Box sx={styleSx.pieBoxSx}>
-          {t("parts")}
+          <Typography variant="h6" marginBottom={-1}>
+            {t("parts")}
+          </Typography>
           <Box width={500} height={300}>
             <ResponsivePie
               colors={{ datum: 'data.color' }}
               data={partsPieData}
               margin={{ top: 20, right: 120, bottom: 40, left: 120 }}
+              theme={{
+                labels: {
+                  text: {
+                    fontSize: 20,
+                  }
+                }
+              }}
             />
           </Box>
         </Box>
         <Box sx={styleSx.pieBoxSx}>
-          {t("anomalies")}
-          <Box width={500} height={300}>
+          <Typography variant="h6" marginBottom={-1}>
+            {t("anomalies")}
+          </Typography>
+          <Box width={650} height={350}>
             <ResponsivePie
               data={anomaliesPieData}
               arcLinkLabelsStraightLength={0}
-              margin={{ top: 40, right: 120, bottom: 40, left: 120 }}
+              margin={{ top: 20, right: 120, bottom: 40, left: 120 }}
+              theme={{
+                labels: {
+                  text: {
+                    fontSize: 20,
+                  }
+                }
+              }}
             />
           </Box>
         </Box>
