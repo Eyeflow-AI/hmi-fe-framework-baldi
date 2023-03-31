@@ -16,6 +16,7 @@ const mainBoxSx = Object.assign(
     bgcolor: 'background.paper',
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 1,
     flexDirection: 'column',
     paddingTop: 2,
