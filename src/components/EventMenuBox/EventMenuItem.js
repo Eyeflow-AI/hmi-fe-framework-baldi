@@ -11,7 +11,7 @@ import '../../css/animateFlicker.css';
 
 //Third-party
 import { useTranslation } from "react-i18next";
-import colors from 'sdk-fe-eyeflow/functions/colors';
+import {colors} from 'sdk-fe-eyeflow';
 import dateFormat from 'sdk-fe-eyeflow/functions/dateFormat';
 
 

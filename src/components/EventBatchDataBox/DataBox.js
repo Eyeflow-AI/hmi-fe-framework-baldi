@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 
 const style = {
   dataBoxSx: Object.assign({}, window.app_config.style.box, {
-    bgcolor: 'white',
+    bgcolor: 'background.paper',
   }),
 };
 

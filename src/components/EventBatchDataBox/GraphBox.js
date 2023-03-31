@@ -15,7 +15,7 @@ import LabelBox from '../LabelBox';
 
 const styleSx = {
   mainBoxSx: Object.assign({}, window.app_config.style.box, {
-    bgcolor: 'white',
+    bgcolor: 'background.paper',
     display: 'flex',
     justifyContent: "space-evenly",
   }),
@@ -132,6 +132,7 @@ export default function GraphBox({data, config}) {
                 labels: {
                   text: {
                     fontSize: 20,
+                    fill: '#ffffff',
                   }
                 }
               }}
@@ -151,6 +152,7 @@ export default function GraphBox({data, config}) {
                 labels: {
                   text: {
                     fontSize: 20,
+                    fill: '#ffffff',
                   }
                 }
               }}
