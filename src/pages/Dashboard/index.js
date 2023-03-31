@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
-
+import { Grid } from '@mui/material';
 
 // Internal
 import PageWrapper from '../../components/PageWrapper';
@@ -39,7 +39,7 @@ const styleSx = {
 };
 
 
-export default function Dashboard({pageOptions}) {
+export default function Dashboard({ pageOptions }) {
 
   const { t } = useTranslation();
 
@@ -57,56 +57,82 @@ export default function Dashboard({pageOptions}) {
 
   return (
     <PageWrapper>
-      {({width, height}) => 
-      <Box display="flex" flexDirection="column" width={width} height={height} gap={1}>
-        <Box height={FILTER_HEIGHT} width={width} sx={styleSx.filterBox}>
-          <Box>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DateTimePicker
-                value={selectedStartDate}
-                onChange={setSelectedStartDate}
-                label={t('Start Date')}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </LocalizationProvider>
-          </Box>
-          <Box>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DateTimePicker
-                value={selectedEndDate}
-                onChange={setSelectedEndDate}
-                label={t('End Date')}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </LocalizationProvider>
-          </Box>
+      {({ width, height }) =>
+        <Box display="flex" flexDirection="column" width={width} height={height} gap={1}>
+          <Box height={FILTER_HEIGHT} width={width} sx={styleSx.filterBox}>
+            <Box>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DateTimePicker
+                  value={selectedStartDate}
+                  onChange={setSelectedStartDate}
+                  label={t('Start Date')}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+            </Box>
+            <Box>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DateTimePicker
+                  value={selectedEndDate}
+                  onChange={setSelectedEndDate}
+                  label={t('End Date')}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+            </Box>
 
-          <Box
-            sx={{
-              marginLeft: 'auto',
-              marginRight: 1
-            }}
-          >
-            <Button
-              variant="contained"
-              startIcon={<SearchIcon />}
-              onClick={startSearch}
-              disabled={loadingSearch}
+            <Box
+              sx={{
+                marginLeft: 'auto',
+                marginRight: 1
+              }}
             >
-              {t('search')}
-            </Button>
+              <Button
+                variant="contained"
+                startIcon={<SearchIcon />}
+                onClick={startSearch}
+                disabled={loadingSearch}
+              >
+                {t('search')}
+              </Button>
+            </Box>
+          </Box>
+          <Box width={width} sx={styleSx.dataBox}>
+            {/* TODO: Dashboard <br />
+            * Anomalies Evolution (line)<br />
+            * Anomalies Counting (bar)<br />
+            * Parts Counting ok/nok (bar)<br />
+            * Top 10 anomalies (table)<br />
+            * Parts ok/nok evolution (line)<br />
+            * */}
+            <Grid container justifyContent='space-between'>
+              <Grid item xs={3}>
+                1
+              </Grid>
+              <Grid item xs={3}>
+                2
+              </Grid>
+              <Grid item xs={3}>
+                3
+              </Grid>
+              <Grid item xs={3}>
+                4
+              </Grid>
+              <Grid item xs={3}>
+                5
+              </Grid>
+              <Grid item xs={3}>
+                6
+              </Grid>
+              <Grid item xs={3}>
+                7
+              </Grid>
+              <Grid item xs={3}>
+                8
+              </Grid>
+            </Grid>
           </Box>
         </Box>
-        <Box width={width} sx={styleSx.dataBox}>
-          TODO: Dashboard <br />
-          * Anomalies Evolution (line)<br />
-          * Anomalies Counting (bar)<br />
-          * Parts Counting ok/nok (bar)<br />
-          * Top 10 anomalies (table)<br />
-          * Parts ok/nok evolution (line)<br />
-          *
-        </Box>
-      </Box>
       }
     </PageWrapper>
   );
