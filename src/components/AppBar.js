@@ -47,14 +47,13 @@ const style = {
   buttonImage: {
     height: 30,
     width: 30,
-    filter: "invert(1)"
+    filter: "invert(1)",
   },
   avatar: {
     cursor: 'pointer',
     color: (theme) => theme.palette.getContrastText(deepOrange[500]),
     backgroundColor: deepOrange[500],
     width: 46,
-    top: 'calc(100% - 300px)',
     height: 46,
     "&:hover, &.Mui-focusVisible": {
       backgroundColor: deepOrange[600],
@@ -134,7 +133,10 @@ export default function CustomAppBar() {
 
   return (
     <>
-      <Box width={window.app_config.components.AppBar.width ?? 64} sx={style.appBar}>
+      <Box
+        width={window.app_config.components.AppBar.width ?? 64}
+        sx={style.appBar}
+      >
         <ButtonBase>
           <CardMedia
             sx={style.cardMedia}
@@ -145,23 +147,40 @@ export default function CustomAppBar() {
           />
         </ButtonBase>
 
-        {buttonList.map((buttonProps, index) =>
-          <Tooltip key={index} title={t(buttonProps.label)}>
-            <IconButton onClick={buttonProps.onClick} size='small'>
-              <img alt="" src={buttonProps.icon} style={style.buttonImage} />
-            </IconButton>
-          </Tooltip>
-        )}
 
-        <IconButton
-          onClick={handleClickAvatar}
-          sx={style.avatar}
+
+
+        <Box
+          sx={{
+            display: 'flex',
+            width: '100%',
+            // height: 'calc(100vh - 80px)',
+            gap: 4,
+            flexDirection: 'column',
+            flexGrow: 1,
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            paddingBottom: 2,
+          }}
         >
-          {userInitials}
-        </IconButton>
 
+          {buttonList.map((buttonProps, index) =>
+            <Tooltip key={index} title={t(buttonProps.label)}>
+              <IconButton onClick={buttonProps.onClick} size='small'>
+                <img alt="" src={buttonProps.icon} style={style.buttonImage} />
+              </IconButton>
+            </Tooltip>
+          )}
+
+          <IconButton
+            onClick={handleClickAvatar}
+            sx={style.avatar}
+          >
+            {userInitials}
+          </IconButton>
+
+        </Box>
       </Box>
-
       <Menu
         anchorEl={stationAnchorEl}
         open={stationOpen}

@@ -1,5 +1,5 @@
 // React
-import React, {useMemo} from 'react';
+import React, { useMemo } from 'react';
 
 // Design
 import Box from '@mui/material/Box';
@@ -18,27 +18,27 @@ const style = {
   grid: Object.assign({}, window.app_config.style.box, {bgcolor: "background.paper"}),
 };
 
-export default function Home({pageOptions}) {
+export default function Home({ pageOptions }) {
 
   const station = GetSelectedStation();
   const navigate = useNavigate();
 
-  const {pageList} = useMemo(() => {
+  const { pageList } = useMemo(() => {
     let pageList = [];
     for (let pageData of (pageOptions?.options?.pageList ?? [])) {
       if (window.app_config.pages.hasOwnProperty(pageData.page)) {
-        pageList.push({data: window.app_config.pages[pageData.page], icon: pageData.icon});
+        pageList.push({ data: window.app_config.pages[pageData.page], icon: pageData.icon });
       }
       else {
         console.error(`Missing page ${pageData.page} in feConfig`);
       };
     };
     // let pageList = .map((page) => {window.app_config.pages[]});
-    return {pageList};
+    return { pageList };
   }, [pageOptions]);
 
   const onButtonClick = (pageData) => {
-    navigate(updatePath(pageData.path, station), {state: {changeType: "click"}}); 
+    navigate(updatePath(pageData.path, station), { state: { changeType: "click" } });
   };
 
   return (
