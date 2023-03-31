@@ -16,7 +16,7 @@ const mainBoxSx = Object.assign(
   {},
   window.app_config.style.box,
   {
-    bgcolor: 'white',
+    bgcolor: 'background.paper',
     display: 'flex',
     alignItems: 'center',
     gap: 1,

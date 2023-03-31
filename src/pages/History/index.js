@@ -19,7 +19,7 @@ import PageWrapper from '../../components/PageWrapper';
 
 const styleSx = {
   dataBox: Object.assign({}, window.app_config.style.box, {
-    bgcolor: 'white',
+    bgcolor: 'background.paper',
     display: 'flex',
   }),
 };

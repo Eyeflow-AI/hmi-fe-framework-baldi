@@ -33,6 +33,7 @@ const style = {
     flexDirection: 'column',
     alignItems: 'center',
     // padding: '8px 16px 8px 25px',
+    bgcolor: 'background.paper',
     boxShadow: 2,
     height: '100%',
     // position: 'fixed',

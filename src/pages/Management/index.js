@@ -17,19 +17,19 @@ import { colors } from 'sdk-fe-eyeflow';
 
 const styleSx = {
   mainBox: {
-    // bgcolor: 'white',
+    // bgcolor: 'background.paper',
     display: 'flex',
     gap: 0.1
   },
   buttonsBox: Object.assign({}, window.app_config.style.box, {
-    bgcolor: 'white',
+    bgcolor: 'background.paper',
     display: 'flex',
     width: '150px',
     justifyContent: 'center',
     paddingTop: '4px'
   }),
   dataBox: Object.assign({}, window.app_config.style.box, {
-    bgcolor: 'white',
+    bgcolor: 'background.paper',
     display: 'flex',
     flexGrow: 1,
     marginLeft: 1,
