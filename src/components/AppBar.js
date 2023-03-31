@@ -35,7 +35,7 @@ const style = {
     // padding: '8px 16px 8px 25px',
     bgcolor: 'background.paper',
     boxShadow: 2,
-    height: '100%',
+    height: '100vh',
     // position: 'fixed',
     paddingTop: 1,
     gap: 4
@@ -47,13 +47,14 @@ const style = {
   buttonImage: {
     height: 30,
     width: 30,
-    filter:"invert(1)"
+    filter: "invert(1)"
   },
   avatar: {
     cursor: 'pointer',
     color: (theme) => theme.palette.getContrastText(deepOrange[500]),
     backgroundColor: deepOrange[500],
     width: 46,
+    top: 'calc(100% - 300px)',
     height: 46,
     "&:hover, &.Mui-focusVisible": {
       backgroundColor: deepOrange[600],
@@ -94,8 +95,8 @@ export default function CustomAppBar() {
   const handleClickLanguageMenu = (event) => setLanguageAnchorEl(event.currentTarget);
   const handleCloseLanguageMenu = (event) => setLanguageAnchorEl(null);
 
-  const handleClickEyeflow = () => navigate(updatePath(HOME_URL, station), {state: {changeType: "click"}});
-  const handleClickUserSettings = () => navigate(updatePath('/app/user-settings', station), {state: {changeType: "click"}}); //TODO
+  const handleClickEyeflow = () => navigate(updatePath(HOME_URL, station), { state: { changeType: "click" } });
+  const handleClickUserSettings = () => navigate(updatePath('/app/user-settings', station), { state: { changeType: "click" } }); //TODO
 
   const handleClickLogout = () => {
     dispatch(authSlice.actions.logout());
@@ -110,7 +111,7 @@ export default function CustomAppBar() {
     dispatch(setStationId(newStation._id));
     let originalURL = getOriginalURLPath(location.pathname);
     if (originalURL?.params?.hasOwnProperty("stationSlugLabel")) {
-      navigate(updatePath(originalURL.pattern.path, newStation), {state: {changeType: "click"}});
+      navigate(updatePath(originalURL.pattern.path, newStation), { state: { changeType: "click" } });
     };
     handleCloseStationMenu();
   };
@@ -118,7 +119,7 @@ export default function CustomAppBar() {
   useEffect(() => {
     // console.log(window.app_config.components.AppBar)
     let newButtonList = appBarButtonList.map((buttonData) => {
-      let copyButtonData = {...buttonData};
+      let copyButtonData = { ...buttonData };
       if (copyButtonData.id === "station") {
         copyButtonData.onClick = handleClickStation;
       }
@@ -145,11 +146,11 @@ export default function CustomAppBar() {
         </ButtonBase>
 
         {buttonList.map((buttonProps, index) =>
-        <Tooltip key={index} title={t(buttonProps.label)}>
-          <IconButton onClick={buttonProps.onClick} size='small'>
-            <img alt="" src={buttonProps.icon} style={style.buttonImage}/>
-          </IconButton>
-        </Tooltip>
+          <Tooltip key={index} title={t(buttonProps.label)}>
+            <IconButton onClick={buttonProps.onClick} size='small'>
+              <img alt="" src={buttonProps.icon} style={style.buttonImage} />
+            </IconButton>
+          </Tooltip>
         )}
 
         <IconButton
@@ -168,14 +169,14 @@ export default function CustomAppBar() {
         id="station-menu"
       >
         {stationList.map((stationData) =>
-        <MenuItem
-          key={stationData._id}
-          value={stationData._id}
-          onClick={onChangeStation(stationData)}
-          selected={stationData._id === station._id}
-        >
-          {stationData.label}
-        </MenuItem>
+          <MenuItem
+            key={stationData._id}
+            value={stationData._id}
+            onClick={onChangeStation(stationData)}
+            selected={stationData._id === station._id}
+          >
+            {stationData.label}
+          </MenuItem>
         )}
       </Menu>
 
