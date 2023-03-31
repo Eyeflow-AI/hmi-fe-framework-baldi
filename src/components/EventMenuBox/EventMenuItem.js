@@ -6,11 +6,14 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
+//Internal
+import '../../css/animateFlicker.css';
 
 //Third-party
-import colors from 'sdk-fe-eyeflow/functions/colors';
+import { useTranslation } from "react-i18next";
+import {colors} from 'sdk-fe-eyeflow';
 import dateFormat from 'sdk-fe-eyeflow/functions/dateFormat';
-import '../../css/animateFlicker.css';
+
 
 const style = {
   itemSx: {
@@ -37,7 +40,7 @@ const style = {
     paddingRight: 1,
   },
   itemImageBox: {
-    marginTop: -2
+    marginTop: -1
   },
   itemImage: {
     height: "auto", width: "100%" //TODO: Fix height in Fire Fox
@@ -53,6 +56,7 @@ style.selectedItemSx = Object.assign({}, style.itemSx, {
 
 export default function EventMenuItem ({index, dateField, eventData, selected, onClick}) {
 
+  const {t} = useTranslation();
   let thumbURL = eventData.thumbURL ?? '';
   let thumbStyle = Boolean(eventData.thumbStyle) ? eventData.thumbStyle : style.itemImage;
   let status = eventData.status ?? '';
@@ -76,14 +80,14 @@ export default function EventMenuItem ({index, dateField, eventData, selected, o
             </Typography>
           </Box>
           <Box display="flex" flexDirection="column" alignItems="end">
-            <Box>
+            <Box marginBottom={-1}>
               <Typography variant='subtitle1'>
                 {label}
               </Typography>
             </Box>
             <Box className={status === "running" ? "animate-flicker" : undefined}>
               <Typography variant='subtitle2'>
-                {status}
+                {t(status)}
               </Typography>
             </Box>
           </Box>

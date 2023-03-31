@@ -42,7 +42,7 @@ const styleSx = {
     marginBottom: '8px'
   },
   menuBox: Object.assign({}, window.app_config.style.box, {
-    bgcolor: 'white',
+    bgcolor: 'background.paper',
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
@@ -63,8 +63,7 @@ const styleSx = {
     margin: 1,
     alignItems: 'center',
     borderRadius: window.app_config.style.box.borderRadius,
-    // bgcolor: colors.eyeflow.blue.medium
-    bgcolor: '#DBDBDB'
+    bgcolor: 'background.paperLighter',
   },
 }
 
