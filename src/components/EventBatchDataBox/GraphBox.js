@@ -42,6 +42,21 @@ const styleSx = {
     display: 'flex',
     width: '100%',
     justifyContent: 'center'
+  },
+};
+
+const responsivePieTheme = {
+  tooltip: {
+    container: {
+      background: colors.paper.blue.dark
+    }
+  },
+  labels: {
+    text: {
+      fontSize: 20,
+      fill: '#ffffff',
+      textShadow: "1px 1px 2px #353535"
+    }
   }
 };
 
@@ -123,24 +138,12 @@ export default function GraphBox({data, config}) {
           <Typography variant="h6" marginBottom={-1}>
             {t("parts")}
           </Typography>
-          <Box width={500} height={300}>
+          <Box width={600} height={300}>
             <ResponsivePie
               colors={{ datum: 'data.color' }}
               data={partsPieData}
               margin={{ top: 20, right: 120, bottom: 40, left: 120 }}
-              theme={{
-                tooltip: {
-                  container: {
-                    background: colors.paper.blue.dark
-                  }
-                },
-                labels: {
-                  text: {
-                    fontSize: 20,
-                    fill: '#ffffff',
-                  }
-                }
-              }}
+              theme={responsivePieTheme}
             />
           </Box>
         </Box>
@@ -148,24 +151,12 @@ export default function GraphBox({data, config}) {
           <Typography variant="h6" marginBottom={-1}>
             {t("anomalies")}
           </Typography>
-          <Box width={650} height={350}>
+          <Box width={600} height={300}>
             <ResponsivePie
               data={anomaliesPieData}
               arcLinkLabelsStraightLength={0}
               margin={{ top: 20, right: 120, bottom: 40, left: 120 }}
-              theme={{
-                tooltip: {
-                  container: {
-                    background: colors.paper.blue.dark
-                  }
-                },
-                labels: {
-                  text: {
-                    fontSize: 20,
-                    fill: '#ffffff',
-                  }
-                }
-              }}
+              theme={responsivePieTheme}
             />
           </Box>
         </Box>
