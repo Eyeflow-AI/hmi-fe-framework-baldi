@@ -12,8 +12,7 @@ export default function GetBatchList({ stationId, sleepTime = 30000 } = {}) {
   const [loading, setLoading] = useState(null);
   const {clock} = Clock({sleepTime});
 
-
-  useEffect(() => {
+  const loadRunningBatch = () => {
     if (stationId) {
       API.get.runningBatch({ stationId }, setLoading)
         .then((response) => {
@@ -27,9 +26,13 @@ export default function GetBatchList({ stationId, sleepTime = 30000 } = {}) {
           };
         })
         .catch(console.log);
-    }
+    };
+  };
+
+  useEffect(() => {
+    loadRunningBatch();
     // eslint-disable-next-line
   }, [clock, stationId]);
 
-  return { runningBatch: data.batch, loading, setData };
+  return { runningBatch: data.batch, loading, loadRunningBatch };
 };

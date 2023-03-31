@@ -8,6 +8,7 @@ import Box from '@mui/material/Box';
 //Internal
 import PageWrapper from '../../components/PageWrapper';
 import EventHeader from '../../components/EventHeader';
+import EventAppBar from '../../components/EventAppBar';
 import EventMenuBox from '../../components/EventMenuBox';
 import EventBatchDataBox from '../../components/EventBatchDataBox';
 import GetBatchList from '../../utils/Hooks/GetBatchList';
@@ -37,8 +38,8 @@ export default function Monitor({pageOptions}) {
   const { _id: stationId } = GetSelectedStation();
   const [queryParams, setQueryParams] = useState(null);
 
-  const { batchList, loading: loadingBatchList } = GetBatchList({ stationId, queryParams, sleepTime: pageOptions.options.getEventSleepTime });
-  const {runningBatch} = GetRunningBatch({stationId, sleepTime: pageOptions.options.getEventSleepTime});
+  const { batchList, loading: loadingBatchList, loadBatchList } = GetBatchList({ stationId, queryParams, sleepTime: pageOptions.options.getEventSleepTime });
+  const {runningBatch, loadRunningBatch} = GetRunningBatch({stationId, sleepTime: pageOptions.options.getEventSleepTime});
 
   const [selectedBatch, setSelectedBatch] = useState(null);
   const [selectedBatchCountData, setSelectedBatchCountData] = useState(null);
@@ -89,6 +90,36 @@ export default function Monitor({pageOptions}) {
     console.log("onClickCreateBatch");
   };
 
+  const updateAll = () => {
+    loadBatchList();
+    loadRunningBatch();
+    if (selectedBatch) {
+      onChangeEvent(selectedBatch._id);
+    };
+  };
+
+  const onClickPause = () => {
+    if (selectedBatch) {
+      API.put.batchPause({ stationId, batchId: selectedBatch._id })
+        .then((data) => {
+          console.log("batch paused");
+          updateAll();
+        })
+        .catch(console.error);
+    };
+  };
+
+  const onClickResume = () => {
+    if (selectedBatch) {
+      API.put.batchResume({ stationId, batchId: selectedBatch._id })
+        .then((data) => {
+          console.log("batch resumed");
+          updateAll();
+        })
+        .catch(console.error);
+    };
+  };
+
   return (
     <PageWrapper>
       {({width, height}) => 
@@ -108,19 +139,30 @@ export default function Monitor({pageOptions}) {
               config={pageOptions.components.EventMenuBox}
               height={height}
             />
-          {/* </Box> */}
           <Box id="monitor-data-box" sx={style.dataBox}>
             <EventHeader
               data={selectedBatch}
               disabled={!selectedBatch}
               config={pageOptions.components.EventHeader}
             />
-            <EventBatchDataBox
-              data={selectedBatch}
-              countData={selectedBatchCountData}
-              disabled={!selectedBatch}
-              config={pageOptions.components.EventBatchDataBox}
-            />
+            <Box
+              display="flex"
+              height={height - pageOptions.components.EventHeader.height}
+            >
+              <EventAppBar
+                data={selectedBatch}
+                disabled={!selectedBatch}
+                config={pageOptions.components.EventAppBar}
+                onClickPause={onClickPause}
+                onClickResume={onClickResume}
+              />
+              <EventBatchDataBox
+                data={selectedBatch}
+                countData={selectedBatchCountData}
+                disabled={!selectedBatch}
+                config={pageOptions.components.EventBatchDataBox}
+              />
+            </Box>
           </Box>
         </Box>
     }
