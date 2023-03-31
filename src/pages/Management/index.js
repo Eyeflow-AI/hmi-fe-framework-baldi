@@ -42,20 +42,16 @@ const styleSx = {
 };
 
 
-export default function Management({pageOptions}) {
+export default function Management({ pageOptions }) {
 
   const { t } = useTranslation();
   const [selectedTab, setSelectedTab] = useState('general');
 
-  const TABS = [
-    'general'
-    , 'users'
-    , 'alarms'
-  ]
+  const TABS = window.app_config.pages.Management.options.tabs ?? [];
 
   return (
     <PageWrapper>
-      {({width, height}) => 
+      {({ width, height }) =>
         <Box width={width} height={height} sx={styleSx.mainBox}>
           <Box sx={styleSx.buttonsBox}>
             <Stack spacing={0.5}>
@@ -65,12 +61,21 @@ export default function Management({pageOptions}) {
                     key={`button-${tab}`}
                     sx={{
                       ...styleSx.buttons,
-                      backgroundColor: selectedTab === tab ? colors.eyeflow.blue.medium : "white",
-                      color: selectedTab !== tab ? colors.eyeflow.blue.dark : "white"
+                      backgroundColor: selectedTab === tab.name ? colors.eyeflow.blue.medium : "white",
+                      color: selectedTab !== tab.name ? colors.eyeflow.blue.dark : "white"
                     }}
-                    onClick={() => setSelectedTab(tab)}
+                    onClick={() => setSelectedTab(tab.name)}
                   >
-                    {t(tab)}
+                    <Stack>
+                      <img
+                        alt=""
+                        src={tab.icon}
+                        style={{
+                          height: '50px'
+                        }}
+                      />
+                      {t(tab.name)}
+                    </Stack>
                   </Button>
                 ))
               }
