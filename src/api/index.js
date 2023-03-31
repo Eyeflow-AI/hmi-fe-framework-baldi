@@ -59,7 +59,8 @@ const API = {
     configForFE: (setLoading) => request(instance.get(`config/fe`), setLoading),
   },
   put: {
-
+    batchPause: ({ stationId, batchId }, setLoading) => request(instance.put(`batch/${stationId}/${batchId}/pause`), setLoading),
+    batchResume: ({ stationId, batchId }, setLoading) => request(instance.put(`batch/${stationId}/${batchId}/resume`), setLoading),
   },
   delete: {
 
