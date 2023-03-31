@@ -53,7 +53,7 @@ const responsivePieTheme = {
   },
   labels: {
     text: {
-      fontSize: 20,
+      fontSize: 21,
       fill: '#ffffff',
       textShadow: "1px 1px 2px #353535"
     }
@@ -134,7 +134,7 @@ export default function GraphBox({data, config}) {
       </Box>
       
       <Box id="graph-box" sx={styleSx.graphBoxSx}>
-        <Box sx={styleSx.pieBoxSx}>
+        <Box marginBottom={-2} sx={styleSx.pieBoxSx}>
           <Typography variant="h6" marginBottom={-1}>
             {t("parts")}
           </Typography>

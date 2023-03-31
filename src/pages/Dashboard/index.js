@@ -65,7 +65,7 @@ export default function Dashboard({ pageOptions }) {
                 <DateTimePicker
                   value={selectedStartDate}
                   onChange={setSelectedStartDate}
-                  label={t('Start Date')}
+                  label={t('start_date')}
                   renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
@@ -75,7 +75,7 @@ export default function Dashboard({ pageOptions }) {
                 <DateTimePicker
                   value={selectedEndDate}
                   onChange={setSelectedEndDate}
-                  label={t('End Date')}
+                  label={t('end_date')}
                   renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
