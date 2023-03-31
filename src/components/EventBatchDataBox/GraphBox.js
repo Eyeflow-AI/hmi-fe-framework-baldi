@@ -129,6 +129,11 @@ export default function GraphBox({data, config}) {
               data={partsPieData}
               margin={{ top: 20, right: 120, bottom: 40, left: 120 }}
               theme={{
+                tooltip: {
+                  container: {
+                    background: colors.paper.blue.dark
+                  }
+                },
                 labels: {
                   text: {
                     fontSize: 20,
@@ -149,6 +154,11 @@ export default function GraphBox({data, config}) {
               arcLinkLabelsStraightLength={0}
               margin={{ top: 20, right: 120, bottom: 40, left: 120 }}
               theme={{
+                tooltip: {
+                  container: {
+                    background: colors.paper.blue.dark
+                  }
+                },
                 labels: {
                   text: {
                     fontSize: 20,
