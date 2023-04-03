@@ -57,6 +57,8 @@ const API = {
     event: ({ eventId }, setLoading) => request(instance.get(`event/${eventId}`), setLoading),
     stations: (_, setLoading) => request(instance.get(`station/list`), setLoading),
     configForFE: (setLoading) => request(instance.get(`config/fe`), setLoading),
+
+    packageData: (setLoading) => request(instance.get(`internal/package-data`), setLoading),
   },
   put: {
     batchPause: ({ stationId, batchId }, setLoading) => request(instance.put(`batch/${stationId}/${batchId}/pause`), setLoading),
