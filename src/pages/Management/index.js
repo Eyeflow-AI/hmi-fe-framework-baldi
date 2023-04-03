@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 
 // Internal
 import PageWrapper from '../../components/PageWrapper';
+import ComponentBuilder from './componentBuilder';
 
 // Third-party
 import { useTranslation } from "react-i18next";
@@ -58,7 +59,7 @@ export default function Management({ pageOptions }) {
               {
                 TABS.map(tab => (
                   <Button
-                    key={`button-${tab}`}
+                    key={`button-${tab.name}`}
                     sx={{
                       ...styleSx.buttons,
                       backgroundColor: selectedTab === tab.name ? colors.eyeflow.blue.medium : "white",
@@ -82,7 +83,7 @@ export default function Management({ pageOptions }) {
             </Stack>
           </Box>
           <Box sx={styleSx.dataBox}>
-            {selectedTab}
+            <ComponentBuilder tab={selectedTab} />
           </Box>
         </Box>
       }
