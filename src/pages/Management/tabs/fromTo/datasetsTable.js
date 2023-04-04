@@ -22,9 +22,11 @@ import Checkbox, { checkboxClasses } from "@mui/material/Checkbox";
 
 
 // Internal
+import API from "../../../../api";
 
 // Third-party
 import { useTranslation } from "react-i18next";
+import { CircularProgress } from "@mui/material";
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -81,19 +83,21 @@ function TablePaginationActions(props) {
 }
 
 export default function FromToDatasetsTable({
-  packageData
+  packageData,
+  fromToData,
+  setFromToData,
 }) {
 
   const { t } = useTranslation();
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(11);
-  // eslint-disable-next-line
+  const rowsPerPage = 11;
   const columns = [
     'dataset_name',
     'apply',
   ];
   const [rows, setRows] = useState([]);
+  const [loadingActiveDatasetId, setLoadingActiveDatasetId] = useState(false);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -103,11 +107,19 @@ export default function FromToDatasetsTable({
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
+  const handleActiveDataset = ({ datasetId, status }) => {
+    setLoadingActiveDatasetId(datasetId);
+    API.put.activeDataset({
+      datasetId, status
+    }).then((res) => {
+      setFromToData(res);
+    }).catch((err) => {
+      console.log(err);
+    })
+      .finally(() => {
+        setLoadingActiveDatasetId('');
+      })
+  }
 
   useEffect(() => {
     if (packageData) {
@@ -115,12 +127,12 @@ export default function FromToDatasetsTable({
       packageData.forEach((dataset) => {
         rows.push({
           datasetName: dataset.name,
+          datasetId: dataset.id,
         });
       });
       setRows(rows)
     }
-  }, [packageData])
-
+  }, [packageData]);
 
   return (
     <TableContainer component={Paper}>
@@ -133,8 +145,6 @@ export default function FromToDatasetsTable({
             {columns.map((column) => (
               <TableCell
                 key={`${column}-title`}
-              // align={column.align}
-              // style={{ minWidth: column.minWidth }}
               >
                 {t(column)}
               </TableCell>
@@ -156,13 +166,20 @@ export default function FromToDatasetsTable({
                 }}
                 align="left"
               >
-                <Checkbox
-                  sx={{
-                    [`&, &.${checkboxClasses.checked}`]: {
-                      color: 'white',
-                    },
-                  }}
-                />
+                {
+                  loadingActiveDatasetId === row.datasetId ?
+                    <CircularProgress />
+                    :
+                    <Checkbox
+                      sx={{
+                        [`&, &.${checkboxClasses.checked}`]: {
+                          color: 'white',
+                        },
+                      }}
+                      onChange={(e) => handleActiveDataset({ datasetId: row.datasetId, status: e.target.checked })}
+                      checked={fromToData?.activeDatasets?.includes(row.datasetId)}
+                    />
+                }
               </TableCell>
             </TableRow>
           ))}

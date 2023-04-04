@@ -22,7 +22,7 @@ import { Button, Tooltip } from "@mui/material";
 
 
 // Internal
-import API from "../../../../api";
+// import API from "../../../../api";
 
 // Third-party
 import { useTranslation } from "react-i18next";
@@ -83,20 +83,19 @@ function TablePaginationActions(props) {
 }
 
 export default function FromToClassesTable({
-  packageData
+  packageData,
+  fromToData,
 }) {
 
   const { t } = useTranslation();
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(9);
-  // eslint-disable-next-line
+  const rowsPerPage = 9;
   const columns = [
     'dataset_name',
     'class_label',
     'class_color',
     'icon',
-    'class_classification'
   ];
   const [rows, setRows] = useState([]);
 
@@ -108,12 +107,6 @@ export default function FromToClassesTable({
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-
   useEffect(() => {
     if (packageData) {
       let rows = [];
@@ -121,14 +114,19 @@ export default function FromToClassesTable({
         dataset.classes.forEach((classData) => {
           rows.push({
             datasetName: dataset.name,
+            datasetId: dataset.id,
             classLabel: classData.label,
             classColor: classData.color,
           })
         })
       });
+
+      if (fromToData?.activeDatasets?.length > 0) {
+        rows = rows.filter((row) => fromToData.activeDatasets.includes(row.datasetId));
+      }
       setRows(rows)
     }
-  }, [packageData])
+  }, [packageData, fromToData])
 
 
   return (
@@ -194,11 +192,6 @@ export default function FromToClassesTable({
                 <Button variant="contained">
                   {t('choose_an_icon')}
                 </Button>
-              </TableCell>
-              <TableCell
-                align="left"
-              >
-                type of classification selection
               </TableCell>
             </TableRow>
           ))}
