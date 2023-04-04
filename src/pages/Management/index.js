@@ -39,6 +39,9 @@ const styleSx = {
     width: '140px',
     backgroundColor: 'white',
     border: `${colors.eyeflow.blue.dark} 1px solid`,
+    '&:hover': {
+      backgroundColor: 'white',
+    }
   }
 };
 

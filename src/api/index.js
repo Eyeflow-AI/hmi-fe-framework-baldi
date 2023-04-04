@@ -59,6 +59,7 @@ const API = {
     configForFE: (setLoading) => request(instance.get(`config/fe`), setLoading),
 
     packageData: (setLoading) => request(instance.get(`internal/package-data`), setLoading),
+    iconInfo: ({ icon }, setLoading) => request(instance.get(`internal/icon-info/${icon}`), setLoading),
   },
   put: {
     batchPause: ({ stationId, batchId }, setLoading) => request(instance.put(`batch/${stationId}/${batchId}/pause`), setLoading),

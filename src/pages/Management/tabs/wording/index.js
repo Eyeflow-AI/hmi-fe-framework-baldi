@@ -13,13 +13,10 @@ import React from "react";
 
 
 
-
-
-
-
-
-export default function Users({ }) {
+export default function Wording() {
   return (
-    <></>
+    <div>
+      wording
+    </div>
   )
 }

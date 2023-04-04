@@ -15,8 +15,8 @@ import React from "react";
 
 
 
-export default function Alerts({ }) {
+export default function Alerts() {
   return (
-    <></>
+    <div></div>
   )
 }
