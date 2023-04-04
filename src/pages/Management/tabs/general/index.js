@@ -13,8 +13,13 @@ import React from "react";
 
 
 
-export default function Wording({ }) {
+
+
+
+export default function General() {
   return (
-    <></>
+    <div>
+      general
+    </div>
   )
 }

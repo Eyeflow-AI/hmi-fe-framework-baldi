@@ -4,11 +4,11 @@ import React from 'react';
 // Design
 
 // Internal
-import Alerts from './components/alerts';
-import FromTo from './components/fromTo';
-import General from './components/general';
-import Users from './components/users';
-import Wording from './components/wording';
+import Alerts from './tabs/alerts';
+import FromTo from './tabs/fromTo';
+import General from './tabs/general';
+import Users from './tabs/users';
+import Wording from './tabs/wording';
 
 // Third-party
 

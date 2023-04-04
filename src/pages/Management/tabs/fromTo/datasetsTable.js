@@ -18,10 +18,10 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import TableHead from '@mui/material/TableHead';
+import Checkbox, { checkboxClasses } from "@mui/material/Checkbox";
 
 
 // Internal
-import API from "../../../api";
 
 // Third-party
 import { useTranslation } from "react-i18next";
@@ -80,15 +80,20 @@ function TablePaginationActions(props) {
   );
 }
 
-function FromToTable({
-  rows,
-  columns,
+export default function FromToDatasetsTable({
+  packageData
 }) {
 
   const { t } = useTranslation();
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(17);
+  const [rowsPerPage, setRowsPerPage] = useState(11);
+  // eslint-disable-next-line
+  const columns = [
+    'dataset_name',
+    'apply',
+  ];
+  const [rows, setRows] = useState([]);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -103,9 +108,26 @@ function FromToTable({
     setPage(0);
   };
 
+
+  useEffect(() => {
+    if (packageData) {
+      let rows = [];
+      packageData.forEach((dataset) => {
+        rows.push({
+          datasetName: dataset.name,
+        });
+      });
+      setRows(rows)
+    }
+  }, [packageData])
+
+
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 500 }} aria-label="fromTo Table">
+      <Table
+        sx={{ minWidth: 500 }}
+        aria-label="fromTo Table"
+      >
         <TableHead>
           <TableRow>
             {columns.map((column) => (
@@ -128,31 +150,19 @@ function FromToTable({
               <TableCell component="th" scope="row">
                 {row.datasetName}
               </TableCell>
-              <TableCell style={{ width: 160 }} align="left">
-                {row.classLabel}
-              </TableCell>
-              <TableCell
-                style={{
-                  width: 160,
-                  color: row.classColor,
-                  backgroundColor: row.classColor,
-                }}
-                align="center"
-              >
-                {row.classColor}
-              </TableCell>
               <TableCell
                 style={{
                   width: 160,
                 }}
                 align="left"
               >
-                icon selection
-              </TableCell>
-              <TableCell
-                align="left"
-              >
-                type of classification selection
+                <Checkbox
+                  sx={{
+                    [`&, &.${checkboxClasses.checked}`]: {
+                      color: 'white',
+                    },
+                  }}
+                />
               </TableCell>
             </TableRow>
           ))}
@@ -166,19 +176,11 @@ function FromToTable({
         <TableFooter>
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-              // colSpan={3}
+              rowsPerPageOptions={[9]}
               count={rows.length}
               rowsPerPage={rowsPerPage}
               page={page}
-              SelectProps={{
-                inputProps: {
-                  'aria-label': 'rows per page',
-                },
-                native: true,
-              }}
               onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
               ActionsComponent={TablePaginationActions}
             />
           </TableRow>
@@ -186,74 +188,4 @@ function FromToTable({
       </Table>
     </TableContainer>
   );
-}
-
-export default function FromTo() {
-
-  const [packageData, setPackageData] = useState(null);
-  // eslint-disable-next-line
-  const [columns, setColumns] = useState([
-    'dataset_name',
-    'class_label',
-    'class_color',
-    'icon',
-    'class_classification'
-  ]);
-  const [rows, setRows] = useState([]);
-
-  useEffect(() => {
-    API.get.packageData()
-      .then((response) => {
-        console.log({ response })
-        const datasets = response?.datasets ?? [];
-        if (datasets.length > 0) {
-          let _datasets = datasets.map((dataset) => {
-            let classes = dataset.classes.map((classData) => {
-              return {
-                label: classData.label,
-                color: classData.color,
-                index: classData.index,
-              };
-            });
-            return {
-              id: dataset._id,
-              name: dataset.info.long_name,
-              type: dataset.info.type,
-              classes,
-            }
-          })
-          setPackageData(_datasets);
-        }
-      })
-      .catch(console.error);
-    return () => setPackageData(null);
-  }, []);
-
-  useEffect(() => {
-    if (packageData) {
-      let rows = [];
-      packageData.forEach((dataset) => {
-        dataset.classes.forEach((classData) => {
-          rows.push({
-            datasetName: dataset.name,
-            classLabel: classData.label,
-            classColor: classData.color,
-          })
-        })
-      });
-      setRows(rows)
-    }
-  }, [packageData])
-
-  console.log({ rows })
-
-  return (
-    <>
-      {/* {JSON.stringify(packageData)} */}
-      <FromToTable
-        rows={rows}
-        columns={columns}
-      />
-    </>
-  )
 }

@@ -16,8 +16,12 @@ import React from "react";
 
 
 
-export default function General({ }) {
+
+
+export default function Users() {
   return (
-    <></>
+    <div>
+      users
+    </div>
   )
 }
