@@ -16,13 +16,15 @@ import FromToDatasetsTable from "./datasetsTable";
 export default function FromTo() {
 
   const [packageData, setPackageData] = useState(null);
+  const [fromToData, setFromToData] = useState(null);
   const [selectedView, setSelectedView] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     API.get.packageData()
-      .then((response) => {
+      .then(async (response) => {
         const datasets = response?.datasets ?? [];
+        let fromToData = null;
         if (datasets.length > 0) {
           let _datasets = datasets.map((dataset) => {
             let classes = dataset.classes.map((classData) => {
@@ -41,9 +43,19 @@ export default function FromTo() {
           })
           setPackageData(_datasets);
         }
+        try {
+          fromToData = await API.get.fromToDocument();
+          setFromToData(fromToData);
+        }
+        catch (err) {
+          console.log({ err })
+        }
       })
       .catch(console.error);
-    return () => setPackageData(null);
+    return () => {
+      setFromToData(null);
+      setPackageData(null);
+    };
   }, []);
 
 
@@ -69,12 +81,15 @@ export default function FromTo() {
             selectedView === 'classes' &&
             <FromToClassesTable
               packageData={packageData}
+              fromToData={fromToData}
             />
           }
           {
             selectedView === 'datasets' &&
             <FromToDatasetsTable
               packageData={packageData}
+              fromToData={fromToData}
+              setFromToData={setFromToData}
             />
           }
         </Box>

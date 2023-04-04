@@ -60,10 +60,14 @@ const API = {
 
     packageData: (setLoading) => request(instance.get(`internal/package-data`), setLoading),
     iconInfo: ({ icon }, setLoading) => request(instance.get(`internal/icon-info/${icon}`), setLoading),
+
+    fromToDocument: (setLoading) => request(instance.get(`internal/from-to-document/`), setLoading),
   },
   put: {
     batchPause: ({ stationId, batchId }, setLoading) => request(instance.put(`batch/${stationId}/${batchId}/pause`), setLoading),
     batchResume: ({ stationId, batchId }, setLoading) => request(instance.put(`batch/${stationId}/${batchId}/resume`), setLoading),
+
+    activeDataset: ({ status, datasetId }, setLoading) => request(instance.put(`internal/active-dataset`, { status, datasetId }), setLoading),
   },
   delete: {
 
