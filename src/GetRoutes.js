@@ -13,6 +13,8 @@ const History = lazy(() => import("./pages/History"));
 
 const homeURL = "/app/:stationSlugLabel/home";
 
+const Query = lazy(() => import("./toolsPages/Query"));
+
 function NotFound() {
   return (
     <>
@@ -22,12 +24,15 @@ function NotFound() {
 };
 
 const components = {
-  Menu: (pageOptions) => <Menu pageOptions={pageOptions}/>,
-  MonitorBatch: (pageOptions) => <MonitorBatch pageOptions={pageOptions}/>,
-  Dashboard: (pageOptions) => <Dashboard pageOptions={pageOptions}/>,
-  Management: (pageOptions) => <Management pageOptions={pageOptions}/>,
-  History: (pageOptions) => <History pageOptions={pageOptions}/>,
+  Menu: (pageOptions) => <Menu pageOptions={pageOptions} />,
+  MonitorBatch: (pageOptions) => <MonitorBatch pageOptions={pageOptions} />,
+  Dashboard: (pageOptions) => <Dashboard pageOptions={pageOptions} />,
+  Management: (pageOptions) => <Management pageOptions={pageOptions} />,
+  History: (pageOptions) => <History pageOptions={pageOptions} />,
+
+  Query: (pageOptions) => <Query pageOptions={pageOptions} />,
 };
+
 
 export default function Routes({ station, authenticated, hasUserManagementPermission, hasCaptureImagesPermission }) {
 
