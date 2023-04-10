@@ -62,6 +62,8 @@ const API = {
     iconInfo: ({ icon }, setLoading) => request(instance.get(`internal/icon-info/${icon}`), setLoading),
 
     fromToDocument: (setLoading) => request(instance.get(`internal/from-to-document/`), setLoading),
+
+    getData: ({ stationId, query, collectionType }, setLoading) => request(instance.get(`queries/${stationId}/data`, { query: { query, collectionType } }), setLoading),
   },
   put: {
     batchPause: ({ stationId, batchId }, setLoading) => request(instance.put(`batch/${stationId}/${batchId}/pause`), setLoading),

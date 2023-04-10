@@ -1,5 +1,5 @@
 // React
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 // Design
 import Box from '@mui/material/Box';
@@ -10,6 +10,8 @@ import { Grid } from '@mui/material';
 
 // Internal
 import PageWrapper from '../../components/PageWrapper';
+import API from '../../api';
+import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
 
 // Third-party
 import { useTranslation } from "react-i18next";
@@ -43,6 +45,8 @@ export default function Dashboard({ pageOptions }) {
 
   const { t } = useTranslation();
 
+  const { _id: stationId } = GetSelectedStation();
+
   const startDate = new Date();
   const [selectedStartDate, setSelectedStartDate] = useState(new Date(startDate.setHours(startDate.getHours() - 24)));
   const [selectedEndDate, setSelectedEndDate] = useState(new Date());
@@ -53,7 +57,54 @@ export default function Dashboard({ pageOptions }) {
   const startSearch = () => {
     setLoadingSearch(true);
   }
+  console.log({ pageOptions })
 
+  const getData = () => {
+    // setLoadingSearch(true);
+    // API.get.data({ query: { startDate: selectedStartDate, endDate: selectedEndDate, query }, stationId }, setLoadingSearch)
+    //   .then((data) => {
+    //     console.log(data);
+    //   })
+    //   .catch(console.error)
+    //   .finally(() => {
+    //     setLoadingSearch(false);
+    //   });
+  }
+
+  useEffect(() => {
+
+  }, []);
+
+
+  useEffect(() => {
+    if (Object.keys(pageOptions?.options?.charts).length > 0) {
+      const charts = pageOptions?.options?.charts ?? {};
+      const totalCharts = Object.keys(charts).length;
+      const totalBoxes = 8;
+      let chartsToDisplay = [];
+      if (totalCharts > totalBoxes) {
+        console.error('Impossible to show all charts');
+      }
+      else if (totalCharts === totalBoxes) {
+        const chartsPerBox = 1;
+        let occupiedBoxes = 0;
+        while (occupiedBoxes < totalBoxes) {
+          Object.entries(charts).forEach(([chartName, chartInfo]) => {
+            if (occupiedBoxes < totalBoxes) {
+              chartsToDisplay.push({ chartName, chartInfo });
+            }
+          })
+          occupiedBoxes += chartsPerBox;
+        }
+
+      }
+    }
+    // dividir a quantidade de gráficos pela quantidade de caixas(2)
+    // para saber quantos gráficos por caixa
+    // somar o máximo e o mínimo para pegar o tamanho exato
+
+
+  }, [pageOptions]);
 
   return (
     <PageWrapper>
@@ -97,38 +148,26 @@ export default function Dashboard({ pageOptions }) {
               </Button>
             </Box>
           </Box>
-          <Box width={width} sx={styleSx.dataBox}>
-            {/* TODO: Dashboard <br />
+          {/* TODO: Dashboard <br />
             * Anomalies Evolution (line)<br />
             * Anomalies Counting (bar)<br />
             * Parts Counting ok/nok (bar)<br />
             * Top 10 anomalies (table)<br />
             * Parts ok/nok evolution (line)<br />
             * */}
+          <Box width={width} sx={styleSx.dataBox}>
             <Grid container justifyContent='space-between'>
-              <Grid item xs={3}>
+              <Grid item xs={6}>
                 1
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={6}>
                 2
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={6}>
                 3
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={6}>
                 4
-              </Grid>
-              <Grid item xs={3}>
-                5
-              </Grid>
-              <Grid item xs={3}>
-                6
-              </Grid>
-              <Grid item xs={3}>
-                7
-              </Grid>
-              <Grid item xs={3}>
-                8
               </Grid>
             </Grid>
           </Box>
