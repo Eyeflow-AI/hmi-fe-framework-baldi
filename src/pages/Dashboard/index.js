@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
-import { Grid } from '@mui/material';
+import { CircularProgress, Typography } from '@mui/material';
 
 // Internal
 import PageWrapper from '../../components/PageWrapper';
@@ -51,24 +51,32 @@ export default function Dashboard({ pageOptions }) {
   const [selectedStartDate, setSelectedStartDate] = useState(new Date(startDate.setHours(startDate.getHours() - 24)));
   const [selectedEndDate, setSelectedEndDate] = useState(new Date());
 
-  const [loadingSearch, setLoadingSearch] = useState(true);
+  const [loadingSearch, setLoadingSearch] = useState(false);
+  const [builtChats, setBuiltChats] = useState([]);
 
 
-  const startSearch = () => {
-    setLoadingSearch(true);
-  }
   console.log({ pageOptions })
 
-  const getData = () => {
-    // setLoadingSearch(true);
-    // API.get.data({ query: { startDate: selectedStartDate, endDate: selectedEndDate, query }, stationId }, setLoadingSearch)
-    //   .then((data) => {
-    //     console.log(data);
-    //   })
-    //   .catch(console.error)
-    //   .finally(() => {
-    //     setLoadingSearch(false);
-    //   });
+  const getData = async () => {
+    const charts = pageOptions?.options?.charts ?? [];
+    const chartsToBuild = [];
+    for (let i = 0; i < charts.length; i++) {
+      // setLoadingSearch(true);
+      try {
+        console.log({ queryName: charts[i].query_name })
+        let data = await API.get.queryData({ startTime: selectedStartDate, endTime: selectedEndDate, queryName: charts[i].query_name, stationId }, setLoadingSearch);
+        console.log(data);
+        chartsToBuild.push(data);
+      }
+      catch (err) {
+        console.error(err);
+      }
+    }
+    setBuiltChats(chartsToBuild);
+  };
+
+  const startSearch = () => {
+    getData();
   }
 
   useEffect(() => {
@@ -77,33 +85,7 @@ export default function Dashboard({ pageOptions }) {
 
 
   useEffect(() => {
-    if (Object.keys(pageOptions?.options?.charts).length > 0) {
-      const charts = pageOptions?.options?.charts ?? {};
-      const totalCharts = Object.keys(charts).length;
-      const totalBoxes = 8;
-      let chartsToDisplay = [];
-      if (totalCharts > totalBoxes) {
-        console.error('Impossible to show all charts');
-      }
-      else if (totalCharts === totalBoxes) {
-        const chartsPerBox = 1;
-        let occupiedBoxes = 0;
-        while (occupiedBoxes < totalBoxes) {
-          Object.entries(charts).forEach(([chartName, chartInfo]) => {
-            if (occupiedBoxes < totalBoxes) {
-              chartsToDisplay.push({ chartName, chartInfo });
-            }
-          })
-          occupiedBoxes += chartsPerBox;
-        }
-
-      }
-    }
-    // dividir a quantidade de gráficos pela quantidade de caixas(2)
-    // para saber quantos gráficos por caixa
-    // somar o máximo e o mínimo para pegar o tamanho exato
-
-
+    getData();
   }, [pageOptions]);
 
   return (
@@ -138,14 +120,20 @@ export default function Dashboard({ pageOptions }) {
                 marginRight: 1
               }}
             >
-              <Button
-                variant="contained"
-                startIcon={<SearchIcon />}
-                onClick={startSearch}
-                disabled={loadingSearch}
-              >
-                {t('search')}
-              </Button>
+              {
+                loadingSearch ?
+                  <CircularProgress />
+                  :
+
+                  <Button
+                    variant="contained"
+                    startIcon={<SearchIcon />}
+                    onClick={startSearch}
+                    disabled={loadingSearch}
+                  >
+                    {t('search')}
+                  </Button>
+              }
             </Box>
           </Box>
           {/* TODO: Dashboard <br />
@@ -156,20 +144,24 @@ export default function Dashboard({ pageOptions }) {
             * Parts ok/nok evolution (line)<br />
             * */}
           <Box width={width} sx={styleSx.dataBox}>
-            <Grid container justifyContent='space-between'>
-              <Grid item xs={6}>
-                1
-              </Grid>
-              <Grid item xs={6}>
-                2
-              </Grid>
-              <Grid item xs={6}>
-                3
-              </Grid>
-              <Grid item xs={6}>
-                4
-              </Grid>
-            </Grid>
+            {builtChats.map((chart, index) => {
+              console.log(chart)
+              return (
+                <Box
+                  key={`chart-${index}`}
+                  sx={{
+                    display: 'flex',
+                    width: `${chart.chartInfo.width}`,
+                    height: `${chart.chartInfo.height}`,
+                  }}
+                >
+                  <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} textAlign={'center'}>
+                    {t(chart.chartInfo.localeId)}
+                  </Typography>
+                </Box>
+              )
+            })
+            }
           </Box>
         </Box>
       }

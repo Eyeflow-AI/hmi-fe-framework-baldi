@@ -63,7 +63,7 @@ const API = {
 
     fromToDocument: (setLoading) => request(instance.get(`internal/from-to-document/`), setLoading),
 
-    getData: ({ stationId, query, collectionType }, setLoading) => request(instance.get(`queries/${stationId}/data`, { query: { query, collectionType } }), setLoading),
+    queryData: ({ stationId, queryName, startTime, endTime }, setLoading) => request(instance.get(`queries/${stationId}/data`, { params: { queryName, startTime, endTime } }), setLoading),
   },
   put: {
     batchPause: ({ stationId, batchId }, setLoading) => request(instance.put(`batch/${stationId}/${batchId}/pause`), setLoading),
