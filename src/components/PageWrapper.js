@@ -26,18 +26,17 @@ const style = {
 };
 
 
-export default function PageWrapper({children}) {
+export default function PageWrapper({ children }) {
 
-  const {width, height} = GetWindowDimentions();
-  const pageBoxWidth = width - window.app_config.components.AppBar.width - 2*paddingPx;
-  const pageBoxHeight = height - 2*paddingPx;
-
+  const { width, height } = GetWindowDimentions();
+  const pageBoxWidth = width - window.app_config.components.AppBar.width - 2 * paddingPx;
+  const pageBoxHeight = height - 2 * paddingPx;
   return (
     <>
       <Box id="page-wrapper-box" sx={style.mainBox}>
         <AppBar />
         <Box id="page-box" width={pageBoxWidth} sx={style.pageBox}>
-          {children({width: pageBoxWidth, height: pageBoxHeight})}
+          {children({ width: pageBoxWidth, height: pageBoxHeight })}
         </Box>
       </Box>
     </>

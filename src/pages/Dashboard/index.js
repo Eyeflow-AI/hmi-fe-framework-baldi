@@ -18,7 +18,11 @@ import { useTranslation } from "react-i18next";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import Bar from '../../components/Charts/Bar';
 
+const charts = {
+  bar: (chart) => <Bar chart={chart} />,
+}
 
 const FILTER_HEIGHT = window.app_config.components.FilterBar.height;
 
@@ -54,16 +58,12 @@ export default function Dashboard({ pageOptions }) {
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [builtChats, setBuiltChats] = useState([]);
 
-
-  console.log({ pageOptions })
-
   const getData = async () => {
     const charts = pageOptions?.options?.charts ?? [];
     const chartsToBuild = [];
     for (let i = 0; i < charts.length; i++) {
       // setLoadingSearch(true);
       try {
-        console.log({ queryName: charts[i].query_name })
         let data = await API.get.queryData({ startTime: selectedStartDate, endTime: selectedEndDate, queryName: charts[i].query_name, stationId }, setLoadingSearch);
         console.log(data);
         chartsToBuild.push(data);
@@ -86,13 +86,18 @@ export default function Dashboard({ pageOptions }) {
 
   useEffect(() => {
     getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageOptions]);
 
   return (
     <PageWrapper>
       {({ width, height }) =>
         <Box display="flex" flexDirection="column" width={width} height={height} gap={1}>
-          <Box height={FILTER_HEIGHT} width={width} sx={styleSx.filterBox}>
+          <Box 
+          height={FILTER_HEIGHT}
+           width={width} 
+           sx={styleSx.filterBox}
+           >
             <Box>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateTimePicker
@@ -143,24 +148,47 @@ export default function Dashboard({ pageOptions }) {
             * Top 10 anomalies (table)<br />
             * Parts ok/nok evolution (line)<br />
             * */}
-          <Box width={width} sx={styleSx.dataBox}>
-            {builtChats.map((chart, index) => {
-              console.log(chart)
-              return (
+          <Box 
+          width={width} 
+          height={height - FILTER_HEIGHT - 30} 
+          sx={styleSx.dataBox}
+          >
+            {
+              loadingSearch ?
                 <Box
-                  key={`chart-${index}`}
+                  display={'flex'}
                   sx={{
-                    display: 'flex',
-                    width: `${chart.chartInfo.width}`,
-                    height: `${chart.chartInfo.height}`,
+                    width: '100%',
+                    height: '100%',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   }}
                 >
-                  <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} textAlign={'center'}>
-                    {t(chart.chartInfo.localeId)}
-                  </Typography>
+                  <CircularProgress
+                    size='200px'
+                  />
                 </Box>
-              )
-            })
+                :
+                (
+                  builtChats.length === 0 ?
+                    <Box
+                      display={'flex'}
+                      sx={{
+                        width: '100%',
+                        height: '100%',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Typography
+                        textTransform={'uppercase'}
+                        variant='h3'>
+                        {t('no_data_to_show')}
+                      </Typography>
+                    </Box>
+                    :
+                    builtChats.map((chart, index) => charts[chart.chartInfo.type](chart))
+                )
             }
           </Box>
         </Box>
@@ -168,3 +196,14 @@ export default function Dashboard({ pageOptions }) {
     </PageWrapper>
   );
 }
+
+
+// builtChats.map((chart, index) => {
+                      
+//   return (
+//     <Bar
+//       key={`chart-${index}`}
+//       chart={chart}
+//     />
+//   )
+// })

@@ -1,5 +1,5 @@
 // React
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 // Design
 import { Button, Stack } from "@mui/material";
@@ -63,6 +63,7 @@ export default function Menu({
       setLoading(false);
     }
     getIconsInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
