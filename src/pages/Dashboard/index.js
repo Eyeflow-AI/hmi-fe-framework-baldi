@@ -66,6 +66,7 @@ export default function Dashboard({ pageOptions }) {
       try {
         let data = await API.get.queryData({ startTime: selectedStartDate, endTime: selectedEndDate, queryName: charts[i].query_name, stationId }, setLoadingSearch);
         console.log(data);
+
         chartsToBuild.push(data);
       }
       catch (err) {
