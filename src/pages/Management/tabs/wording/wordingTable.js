@@ -83,9 +83,9 @@ function TablePaginationActions(props) {
   );
 }
 
-export default function FromToClassesTable({
-  packageData,
-  fromToData,
+export default function WordingTable({
+  availableLanguages,
+  usedLanguages
 }) {
 
   const { t } = useTranslation();
@@ -108,26 +108,26 @@ export default function FromToClassesTable({
     setPage(newPage);
   };
 
-  useEffect(() => {
-    if (packageData) {
-      let rows = [];
-      packageData.forEach((dataset) => {
-        dataset.classes.forEach((classData) => {
-          rows.push({
-            datasetName: dataset.name,
-            datasetId: dataset.id,
-            classLabel: classData.label,
-            classColor: classData.color,
-          })
-        })
-      });
+  // useEffect(() => {
+  //   if (languagesData) {
+  //     let rows = [];
+  //     languagesData.forEach((dataset) => {
+  //       dataset.classes.forEach((classData) => {
+  //         rows.push({
+  //           datasetName: dataset.name,
+  //           datasetId: dataset.id,
+  //           classLabel: classData.label,
+  //           classColor: classData.color,
+  //         })
+  //       })
+  //     });
 
-      if (fromToData?.activeDatasets?.length > 0) {
-        rows = rows.filter((row) => fromToData.activeDatasets.includes(row.datasetId));
-      }
-      setRows(rows)
-    }
-  }, [packageData, fromToData])
+  //     if (fromToData?.activeDatasets?.length > 0) {
+  //       rows = rows.filter((row) => fromToData.activeDatasets.includes(row.datasetId));
+  //     }
+  //     setRows(rows)
+  //   }
+  // }, [languagesData, fromToData])
 
 
   return (

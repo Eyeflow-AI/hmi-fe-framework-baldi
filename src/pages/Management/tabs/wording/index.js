@@ -15,7 +15,8 @@ import WordingTable from "./wordingTable";
 
 export default function Wording() {
 
-  const [languagesData, setLanguagesData] = useState(null);
+  const [availableLanguages, setAvailableLanguages] = useState([]);
+  const [usedLanguages, setUsedLanguages] = useState({});
   const [fromToData, setFromToData] = useState(null);
   const [selectedView, setSelectedView] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -23,26 +24,11 @@ export default function Wording() {
   useEffect(() => {
     API.get.languagesData()
       .then(async (response) => {
-        const availableLanguages = response?.availableLanguages ?? [];
-        let fromToData = null;
-        // if (datasets.length > 0) {
-        //   let _datasets = datasets.map((dataset) => {
-        //     let classes = dataset.classes.map((classData) => {
-        //       return {
-        //         label: classData.label,
-        //         color: classData.color,
-        //         index: classData.index,
-        //       };
-        //     });
-        //     return {
-        //       id: dataset._id,
-        //       name: dataset.info.long_name,
-        //       type: dataset.info.type,
-        //       classes,
-        //     }
-        //   })
-        //   setLanguagesData(_datasets);
-        // }
+        const { availableLanguages, usedLanguages } = response ?? {
+          availableLanguages: [], usedLanguages: {}
+        };
+        setAvailableLanguages(availableLanguages);
+        setUsedLanguages(usedLanguages);
         try {
           // fromToData = await API.get.fromToDocument();
           // setFromToData(fromToData);
@@ -53,8 +39,8 @@ export default function Wording() {
       })
       .catch(console.error);
     return () => {
-      setFromToData(null);
-      setLanguagesData(null);
+      setAvailableLanguages([]);
+      setUsedLanguages({});
     };
   }, []);
 
@@ -80,16 +66,16 @@ export default function Wording() {
           {
             selectedView === 'languages' &&
             <LanguagesTable
-              languagesData={languagesData}
-              fromToData={fromToData}
+              availableLanguages={availableLanguages}
+              usedLanguages={usedLanguages}
+              setUsedLanguages={setUsedLanguages}
             />
           }
           {
             selectedView === 'wording' &&
             <WordingTable
-              languagesData={languagesData}
-              fromToData={fromToData}
-              setFromToData={setFromToData}
+              availableLanguages={availableLanguages}
+              usedLanguages={usedLanguages}
             />
           }
         </Box>

@@ -19,14 +19,14 @@ import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import TableHead from '@mui/material/TableHead';
 import Checkbox, { checkboxClasses } from "@mui/material/Checkbox";
-
+import { CircularProgress } from "@mui/material";
+import Radio, { radioClasses } from '@mui/material/Radio';
 
 // Internal
 import API from "../../../../api";
 
 // Third-party
 import { useTranslation } from "react-i18next";
-import { CircularProgress, Radio } from "@mui/material";
 
 function TablePaginationActions(props) {
   const { t } = useTranslation();
@@ -83,11 +83,12 @@ function TablePaginationActions(props) {
   );
 }
 
-export default function FromToDatasetsTable({
-  packageData,
-  fromToData,
-  setFromToData,
+export default function LanguagesTable({
+  availableLanguages,
+  usedLanguages,
+  setUsedLanguages
 }) {
+
 
   const { t } = useTranslation();
 
@@ -99,7 +100,7 @@ export default function FromToDatasetsTable({
     'default'
   ];
   const [rows, setRows] = useState([]);
-  const [loadingActiveDatasetId, setLoadingActiveDatasetId] = useState(false);
+  const [loadingActiveLanguageId, setLoadingActiveLanguageId] = useState('');
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -109,32 +110,54 @@ export default function FromToDatasetsTable({
     setPage(newPage);
   };
 
-  const handleActiveDataset = ({ datasetId, status }) => {
-    setLoadingActiveDatasetId(datasetId);
-    API.put.activeDataset({
-      datasetId, status
-    }).then((res) => {
-      setFromToData(res);
+  const handleActiveLanguage = ({ languageId, status }) => {
+    setLoadingActiveLanguageId(languageId);
+    API.put.activeLanguage({
+      languageId, status
+    }).then((response) => {
+      const { usedLanguages } = response ?? {
+        usedLanguages: {}
+      };
+      setUsedLanguages(usedLanguages);
     }).catch((err) => {
       console.log(err);
     })
       .finally(() => {
-        setLoadingActiveDatasetId('');
+        setLoadingActiveLanguageId('');
+      })
+  }
+
+  const handleDefaultLanguage = ({ languageId }) => {
+    setLoadingActiveLanguageId(languageId);
+    API.put.defaultLanguage({
+      languageId
+    }).then((response) => {
+      const { usedLanguages } = response ?? {
+        usedLanguages: {}
+      };
+      setUsedLanguages(usedLanguages);
+    }).catch((err) => {
+      console.log(err);
+    })
+      .finally(() => {
+        setLoadingActiveLanguageId('');
       })
   }
 
   useEffect(() => {
-    if (packageData) {
+    if (availableLanguages?.length > 0 && usedLanguages?.languageList?.length > 0) {
       let rows = [];
-      packageData.forEach((dataset) => {
+      availableLanguages.forEach((language) => {
         rows.push({
-          datasetName: dataset.name,
-          datasetId: dataset.id,
+          id: language.id,
+          label: language.label,
+          active: usedLanguages?.languageList.find(l => l.id === language.id)?.active ?? false,
+          default: usedLanguages.default === language.id
         });
       });
       setRows(rows)
     }
-  }, [packageData]);
+  }, [availableLanguages, usedLanguages]);
 
   return (
     <TableContainer component={Paper}>
@@ -158,9 +181,9 @@ export default function FromToDatasetsTable({
             ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : rows
           ).map((row) => (
-            <TableRow key={`${row.datasetName}-${row.classLabel}`}>
+            <TableRow key={`${row.id}-language`}>
               <TableCell component="th" scope="row">
-                {row.datasetName}
+                {row.label}
               </TableCell>
               <TableCell
                 style={{
@@ -169,18 +192,27 @@ export default function FromToDatasetsTable({
                 align="left"
               >
                 {
-                  loadingActiveDatasetId === row.datasetId ?
+                  loadingActiveLanguageId === row.id ?
                     <CircularProgress />
                     :
-                    <Checkbox
-                      sx={{
-                        [`&, &.${checkboxClasses.checked}`]: {
-                          color: 'white',
-                        },
-                      }}
-                      onChange={(e) => handleActiveDataset({ datasetId: row.datasetId, status: e.target.checked })}
-                      checked={fromToData?.activeDatasets?.includes(row.datasetId)}
-                    />
+                    (
+                      row?.default ?
+                        <Checkbox
+                          checked={row?.active}
+                          disabled={row?.default}
+                        />
+                        :
+                        <Checkbox
+                          sx={{
+                            [`&, &.${checkboxClasses.checked}`]: {
+                              color: 'white',
+                            },
+                          }}
+                          onChange={(e) => handleActiveLanguage({ languageId: row.id, status: e.target.checked })}
+                          checked={row?.active}
+                          disabled={row?.default}
+                        />
+                    )
                 }
               </TableCell>
 
@@ -191,17 +223,19 @@ export default function FromToDatasetsTable({
                 align="left"
               >
                 {
-                  loadingActiveDatasetId === row.datasetId ?
+                  loadingActiveLanguageId === row.id ?
                     <CircularProgress />
                     :
                     <Radio
                       sx={{
-                        [`&, &.${checkboxClasses.checked}`]: {
+                        [`&, &.${radioClasses.checked}`]: {
                           color: 'white',
                         },
                       }}
-                      onChange={(e) => handleActiveDataset({ datasetId: row.datasetId, status: e.target.checked })}
-                      checked={fromToData?.activeDatasets?.includes(row.datasetId)}
+                      onChange={(e) => handleDefaultLanguage({ languageId: row.id })}
+                      value={row?.id}
+                      disabled={!row?.active}
+                      checked={row?.default}
                     />
                 }
               </TableCell>
