@@ -98,7 +98,7 @@ export default function FromToDatasetsTable({
     'apply',
   ];
   const [rows, setRows] = useState([]);
-  const [loadingActiveDatasetId, setLoadingActiveDatasetId] = useState(false);
+  const [loadingActiveDatasetId, setLoadingActiveDatasetId] = useState('');
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
