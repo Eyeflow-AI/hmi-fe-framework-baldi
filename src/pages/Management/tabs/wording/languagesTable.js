@@ -18,18 +18,17 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import TableHead from '@mui/material/TableHead';
-import { Button, Tooltip } from "@mui/material";
+import Checkbox, { checkboxClasses } from "@mui/material/Checkbox";
 
 
 // Internal
-// import API from "../../../../api";
+import API from "../../../../api";
 
 // Third-party
 import { useTranslation } from "react-i18next";
-import { copyToClipboard } from "sdk-fe-eyeflow";
+import { CircularProgress, Radio } from "@mui/material";
 
 function TablePaginationActions(props) {
-
   const { t } = useTranslation();
   const theme = useTheme();
   const { count, page, rowsPerPage, onPageChange } = props;
@@ -84,22 +83,23 @@ function TablePaginationActions(props) {
   );
 }
 
-export default function FromToClassesTable({
+export default function FromToDatasetsTable({
   packageData,
   fromToData,
+  setFromToData,
 }) {
 
   const { t } = useTranslation();
 
   const [page, setPage] = useState(0);
-  const rowsPerPage = 9;
+  const rowsPerPage = 11;
   const columns = [
-    'dataset_name',
-    'class_label',
-    'class_color',
-    'icon',
+    'language',
+    'apply',
+    'default'
   ];
   const [rows, setRows] = useState([]);
+  const [loadingActiveDatasetId, setLoadingActiveDatasetId] = useState(false);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -109,41 +109,44 @@ export default function FromToClassesTable({
     setPage(newPage);
   };
 
+  const handleActiveDataset = ({ datasetId, status }) => {
+    setLoadingActiveDatasetId(datasetId);
+    API.put.activeDataset({
+      datasetId, status
+    }).then((res) => {
+      setFromToData(res);
+    }).catch((err) => {
+      console.log(err);
+    })
+      .finally(() => {
+        setLoadingActiveDatasetId('');
+      })
+  }
+
   useEffect(() => {
     if (packageData) {
       let rows = [];
       packageData.forEach((dataset) => {
-        dataset.classes.forEach((classData) => {
-          rows.push({
-            datasetName: dataset.name,
-            datasetId: dataset.id,
-            classLabel: classData.label,
-            classColor: classData.color,
-          })
-        })
+        rows.push({
+          datasetName: dataset.name,
+          datasetId: dataset.id,
+        });
       });
-
-      if (fromToData?.activeDatasets?.length > 0) {
-        rows = rows.filter((row) => fromToData.activeDatasets.includes(row.datasetId));
-      }
       setRows(rows)
     }
-  }, [packageData, fromToData])
-
+  }, [packageData]);
 
   return (
     <TableContainer component={Paper}>
       <Table
         sx={{ minWidth: 500 }}
-        aria-label="fromTo Table"
+        aria-label="Language table"
       >
         <TableHead>
           <TableRow>
             {columns.map((column) => (
               <TableCell
                 key={`${column}-title`}
-              // align={column.align}
-              // style={{ minWidth: column.minWidth }}
               >
                 {t(column)}
               </TableCell>
@@ -159,41 +162,48 @@ export default function FromToClassesTable({
               <TableCell component="th" scope="row">
                 {row.datasetName}
               </TableCell>
-              <TableCell style={{ width: 160 }} align="left">
-                {row.classLabel}
-              </TableCell>
-              <TableCell
-                style={{
-                  width: 160,
-                }}
-                align="center"
-              >
-
-                <Tooltip title={t('copy_hexadecimal_code')}>
-                  <span
-                    style={{
-                      height: '35px',
-                      width: '35px',
-                      backgroundColor: row.classColor,
-                      borderRadius: '50%',
-                      display: 'inline-block',
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => copyToClipboard(row.classColor)}
-                  >
-
-                  </span>
-                </Tooltip>
-              </TableCell>
               <TableCell
                 style={{
                   width: 160,
                 }}
                 align="left"
               >
-                <Button variant="contained">
-                  {t('choose_an_icon')}
-                </Button>
+                {
+                  loadingActiveDatasetId === row.datasetId ?
+                    <CircularProgress />
+                    :
+                    <Checkbox
+                      sx={{
+                        [`&, &.${checkboxClasses.checked}`]: {
+                          color: 'white',
+                        },
+                      }}
+                      onChange={(e) => handleActiveDataset({ datasetId: row.datasetId, status: e.target.checked })}
+                      checked={fromToData?.activeDatasets?.includes(row.datasetId)}
+                    />
+                }
+              </TableCell>
+
+              <TableCell
+                style={{
+                  width: 160,
+                }}
+                align="left"
+              >
+                {
+                  loadingActiveDatasetId === row.datasetId ?
+                    <CircularProgress />
+                    :
+                    <Radio
+                      sx={{
+                        [`&, &.${checkboxClasses.checked}`]: {
+                          color: 'white',
+                        },
+                      }}
+                      onChange={(e) => handleActiveDataset({ datasetId: row.datasetId, status: e.target.checked })}
+                      checked={fromToData?.activeDatasets?.includes(row.datasetId)}
+                    />
+                }
               </TableCell>
             </TableRow>
           ))}

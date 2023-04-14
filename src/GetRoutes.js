@@ -7,6 +7,7 @@ import updatePath from './utils/functions/updatePath';
 const Menu = lazy(() => import("./pages/Menu"));
 const Login = lazy(() => import("./pages/Login"));
 const MonitorBatch = lazy(() => import("./pages/MonitorBatch"));
+const MonitorSerial = lazy(() => import("./pages/MonitorSerial"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Management = lazy(() => import("./pages/Management"));
 const History = lazy(() => import("./pages/History"));
@@ -26,6 +27,7 @@ function NotFound() {
 const components = {
   Menu: (pageOptions) => <Menu pageOptions={pageOptions} />,
   MonitorBatch: (pageOptions) => <MonitorBatch pageOptions={pageOptions} />,
+  MonitorSerial: (pageOptions) => <MonitorSerial pageOptions={pageOptions} />,
   Dashboard: (pageOptions) => <Dashboard pageOptions={pageOptions} />,
   Management: (pageOptions) => <Management pageOptions={pageOptions} />,
   History: (pageOptions) => <History pageOptions={pageOptions} />,

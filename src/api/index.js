@@ -59,6 +59,7 @@ const API = {
     configForFE: (setLoading) => request(instance.get(`config/fe`), setLoading),
 
     packageData: (setLoading) => request(instance.get(`internal/package-data`), setLoading),
+    languagesData: (setLoading) => request(instance.get(`internal/languages-data`), setLoading),
     iconInfo: ({ icon }, setLoading) => request(instance.get(`internal/icon-info/${icon}`), setLoading),
 
     fromToDocument: (setLoading) => request(instance.get(`internal/from-to-document/`), setLoading),
