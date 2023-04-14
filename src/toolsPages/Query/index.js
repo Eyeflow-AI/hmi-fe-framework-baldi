@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 
 // Internal
 import PageWrapper from '../../components/PageWrapper';
-import { Tooltip } from '@mui/material';
+import { Tooltip, Typography } from '@mui/material';
 
 // Third-party
 import ReactJSONViewer from 'react-json-viewer';
@@ -50,13 +50,34 @@ export default function Query({ pageOptions }) {
               display: 'flex',
               flexDirection: 'column',
               width: '250px',
+              height: '100%',
             }}
           >
-            <Box>
-              Default Queries
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                width: '100%',
+                height: '30px',
+                overflow: 'hidden',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Typography textTransform={'uppercase'}>
+                {t('queries')}
+              </Typography>
             </Box>
-            <Box>
-              Custom Queries
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                width: '100%',
+                height: 'calc(100% - 30px)',
+                overflow: 'auto',
+              }}
+            >
+
             </Box>
           </Box>
           <Box

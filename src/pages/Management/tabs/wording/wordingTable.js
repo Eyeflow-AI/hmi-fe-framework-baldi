@@ -29,7 +29,6 @@ import { useTranslation } from "react-i18next";
 import { copyToClipboard } from "sdk-fe-eyeflow";
 
 function TablePaginationActions(props) {
-
   const { t } = useTranslation();
   const theme = useTheme();
   const { count, page, rowsPerPage, onPageChange } = props;
