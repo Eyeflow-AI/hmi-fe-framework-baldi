@@ -61,11 +61,21 @@ export default function Monitor({pageOptions}) {
 
   // useEffect(() => {console.log({runningBatch})}, [runningBatch]);
   useEffect(() => {
-    if (selectedBatch && (selectedBatch._id !== runningBatch?._id) && batchList.findIndex((el) => el._id === selectedBatch._id) === -1) {
-      setSelectedBatch(null);
-    };
+    if (selectedBatch) {
+      let stationChanged = selectedBatch.station !== stationId;
+      if (stationChanged) {
+        setSelectedBatch(null);
+      }
+      else {
+        let selectedBatchIsNotRunning = selectedBatch._id !== runningBatch?._id;
+        let selectedBatchIsNotInBatchList = batchList.findIndex((el) => el._id === selectedBatch._id) === -1;
+        if (selectedBatchIsNotRunning && selectedBatchIsNotInBatchList) {
+          setSelectedBatch(null);
+        }
+      }
+    }
     // eslint-disable-next-line
-  }, [batchList]);
+  }, [selectedBatch, batchList, runningBatch, stationId]);
 
   useEffect(() => {
     if (queryParams && queryParams.station !== stationId) {

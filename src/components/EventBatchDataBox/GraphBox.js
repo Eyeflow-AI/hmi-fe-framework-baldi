@@ -87,20 +87,22 @@ export default function GraphBox({data, config}) {
     let partsNg = data?.batch_data?.parts_ng ?? 0;
     let partsProduced = partsOk + partsNg;
 
-    let partsPieData = [
-      {
-        "id": "ng",
-        "label": "NG",
-        "value": partsNg,
-        "color": colors.eyeflow.red.dark
-      },
-      {
-        "id": "ok",
-        "label": "OK",
-        "value": partsOk,
-        "color": colors.eyeflow.green.light
-      },
-    ];
+    let partsPieData = (partsNg || partsOk)
+      ? [
+          {
+            "id": "ng",
+            "label": "NG",
+            "value": partsNg,
+            "color": colors.eyeflow.red.dark
+          },
+          {
+            "id": "ok",
+            "label": "OK",
+            "value": partsOk,
+            "color": colors.eyeflow.green.light
+          },
+        ]
+      : [];
 
     let partsPerPack = data?.info?.parts_per_pack ?? 0;
     let packQtt = data?.info?.pack_qtt ?? 0;
