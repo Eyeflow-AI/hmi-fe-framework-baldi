@@ -42,13 +42,12 @@ export default function Monitor({pageOptions}) {
   const {runningBatch, loadRunningBatch} = GetRunningBatch({stationId, sleepTime: pageOptions.options.getEventSleepTime});
 
   const [selectedBatch, setSelectedBatch] = useState(null);
-  const [selectedBatchCountData, setSelectedBatchCountData] = useState(null);
 
   const onChangeEvent = (batchId) => {
-    API.get.batch({ stationId, batchId })
+    API.get.batchData({ stationId, batchId })
       .then((data) => {
+        console.log({data})
         setSelectedBatch(data.batch);
-        setSelectedBatchCountData(data.countData);
       })
       .catch(console.error);
   };
@@ -64,7 +63,6 @@ export default function Monitor({pageOptions}) {
   useEffect(() => {
     if (selectedBatch && (selectedBatch._id !== runningBatch?._id) && batchList.findIndex((el) => el._id === selectedBatch._id) === -1) {
       setSelectedBatch(null);
-      setSelectedBatchCountData(null);
     };
     // eslint-disable-next-line
   }, [batchList]);
@@ -158,7 +156,6 @@ export default function Monitor({pageOptions}) {
               />
               <EventBatchDataBox
                 data={selectedBatch}
-                countData={selectedBatchCountData}
                 disabled={!selectedBatch}
                 config={pageOptions.components.EventBatchDataBox}
               />
