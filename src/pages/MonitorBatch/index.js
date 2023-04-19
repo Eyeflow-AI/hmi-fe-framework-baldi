@@ -10,7 +10,7 @@ import PageWrapper from '../../components/PageWrapper';
 import EventHeader from '../../components/EventHeader';
 import EventAppBar from '../../components/EventAppBar';
 import EventMenuBox from '../../components/EventMenuBox';
-import FormModal from '../../components/FormModal';
+import CreateBatchModal from '../../components/FormModal';
 import EventBatchDataBox from '../../components/EventBatchDataBox';
 import GetBatchList from '../../utils/Hooks/GetBatchList';
 import GetBatch from '../../utils/Hooks/GetBatch';
@@ -43,6 +43,7 @@ export default function Monitor({pageOptions}) {
 
   const {batchId, onChangeBatchId, batch: selectedBatch} = GetBatch({ stationId, sleepTime: pageOptions.options.getEventSleepTime });
   const {runningBatch, loadRunningBatch} = GetRunningBatch({stationId, sleepTime: pageOptions.options.getEventSleepTime});
+  const isBatchRunning = Boolean(runningBatch);
 
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const handleOpenCreateModal = () => setOpenCreateModal(true);
@@ -91,7 +92,15 @@ export default function Monitor({pageOptions}) {
   };
 
   const onClickCreateBatch = () => handleOpenCreateModal();
-  const onClickSendBranchData = (data) => console.log(data);
+  const onClickSendBatchData = (data) => {
+    API.post.batch({ stationId, data })
+      .then((data) => {
+        console.log(data);
+        setOpenCreateModal(false);
+        updateAll();
+      })
+      .catch(console.error);
+  };
 
   const updateAll = () => {
     loadBatchList();
@@ -136,7 +145,7 @@ export default function Monitor({pageOptions}) {
                 runningEvent={runningBatch}
                 events={batchList}
                 loadingData={loadingBatchList}
-                selectedEvent={selectedBatch}
+                selectedEventId={batchId}
                 onChangeEvent={onChangeBatchId}
                 queryParams={queryParams}
                 onChangeParams={onChangeParams}
@@ -154,6 +163,7 @@ export default function Monitor({pageOptions}) {
                 height={height - pageOptions.components.EventHeader.height}
               >
                 <EventAppBar
+                  isBatchRunning={isBatchRunning}
                   data={selectedBatch}
                   disabled={!selectedBatch}
                   config={pageOptions.components.EventAppBar}
@@ -170,10 +180,11 @@ export default function Monitor({pageOptions}) {
           </Box>
       }
       </PageWrapper>
-      <FormModal
+      <CreateBatchModal
+        config={pageOptions.components.CreateBatchModal}
         open={openCreateModal}
         handleClose={handleCloseCreateModal}
-        onClickSend={onClickSendBranchData}
+        onClickSend={onClickSendBatchData}
       />
     </Fragment>
   );

@@ -88,7 +88,7 @@ export default function EventMenuList({
   width,
   runningEvent,
   events,
-  selectedEvent,
+  selectedEventId,
   queryParams,
   loadingData,
   onChangeParams,
@@ -125,7 +125,7 @@ export default function EventMenuList({
 
     let eventData = events[index];
     let eventIndex = eventData?.index ?? 0;
-    let selected = selectedEvent?._id === eventData._id;
+    let selected = selectedEventId === eventData._id;
 
     const customStyle = Object.assign(
       { display: 'flex', justifyContent: 'center', paddingLeft: 4, paddingRight: 4, paddingTop: 2, paddingBottom: 2 },
@@ -155,30 +155,30 @@ export default function EventMenuList({
     } else if (type === "serial") {
       setMenuBoxHeight(height - serialButtonBoxHeight);
     }
-  }, [type])
+  }, [type, height, batchButtonBoxHeight, serialButtonBoxHeight])
 
   return (
     <Box id="event-menu-box" width={width} sx={styleSx.mainBox}>
       {type === "batch" && (
         <Box height={batchButtonBoxHeight} sx={styleSx.defaultBox}>
           {runningEvent
-            ? (
-              <EventMenuItem
-                index={null}
-                dateField={dateField}
-                eventData={runningEvent}
-                selected={runningEvent._id === selectedEvent?._id}
-                onClick={onEventClick(runningEvent)}
-              />
-            )
-            : (
-              <ButtonBase>
-                <Box height={batchButtonBoxHeight} width={width} onClick={onClickCreateBatch} sx={styleSx.createBatchButton}>
-                  <img alt="" src={startBatchIcon} style={styleSx.createBatchButtonIcon} />
-                  {t("new_batch")}
-                </Box>
-              </ButtonBase>
-            )
+          ? (
+          <EventMenuItem
+            index={null}
+            dateField={dateField}
+            eventData={runningEvent}
+            selected={runningEvent._id === selectedEventId}
+            onClick={onEventClick(runningEvent)}
+          />
+          )
+          : (
+          <ButtonBase>
+            <Box height={batchButtonBoxHeight} width={width} onClick={onClickCreateBatch} sx={styleSx.createBatchButton}>
+              <img alt="" src={startBatchIcon} style={styleSx.createBatchButtonIcon}/>
+              {t("new_batch")}
+            </Box>
+          </ButtonBase>
+          )
           }
         </Box>
       )}
@@ -191,7 +191,7 @@ export default function EventMenuList({
                 index={null}
                 dateField={dateField}
                 eventData={runningEvent}
-                selected={runningEvent._id === selectedEvent?._id}
+                selected={runningEvent._id === selectedEventId}
                 onClick={onEventClick(runningEvent)}
               />
             )
