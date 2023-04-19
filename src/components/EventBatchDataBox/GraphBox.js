@@ -1,5 +1,5 @@
 // React
-import React, {useMemo} from 'react';
+import React, {useMemo, Fragment} from 'react';
 
 //Design
 import Box from '@mui/material/Box';
@@ -141,10 +141,9 @@ export default function GraphBox({data, config}) {
       </Box>
       
       <Box id="graph-box" sx={styleSx.graphBoxSx}>
-        {partsPieData.length > 0 && (
         <Box marginBottom={-2} sx={styleSx.pieBoxSx}>
           <Typography variant="h6" marginBottom={-3}>
-            {t("parts")}
+            {partsPieData.length > 0 ? t("parts") : ""}
           </Typography>
           <Box width={600} height={400}>
             <ResponsivePie
@@ -155,11 +154,10 @@ export default function GraphBox({data, config}) {
             />
           </Box>
         </Box>
-        )}
-        {anomaliesPieData.length > 0 && (
+
         <Box sx={styleSx.pieBoxSx}>
           <Typography variant="h6" marginBottom={-3}>
-            {t("anomalies")}
+            {anomaliesPieData.length > 0 ? t("anomalies") : ""}
           </Typography>
           <Box width={600} height={400}>
             <ResponsivePie
@@ -170,7 +168,6 @@ export default function GraphBox({data, config}) {
             />
           </Box>
         </Box>
-        )}
       </Box>
       {/* {JSON.stringify(data, null, 1)} */}
     </Box>
