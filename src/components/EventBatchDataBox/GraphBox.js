@@ -145,11 +145,11 @@ export default function GraphBox({data, config}) {
           <Typography variant="h6" marginBottom={-1}>
             {t("parts")}
           </Typography>
-          <Box width={600} height={300}>
+          <Box width={600} height={400}>
             <ResponsivePie
               colors={{ datum: 'data.color' }}
               data={partsPieData}
-              margin={{ top: 20, right: 120, bottom: 40, left: 120 }}
+              margin={{ top: 70, right: 120, bottom: 70, left: 120 }}
               theme={responsivePieTheme}
             />
           </Box>
@@ -158,11 +158,11 @@ export default function GraphBox({data, config}) {
           <Typography variant="h6" marginBottom={-1}>
             {t("anomalies")}
           </Typography>
-          <Box width={600} height={300}>
+          <Box width={600} height={400}>
             <ResponsivePie
               data={anomaliesPieData}
               arcLinkLabelsStraightLength={0}
-              margin={{ top: 20, right: 120, bottom: 40, left: 120 }}
+              margin={{ top: 70, right: 120, bottom: 70, left: 120 }}
               theme={responsivePieTheme}
             />
           </Box>
