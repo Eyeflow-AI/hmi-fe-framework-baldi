@@ -53,6 +53,7 @@ const API = {
     batchList: ({ params, stationId }, setLoading) => request(instance.get(`batch/${stationId}/list`, { params }), setLoading),
     runningBatch: ({ stationId }, setLoading) => request(instance.get(`batch/${stationId}/running`), setLoading),
     batch: ({ stationId, batchId }, setLoading) => request(instance.get(`batch/${stationId}/${batchId}`), setLoading),
+    batchData: ({ stationId, batchId }, setLoading) => request(instance.get(`batch/${stationId}/${batchId}/data`), setLoading),
     eventList: ({ params }, setLoading) => request(instance.get(`event/list`, { params }), setLoading),
     event: ({ eventId }, setLoading) => request(instance.get(`event/${eventId}`), setLoading),
     stations: (_, setLoading) => request(instance.get(`station/list`), setLoading),

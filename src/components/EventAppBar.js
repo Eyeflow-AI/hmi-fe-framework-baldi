@@ -16,6 +16,7 @@ const mainBoxSx = Object.assign(
     bgcolor: 'background.paper',
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 1,
     flexDirection: 'column',
     paddingTop: 2,
@@ -46,7 +47,7 @@ export default function EventAppBar({data, config, disabled, onClickPause, onCli
             buttonList.push({label: "pause", icon: buttonData.pause_icon, onClick: onClickPause});
           }
           else if (data.status === "paused") {
-            buttonList.push({label: "play", icon: buttonData.resume_icon, onClick: onClickResume});
+            buttonList.push({label: "resume", icon: buttonData.resume_icon, onClick: onClickResume});
           }
         }  
       };
