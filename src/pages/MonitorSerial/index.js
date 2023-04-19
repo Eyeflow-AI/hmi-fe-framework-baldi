@@ -10,9 +10,9 @@ import PageWrapper from '../../components/PageWrapper';
 import EventHeader from '../../components/EventHeader';
 import EventAppBar from '../../components/EventAppBar';
 import EventMenuBox from '../../components/EventMenuBox';
-import EventBatchDataBox from '../../components/EventBatchDataBox';
-import GetBatchList from '../../utils/Hooks/GetBatchList';
-import GetRunningBatch from '../../utils/Hooks/GetRunningBatch';
+import EventSerialDataBox from '../../components/EventSerialDataBox';
+import GetSerialList from '../../utils/Hooks/GetSerialList';
+import GetRunningSerial from '../../utils/Hooks/GetRunningSerial';
 
 import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
 import API from '../../api';
@@ -38,36 +38,36 @@ export default function Monitor({ pageOptions }) {
   const { _id: stationId } = GetSelectedStation();
   const [queryParams, setQueryParams] = useState(null);
 
-  const { batchList, loading: loadingBatchList, loadBatchList } = GetBatchList({ stationId, queryParams, sleepTime: pageOptions.options.getEventSleepTime });
-  const { runningBatch, loadRunningBatch } = GetRunningBatch({ stationId, sleepTime: pageOptions.options.getEventSleepTime });
+  const { serialList, loading: loadingSerialList, loadSerialList } = GetSerialList({ stationId, queryParams, sleepTime: pageOptions.options.getEventSleepTime });
+  const { runningSerial, loadRunningSerial } = GetRunningSerial({ stationId, sleepTime: pageOptions.options.getEventSleepTime });
 
-  const [selectedBatch, setSelectedBatch] = useState(null);
-  const [selectedBatchCountData, setSelectedBatchCountData] = useState(null);
+  const [selectedSerial, setSelectedSerial] = useState(null);
+  const [selectedSerialCountData, setSelectedSerialCountData] = useState(null);
 
-  const onChangeEvent = (batchId) => {
-    API.get.batch({ stationId, batchId })
+  const onChangeEvent = (serialId) => {
+    API.get.serial({ stationId, serialId })
       .then((data) => {
-        setSelectedBatch(data.batch);
-        setSelectedBatchCountData(data.countData);
+        setSelectedSerial(data.serial);
+        setSelectedSerialCountData(data.countData);
       })
       .catch(console.error);
   };
 
   useEffect(() => {
-    if (!selectedBatch && runningBatch) {
-      onChangeEvent(runningBatch._id);
+    if (!selectedSerial && runningSerial) {
+      onChangeEvent(runningSerial._id);
     };
     // eslint-disable-next-line
-  }, [selectedBatch, runningBatch]);
+  }, [selectedSerial, runningSerial]);
 
   // useEffect(() => {console.log({runningBatch})}, [runningBatch]);
   useEffect(() => {
-    if (selectedBatch && (selectedBatch._id !== runningBatch?._id) && batchList.findIndex((el) => el._id === selectedBatch._id) === -1) {
-      setSelectedBatch(null);
-      setSelectedBatchCountData(null);
+    if (selectedSerial && (selectedSerial._id !== runningSerial?._id) && serialList.findIndex((el) => el._id === selectedSerial._id) === -1) {
+      setSelectedSerial(null);
+      setSelectedSerialCountData(null);
     };
     // eslint-disable-next-line
-  }, [batchList]);
+  }, [serialList]);
 
   useEffect(() => {
     if (queryParams && queryParams.station !== stationId) {
@@ -87,22 +87,22 @@ export default function Monitor({ pageOptions }) {
   };
 
   const onClickCreateBatch = () => {
-    console.log("onClickCreateBatch");
+    console.log("onClickCreateSerial");
   };
 
   const updateAll = () => {
-    loadBatchList();
-    loadRunningBatch();
-    if (selectedBatch) {
-      onChangeEvent(selectedBatch._id);
+    loadSerialList();
+    loadRunningSerial();
+    if (selectedSerial) {
+      onChangeEvent(selectedSerial._id);
     };
   };
 
   const onClickPause = () => {
-    if (selectedBatch) {
-      API.put.batchPause({ stationId, batchId: selectedBatch._id })
+    if (selectedSerial) {
+      API.put.serialPause({ stationId, serialId: selectedSerial._id })
         .then((data) => {
-          console.log("batch paused");
+          console.log("serial paused");
           updateAll();
         })
         .catch(console.error);
@@ -110,10 +110,10 @@ export default function Monitor({ pageOptions }) {
   };
 
   const onClickResume = () => {
-    if (selectedBatch) {
-      API.put.batchResume({ stationId, batchId: selectedBatch._id })
+    if (selectedSerial) {
+      API.put.serialResume({ stationId, serialId: selectedSerial._id })
         .then((data) => {
-          console.log("batch resumed");
+          console.log("serial resumed");
           updateAll();
         })
         .catch(console.error);
@@ -129,10 +129,10 @@ export default function Monitor({ pageOptions }) {
             type="serial"
             width={pageOptions.options.eventMenuWidth}
             onClickCreateBatch={onClickCreateBatch}
-            runningEvent={runningBatch}
-            events={batchList}
-            loadingData={loadingBatchList}
-            selectedEvent={selectedBatch}
+            runningEvent={runningSerial}
+            events={serialList}
+            loadingData={loadingSerialList}
+            selectedEvent={selectedSerial}
             onChangeEvent={onChangeEvent}
             queryParams={queryParams}
             onChangeParams={onChangeParams}
@@ -141,8 +141,8 @@ export default function Monitor({ pageOptions }) {
           />
           <Box id="monitor-data-box" sx={style.dataBox}>
             <EventHeader
-              data={selectedBatch}
-              disabled={!selectedBatch}
+              data={selectedSerial}
+              disabled={!selectedSerial}
               config={pageOptions.components.EventHeader}
             />
             <Box
@@ -150,13 +150,17 @@ export default function Monitor({ pageOptions }) {
               height={height - pageOptions.components.EventHeader.height}
             >
               <EventAppBar
-                data={selectedBatch}
-                disabled={!selectedBatch}
+                data={selectedSerial}
+                disabled={!selectedSerial}
                 config={pageOptions.components.EventAppBar}
                 onClickPause={onClickPause}
                 onClickResume={onClickResume}
               />
-              TODO
+              <EventSerialDataBox
+                data={selectedSerial}
+                disabled={!selectedSerial}
+                config={pageOptions.components.EventSerialDataBox}
+              />
             </Box>
           </Box>
         </Box>
