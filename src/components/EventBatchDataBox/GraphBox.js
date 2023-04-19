@@ -67,65 +67,70 @@ export default function GraphBox({data, config}) {
   const {
     // partsOk, partsNg,
     dataList, anomaliesPieData, partsPieData} = useMemo(() => {
-    let anomaliesPieData = [];
-    if (data?.batch_data?.hasOwnProperty("defects_count")) {
-      for (let [classId, value] of Object.entries(data.batch_data.defects_count)) {
-        anomaliesPieData.push({
-          id: classId,
-          label: classId, //TODO get class label
-          value,
-          // color: TODO
-        });
+      let partsOk = data?.batch_data?.parts_ok ?? 0;
+      let partsNg = data?.batch_data?.parts_ng ?? 0;
+      let partsProduced = partsOk + partsNg;
+
+      let partsPieData = [];
+      let anomaliesPieData = [];
+
+      if (partsOk || partsNg) {
+        partsPieData = [
+            {
+              "id": "ng",
+              "label": "NG",
+              "value": partsNg,
+              "color": colors.eyeflow.red.dark
+            },
+            {
+              "id": "ok",
+              "label": "OK",
+              "value": partsOk,
+              "color": colors.eyeflow.green.light
+            },
+          ];
+
+        if (partsNg) {
+          if (data?.batch_data?.hasOwnProperty("defects_count")) {
+            for (let [classId, value] of Object.entries(data.batch_data.defects_count)) {
+              anomaliesPieData.push({
+                id: classId,
+                label: classId, //TODO get class label
+                value,
+                // color: TODO
+              });
+            };
+            anomaliesPieData.sort((a, b) => b.label - a.label);
+          };
+        }
       };
-    };
 
-    // anomaliesPieData.push({id: "foo1", label: "foo1", value: 60});
-    // anomaliesPieData.push({id: "foo2", label: "foo2", value: 100});
-    // anomaliesPieData.push({id: "foo3", label: "foo3", value: 100});
-    anomaliesPieData.sort((a, b) => b.label - a.label);
-    let partsOk = data?.batch_data?.parts_ok ?? 0;
-    let partsNg = data?.batch_data?.parts_ng ?? 0;
-    let partsProduced = partsOk + partsNg;
+      // anomaliesPieData.push({id: "foo1", label: "foo1", value: 60});
+      // anomaliesPieData.push({id: "foo2", label: "foo2", value: 100});
+      // anomaliesPieData.push({id: "foo3", label: "foo3", value: 100});
 
-    let partsPieData = (partsNg || partsOk)
-      ? [
-          {
-            "id": "ng",
-            "label": "NG",
-            "value": partsNg,
-            "color": colors.eyeflow.red.dark
-          },
-          {
-            "id": "ok",
-            "label": "OK",
-            "value": partsOk,
-            "color": colors.eyeflow.green.light
-          },
-        ]
-      : [];
+      let partsPerPack = data?.info?.parts_per_pack ?? 0;
+      let packQtt = data?.info?.pack_qtt ?? 0;
+      let totalQtt = partsPerPack * packQtt;
 
-    let partsPerPack = data?.info?.parts_per_pack ?? 0;
-    let packQtt = data?.info?.pack_qtt ?? 0;
-    let totalQtt = partsPerPack * packQtt;
+      const dataList = [ //TODO get from config
+        {field: "produced", label: `${partsProduced} (${(partsProduced/totalQtt*100).toFixed(2)}%)`},
+        {field: "speed", label: "TODO"},
+        {field: "box", label: `${Math.floor(partsProduced/partsPerPack) + 1}/${packQtt}`},
+        {field: "OK", label: `${partsOk} (${(Number.isInteger(partsProduced) ? partsOk/partsProduced*100 : 0.0).toFixed(2)}%)`},
+        {field: "NG", label: `${partsNg} (${(Number.isInteger(partsProduced) ? partsNg/partsProduced*100 : 0.0).toFixed(2)}%)`},
+      ];
 
-    const dataList = [ //TODO get from config
-      {field: "produced", label: `${partsProduced} (${(partsProduced/totalQtt*100).toFixed(2)}%)`},
-      {field: "speed", label: "TODO"},
-      {field: "box", label: `${Math.floor(partsProduced/partsPerPack) + 1}/${packQtt}`},
-      {field: "OK", label: `${partsOk} (${(partsOk/partsProduced*100).toFixed(2)}%)`},
-      {field: "NG", label: `${partsNg} (${(partsNg/partsProduced*100).toFixed(2)}%)`},
-    ];
-
-    return {
-      partsProduced: partsOk + partsNg,
-      partsOk,
-      partsNg,
-      packQtt,
-      partsPerPack,
-      anomaliesPieData,
-      partsPieData,
-      dataList,
-    }
+      return {
+        partsProduced: partsOk + partsNg,
+        partsOk,
+        partsNg,
+        packQtt,
+        partsPerPack,
+        anomaliesPieData,
+        partsPieData,
+        dataList,
+      }
   }, [data]);
 
 

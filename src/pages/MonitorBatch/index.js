@@ -13,6 +13,7 @@ import EventMenuBox from '../../components/EventMenuBox';
 import FormModal from '../../components/FormModal';
 import EventBatchDataBox from '../../components/EventBatchDataBox';
 import GetBatchList from '../../utils/Hooks/GetBatchList';
+import GetBatch from '../../utils/Hooks/GetBatch';
 import GetRunningBatch from '../../utils/Hooks/GetRunningBatch';
 import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
 import API from '../../api';
@@ -39,25 +40,17 @@ export default function Monitor({pageOptions}) {
   const [queryParams, setQueryParams] = useState(null);
 
   const { batchList, loading: loadingBatchList, loadBatchList } = GetBatchList({ stationId, queryParams, sleepTime: pageOptions.options.getEventSleepTime });
+
+  const {batchId, onChangeBatchId, batch: selectedBatch} = GetBatch({ stationId, sleepTime: pageOptions.options.getEventSleepTime });
   const {runningBatch, loadRunningBatch} = GetRunningBatch({stationId, sleepTime: pageOptions.options.getEventSleepTime});
 
-  const [selectedBatch, setSelectedBatch] = useState(null);
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const handleOpenCreateModal = () => setOpenCreateModal(true);
   const handleCloseCreateModal = () => setOpenCreateModal(false);
 
-  const onChangeEvent = (batchId) => {
-    API.get.batchData({ stationId, batchId })
-      .then((data) => {
-        console.log({data})
-        setSelectedBatch(data.batch);
-      })
-      .catch(console.error);
-  };
-
   useEffect(() => {
     if (!selectedBatch && runningBatch) {
-      onChangeEvent(runningBatch._id);
+      onChangeBatchId(runningBatch._id);
     };
     // eslint-disable-next-line
   }, [selectedBatch, runningBatch]);
@@ -67,13 +60,13 @@ export default function Monitor({pageOptions}) {
     if (selectedBatch) {
       let stationChanged = selectedBatch.station !== stationId;
       if (stationChanged) {
-        setSelectedBatch(null);
+        onChangeBatchId(null);
       }
       else {
         let selectedBatchIsNotRunning = selectedBatch._id !== runningBatch?._id;
         let selectedBatchIsNotInBatchList = batchList.findIndex((el) => el._id === selectedBatch._id) === -1;
         if (selectedBatchIsNotRunning && selectedBatchIsNotInBatchList) {
-          setSelectedBatch(null);
+          onChangeBatchId(null);
         }
       }
     }
@@ -104,7 +97,7 @@ export default function Monitor({pageOptions}) {
     loadBatchList();
     loadRunningBatch();
     if (selectedBatch) {
-      onChangeEvent(selectedBatch._id);
+      onChangeBatchId(selectedBatch._id);
     };
   };
 
@@ -144,7 +137,7 @@ export default function Monitor({pageOptions}) {
                 events={batchList}
                 loadingData={loadingBatchList}
                 selectedEvent={selectedBatch}
-                onChangeEvent={onChangeEvent}
+                onChangeEvent={onChangeBatchId}
                 queryParams={queryParams}
                 onChangeParams={onChangeParams}
                 config={pageOptions.components.EventMenuBox}

@@ -5,7 +5,7 @@ import API from '../../api';
 import Clock from './Clock';
 
 
-export default function GetBatchList({ stationId, sleepTime = 30000 } = {}) {
+export default function GetRunningBatch({ stationId, sleepTime = 30000 } = {}) {
 
 
   const [data, setData] = useState({ batch: null });
