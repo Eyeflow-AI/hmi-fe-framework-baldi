@@ -126,7 +126,7 @@ export default function Monitor({ pageOptions }) {
         <Box width={width} height={height} sx={style.mainBox}>
           {/* <Box id="monitor-event-menu-box" width={pageOptions.options.eventMenuWidth}> */}
           <EventMenuBox
-            type="batch"
+            type="serial"
             width={pageOptions.options.eventMenuWidth}
             onClickCreateBatch={onClickCreateBatch}
             runningEvent={runningBatch}

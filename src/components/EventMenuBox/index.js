@@ -1,5 +1,5 @@
 // React
-import React, {useEffect, useState, Fragment} from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 
 
 //Design
@@ -13,7 +13,7 @@ import getQueryDateString from '../../utils/functions/getQueryDateString';
 import EventMenuItem from './EventMenuItem';
 
 //Third-party
-import {FixedSizeList as List} from 'react-window';
+import { FixedSizeList as List } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { useTranslation } from "react-i18next";
@@ -26,7 +26,7 @@ const styleSx = {
     height: '100%',
     gap: 1
   },
-  defaultBox: {bgcolor: "white", borderRadius: 1},
+  defaultBox: { bgcolor: "white", borderRadius: 1 },
   createBatchButton: Object.assign({}, window.app_config.style.box, {
     bgcolor: 'primary.main',
     display: 'flex',
@@ -36,8 +36,8 @@ const styleSx = {
     alignItems: 'center'
   }),
   createBatchButtonIcon: {
-    height:30,
-    width:30,
+    height: 30,
+    width: 30,
     filter: 'invert(1)',
     marginBottom: '8px'
   },
@@ -46,7 +46,7 @@ const styleSx = {
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
-    }
+  }
   ),
   filterBox: {
     display: 'flex',
@@ -95,8 +95,8 @@ export default function EventMenuList({
   const [dateValue, setDateValue] = useState(new Date());
 
   useEffect(() => { //Update query params
-    onChangeParams({min_event_time: getQueryDateString(dateValue), max_event_time: getQueryDateString(dateValue, {dayTimeDelta: 1})});
-  // eslint-disable-next-line
+    onChangeParams({ min_event_time: getQueryDateString(dateValue), max_event_time: getQueryDateString(dateValue, { dayTimeDelta: 1 }) });
+    // eslint-disable-next-line
   }, [dateValue]);
 
   const onEventClick = (eventData) => () => onChangeEvent(eventData._id);
@@ -108,7 +108,7 @@ export default function EventMenuList({
     let selected = selectedEvent?._id === eventData._id;
 
     const customStyle = Object.assign(
-      {display: 'flex', justifyContent: 'center', paddingLeft: 4, paddingRight: 4, paddingTop: 2, paddingBottom: 2},
+      { display: 'flex', justifyContent: 'center', paddingLeft: 4, paddingRight: 4, paddingTop: 2, paddingBottom: 2 },
       style
     );
 
@@ -135,23 +135,34 @@ export default function EventMenuList({
       {type === "batch" && (
         <Box height={batchButtonBoxHeight} sx={styleSx.defaultBox}>
           {runningEvent
-          ? (
-          <EventMenuItem
-            index={null}
-            dateField={dateField}
-            eventData={runningEvent}
-            selected={runningEvent._id === selectedEvent?._id}
-            onClick={onEventClick(runningEvent)}
-          />
-          )
-          : (
-          <ButtonBase>
-            <Box height={batchButtonBoxHeight} width={width} onClick={onClickCreateBatch} sx={styleSx.createBatchButton}>
-              <img alt="" src={startBatchIcon} style={styleSx.createBatchButtonIcon}/>
-              {t("new_batch")}
+            ? (
+              <EventMenuItem
+                index={null}
+                dateField={dateField}
+                eventData={runningEvent}
+                selected={runningEvent._id === selectedEvent?._id}
+                onClick={onEventClick(runningEvent)}
+              />
+            )
+            : (
+              <ButtonBase>
+                <Box height={batchButtonBoxHeight} width={width} onClick={onClickCreateBatch} sx={styleSx.createBatchButton}>
+                  <img alt="" src={startBatchIcon} style={styleSx.createBatchButtonIcon} />
+                  {t("new_batch")}
+                </Box>
+              </ButtonBase>
+            )
+          }
+          {type === "serial" && runningEvent &&
+            <Box height={batchButtonBoxHeight} sx={styleSx.defaultBox}>
+              <EventMenuItem
+                index={null}
+                dateField={dateField}
+                eventData={runningEvent}
+                selected={runningEvent._id === selectedEvent?._id}
+                onClick={onEventClick(runningEvent)}
+              />
             </Box>
-          </ButtonBase>
-          )
           }
         </Box>
       )}
@@ -168,37 +179,37 @@ export default function EventMenuList({
 
         <Box id="list-box" sx={styleSx.listBox}>
           {(eventsLength === 0 && loadingData)
-          ? (
-            <Box height="100%" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-              {`${t('loading')}...`}
-              <CircularProgress />
-            </Box>
-          )
-          : (
-            <Fragment>
-              {eventsLength === 0
-              ? (
-                <Box height="100%" display="flex" justifyContent="center" alignItems="center">
-                  {t("no_data")}
-                </Box>
-              )
-              : (
-              <AutoSizer>
-                {({ height, width }) => (
-                <List
-                  height={height}
-                  width={width}
-                  itemSize={itemMenuHeight}
-                  itemCount={eventsLength}
-                >
-                  {ItemRenderer}
-                </List>
-                )}
-              </AutoSizer>
-              )
-              }
-            </Fragment>
-          )
+            ? (
+              <Box height="100%" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+                {`${t('loading')}...`}
+                <CircularProgress />
+              </Box>
+            )
+            : (
+              <Fragment>
+                {eventsLength === 0
+                  ? (
+                    <Box height="100%" display="flex" justifyContent="center" alignItems="center">
+                      {t("no_data")}
+                    </Box>
+                  )
+                  : (
+                    <AutoSizer>
+                      {({ height, width }) => (
+                        <List
+                          height={height}
+                          width={width}
+                          itemSize={itemMenuHeight}
+                          itemCount={eventsLength}
+                        >
+                          {ItemRenderer}
+                        </List>
+                      )}
+                    </AutoSizer>
+                  )
+                }
+              </Fragment>
+            )
           }
         </Box>
       </Box>
