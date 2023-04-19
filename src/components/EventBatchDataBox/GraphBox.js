@@ -70,7 +70,6 @@ export default function GraphBox({data, config}) {
       let partsOk = data?.batch_data?.parts_ok ?? 0;
       let partsNg = data?.batch_data?.parts_ng ?? 0;
       let partsProduced = partsOk + partsNg;
-
       let partsPieData = [];
       let anomaliesPieData = [];
 
@@ -117,8 +116,8 @@ export default function GraphBox({data, config}) {
         {field: "produced", label: `${partsProduced} (${(partsProduced/totalQtt*100).toFixed(2)}%)`},
         {field: "speed", label: "TODO"},
         {field: "box", label: `${Math.floor(partsProduced/partsPerPack) + 1}/${packQtt}`},
-        {field: "OK", label: `${partsOk} (${(Number.isInteger(partsProduced) ? partsOk/partsProduced*100 : 0.0).toFixed(2)}%)`},
-        {field: "NG", label: `${partsNg} (${(Number.isInteger(partsProduced) ? partsNg/partsProduced*100 : 0.0).toFixed(2)}%)`},
+        {field: "OK", label: `${partsOk} (${((partsProduced && Number.isInteger(partsProduced)) ? partsOk/partsProduced*100 : 0.0).toFixed(2)}%)`},
+        {field: "NG", label: `${partsNg} (${((partsProduced && Number.isInteger(partsProduced)) ? partsNg/partsProduced*100 : 0.0).toFixed(2)}%)`},
       ];
 
       return {
