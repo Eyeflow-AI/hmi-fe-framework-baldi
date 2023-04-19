@@ -141,8 +141,9 @@ export default function GraphBox({data, config}) {
       </Box>
       
       <Box id="graph-box" sx={styleSx.graphBoxSx}>
+        {partsPieData.length > 0 && (
         <Box marginBottom={-2} sx={styleSx.pieBoxSx}>
-          <Typography variant="h6" marginBottom={-1}>
+          <Typography variant="h6" marginBottom={-3}>
             {t("parts")}
           </Typography>
           <Box width={600} height={400}>
@@ -154,8 +155,10 @@ export default function GraphBox({data, config}) {
             />
           </Box>
         </Box>
+        )}
+        {anomaliesPieData.length > 0 && (
         <Box sx={styleSx.pieBoxSx}>
-          <Typography variant="h6" marginBottom={-1}>
+          <Typography variant="h6" marginBottom={-3}>
             {t("anomalies")}
           </Typography>
           <Box width={600} height={400}>
@@ -167,6 +170,7 @@ export default function GraphBox({data, config}) {
             />
           </Box>
         </Box>
+        )}
       </Box>
       {/* {JSON.stringify(data, null, 1)} */}
     </Box>
