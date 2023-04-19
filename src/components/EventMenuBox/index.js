@@ -35,7 +35,21 @@ const styleSx = {
     justifyContent: 'center',
     alignItems: 'center'
   }),
+  createSerialButton: Object.assign({}, window.app_config.style.box, {
+    bgcolor: 'primary.main',
+    display: 'flex',
+    flexDirection: 'column',
+    color: 'white',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }),
   createBatchButtonIcon: {
+    height: 30,
+    width: 30,
+    filter: 'invert(1)',
+    marginBottom: '8px'
+  },
+  createSerialButtonIcon: {
     height: 30,
     width: 30,
     filter: 'invert(1)',
@@ -82,17 +96,23 @@ export default function EventMenuList({
   config
 }) {
 
-
   const { t } = useTranslation();
 
   const eventsLength = events?.length ?? 0;
   const itemMenuHeight = config?.itemHeight ?? 200;
+
   const batchButtonBoxHeight = type === "batch" ? itemMenuHeight + 10 : 0;
-  const menuBoxHeight = height - batchButtonBoxHeight;
+  const serialButtonBoxHeight = type === "serial" ? itemMenuHeight + 10 : 0;
+
   const dateField = config?.dateField ?? "event_time";
+
   const startBatchIcon = config?.startBatchIcon;
+  const startSerialIcon = config?.startSerialIcon;
 
   const [dateValue, setDateValue] = useState(new Date());
+  const [menuBoxHeight, setMenuBoxHeight] = useState(height);
+
+  console.log({ config })
 
   useEffect(() => { //Update query params
     onChangeParams({ min_event_time: getQueryDateString(dateValue), max_event_time: getQueryDateString(dateValue, { dayTimeDelta: 1 }) });
@@ -129,6 +149,13 @@ export default function EventMenuList({
     setDateValue(newValue);
   };
 
+  useEffect(() => {
+    if (type === "batch") {
+      setMenuBoxHeight(height - batchButtonBoxHeight);
+    } else if (type === "serial") {
+      setMenuBoxHeight(height - serialButtonBoxHeight);
+    }
+  }, [type])
 
   return (
     <Box id="event-menu-box" width={width} sx={styleSx.mainBox}>
@@ -153,8 +180,13 @@ export default function EventMenuList({
               </ButtonBase>
             )
           }
-          {type === "serial" && runningEvent &&
-            <Box height={batchButtonBoxHeight} sx={styleSx.defaultBox}>
+        </Box>
+      )}
+
+      {type === "serial" && (
+        <Box height={serialButtonBoxHeight} sx={styleSx.defaultBox}>
+          {runningEvent
+            ? (
               <EventMenuItem
                 index={null}
                 dateField={dateField}
@@ -162,10 +194,19 @@ export default function EventMenuList({
                 selected={runningEvent._id === selectedEvent?._id}
                 onClick={onEventClick(runningEvent)}
               />
-            </Box>
+            )
+            : (
+              <ButtonBase>
+                <Box height={serialButtonBoxHeight} width={width} onClick={onClickCreateBatch} sx={styleSx.createSerialButton}>
+                  <img alt="" src={startSerialIcon} style={styleSx.createSerialButtonIcon} />
+                  {t("start")}
+                </Box>
+              </ButtonBase>
+            )
           }
         </Box>
-      )}
+      )
+      }
       <Box id="menu-box" height={menuBoxHeight} sx={styleSx.menuBox} >
         <Box id="filter-box" sx={styleSx.filterBox} >
           <DesktopDatePicker
