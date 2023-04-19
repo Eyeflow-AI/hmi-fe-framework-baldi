@@ -47,7 +47,7 @@ const API = {
   wsURL: window.app_config.ws_url,
   post: {
     login: ({ username, password }, setLoading) => request(instance.post(`auth/login`, { username, password }), setLoading),
-
+    batch: ({stationId, data}, setLoading) => request(instance.post(`batch/${stationId}`, data), setLoading),
   },
   get: {
     batchList: ({ params, stationId }, setLoading) => request(instance.get(`batch/${stationId}/list`, { params }), setLoading),
