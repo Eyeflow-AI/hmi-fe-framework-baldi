@@ -34,7 +34,7 @@ const style = {
   }
 };
 
-export default function EventAppBar({data, config, disabled, onClickPause, onClickResume}) {
+export default function EventAppBar({isBatchRunning, data, config, disabled, onClickPause, onClickResume}) {
 
   const { t } = useTranslation();
 
@@ -44,10 +44,10 @@ export default function EventAppBar({data, config, disabled, onClickPause, onCli
       for (let buttonData of (config?.button_list ?? [])) {
         if (buttonData.id === "pause_or_resume") {
           if (data.status === "running") {
-            buttonList.push({label: "pause", icon: buttonData.pause_icon, onClick: onClickPause});
+            buttonList.push({label: "pause", icon: buttonData.pause_icon, onClick: onClickPause, disabled: false});
           }
           else if (data.status === "paused") {
-            buttonList.push({label: "resume", icon: buttonData.resume_icon, onClick: onClickResume});
+            buttonList.push({label: "resume", icon: buttonData.resume_icon, onClick: onClickResume, disabled: isBatchRunning});
           }
         }  
       };
@@ -57,15 +57,15 @@ export default function EventAppBar({data, config, disabled, onClickPause, onCli
       buttonList,
       hasAppBar: buttonList.length > 0
     };
-  }, [data, config, onClickPause, onClickResume]);
+  }, [isBatchRunning, data, config, onClickPause, onClickResume]);
 
   if (hasAppBar) {
     return (
       <Box width={config.width} height={config.height} sx={disabled ? style.mainBoxDisabled : style.mainBox}>
         {buttonList.map((buttonProps, index) => 
         <Tooltip key={index} title={t(buttonProps.label)}>
-          <IconButton onClick={buttonProps.onClick}>
-            <img alt="" src={buttonProps.icon} style={style.buttonImage} />
+          <IconButton onClick={buttonProps.onClick} disabled={buttonProps.disabled}>
+            <img alt="" src={buttonProps.icon} style={Object.assign({}, style.buttonImage, {opacity: buttonProps.disabled ? 0.3 : 1})} />
           </IconButton>
         </Tooltip>
         )}

@@ -132,7 +132,7 @@ export default function Monitor({ pageOptions }) {
             runningEvent={runningSerial}
             events={serialList}
             loadingData={loadingSerialList}
-            selectedEvent={selectedSerial}
+            selectedEventId={selectedSerial?._id ?? null}
             onChangeEvent={onChangeEvent}
             queryParams={queryParams}
             onChangeParams={onChangeParams}
