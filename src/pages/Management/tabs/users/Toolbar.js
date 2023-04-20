@@ -1,20 +1,21 @@
 // React
-import React, {useState, useMemo} from 'react';
+import React, { useState, useMemo } from 'react';
 
-
-// Internal
+// Design
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import AddIcon from '@mui/icons-material/Add';
-import PasswordTextField from '../../components/PasswordTextField';
+
+// Internal
+import PasswordTextField from '../../../../components/PasswordTextField';
 
 
 // Third-Party
 import { useTranslation } from "react-i18next";
 
-function getInvalidCharacters (username) {
+function getInvalidCharacters(username) {
 
   let invalidCharacterList = [];
   if (username) {
@@ -31,7 +32,7 @@ function getInvalidCharacters (username) {
 
 const usernameMinLength = 3;
 const usernameMaxLength = 20;
-export default function Toolbar({createUser}) {
+export default function Toolbar({ createUser }) {
 
 
   const { t } = useTranslation();
@@ -54,7 +55,7 @@ export default function Toolbar({createUser}) {
   const addDisabled = useMemo(() => Boolean(!username || usernameError), [username, usernameError]);
 
   const onKeyDown = (e) => {
-    if(e.keyCode === 13){
+    if (e.keyCode === 13) {
       handleAdd();
     };
   };
@@ -70,12 +71,12 @@ export default function Toolbar({createUser}) {
   const handleAdd = () => {
     if (!addDisabled) {
       createUser(username, password)
-      .then((result) => {
-        if (result?.ok) {
-          setUsername('');
-          setPassword('');
-        };
-      });
+        .then((result) => {
+          if (result?.ok) {
+            setUsername('');
+            setPassword('');
+          };
+        });
     };
   };
 
@@ -94,7 +95,7 @@ export default function Toolbar({createUser}) {
         value={username}
         onChange={handleChangeUsername}
         onKeyDown={onKeyDown}
-        sx={{marginRight: 1}}
+        sx={{ marginRight: 1 }}
       />
       <PasswordTextField
         id="new-user-password"
@@ -103,7 +104,7 @@ export default function Toolbar({createUser}) {
         type="password"
         autoComplete="off"
         onChange={handleChangePassword}
-        sx={{marginRight: 1}}
+        sx={{ marginRight: 1 }}
       />
       <Tooltip title={usernameError}>
         <span>
