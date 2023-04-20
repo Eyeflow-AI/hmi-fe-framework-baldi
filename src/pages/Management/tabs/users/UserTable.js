@@ -10,7 +10,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
 // Internal
-import Select from '../../components/Select'
+import Select from '../../../../components/Select'
 
 // Third-Party
 import { useTranslation } from "react-i18next";
