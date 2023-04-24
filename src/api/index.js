@@ -80,7 +80,7 @@ const API = {
     activeLanguage: ({ status, languageId }, setLoading) => request(instance.put(`internal/active-language`, { status, languageId }), setLoading),
     defaultLanguage: ({ languageId }, setLoading) => request(instance.put(`internal/default-language`, { languageId }), setLoading),
 
-    userRole: ({ username, accessControl, newRole }, setLoading) => request(instance.put(`auth/user/role`, { username, accessControl, newRole }), setLoading),
+    userRole: ({ username, newRole }, setLoading) => request(instance.put(`auth/user/role`, { username, newRole }), setLoading),
     resetPassword: ({ username, newPassword }, setLoading) => request(instance.put(`auth/user/reset-password`, { username, newPassword }), setLoading),
 
   },

@@ -87,8 +87,8 @@ export default function UserManagement() {
     setPassword2(event.target.value);
   };
 
-  const changeUserRole = (username, accessControl, newRole) => {
-    API.put.userRole({ username, accessControl, newRole })
+  const changeUserRole = (username, newRole) => {
+    API.put.userRole({ username, newRole })
       .then((result) => {
         console.log(result);
         getUserList();

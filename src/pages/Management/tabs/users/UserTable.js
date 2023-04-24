@@ -128,8 +128,8 @@ export default function UserTable({
       newAccessControl[role] = roleTypePermissions.includes(role);
     });
 
-    if (username && newAccessControl) {
-      changeUserRole(username, newAccessControl, newValue);
+    if (username) {
+      changeUserRole(username, newValue);
     }
   };
 
