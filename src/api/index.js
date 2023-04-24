@@ -47,7 +47,8 @@ const API = {
   wsURL: window.app_config.ws_url,
   post: {
     login: ({ username, password }, setLoading) => request(instance.post(`auth/login`, { username, password }), setLoading),
-    batch: ({stationId, data}, setLoading) => request(instance.post(`batch/${stationId}`, data), setLoading),
+    batch: ({ stationId, data }, setLoading) => request(instance.post(`batch/${stationId}`, data), setLoading),
+    user: ({ username, password }, setLoading) => request(instance.post(`auth/user`, { username, password }), setLoading),
   },
   get: {
     batchList: ({ params, stationId }, setLoading) => request(instance.get(`batch/${stationId}/list`, { params }), setLoading),
@@ -78,9 +79,13 @@ const API = {
     activeDataset: ({ status, datasetId }, setLoading) => request(instance.put(`internal/active-dataset`, { status, datasetId }), setLoading),
     activeLanguage: ({ status, languageId }, setLoading) => request(instance.put(`internal/active-language`, { status, languageId }), setLoading),
     defaultLanguage: ({ languageId }, setLoading) => request(instance.put(`internal/default-language`, { languageId }), setLoading),
+
+    userRole: ({ username, accessControl, newRole }, setLoading) => request(instance.put(`auth/user/role`, { username, accessControl, newRole }), setLoading),
+    resetPassword: ({ username, newPassword }, setLoading) => request(instance.put(`auth/user/reset-password`, { username, newPassword }), setLoading),
+
   },
   delete: {
-
+    user: ({ username }, setLoading) => request(instance.delete(`auth/user`, { data: { username } }), setLoading),
   }
 };
 

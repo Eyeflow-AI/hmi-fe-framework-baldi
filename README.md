@@ -32,7 +32,7 @@
 | Tab  | Image  |
 |---|---|
 | General  | ![management general tab](imagesDocumentation/management_general.png "management general tab")  |  
-| Users  | ![management users tab](imagesDocumentation/management_users.png "management general tab")  |  
+| Users  | ![management users tab](imagesDocumentation/management_users.png "management users tab")  |  
 | Alerts  | ![management alerts tab](imagesDocumentation/management_alerts.png "management alerts tab")  |  
 | From To  | ![management fromto tab](imagesDocumentation/management_fromto.png "management fromto tab")  |  
 | Wording  | ![management wording tab](imagesDocumentation/management_wording.png "management wording tab")  |  
