@@ -7,6 +7,8 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import AddIcon from '@mui/icons-material/Add';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 // Internal
 import PasswordTextField from '../../../../components/PasswordTextField';
@@ -39,6 +41,9 @@ export default function Toolbar({ createUser }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  const [createUserLoading, setCreateUserLoading] = useState(false);
+
+
   const usernameError = useMemo(() => {
     if (username) {
       let invalidCharacterList = getInvalidCharacters(username);
@@ -70,13 +75,15 @@ export default function Toolbar({ createUser }) {
 
   const handleAdd = () => {
     if (!addDisabled) {
+      setCreateUserLoading(true);
       createUser(username, password)
         .then((result) => {
           if (result?.ok) {
             setUsername('');
             setPassword('');
           };
-        });
+        })
+        .finally(() => setCreateUserLoading(false));
     };
   };
 
@@ -107,11 +114,16 @@ export default function Toolbar({ createUser }) {
         sx={{ marginRight: 1 }}
       />
       <Tooltip title={usernameError}>
-        <span>
-          <Button onClick={handleAdd} variant='contained' disabled={addDisabled}>
-            <AddIcon />
-          </Button>
-        </span>
+        {
+          createUserLoading ?
+            <CircularProgress size={24} />
+            :
+            <span>
+              <Button onClick={handleAdd} variant='contained' disabled={addDisabled}>
+                <AddIcon />
+              </Button>
+            </span>
+        }
       </Tooltip>
     </Box>
   );

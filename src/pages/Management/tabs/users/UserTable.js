@@ -1,5 +1,5 @@
 // React
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 
 
 // Design
@@ -8,6 +8,8 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DataGrid } from '@mui/x-data-grid';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 // Internal
 import Select from '../../../../components/Select'
@@ -16,7 +18,11 @@ import Select from '../../../../components/Select'
 import { useTranslation } from "react-i18next";
 //-----------------------------------------------------------------------------------------------------
 
-function RolesBox({ rowParams, rolesOptions, onChangeUserRole, userUsername }) {
+function RolesBox({
+  rowParams
+  , rolesOptions
+  , onChangeUserRole
+  , userUsername }) {
 
 
   let value = rowParams?.row?.role ?? '';
@@ -34,25 +40,52 @@ function RolesBox({ rowParams, rolesOptions, onChangeUserRole, userUsername }) {
   )
 };
 
-function ActionsCell({ rowParams, onClickDelete, userUsername, onClickResetPassword }) {
+function ActionsCell({
+  rowParams
+  , onClickDelete
+  , userUsername
+  , onClickResetPassword
+  , deleteLoading
+  , resetPasswordLoading
+}) {
 
   const disabled = rowParams?.row?.username === userUsername;
   return (
     <>
-      <IconButton disabled={disabled} onClick={onClickDelete} aria-label="delete" size="small">
-        <DeleteIcon fontSize="small" />
-      </IconButton>
-      <IconButton disabled={disabled} onClick={onClickResetPassword} aria-label="reset-password" size="small">
-        <RestartAltIcon fontSize="small" />
-      </IconButton>
+      {
+        deleteLoading ?
+          <CircularProgress size={20} />
+          :
+          <IconButton disabled={disabled} onClick={onClickDelete} aria-label="delete" size="small">
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+      }
+      {
+        resetPasswordLoading ?
+          <CircularProgress size={20} />
+          :
+          <IconButton disabled={disabled} onClick={onClickResetPassword} aria-label="reset-password" size="small">
+            <RestartAltIcon fontSize="small" />
+          </IconButton>
+      }
     </>
   )
 };
-export default function UserTable({ userUsername, userList, accessControlData, deleteUser, changeUserRole, resetPassword }) {
+export default function UserTable({
+  userUsername
+  , userList
+  , accessControlData
+  , deleteUser
+  , changeUserRole
+  , resetPassword }) {
 
 
   const { t } = useTranslation();
   const rolesOptions = useMemo(() => Object.keys(accessControlData?.roles ?? {}), [accessControlData]);
+
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [resetPasswordLoading, setResetPasswordLoading] = useState(false);
+
   const rows = useMemo(() => {
     return userList.map((user, index) => {
       return {
@@ -67,19 +100,23 @@ export default function UserTable({ userUsername, userList, accessControlData, d
   }, [userList]);
 
   const onClickDelete = (rowParms) => (e) => {
+    setDeleteLoading(true);
     e.stopPropagation();
     let username = rowParms?.row?.username;
     if (username) {
       deleteUser(username);
     }
+    setDeleteLoading(false);
   };
 
   const onClickResetPassword = (rowParms) => (e) => {
+    setResetPasswordLoading(true);
     e.stopPropagation();
     let username = rowParms?.row?.username;
     if (username) {
       resetPassword(username);
     }
+    setResetPasswordLoading(false);
   };
 
   const onChangeUserRole = (rowParms) => (newValue) => {
@@ -112,7 +149,14 @@ export default function UserTable({ userUsername, userList, accessControlData, d
       field: "action",
       headerName: t("Actions"),
       sortable: false,
-      renderCell: (params) => <ActionsCell rowParams={params} userUsername={userUsername} onClickDelete={onClickDelete(params)} onClickResetPassword={onClickResetPassword(params)} />
+      renderCell: (params) => <ActionsCell
+        rowParams={params}
+        userUsername={userUsername}
+        onClickDelete={onClickDelete(params)}
+        onClickResetPassword={onClickResetPassword(params)}
+        deleteLoading={deleteLoading}
+        resetPasswordLoading={resetPasswordLoading}
+      />
     },
   ];
 

@@ -117,83 +117,85 @@ export default function Login() {
           title="Eyeflow Inspection"
           component="img"
         />
-        <Box sx={styleSx.loginBox}>
-          <Grid container direction='column' alignItems="center" justifyContent="flex-start" spacing={2} sx={styleSx.grid}>
-            <Grid item>
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label={t("user")}
-                name="user"
-                // autoComplete="email"
-                autoComplete="off"
-                autoFocus
-                onChange={onChangeUser}
-                sx={styleSx.textfield}
-                error={Boolean(errMessage)}
-              />
-            </Grid>
-
-            <Grid item>
-              <Box height={90}>
+        <form noValidate onSubmit={onClickLoginButton}>
+          <Box sx={styleSx.loginBox}>
+            <Grid container direction='column' alignItems="center" justifyContent="flex-start" spacing={2} sx={styleSx.grid}>
+              <Grid item>
                 <TextField
                   variant="outlined"
                   margin="normal"
                   required
                   fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  // autoComplete="current-password"
+                  id="email"
+                  label={t("user")}
+                  name="user"
+                  // autoComplete="email"
                   autoComplete="off"
-                  onChange={onChangePassword}
+                  autoFocus
+                  onChange={onChangeUser}
                   sx={styleSx.textfield}
-                  helperText={t(errMessage)}
                   error={Boolean(errMessage)}
                 />
-              </Box>
-            </Grid>
+              </Grid>
 
-            <Grid item>
-              <FormControl sx={styleSx.textfield}>
-                <InputLabel>{t("station")}</InputLabel>
-                <Select
-                  value={stationId}
-                  label={t("station")}
-                  onChange={onChangeStation}
-                >
-                  {stationList.map(({_id, label}) => (
-                    <MenuItem key={_id} value={_id}>{label}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
+              <Grid item>
+                <Box height={90}>
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    // autoComplete="current-password"
+                    autoComplete="off"
+                    onChange={onChangePassword}
+                    sx={styleSx.textfield}
+                    helperText={t(errMessage)}
+                    error={Boolean(errMessage)}
+                  />
+                </Box>
+              </Grid>
 
-            <Grid item>
-              {
-                loginLoading
-                ? <CircularProgress />
-                : (
-                  <Button
-                    type="submit"
-                    onClick={onClickLoginButton}
-                    variant="contained"
-                    sx={styleSx.loginButton}
+              <Grid item>
+                <FormControl sx={styleSx.textfield}>
+                  <InputLabel>{t("station")}</InputLabel>
+                  <Select
+                    value={stationId}
+                    label={t("station")}
+                    onChange={onChangeStation}
                   >
-                    {t('Login')}
-                  </Button>
-                )
-              }
+                    {stationList.map(({ _id, label }) => (
+                      <MenuItem key={_id} value={_id}>{label}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              <Grid item>
+                {
+                  loginLoading
+                    ? <CircularProgress />
+                    : (
+                      <Button
+                        type="submit"
+                        // onClick={onClickLoginButton}
+                        variant="contained"
+                        sx={styleSx.loginButton}
+                      >
+                        {t('Login')}
+                      </Button>
+                    )
+                }
+              </Grid>
             </Grid>
-          </Grid>
-          <Box sx={{ marginTop: 2 }}>
-            <SiliconCopyright />
+            <Box sx={{ marginTop: 2 }}>
+              <SiliconCopyright />
+            </Box>
           </Box>
-        </Box>
+        </form>
       </Box>
     </Fade>
   );

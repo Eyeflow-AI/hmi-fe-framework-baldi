@@ -38,6 +38,7 @@ export default function UserManagement() {
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
 
+
   const getAccessControlData = () => {
     API.get.accessControlData()
       .then((data) => setAccessControlData(data?.data))
@@ -51,7 +52,7 @@ export default function UserManagement() {
   };
 
   const createUser = (username, password) => {
-    return API.createUser({ username, password })
+    return API.post.user({ username, password })
       .then((result) => {
         // console.log(result);
         getUserList();
@@ -61,7 +62,7 @@ export default function UserManagement() {
   };
 
   const deleteUser = (username) => {
-    API.deleteUser({ username })
+    API.delete.user({ username })
       .then((result) => {
         // console.log(result);
         getUserList();
@@ -69,7 +70,7 @@ export default function UserManagement() {
       .catch(console.log)
   };
   const resetPassword = (username, newPassword) => {
-    API.resetPassword({ username, newPassword })
+    API.put.resetPassword({ username, newPassword })
       .then((result) => {
         // console.log(result);
         getUserList();
@@ -87,7 +88,7 @@ export default function UserManagement() {
   };
 
   const changeUserRole = (username, accessControl, newRole) => {
-    API.changeUserRole({ username, accessControl, newRole })
+    API.put.userRole({ username, accessControl, newRole })
       .then((result) => {
         console.log(result);
         getUserList();
