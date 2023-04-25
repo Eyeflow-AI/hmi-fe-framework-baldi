@@ -16,9 +16,8 @@ import Button from '@mui/material/Button';
 import { getUserUsername } from '../../../../store/slices/auth';
 import API from "../../../../api";
 import PasswordTextField from '../../../../components/PasswordTextField';
-import UserTable from './UserTable';
-import Toolbar from './Toolbar';
-
+import UsersTable from './usersTable';
+import Menu from './menu';
 
 // Third-Party
 import { useTranslation } from "react-i18next";
@@ -28,6 +27,9 @@ import { useTranslation } from "react-i18next";
 export default function UserManagement() {
 
   const { t } = useTranslation();
+
+  const [selectedView, setSelectedView] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const userUsername = useSelector(getUserUsername);
 
@@ -113,18 +115,44 @@ export default function UserManagement() {
           height: '100%',
         }}
       >
-        <Box sx={{ height: 'calc(100vh - 170px)' }}>
-          <UserTable
-            userUsername={userUsername}
-            userList={userList}
-            accessControlData={accessControlData}
-            deleteUser={deleteUser}
-            resetPassword={setOpenResetPasswordDialog}
-            changeUserRole={changeUserRole}
+        {
+          selectedView &&
+          <Box
+            sx={{
+              width: '100%',
+              height: 'calc(100% - 50px)',
+            }}
+            display="flex"
+          >
+            {
+              selectedView === 'users' &&
+              <UsersTable
+                userUsername={userUsername}
+                userList={userList}
+                accessControlData={accessControlData}
+                deleteUser={deleteUser}
+                resetPassword={setOpenResetPasswordDialog}
+                changeUserRole={changeUserRole}
+                createUser={createUser}
+              />
+            }
+          </Box>
+        }
+        <Box
+          sx={{
+            width: '100%',
+            height: selectedView ? 'calc(50px)' : '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          display="flex"
+        >
+          <Menu
+            setSelectedView={setSelectedView}
+            selectedView={selectedView}
+            loading={loading}
+            setLoading={setLoading}
           />
-        </Box>
-        <Box sx={{ height: 80 }}>
-          <Toolbar createUser={createUser} />
         </Box>
       </Box>
       <Dialog
@@ -168,3 +196,5 @@ export default function UserManagement() {
     </>
   );
 };
+
+
