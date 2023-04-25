@@ -1,12 +1,13 @@
 // React
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 // Design
 import Box from '@mui/material/Box';
 
 // Internal
 import PageWrapper from '../../components/PageWrapper';
-import { Tooltip, Typography } from '@mui/material';
+import { List, ListItemButton, Tooltip, Typography } from '@mui/material';
+import API from '../../api';
 
 // Third-party
 import ReactJSONViewer from 'react-json-viewer';
@@ -36,6 +37,23 @@ export default function Query({ pageOptions }) {
 
   const { t } = useTranslation();
 
+  const [queryData, setQueryData] = useState(null);
+  const [selectedQuery, setSelectedQuery] = useState('');
+
+
+  const getData = () => {
+    API.get.query({})
+      .then(res => {
+        console.log(res);
+        setQueryData(res?.result ?? [])
+      })
+      .finally(() => {
+      });
+  }
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
     <PageWrapper>
@@ -74,10 +92,30 @@ export default function Query({ pageOptions }) {
                 flexDirection: 'row',
                 width: '100%',
                 height: 'calc(100% - 30px)',
-                overflow: 'auto',
+                overflowX: 'hidden',
+                overflowY: 'auto',
               }}
             >
-
+              {/* {JSON.stringify(Object.keys(queryData ?? {}))} */}
+              <List
+                sx={{
+                  width: '100%',
+                }}
+              >
+                {
+                  Object.keys(queryData ?? {}).map((queryName, index) => {
+                    return (
+                      <ListItemButton
+                        key={index}
+                        onClick={() => setSelectedQuery(queryName)}
+                        selected={selectedQuery === queryName}
+                      >
+                        {queryName}
+                      </ListItemButton>
+                    )
+                  })
+                }
+              </List>
             </Box>
           </Box>
           <Box
@@ -85,9 +123,45 @@ export default function Query({ pageOptions }) {
               display: 'flex',
               flexDirection: 'column',
               flexGrow: 1,
+              height: '100%',
+              width: 'calc(100% - 250px)',
             }}
           >
             Query Editor
+            <Box
+              sx={{
+                display: 'flex',
+                flexGrow: 1,
+                height: '100px',
+                width: '100%',
+              }}
+            >
+              toolbar:
+              collection_name
+              search_method
+              chart:(
+              type
+              title
+              localeId
+              x_axis
+              y_axis
+              width
+              height
+              colors_result
+              )
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                flexGrow: 1,
+                height: 'calc(100% - 100px)',
+                width: '100%',
+              }}
+            >
+              {
+                JSON.stringify(queryData?.[selectedQuery])
+              }
+            </Box>
           </Box>
           <Box
             sx={{
@@ -95,6 +169,7 @@ export default function Query({ pageOptions }) {
               flexDirection: 'column',
               flexGrow: 1,
               height: '100%',
+              width: 'calc(100% - 250px)',
             }}
           >
             <Box

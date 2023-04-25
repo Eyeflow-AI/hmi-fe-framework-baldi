@@ -42,3 +42,12 @@
 
 ### Tools
 ![tools page](imagesDocumentation/tools.png "tools page")
+
+| Tool  | Image  |
+|---|---|
+| Images Capturer  | ![tools images capturer](imagesDocumentation/tools_imagesCapturer.png "tools images capturer")  |  
+| Box Editor  | ![tools box editor](imagesDocumentation/tools_boxEditor.png "tools box editor")  |  
+| Dot Editor  | ![tools dot editor](imagesDocumentation/tools_dotEditor.png "tools dot editor")  |  
+| Query  | ![tools query](imagesDocumentation/tools_query.png "tools query")  |  
+| Images Analyser  | ![tools images analyser](imagesDocumentation/tools_imagesAnalyser.png "tools images analyser")  |  
+| Object Builder  | ![tools object builder](imagesDocumentation/tools_objectBuilder.png "tools object builder")  |  
