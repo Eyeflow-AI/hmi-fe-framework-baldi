@@ -69,6 +69,8 @@ const API = {
     fromToDocument: (setLoading) => request(instance.get(`internal/from-to-document/`), setLoading),
 
     queryData: ({ stationId, queryName, startTime, endTime }, setLoading) => request(instance.get(`queries/${stationId}/data`, { params: { queryName, startTime, endTime } }), setLoading),
+
+    query: ({ }, setLoading) => request(instance.get(`queries/`, setLoading)),
     accessControlData: (setLoading) => request(instance.get(`auth/access-control-data`), setLoading),
     userList: (setLoading) => request(instance.get(`auth/users-list`), setLoading),
   },

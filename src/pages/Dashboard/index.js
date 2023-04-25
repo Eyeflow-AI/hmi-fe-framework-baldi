@@ -76,7 +76,7 @@ export default function Dashboard({ pageOptions }) {
   useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageOptions]);
+  }, [pageOptions, stationId]);
 
   return (
     <PageWrapper>
