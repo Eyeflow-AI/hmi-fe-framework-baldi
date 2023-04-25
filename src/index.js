@@ -1,18 +1,26 @@
-import React, {lazy, Suspense} from 'react';
-import ReactDOM from 'react-dom/client';
+// React
+import React, { lazy, Suspense } from 'react';
 
+
+// Design
+
+// Internal
+import reportWebVitals from './reportWebVitals';
+import theme from './theme';
+import './reset.css';
+import LoadingPage from './components/LoadingPage';
 import ConfigProvider from './ConfigProvider';
 import StoreWrapper from './store/Wrapper';
+import NotificationBar from './components/NotificationBar';
+
+// Thirdy-Party
+import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import AdapterDateFNS from '@date-io/date-fns';
-import CssBaseline from '@mui/material/CssBaseline';
-import LoadingPage from './components/LoadingPage';
+import CssBaseline from '@mui/material/CssBaseline'
 
-import reportWebVitals from './reportWebVitals';
-import theme from './theme';
-import './reset.css';
 
 const App = lazy(() => import("./App"));
 const PrepareApp = lazy(() => import("./PrepareApp"));
@@ -28,6 +36,7 @@ root.render(
             <CssBaseline />
             <BrowserRouter>
               <PrepareApp>
+                <NotificationBar />
                 <App />
               </PrepareApp>
             </BrowserRouter>

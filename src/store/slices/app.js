@@ -12,8 +12,13 @@ export const initialState = {
   loadingFeConfig: false,
   languageList: [],
   appBarButtonList: [],
+  notificationBar: {
+    show: false,
+    message: '',
+    type: '',
+  }
 };
-  
+
 const appSlice = createSlice({
   name: 'app',
   initialState,
@@ -67,12 +72,13 @@ const appSlice = createSlice({
 });
 
 export const getStation = (state) => (Boolean(state.app.stationId) && state.app.stationList.length > 0)
-                                     ? (state.app.stationList.find(el => el._id === state.app.stationId) ?? null)
-                                     : null;
+  ? (state.app.stationList.find(el => el._id === state.app.stationId) ?? null)
+  : null;
 export const getStationId = (state) => state.app.stationId;
 export const getStationList = (state) => state.app.stationList ?? [];
 
 export const getFeConfig = (state) => state.app.feConfig;
+export const getNotificationBarInfo = (state) => state.app.notificationBar;
 
 export const getLanguageList = (state) => state.app.languageList;
 export const getAppBarButtonList = (state) => state.app.appBarButtonList;
