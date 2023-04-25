@@ -1,5 +1,5 @@
 // React
-import React, {useMemo, Fragment} from 'react';
+import React, { useMemo } from 'react';
 
 //Design
 import Box from '@mui/material/Box';
@@ -60,13 +60,13 @@ const responsivePieTheme = {
   }
 };
 
-export default function GraphBox({data, config}) {
+export default function GraphBox({ data, config }) {
 
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   const {
     // partsOk, partsNg,
-    dataList, anomaliesPieData, partsPieData} = useMemo(() => {
+    dataList, anomaliesPieData, partsPieData } = useMemo(() => {
       let partsOk = data?.batch_data?.parts_ok ?? 0;
       let partsNg = data?.batch_data?.parts_ng ?? 0;
       let conveyorSpeed = data?.batch_data?.conveyor_speed ?? 0;
@@ -76,19 +76,19 @@ export default function GraphBox({data, config}) {
 
       if (partsOk || partsNg) {
         partsPieData = [
-            {
-              "id": "ng",
-              "label": "NG",
-              "value": partsNg,
-              "color": colors.eyeflow.red.dark
-            },
-            {
-              "id": "ok",
-              "label": "OK",
-              "value": partsOk,
-              "color": colors.eyeflow.green.light
-            },
-          ];
+          {
+            "id": "ng",
+            "label": "NG",
+            "value": partsNg,
+            "color": colors.eyeflow.red.dark
+          },
+          {
+            "id": "ok",
+            "label": "OK",
+            "value": partsOk,
+            "color": colors.eyeflow.green.light
+          },
+        ];
 
         if (partsNg) {
           if (data?.batch_data?.hasOwnProperty("defects_count")) {
@@ -111,15 +111,15 @@ export default function GraphBox({data, config}) {
 
       let partsPerPack = data?.info?.parts_per_pack ?? 0;
       let packQtt = data?.info?.pack_qtt ?? 0;
-      let packNum = data?.batch_data?.pack_num ?? Math.floor(partsProduced/partsPerPack) + 1;
+      let packNum = data?.batch_data?.pack_num ?? Math.floor(partsProduced / partsPerPack) + 1;
       let totalQtt = partsPerPack * packQtt;
 
       const dataList = [ //TODO get from config
-        {field: "produced", label: `${partsProduced} (${(partsProduced/totalQtt*100).toFixed(2)}%)`},
-        {field: "speed", label: conveyorSpeed},
-        {field: "box", label: `${packNum}/${packQtt}`},
-        {field: "OK", label: `${partsOk} (${((partsProduced && Number.isInteger(partsProduced)) ? partsOk/partsProduced*100 : 0.0).toFixed(2)}%)`},
-        {field: "NG", label: `${partsNg} (${((partsProduced && Number.isInteger(partsProduced)) ? partsNg/partsProduced*100 : 0.0).toFixed(2)}%)`},
+        { field: "produced", label: `${partsProduced} (${(partsProduced / totalQtt * 100).toFixed(2)}%)` },
+        { field: "speed", label: conveyorSpeed },
+        { field: "box", label: `${packNum}/${packQtt}` },
+        { field: "OK", label: `${partsOk} (${((partsProduced && Number.isInteger(partsProduced)) ? partsOk / partsProduced * 100 : 0.0).toFixed(2)}%)` },
+        { field: "NG", label: `${partsNg} (${((partsProduced && Number.isInteger(partsProduced)) ? partsNg / partsProduced * 100 : 0.0).toFixed(2)}%)` },
       ];
 
       return {
@@ -132,15 +132,15 @@ export default function GraphBox({data, config}) {
         partsPieData,
         dataList,
       }
-  }, [data]);
+    }, [data]);
 
 
   return (
     <Box width={config?.width ?? 250} height={config?.height ?? '100%'} sx={styleSx.mainBoxSx}>
       <Box id="header-box" sx={styleSx.infoBox}>
-        {dataList.map(({field, label}, index) => <LabelBox minWidth={200} key={index} title={field} label={label}/>)}
+        {dataList.map(({ field, label }, index) => <LabelBox minWidth={200} key={index} title={field} label={label} />)}
       </Box>
-      
+
       <Box id="graph-box" sx={styleSx.graphBoxSx}>
         <Box marginBottom={-2} sx={styleSx.pieBoxSx}>
           <Typography variant="h6" marginBottom={-3}>
