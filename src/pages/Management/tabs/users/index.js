@@ -18,6 +18,7 @@ import API from "../../../../api";
 import PasswordTextField from '../../../../components/PasswordTextField';
 import UsersTable from './usersTable';
 import Menu from './menu';
+import RolesTable from './rolesTable';
 
 // Third-Party
 import { useTranslation } from "react-i18next";
@@ -134,6 +135,11 @@ export default function UserManagement() {
                 resetPassword={setOpenResetPasswordDialog}
                 changeUserRole={changeUserRole}
                 createUser={createUser}
+              />
+            }
+            {
+              selectedView === 'roles' &&
+              <RolesTable
               />
             }
           </Box>

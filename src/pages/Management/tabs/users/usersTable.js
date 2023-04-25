@@ -236,10 +236,12 @@ export default function UsersTable({
   ];
 
   return (
-    <Box sx={{
-      height: 'calc(100% - 100px)',
-      width: '100%',
-    }}>
+    <Box
+      sx={{
+        height: 'calc(100% - 100px)',
+        width: '100%',
+      }}
+    >
       <DataGrid
         rows={rows}
         columns={columns}
