@@ -23,6 +23,9 @@
 #### Query
 ![dashboard query page](imagesDocumentation/dashboardQuery.png "dashboard query page")
 
+#### History
+![dashboard history page](imagesDocumentation/dashboardHistory.png "dashboard history page")
+
 ### History
 
 ![history page](imagesDocumentation/history.png "history page")
