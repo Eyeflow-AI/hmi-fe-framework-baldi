@@ -111,12 +111,13 @@ export default function GraphBox({data, config}) {
 
       let partsPerPack = data?.info?.parts_per_pack ?? 0;
       let packQtt = data?.info?.pack_qtt ?? 0;
+      let packNum = data?.batch_data?.pack_num ?? Math.floor(partsProduced/partsPerPack) + 1;
       let totalQtt = partsPerPack * packQtt;
 
       const dataList = [ //TODO get from config
         {field: "produced", label: `${partsProduced} (${(partsProduced/totalQtt*100).toFixed(2)}%)`},
         {field: "speed", label: conveyorSpeed},
-        {field: "box", label: `${Math.floor(partsProduced/partsPerPack) + 1}/${packQtt}`},
+        {field: "box", label: `${packNum}/${packQtt}`},
         {field: "OK", label: `${partsOk} (${((partsProduced && Number.isInteger(partsProduced)) ? partsOk/partsProduced*100 : 0.0).toFixed(2)}%)`},
         {field: "NG", label: `${partsNg} (${((partsProduced && Number.isInteger(partsProduced)) ? partsNg/partsProduced*100 : 0.0).toFixed(2)}%)`},
       ];
