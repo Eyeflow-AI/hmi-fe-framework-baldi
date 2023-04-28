@@ -35,7 +35,7 @@
 
 ### Management
 
-| Tab  | Image  |
+| Tab  | Screen  |
 |---|---|
 | General  | ![management general tab](imagesDocumentation/management_general.png "management general tab")  |  
 | Users  | ![management users tab](imagesDocumentation/management_users.png "management users tab")  |  
@@ -46,7 +46,7 @@
 ### Tools
 ![tools page](imagesDocumentation/tools.png "tools page")
 
-| Tool  | Image  |
+| Tool  | Screen  |
 |---|---|
 | Images Capturer  | ![tools images capturer](imagesDocumentation/tools_imagesCapturer.png "tools images capturer")  |  
 | Box Editor  | ![tools box editor](imagesDocumentation/tools_boxEditor.png "tools box editor")  |  
