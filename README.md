@@ -17,6 +17,9 @@
 ![hmi batch page](imagesDocumentation/hmiBatch.png "hmi batch page")
 
 
+#### Serial
+![hmi serial page](imagesDocumentation/hmiSerial.png "hmi serial page")
+
 
 ### Dashboard
 
