@@ -26,7 +26,7 @@ function PrepareApp({ children }) {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  const { activeAlert, loading: loadingAlert, loadAlert } = GetActiveAlert();
+  // const { activeAlert, loading: loadingAlert, loadAlert } = GetActiveAlert();
   const stationList = useSelector(getStationList);
   const station = useSelector(getStation);
   const stationId = station?._id ?? null;
