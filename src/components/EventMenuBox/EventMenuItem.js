@@ -11,7 +11,7 @@ import '../../css/animateFlicker.css';
 
 //Third-party
 import { useTranslation } from "react-i18next";
-import {colors} from 'sdk-fe-eyeflow';
+import { colors } from 'sdk-fe-eyeflow';
 import dateFormat from 'sdk-fe-eyeflow/functions/dateFormat';
 
 
@@ -54,9 +54,9 @@ style.selectedItemSx = Object.assign({}, style.itemSx, {
   boxShadow: (theme) => `${theme.shadows[2]}, inset 0 0 0 2px black`,
 });
 
-export default function EventMenuItem ({index, dateField, eventData, selected, onClick}) {
-
-  const {t} = useTranslation();
+export default function EventMenuItem({ index, dateField, eventData, selected, onClick }) {
+  console.log({ s: eventData })
+  const { t } = useTranslation();
   let thumbURL = eventData.thumbURL ?? '';
   let thumbStyle = Boolean(eventData.thumbStyle) ? eventData.thumbStyle : style.itemImage;
   let status = eventData.status ?? '';
@@ -64,46 +64,46 @@ export default function EventMenuItem ({index, dateField, eventData, selected, o
   let label = eventData.label ?? '';
 
   let boxStyle = Object.assign(
-    {backgroundColor: selected ? colors.statuses[status] : `${colors.statuses[status]}90`},
+    { backgroundColor: selected ? colors.statuses[status] : `${colors.statuses[status]}90` },
     selected ? style.selectedItemSx : style.itemSx
   );
 
   return (
-      <Box
-        sx={boxStyle}
-        onClick={onClick}
-      >
-        <Box sx={style.itemHeader}>
-          <Box>
-            <Typography variant='h6'>
-              {index}
-            </Typography>
-          </Box>
-          <Box display="flex" flexDirection="column" alignItems="end">
-            <Box marginBottom={-1}>
-              <Typography variant='subtitle1'>
-                {label}
-              </Typography>
-            </Box>
-            <Box className={status === "running" ? "animate-flicker" : undefined}>
-              <Typography variant='subtitle2'>
-                {t(status)}
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
-
-        {thumbURL && (
-        <Box sx={style.itemImageBox}>
-          <img alt="" src={thumbURL} style={thumbStyle}/>
-        </Box>
-        )}
-        
-        <Box sx={style.itemFooter}>
-          <Typography variant="subtitle2">
-            {eventTimeString}
+    <Box
+      sx={boxStyle}
+      onClick={onClick}
+    >
+      <Box sx={style.itemHeader}>
+        <Box>
+          <Typography variant='h6'>
+            {index}
           </Typography>
         </Box>
+        <Box display="flex" flexDirection="column" alignItems="end">
+          <Box marginBottom={-1}>
+            <Typography variant='subtitle1'>
+              {label}
+            </Typography>
+          </Box>
+          <Box className={status === "running" ? "animate-flicker" : undefined}>
+            <Typography variant='subtitle2'>
+              {t(status)}
+            </Typography>
+          </Box>
+        </Box>
       </Box>
+
+      {thumbURL && (
+        <Box sx={style.itemImageBox}>
+          <img alt="" src={thumbURL} style={thumbStyle} />
+        </Box>
+      )}
+
+      <Box sx={style.itemFooter}>
+        <Typography variant="subtitle2">
+          {eventTimeString}
+        </Typography>
+      </Box>
+    </Box>
   )
 };
