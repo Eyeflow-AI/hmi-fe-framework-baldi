@@ -13,7 +13,6 @@ const style = {
 
 export default function DataBox({data, config}) {
 
-  console.log({config})
   return (
     <Box width={config?.width ?? "calc(100vw - 502px)"} height={config?.height ?? "100%"} sx={style.style}>
       {JSON.stringify(data, null, 1)}

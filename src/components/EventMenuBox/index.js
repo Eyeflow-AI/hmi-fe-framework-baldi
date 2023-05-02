@@ -121,8 +121,6 @@ export default function EventMenuList({
   const [dateValue, setDateValue] = useState(new Date());
   const [menuBoxHeight, setMenuBoxHeight] = useState(height);
 
-  console.log({ config, events })
-
   useEffect(() => { //Update query params
     onChangeParams({ min_event_time: getQueryDateString(dateValue), max_event_time: getQueryDateString(dateValue, { dayTimeDelta: 1 }) });
     // eslint-disable-next-line
