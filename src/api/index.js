@@ -53,6 +53,7 @@ const API = {
   get: {
     batchList: ({ params, stationId }, setLoading) => request(instance.get(`batch/${stationId}/list`, { params }), setLoading),
     serialList: ({ params, stationId }, setLoading) => request(instance.get(`serial/${stationId}/list`, { params }), setLoading),
+    serial: ({ stationId, serialId }, setLoading) => request(instance.get(`serial/${stationId}/${serialId}`), setLoading),
     runningBatch: ({ stationId }, setLoading) => request(instance.get(`batch/${stationId}/running`), setLoading),
     runningSerial: ({ stationId }, setLoading) => request(instance.get(`batch/${stationId}/running`), setLoading),
     batch: ({ stationId, batchId }, setLoading) => request(instance.get(`batch/${stationId}/${batchId}`), setLoading),
@@ -73,6 +74,7 @@ const API = {
     query: ({ }, setLoading) => request(instance.get(`queries/`, setLoading)),
     accessControlData: (setLoading) => request(instance.get(`auth/access-control-data`), setLoading),
     userList: (setLoading) => request(instance.get(`auth/users-list`), setLoading),
+    alert: ({ stationId }, setLoading) => request(instance.get(`alerts/${stationId}`), setLoading),
   },
   put: {
     batchPause: ({ stationId, batchId }, setLoading) => request(instance.put(`batch/${stationId}/${batchId}/pause`), setLoading),

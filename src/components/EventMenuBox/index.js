@@ -121,8 +121,6 @@ export default function EventMenuList({
   const [dateValue, setDateValue] = useState(new Date());
   const [menuBoxHeight, setMenuBoxHeight] = useState(height);
 
-  console.log({ config, events })
-
   useEffect(() => { //Update query params
     onChangeParams({ min_event_time: getQueryDateString(dateValue), max_event_time: getQueryDateString(dateValue, { dayTimeDelta: 1 }) });
     // eslint-disable-next-line
@@ -135,14 +133,16 @@ export default function EventMenuList({
     let eventData = events[index];
     let eventIndex = eventData?.index ?? 0;
     let selected = selectedEventId === eventData._id;
-
     const customStyle = Object.assign(
       { display: 'flex', justifyContent: 'center', paddingLeft: 4, paddingRight: 4, paddingTop: 2, paddingBottom: 2 },
       style
     );
 
     return (
-      <div key={`item-${index}`} style={customStyle}>
+      <div
+        key={`item-${index}`}
+        style={customStyle}
+      >
         <EventMenuItem
           index={eventIndex}
           dateField={dateField}
@@ -204,7 +204,8 @@ export default function EventMenuList({
                 onClick={onEventClick(runningEvent)}
               />
             )
-            : (
+            :
+            (
               config?.trigger === 'manual' ?
                 <ButtonBase>
                   <Box height={serialButtonBoxHeight} width={width} onClick={onClickCreateBatch} sx={styleSx.createSerialButton}>
@@ -213,25 +214,14 @@ export default function EventMenuList({
                   </Box>
                 </ButtonBase>
                 :
-                (
-                  eventsLength > 0 ?
-                    <ButtonBase>
-                      <Box height={serialButtonBoxHeight} width={width} onClick={onClickCreateBatch} sx={styleSx.createSerialButton}>
-                        <img alt="" src={startSerialIcon} style={styleSx.createSerialButtonIcon} />
-                        {t("no_event_tox_show")}
-                      </Box>
-                    </ButtonBase>
-                    :
-                    <Box
-                      height={serialButtonBoxHeight}
-                      width={width}
-                      sx={styleSx.noEventBox}
-                    >
-                      <img alt="" src={noEventIcon} style={styleSx.createSerialButtonIcon} />
-                      {t("no_event_to_show")}
-                    </Box>
-                )
-
+                <Box
+                  height={serialButtonBoxHeight}
+                  width={width}
+                  sx={styleSx.noEventBox}
+                >
+                  <img alt="" src={noEventIcon} style={styleSx.createSerialButtonIcon} />
+                  {t("no_running_event")}
+                </Box>
             )
           }
         </Box>
@@ -287,3 +277,40 @@ export default function EventMenuList({
     </Box>
   );
 };
+//(
+//  config?.trigger === 'manual' ?
+//    <ButtonBase>
+//      <Box height={serialButtonBoxHeight} width={width} onClick={onClickCreateBatch} sx={styleSx.createSerialButton}>
+//        <img alt="" src={startSerialIcon} style={styleSx.createSerialButtonIcon} />
+//        {t("start")}
+//      </Box>
+//    </ButtonBase>
+//    :
+//    (
+//      eventsLength > 0 ?
+//        <ButtonBase>
+//          <Box
+//            height={serialButtonBoxHeight}
+//            width={width}
+//            onClick={onClickCreateBatch}
+//            sx={styleSx.createSerialButton}
+//          >
+//            <img
+//              alt=""
+//              src={startSerialIcon}
+//              style={styleSx.createSerialButtonIcon}
+//            />
+//            {t("no_event_to_show")}
+//          </Box>
+//        </ButtonBase>
+//        :
+//        <Box
+//          height={serialButtonBoxHeight}
+//          width={width}
+//          sx={styleSx.noEventBox}
+//        >
+//          <img alt="" src={noEventIcon} style={styleSx.createSerialButtonIcon} />
+//          {t("no_event_to_show")}
+//        </Box>
+//    )
+//)

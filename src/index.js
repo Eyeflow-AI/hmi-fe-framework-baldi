@@ -19,7 +19,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import AdapterDateFNS from '@date-io/date-fns';
-import CssBaseline from '@mui/material/CssBaseline'
+import CssBaseline from '@mui/material/CssBaseline';
 
 
 const App = lazy(() => import("./App"));
