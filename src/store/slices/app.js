@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import stationList from '../thunks/stationList';
+import partsList from '../thunks/partsList';
 import feConfig from '../thunks/feConfig';
 
 // VARIABLES
@@ -7,6 +8,11 @@ export const initialState = {
   stationId: "",
   stationList: [],
   loadingStationList: false,
+
+  partsList: [],
+  partsObj: {},
+  partsListHash: null,
+  loadingPartsList: false,
 
   feConfig: null,
   loadingFeConfig: false,
@@ -56,6 +62,30 @@ const appSlice = createSlice({
         state.loadingStationList = false;
       })
 
+      .addCase(partsList.pending, (state) => {
+        state.loadingPartsList = true;
+      })
+      .addCase(partsList.fulfilled, (state, action) => {
+        state.loadingPartsList = false;
+        if (action.payload.hash !== state.partsListHash) {
+          console.log("Updated partsList");
+          let partsList = action.payload.partsList ?? [];
+          state.partsList = partsList;
+          let partsObj = {};
+          partsList.forEach((part) => {
+            partsObj[part.part_id] = part;
+          });
+          state.partsObj = partsObj;
+          state.partsListHash = action.payload.hash ?? null;
+        }
+        else {
+          console.log("partsList unchanged");
+        }
+      })
+      .addCase(partsList.rejected, (state) => {
+        state.loadingPartsList = false;
+      })
+
       .addCase(feConfig.pending, (state) => {
         state.loadingFeConfig = true;
       })
@@ -76,6 +106,9 @@ export const getStation = (state) => (Boolean(state.app.stationId) && state.app.
   : null;
 export const getStationId = (state) => state.app.stationId;
 export const getStationList = (state) => state.app.stationList ?? [];
+
+export const getPartsList = (state) => state.app.partsList ?? [];
+export const getPartsObj = (state) => state.app.partsObj ?? {};
 
 export const getFeConfig = (state) => state.app.feConfig;
 export const getNotificationBarInfo = (state) => state.app.notificationBar;

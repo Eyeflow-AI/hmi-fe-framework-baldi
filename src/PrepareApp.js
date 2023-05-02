@@ -6,6 +6,7 @@ import { useLocation } from 'react-router-dom';
 import { instance } from './api';
 import { getStationList, getStation, setStationId } from './store/slices/app';
 import getStationListThunk from './store/thunks/stationList';
+import getPartsListThunk from './store/thunks/partsList';
 import addInterceptors from './api/addInterceptors';
 import getOriginalURLPath from './utils/functions/getOriginalURLPath';
 
@@ -23,6 +24,7 @@ function PrepareApp({ children }) {
 
   useEffect(() => {
     dispatch(getStationListThunk());
+    dispatch(getPartsListThunk());
   }, [dispatch]);
 
   useEffect(() => {
