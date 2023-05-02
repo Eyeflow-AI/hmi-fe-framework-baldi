@@ -93,12 +93,14 @@ export default function GraphBox({ data, config }) {
         if (partsNg) {
           if (data?.batch_data?.hasOwnProperty("defects_count")) {
             for (let [classId, value] of Object.entries(data.batch_data.defects_count)) {
-              anomaliesPieData.push({
-                id: classId,
-                label: classId, //TODO get class label
-                value,
-                // color: TODO
-              });
+              if (value > 0) {
+                anomaliesPieData.push({
+                  id: classId,
+                  label: classId, //TODO get class label
+                  value,
+                  // color: TODO
+                });
+              }
             };
             anomaliesPieData.sort((a, b) => b.label - a.label);
           };
