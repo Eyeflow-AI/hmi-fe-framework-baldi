@@ -47,7 +47,7 @@ export default function Monitor({ pageOptions }) {
   const onChangeEvent = (serialId) => {
     API.get.serial({ stationId, serialId })
       .then((data) => {
-        setSelectedSerial(data.serial);
+        setSelectedSerial(data?.serial);
         setSelectedSerialCountData(data.countData);
       })
       .catch(console.error);
@@ -160,6 +160,7 @@ export default function Monitor({ pageOptions }) {
                 data={selectedSerial}
                 disabled={!selectedSerial}
                 config={pageOptions.components.EventSerialDataBox}
+                appBarHeight={pageOptions.components.EventAppBar.height}
               />
             </Box>
           </Box>

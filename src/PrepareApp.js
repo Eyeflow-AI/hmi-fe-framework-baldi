@@ -1,14 +1,23 @@
+// React
 import { useEffect, Fragment } from 'react';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
 
+
+// Design
+
+
+// Internal
 import { instance } from './api';
 import { getStationList, getStation, setStationId } from './store/slices/app';
 import getStationListThunk from './store/thunks/stationList';
 import getPartsListThunk from './store/thunks/partsList';
 import addInterceptors from './api/addInterceptors';
 import getOriginalURLPath from './utils/functions/getOriginalURLPath';
+import GetActiveAlert from './utils/Hooks/GetActiveAlert';
+
+// Thirdy-party
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 
 addInterceptors(instance);
 
@@ -17,6 +26,7 @@ function PrepareApp({ children }) {
   const dispatch = useDispatch();
   const location = useLocation();
 
+  const { activeAlert, loading: loadingAlert, loadAlert } = GetActiveAlert();
   const stationList = useSelector(getStationList);
   const station = useSelector(getStation);
   const stationId = station?._id ?? null;
@@ -40,9 +50,9 @@ function PrepareApp({ children }) {
               dispatch(setStationId(newStation._id));
             }
             else {
-              console.error(`Could not find slug label ${thisMatch.params.stationSlugLabel} in`, stationList, {url: location.pathname});
+              console.error(`Could not find slug label ${thisMatch.params.stationSlugLabel} in`, stationList, { url: location.pathname });
             };
-          }  
+          }
         }
       }
       else {

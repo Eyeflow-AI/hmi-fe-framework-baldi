@@ -9,7 +9,6 @@ import Box from '@mui/material/Box';
 import AppBar from './AppBar';
 import GetWindowDimentions from '../utils/Hooks/GetWindowDimensions';
 
-
 const paddingPx = 8;
 
 
