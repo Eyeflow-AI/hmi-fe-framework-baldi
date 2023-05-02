@@ -55,7 +55,7 @@ style.selectedItemSx = Object.assign({}, style.itemSx, {
 });
 
 export default function EventMenuItem({ index, dateField, eventData, selected, onClick }) {
-  console.log({ s: eventData })
+
   const { t } = useTranslation();
   let thumbURL = eventData.thumbURL ?? '';
   let thumbStyle = Boolean(eventData.thumbStyle) ? eventData.thumbStyle : style.itemImage;

@@ -1,6 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
@@ -26,15 +27,12 @@ const style = {
     p: 4,
   },
   formBox: {
-    display: 'flex',
-    gap: 1,
-    flexWrap: 'wrap',
     width: '100%',
     // justifyContent: 'center',
     paddingBottom: 4
   },
   textfield: {
-    width: "calc(50% - 4px)",
+    // width: "calc(50% - 4px)",
   },
   footerBox: {
     display: 'flex',
@@ -54,7 +52,7 @@ const modalProps = {
 
 function PartIdAutoComplete (props) {
 
-  const {label, value, onChange, ...rest} = props;
+  const {label, value, onChange, disabled} = props;
   const partsList = useSelector(getPartsList);
 
   const getOptionLabel = (option) => option.part_id ?? "";
@@ -67,22 +65,39 @@ function PartIdAutoComplete (props) {
     <Autocomplete
       disablePortal
       getOptionLabel={getOptionLabel}
-      inputValue={value}
       options={partsList}
       onChange={_onChange}
+      disabled={disabled}
       renderInput={(params) => <TextField {...params} label={label} />}
-      {...rest}
     />
   );
 }
 
 const inputComponents = {
   "part_id": (props) => <PartIdAutoComplete {...props}/>,
-  "else": (props) => <TextField {...props}/>
+  "else": (props) => <TextField fullWidth {...props}/>
 };
 
+function getDefaultValue(fieldData) {
 
-export default function FormModal({config, open, handleClose, onClickSend, isValid=true}) {
+  let type = fieldData.type ?? "text";
+  if (type === "text") {
+    return "";
+  }
+  else if (type === "number") {
+    if (fieldData.hasOwnProperty('min')) {
+      return fieldData.min;
+    }
+    else if (fieldData.hasOwnProperty('max')) {
+      return Math.min(0, fieldData.max);
+    }
+  }
+  else {
+    return "";
+  };
+};
+
+export default function FormModal({config, open, handleClose, onClickSend}) {
 
   const {t} = useTranslation();
 
@@ -91,23 +106,40 @@ export default function FormModal({config, open, handleClose, onClickSend, isVal
   const [partIdFields, setPartIdFields] = useState([]);
   const [formFields, setFormFields] = useState([]);
 
+  const {sendDisabled} = useMemo(() => {
+    let sendDisabled = false;
+    if (config?.fields?.length > 0) {
+      for (let fieldData of config.fields) {
+        if (fieldData.required) {
+          if (fieldData.type === "text" && formData[fieldData.field] === "") {
+            sendDisabled = true;
+            break;
+          }
+          else if (fieldData.type === "number") {
+            if (
+                (fieldData.hasOwnProperty('min') && formData[fieldData.field] < fieldData.min)
+                || (fieldData.hasOwnProperty('max') && formData[fieldData.field] > fieldData.max)
+              ) {
+              sendDisabled = true;
+              break;
+            }
+          }
+        }
+      }
+    };
+    return {sendDisabled};
+  }, [config, formData]);
+
   useEffect(() => {
     if (open && config?.fields?.length > 0) {
       let newFormData = {};
       let newPartIdFields = [];
       config.fields.forEach((fieldData) => {
-        let fieldType = fieldData.type ?? "text";
-        if (fieldType === "text") {
-          newFormData[fieldData.field] = "";
-        }
-        else if (fieldType === "number") {
-          newFormData[fieldData.field] = 0;
-        }
-        else if (fieldType.startsWith("part_id")) {
-          newFormData[fieldData.field] = "";
-          if (fieldType !== "part_id") {
-            newPartIdFields.push(fieldData);
-          };
+        let inputField = fieldData.input_field ?? null;
+        newFormData[fieldData.field] = getDefaultValue(fieldData)
+
+        if (inputField && inputField.startsWith("part")) {
+          newPartIdFields.push(fieldData);
         };
       });
       setFormData(newFormData);
@@ -140,7 +172,7 @@ export default function FormModal({config, open, handleClose, onClickSend, isVal
       }
       else {
         partIdFields.forEach((fieldData) => {
-          updateData[fieldData.field] = "";
+          updateData[fieldData.field] = getDefaultValue(fieldData);
         });
       };
 
@@ -148,15 +180,6 @@ export default function FormModal({config, open, handleClose, onClickSend, isVal
     }
     else {
       let newValue = event.target.value;
-      let oldValue = formData[fieldData.field];
-
-      if (fieldData.type === "number") {
-        newValue = Number(newValue);
-        if (isNaN(newValue)) {
-          newValue = oldValue;
-        };
-      };
-
       setFormData((oldValue) => Object.assign({}, oldValue, {[fieldData.field]: newValue}));
     };
   };
@@ -170,21 +193,24 @@ export default function FormModal({config, open, handleClose, onClickSend, isVal
       slotProps={modalProps.slotProps}
     >
       <Fade in={open}>
-        <Box width={config?.width ?? 400} sx={style.mainBox}>
-          <Box sx={style.formBox}>
-            {formFields.map((fieldData, index) => inputComponents[fieldData.type === "part_id" ? "part_id": "else"]({
-              key: index,
-              label: t(fieldData.label),
-              type: fieldData.type,
-              value: formData[fieldData.field],
-              onChange: onChange(fieldData),
-              sx: style.textfield,
-              disabled: fieldData.disabled,
-            }))}
-          </Box>
+        <Box width={config?.width ?? 800} sx={style.mainBox}>
+          <Grid container spacing={1} sx={style.formBox}>
+            {formFields.map(({xs, ...fieldData}, index) => 
+              <Grid key={index} xs={xs} item>
+                {inputComponents[fieldData.type === "part_id" ? "part_id": "else"]({
+                  label: t(fieldData.label),
+                  type: fieldData.type,
+                  value: formData[fieldData.field],
+                  onChange: onChange(fieldData),
+                  disabled: fieldData.disabled,
+                })}
+              </Grid>
+            )}
+          </Grid>
+
           <Box sx={style.footerBox}>
             <Button color="inherit" variant="outlined" onClick={handleClose}>{t('cancel')}</Button>
-            <Button disabled={!isValid} variant="contained" onClick={_onClickSend}>{t('send')}</Button>
+            <Button disabled={sendDisabled} variant="contained" onClick={_onClickSend}>{t('send')}</Button>
           </Box>
         </Box>
       </Fade>
