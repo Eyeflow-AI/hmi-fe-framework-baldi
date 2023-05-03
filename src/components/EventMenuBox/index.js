@@ -97,7 +97,6 @@ export default function EventMenuList({
   runningEvent,
   events,
   selectedEventId,
-  setSelectedEvent,
   queryParams,
   loadingData,
   onChangeParams,
@@ -169,7 +168,7 @@ export default function EventMenuList({
 
   useEffect(() => {
     if (runningEvent?._id !== selectedEventId) {
-      setSelectedEvent(null);
+      onChangeEvent(null);
     }
   }, [dateValue])
 
