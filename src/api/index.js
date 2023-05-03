@@ -16,7 +16,6 @@ function request(request, setLoading) {
     };
     request.then((result) => {
       if (result.data) {
-
         resolve(result.data);
       }
       else {
@@ -32,7 +31,12 @@ function request(request, setLoading) {
       };
     })
       .catch((err) => {
-        reject(err)
+        if (err?.response?.data) {
+          reject(err.response.data);
+        }
+        else {
+          reject(err)
+        }
       })
       .finally(() => {
         if (Boolean(setLoading)) {
@@ -72,7 +76,7 @@ const API = {
 
     queryData: ({ stationId, queryName, startTime, endTime }, setLoading) => request(instance.get(`queries/${stationId}/data`, { params: { queryName, startTime, endTime } }), setLoading),
 
-    query: ({ }, setLoading) => request(instance.get(`queries/`, setLoading)),
+    query: (_, setLoading) => request(instance.get(`queries/`, setLoading)),
     accessControlData: (setLoading) => request(instance.get(`auth/access-control-data`), setLoading),
     userList: (setLoading) => request(instance.get(`auth/users-list`), setLoading),
     alert: ({ stationId }, setLoading) => request(instance.get(`alerts/${stationId}`), setLoading),
