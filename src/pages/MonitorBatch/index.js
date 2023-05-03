@@ -17,7 +17,7 @@ import GetBatch from '../../utils/Hooks/GetBatch';
 import GetRunningBatch from '../../utils/Hooks/GetRunningBatch';
 import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
 import API from '../../api';
-
+import ERRORS from '../../errors';
 
 const style = {
   mainBox: {
@@ -46,8 +46,13 @@ export default function Monitor({pageOptions}) {
   const isBatchRunning = Boolean(runningBatch);
 
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
+  const [createModalErrMessage, setCreateModalErrMessage] = React.useState("");
+
   const handleOpenCreateModal = () => setOpenCreateModal(true);
-  const handleCloseCreateModal = () => setOpenCreateModal(false);
+  const handleCloseCreateModal = () => {
+    setOpenCreateModal(false);
+    setCreateModalErrMessage("");
+  };
 
   useEffect(() => {
     if (!selectedBatch && runningBatch) {
@@ -99,7 +104,12 @@ export default function Monitor({pageOptions}) {
         setOpenCreateModal(false);
         updateAll();
       })
-      .catch(console.error);
+      .catch((err) => {
+        if (err.code === ERRORS.EDGE_STATION_IS_NOT_REACHABLE) {
+          setCreateModalErrMessage("edge_station_is_not_reachable");
+        }
+        console.error(err);
+      });
   };
 
   const updateAll = () => {
@@ -185,6 +195,7 @@ export default function Monitor({pageOptions}) {
         open={openCreateModal}
         handleClose={handleCloseCreateModal}
         onClickSend={onClickSendBatchData}
+        errMessage={createModalErrMessage}
       />
     </Fragment>
   );

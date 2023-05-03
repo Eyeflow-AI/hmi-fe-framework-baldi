@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useMemo} from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
@@ -28,11 +29,12 @@ const style = {
   },
   formBox: {
     width: '100%',
-    // justifyContent: 'center',
-    paddingBottom: 4
   },
-  textfield: {
-    // width: "calc(50% - 4px)",
+  errorBox: {
+    height: 40,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   footerBox: {
     display: 'flex',
@@ -52,7 +54,10 @@ const modalProps = {
 
 function PartIdAutoComplete (props) {
 
-  const {label, value, onChange, disabled} = props;
+  const {
+    // value,
+    label, onChange, disabled
+  } = props;
   const partsList = useSelector(getPartsList);
 
   const getOptionLabel = (option) => option.part_id ?? "";
@@ -97,7 +102,7 @@ function getDefaultValue(fieldData) {
   };
 };
 
-export default function FormModal({config, open, handleClose, onClickSend}) {
+export default function FormModal({config, open, handleClose, onClickSend, errMessage}) {
 
   const {t} = useTranslation();
 
@@ -208,6 +213,11 @@ export default function FormModal({config, open, handleClose, onClickSend}) {
             )}
           </Grid>
 
+          <Box sx={style.errorBox}>
+            <Typography color="error">
+              {errMessage ? t(errMessage) : ""}
+            </Typography>
+          </Box>
           <Box sx={style.footerBox}>
             <Button color="inherit" variant="outlined" onClick={handleClose}>{t('cancel')}</Button>
             <Button disabled={sendDisabled} variant="contained" onClick={_onClickSend}>{t('send')}</Button>
