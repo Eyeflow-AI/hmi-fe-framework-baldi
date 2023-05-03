@@ -70,9 +70,13 @@ export default function Monitor({ pageOptions }) {
 
   // useEffect(() => {console.log({runningBatch})}, [runningBatch]);
   useEffect(() => {
-    if (selectedSerial && (selectedSerial._id !== runningSerial?._id) && serialList.findIndex((el) => el._id === selectedSerial._id) === -1) {
+    console.log({ serialList, t: serialList.findIndex((el) => el._id === selectedSerial?._id) === -1 })
+    console.log({ x: serialList.map(el => el._id) })
+    if (selectedSerial
+      && (selectedSerial._id !== runningSerial?._id)
+      && serialList.findIndex((el) => el._id === selectedSerial._id) === -1) {
       setSelectedSerial(null);
-      setSelectedSerialCountData(null);
+      // setSelectedSerialCountData(null);
     };
     // eslint-disable-next-line
   }, [serialList]);

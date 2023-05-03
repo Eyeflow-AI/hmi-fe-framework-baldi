@@ -44,6 +44,23 @@ const mainBoxSx = Object.assign({}, window.app_config.style.box, {
   // whiteSpace: "pre-wrap", //TODO: Remove this line. Debug only
 });
 
+const GRID_SIZES = {
+  1: 12,
+  2: 12,
+  3: 6,
+  4: 6,
+  5: 6,
+  6: 6,
+}
+
+const IMAGE_SIZES = {
+  1: '900px',
+  2: '600px',
+  3: '370px',
+  4: '370px',
+  5: '370px',
+  6: '370px',
+}
 
 const styleSx = {
   mainBox: mainBoxSx,
@@ -104,11 +121,11 @@ export default function EventSerialDataBox({
             <Grid
               item
               key={inspection._id}
-              xs={6}
+              xs={GRID_SIZES[inspections.length]}
               sx={{
                 justifyContent: 'center',
                 alignItems: 'center',
-                height: '100%',
+                // height: '100%',
                 backgroundColor: inspection.ok ? colors.statuses['ok'] : colors.statuses['ng'],
               }}
             >
@@ -119,7 +136,8 @@ export default function EventSerialDataBox({
                 src="/assets/cat.webp"
                 style={{
                   objectFit: 'contain',
-                  width: "calc(2560px * 0.15)",
+                  // width: "calc(2560px * 0.15)",
+                  width: IMAGE_SIZES[inspections.length],
                   display: 'block',
                   margin: 'auto',
                   paddingBottom: '.5rem',
@@ -128,31 +146,41 @@ export default function EventSerialDataBox({
                 alt="Inspection"
                 onClick={() => { setOpenDialog(true); setDialogTitle(inspection.event_data.scan_data.surface) }}
               />
-              <TableContainer component={Paper}>
-                <Table size="small" aria-label="info table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>{t('element')}</TableCell>
-                      <TableCell align="right">{t('predicted')}</TableCell>
-                      <TableCell align="right">{t('detected')}</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {inspection?.tableInfo.map((row) => (
-                      <TableRow
-                        key={row[0]}
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                      >
-                        <TableCell component="th" scope="row">
-                          {row[0]}
-                        </TableCell>
-                        <TableCell align="right">{row[1]}</TableCell>
-                        <TableCell align="right">{row[2]}</TableCell>
+              <Box
+                sx={{
+                  width: '100%',
+                  height: inspections.length > 1 ? 'calc(100% - 256px)' : 'calc(100% - 128px)',
+                  display: 'block',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <TableContainer component={Paper}>
+                  <Table size="small" aria-label="info table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>{t('element')}</TableCell>
+                        <TableCell align="right">{t('predicted')}</TableCell>
+                        <TableCell align="right">{t('detected')}</TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                    </TableHead>
+                    <TableBody>
+                      {inspection?.tableInfo.map((row) => (
+                        <TableRow
+                          key={row[0]}
+                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                        >
+                          <TableCell component="th" scope="row">
+                            {row[0]}
+                          </TableCell>
+                          <TableCell align="right">{row[1]}</TableCell>
+                          <TableCell align="right">{row[2]}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Box>
             </Grid>
           ))
           :
