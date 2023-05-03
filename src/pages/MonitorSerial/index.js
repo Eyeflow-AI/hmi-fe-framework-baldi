@@ -43,14 +43,20 @@ export default function Monitor({ pageOptions }) {
 
   const [selectedSerial, setSelectedSerial] = useState(null);
   const [selectedSerialCountData, setSelectedSerialCountData] = useState(null);
+  const [loadingSelected, setLoadingSelected] = useState(false);
 
   const onChangeEvent = (serialId) => {
+    setSelectedSerial(null);
+    setLoadingSelected(true);
     API.get.serial({ stationId, serialId })
       .then((data) => {
         setSelectedSerial(data?.serial);
         setSelectedSerialCountData(data.countData);
       })
-      .catch(console.error);
+      .catch(console.error)
+      .finally(() => {
+        setLoadingSelected(false);
+      });
   };
 
   useEffect(() => {
@@ -133,6 +139,7 @@ export default function Monitor({ pageOptions }) {
             events={serialList}
             loadingData={loadingSerialList}
             selectedEventId={selectedSerial?._id ?? null}
+            setSelectedEvent={setSelectedSerial}
             onChangeEvent={onChangeEvent}
             queryParams={queryParams}
             onChangeParams={onChangeParams}
@@ -161,6 +168,7 @@ export default function Monitor({ pageOptions }) {
                 disabled={!selectedSerial}
                 config={pageOptions.components.EventSerialDataBox}
                 appBarHeight={pageOptions.components.EventAppBar.height}
+                loading={loadingSelected}
               />
             </Box>
           </Box>

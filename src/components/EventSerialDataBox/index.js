@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 
 // Design
-import { Grid, Typography } from '@mui/material';
+import { CircularProgress, Grid, Typography, Box } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -50,7 +50,13 @@ const styleSx = {
   mainBoxDisabled: Object.assign({}, mainBoxSx, { opacity: 0.8 }),
 };
 
-export default function EventSerialDataBox({ data, config, disabled, appBarHeight }) {
+export default function EventSerialDataBox({
+  data
+  , config
+  , disabled
+  , appBarHeight
+  , loading
+}) {
 
   const [inspections, setInspections] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
@@ -74,6 +80,9 @@ export default function EventSerialDataBox({ data, config, disabled, appBarHeigh
       })
       setInspections(documents);
     }
+    else {
+      setInspections([]);
+    }
   }, [data]);
 
   useEffect(() => {
@@ -90,61 +99,81 @@ export default function EventSerialDataBox({ data, config, disabled, appBarHeigh
       container
     >
       {
-        inspections.map((inspection) => (
-          <Grid
-            item
-            key={inspection._id}
-            xs={6}
-            sx={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '100%',
-              backgroundColor: inspection.ok ? colors.statuses['ok'] : colors.statuses['ng'],
-            }}
-          >
-            <Typography textAlign={'center'} textTransform={'uppercase'}>
-              {inspection.event_data.scan_data.surface}
-            </Typography>
-            <img
-              src="/assets/cat.webp"
-              style={{
-                objectFit: 'contain',
-                width: "calc(2560px * 0.15)",
-                display: 'block',
-                margin: 'auto',
-                paddingBottom: '.5rem',
-                cursor: 'pointer',
+        !loading && inspections.length > 0 ?
+          inspections.map((inspection) => (
+            <Grid
+              item
+              key={inspection._id}
+              xs={6}
+              sx={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100%',
+                backgroundColor: inspection.ok ? colors.statuses['ok'] : colors.statuses['ng'],
               }}
-              alt="Inspection"
-              onClick={() => { setOpenDialog(true); setDialogTitle(inspection.event_data.scan_data.surface) }}
-            />
-            <TableContainer component={Paper}>
-              <Table size="small" aria-label="info table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>{t('element')}</TableCell>
-                    <TableCell align="right">{t('predicted')}</TableCell>
-                    <TableCell align="right">{t('detected')}</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {inspection?.tableInfo.map((row) => (
-                    <TableRow
-                      key={row[0]}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {row[0]}
-                      </TableCell>
-                      <TableCell align="right">{row[1]}</TableCell>
-                      <TableCell align="right">{row[2]}</TableCell>
+            >
+              <Typography textAlign={'center'} textTransform={'uppercase'}>
+                {inspection.event_data.scan_data.surface}
+              </Typography>
+              <img
+                src="/assets/cat.webp"
+                style={{
+                  objectFit: 'contain',
+                  width: "calc(2560px * 0.15)",
+                  display: 'block',
+                  margin: 'auto',
+                  paddingBottom: '.5rem',
+                  cursor: 'pointer',
+                }}
+                alt="Inspection"
+                onClick={() => { setOpenDialog(true); setDialogTitle(inspection.event_data.scan_data.surface) }}
+              />
+              <TableContainer component={Paper}>
+                <Table size="small" aria-label="info table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>{t('element')}</TableCell>
+                      <TableCell align="right">{t('predicted')}</TableCell>
+                      <TableCell align="right">{t('detected')}</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Grid>
-        ))
+                  </TableHead>
+                  <TableBody>
+                    {inspection?.tableInfo.map((row) => (
+                      <TableRow
+                        key={row[0]}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {row[0]}
+                        </TableCell>
+                        <TableCell align="right">{row[1]}</TableCell>
+                        <TableCell align="right">{row[2]}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Grid>
+          ))
+          :
+          (
+            loading &&
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100%',
+              }}
+            >
+              <CircularProgress
+                sx={{
+                  color: 'white',
+                }}
+                size='10rem'
+              />
+            </Box>
+          )
       }
 
       <ImageDialog
