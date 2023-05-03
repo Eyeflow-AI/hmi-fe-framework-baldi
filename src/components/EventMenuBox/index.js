@@ -97,6 +97,7 @@ export default function EventMenuList({
   runningEvent,
   events,
   selectedEventId,
+  setSelectedEvent,
   queryParams,
   loadingData,
   onChangeParams,
@@ -165,6 +166,12 @@ export default function EventMenuList({
       setMenuBoxHeight(height - serialButtonBoxHeight);
     }
   }, [type, height, batchButtonBoxHeight, serialButtonBoxHeight])
+
+  useEffect(() => {
+    if (runningEvent?._id !== selectedEventId) {
+      setSelectedEvent(null);
+    }
+  }, [dateValue])
 
   return (
     <Box id="event-menu-box" width={width} sx={styleSx.mainBox}>
