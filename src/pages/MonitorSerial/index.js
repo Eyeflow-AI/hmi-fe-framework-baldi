@@ -47,16 +47,18 @@ export default function Monitor({ pageOptions }) {
 
   const onChangeEvent = (serialId) => {
     setSelectedSerial(null);
-    setLoadingSelected(true);
-    API.get.serial({ stationId, serialId })
-      .then((data) => {
-        setSelectedSerial(data?.serial);
-        setSelectedSerialCountData(data.countData);
-      })
-      .catch(console.error)
-      .finally(() => {
-        setLoadingSelected(false);
-      });
+    if (serialId) {
+      setLoadingSelected(true);
+      API.get.serial({ stationId, serialId })
+        .then((data) => {
+          setSelectedSerial(data?.serial);
+          setSelectedSerialCountData(data.countData);
+        })
+        .catch(console.error)
+        .finally(() => {
+          setLoadingSelected(false);
+        });
+    }
   };
 
   useEffect(() => {
@@ -139,7 +141,6 @@ export default function Monitor({ pageOptions }) {
             events={serialList}
             loadingData={loadingSerialList}
             selectedEventId={selectedSerial?._id ?? null}
-            setSelectedEvent={setSelectedSerial}
             onChangeEvent={onChangeEvent}
             queryParams={queryParams}
             onChangeParams={onChangeParams}
