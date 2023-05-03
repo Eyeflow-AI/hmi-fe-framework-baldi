@@ -71,7 +71,7 @@ export default function Monitor({ pageOptions }) {
 
   useEffect(() => {
     if (queryParams && queryParams.station !== stationId) {
-      setQueryParams((params) => Object.assign({}, params, { station: stationId }));
+      setQueryParams((params) => Object.assign({}, params));
     };
   }, [stationId, queryParams]);
 
