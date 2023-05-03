@@ -10,6 +10,7 @@ import { useEffect, Fragment } from 'react';
 import { instance } from './api';
 import { getStationList, getStation, setStationId } from './store/slices/app';
 import getStationListThunk from './store/thunks/stationList';
+import getPartsListThunk from './store/thunks/partsList';
 import addInterceptors from './api/addInterceptors';
 import getOriginalURLPath from './utils/functions/getOriginalURLPath';
 import GetActiveAlert from './utils/Hooks/GetActiveAlert';
@@ -25,7 +26,7 @@ function PrepareApp({ children }) {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  const { activeAlert, loading: loadingAlert, loadAlert } = GetActiveAlert();
+  // const { activeAlert, loading: loadingAlert, loadAlert } = GetActiveAlert();
   const stationList = useSelector(getStationList);
   const station = useSelector(getStation);
   const stationId = station?._id ?? null;
@@ -33,6 +34,7 @@ function PrepareApp({ children }) {
 
   useEffect(() => {
     dispatch(getStationListThunk());
+    dispatch(getPartsListThunk());
   }, [dispatch]);
 
   useEffect(() => {
