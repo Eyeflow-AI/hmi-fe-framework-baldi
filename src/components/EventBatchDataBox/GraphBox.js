@@ -97,6 +97,7 @@ export default function GraphBox({ data, config }) {
   const {
     // partsOk, partsNg,
     dataList, anomaliesPieData, partsPieData } = useMemo(() => {
+      let status = data?.status;
       let partsOk = data?.batch_data?.parts_ok ?? 0;
       let partsNg = data?.batch_data?.parts_ng ?? 0;
       let conveyorSpeed = data?.batch_data?.conveyor_speed ?? 0;
@@ -146,13 +147,19 @@ export default function GraphBox({ data, config }) {
       let packNum = data?.batch_data?.pack_num ?? Math.floor(partsProduced / partsPerPack) + 1;
       let totalQtt = partsPerPack * totalPacks;
 
-      const dataList = [ //TODO get from config
+      let dataList = [ //TODO get from config
         { field: "produced", label: `${partsProduced} (${(partsProduced / totalQtt * 100).toFixed(2)}%)` },
-        { field: "speed", label: conveyorSpeed },
+      ];
+
+      if (status === "running") {
+        dataList.push({ field: "speed", label: conveyorSpeed });
+      };
+
+      dataList = dataList.concat([
         { field: "box", label: `${packNum}/${totalPacks}` },
         { field: "OK", label: `${partsOk} (${((partsProduced && Number.isInteger(partsProduced)) ? partsOk / partsProduced * 100 : 0.0).toFixed(2)}%)` },
         { field: "NG", label: `${partsNg} (${((partsProduced && Number.isInteger(partsProduced)) ? partsNg / partsProduced * 100 : 0.0).toFixed(2)}%)` },
-      ];
+      ]);
 
       return {
         partsProduced: partsOk + partsNg,
