@@ -31,7 +31,7 @@ const styleSx = {
   graphBoxSx: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: "center",
+    justifyContent: "space-evenly",
   },
   pieBoxSx: {
     display: 'flex',
@@ -57,8 +57,33 @@ const responsivePieTheme = {
       fill: '#ffffff',
       textShadow: "1px 1px 2px #353535"
     }
-  }
+  },
 };
+
+const responsivePieLegends = [
+  {
+    anchor: 'bottom',
+    direction: 'row',
+    justify: false,
+    translateY: 56,
+    itemsSpacing: 0,
+    itemWidth: 100,
+    itemHeight: 18,
+    itemTextColor: '#999',
+    itemDirection: 'left-to-right',
+    itemOpacity: 1,
+    symbolSize: 18,
+    symbolShape: 'circle',
+    // effects: [
+    //   {
+    //     on: 'hover',
+    //     style: {
+    //       itemTextColor: '#000'
+    //     }
+    //   }
+    // ]
+  }
+];
 
 export default function GraphBox({ data, config }) {
 
@@ -145,7 +170,7 @@ export default function GraphBox({ data, config }) {
 
       <Box id="graph-box" sx={styleSx.graphBoxSx}>
         <Box marginBottom={-2} sx={styleSx.pieBoxSx}>
-          <Typography variant="h6" marginBottom={-3}>
+          <Typography variant="h6" marginBottom={-5}>
             {partsPieData.length > 0 ? t("parts") : ""}
           </Typography>
           <Box width={600} height={400}>
@@ -159,15 +184,18 @@ export default function GraphBox({ data, config }) {
         </Box>
 
         <Box sx={styleSx.pieBoxSx}>
-          <Typography variant="h6" marginBottom={-3}>
+          <Typography variant="h6" marginBottom={-5}>
             {anomaliesPieData.length > 0 ? t("anomalies") : ""}
           </Typography>
           <Box width={600} height={400}>
             <ResponsivePie
               data={anomaliesPieData}
               arcLinkLabelsStraightLength={0}
+              arcLabelsSkipAngle={10}
+              arcLinkLabelsSkipAngle={10}
               margin={{ top: 70, right: 120, bottom: 70, left: 120 }}
               theme={responsivePieTheme}
+              legends={responsivePieLegends}
             />
           </Box>
         </Box>
