@@ -102,16 +102,16 @@ export default function GraphBox({ data, config }) {
       if (partsOk || partsNg) {
         partsPieData = [
           {
-            "id": "ng",
-            "label": "NG",
-            "value": partsNg,
-            "color": colors.eyeflow.red.dark
-          },
-          {
-            "id": "ok",
+            "id": "OK",
             "label": "OK",
             "value": partsOk,
             "color": colors.eyeflow.green.light
+          },
+          {
+            "id": "NG",
+            "label": "NG",
+            "value": partsNg,
+            "color": colors.eyeflow.red.dark
           },
         ];
 
@@ -170,7 +170,7 @@ export default function GraphBox({ data, config }) {
 
       <Box id="graph-box" sx={styleSx.graphBoxSx}>
         <Box marginBottom={-2} sx={styleSx.pieBoxSx}>
-          <Typography variant="h6" marginBottom={-5}>
+          <Typography variant="h5" marginBottom={-4}>
             {partsPieData.length > 0 ? t("parts") : ""}
           </Typography>
           <Box width={600} height={400}>
@@ -184,7 +184,7 @@ export default function GraphBox({ data, config }) {
         </Box>
 
         <Box sx={styleSx.pieBoxSx}>
-          <Typography variant="h6" marginBottom={-5}>
+          <Typography variant="h5" marginBottom={-4}>
             {anomaliesPieData.length > 0 ? t("anomalies") : ""}
           </Typography>
           <Box width={600} height={400}>
