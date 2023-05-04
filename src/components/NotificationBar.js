@@ -1,12 +1,12 @@
 // React
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Design
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 
 // Internal
-import { getNotificationBarInfo } from '../store/slices/app';
+import { getNotificationBarInfo, setNotificationBar } from '../store/slices/app';
 
 // Third-Party
 import { useTranslation } from "react-i18next";
@@ -20,17 +20,26 @@ export default function NotificationBar() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const info = useSelector(getNotificationBarInfo);
+  const { show, type, message } = info;
+  console.log({ info })
 
-  const [open, setOpen] = useState(true);
-  const [severity, setSeverity] = useState('info');
 
+
+  useEffect(() => {
+    if (show) {
+      setTimeout(() => {
+        dispatch(setNotificationBar(false));
+      }, 5000)
+    }
+    // eslint-disable-next-line
+  }, [show])
 
   return (
     <>
       {
-        info?.show &&
+        show &&
         <Alert
-          severity={info?.type}
+          severity={type}
           sx={{
             width: '100%'
             , position: 'absolute'
@@ -38,8 +47,8 @@ export default function NotificationBar() {
             , top: 0
           }}
         >
-          <AlertTitle>{t(severity)}</AlertTitle>
-          This is an error alert — <strong>check it out!</strong>
+          <AlertTitle>{t(type)}</AlertTitle>
+          {t(message)}
         </Alert>
       }
     </>
