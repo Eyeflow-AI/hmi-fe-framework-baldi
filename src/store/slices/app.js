@@ -47,7 +47,10 @@ const appSlice = createSlice({
       else {
         state.appBarButtonList = [];
       }
-    }
+    },
+    setNotificationBar: (state, action) => {
+      state.notificationBar = { ...action.payload };
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -119,5 +122,6 @@ export const getAppBarButtonList = (state) => state.app.appBarButtonList;
 export const setStationId = appSlice.actions.setStationId;
 export const setLanguageList = appSlice.actions.setLanguageList;
 export const setAppBarButtonList = appSlice.actions.setAppBarButtonList;
+export const setNotificationBar = appSlice.actions.setNotificationBar;
 
 export default appSlice;
