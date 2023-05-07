@@ -53,6 +53,8 @@ const API = {
     login: ({ username, password }, setLoading) => request(instance.post(`auth/login`, { username, password }), setLoading),
     batch: ({ stationId, data }, setLoading) => request(instance.post(`batch/${stationId}`, data), setLoading),
     user: ({ username, password }, setLoading) => request(instance.post(`auth/user`, { username, password }), setLoading),
+
+    role: ({ roleName, description, types }, setLoading) => request(instance.post(`auth/role`, { roleName, description, types }), setLoading),
   },
   get: {
     batchList: ({ params, stationId }, setLoading) => request(instance.get(`batch/${stationId}/list`, { params }), setLoading),
