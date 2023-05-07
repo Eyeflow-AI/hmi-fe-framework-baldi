@@ -31,12 +31,16 @@ const styleSx = {
   graphBoxSx: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: "center",
+    height: '100%',
+    // width: '100%',
+    // flexGrow: 1,
   },
   pieBoxSx: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: "center",
+    height: '50%',
   },
   footerBox: {
     display: 'flex',
@@ -57,8 +61,34 @@ const responsivePieTheme = {
       fill: '#ffffff',
       textShadow: "1px 1px 2px #353535"
     }
-  }
+  },
 };
+
+const responsivePieLegends = [
+  {
+    anchor: 'left',
+    direction: 'column',
+    justify: false,
+    // translateY: 56,
+    translateX: -80,
+    itemsSpacing: 10,
+    itemWidth: 150,
+    itemHeight: 18,
+    itemTextColor: '#999',
+    itemDirection: 'left-to-right',
+    itemOpacity: 1,
+    symbolSize: 18,
+    symbolShape: 'circle',
+    // effects: [
+    //   {
+    //     on: 'hover',
+    //     style: {
+    //       itemTextColor: '#000'
+    //     }
+    //   }
+    // ]
+  }
+];
 
 export default function GraphBox({ data, config }) {
 
@@ -67,6 +97,7 @@ export default function GraphBox({ data, config }) {
   const {
     // partsOk, partsNg,
     dataList, anomaliesPieData, partsPieData } = useMemo(() => {
+      let status = data?.status;
       let partsOk = data?.batch_data?.parts_ok ?? 0;
       let partsNg = data?.batch_data?.parts_ng ?? 0;
       let conveyorSpeed = data?.batch_data?.conveyor_speed ?? 0;
@@ -77,16 +108,16 @@ export default function GraphBox({ data, config }) {
       if (partsOk || partsNg) {
         partsPieData = [
           {
-            "id": "ng",
-            "label": "NG",
-            "value": partsNg,
-            "color": colors.eyeflow.red.dark
-          },
-          {
-            "id": "ok",
+            "id": "OK",
             "label": "OK",
             "value": partsOk,
             "color": colors.eyeflow.green.light
+          },
+          {
+            "id": "NG",
+            "label": "NG",
+            "value": partsNg,
+            "color": colors.eyeflow.red.dark
           },
         ];
 
@@ -116,13 +147,19 @@ export default function GraphBox({ data, config }) {
       let packNum = data?.batch_data?.pack_num ?? Math.floor(partsProduced / partsPerPack) + 1;
       let totalQtt = partsPerPack * totalPacks;
 
-      const dataList = [ //TODO get from config
+      let dataList = [ //TODO get from config
         { field: "produced", label: `${partsProduced} (${(partsProduced / totalQtt * 100).toFixed(2)}%)` },
-        { field: "speed", label: conveyorSpeed },
+      ];
+
+      if (status === "running") {
+        dataList.push({ field: "speed", label: conveyorSpeed });
+      };
+
+      dataList = dataList.concat([
         { field: "box", label: `${packNum}/${totalPacks}` },
         { field: "OK", label: `${partsOk} (${((partsProduced && Number.isInteger(partsProduced)) ? partsOk / partsProduced * 100 : 0.0).toFixed(2)}%)` },
         { field: "NG", label: `${partsNg} (${((partsProduced && Number.isInteger(partsProduced)) ? partsNg / partsProduced * 100 : 0.0).toFixed(2)}%)` },
-      ];
+      ]);
 
       return {
         partsProduced: partsOk + partsNg,
@@ -145,29 +182,32 @@ export default function GraphBox({ data, config }) {
 
       <Box id="graph-box" sx={styleSx.graphBoxSx}>
         <Box marginBottom={-2} sx={styleSx.pieBoxSx}>
-          <Typography variant="h6" marginBottom={-3}>
+          <Typography variant="h5" marginBottom={-3} marginLeft={6}>
             {partsPieData.length > 0 ? t("parts") : ""}
           </Typography>
-          <Box width={600} height={400}>
+          <Box width={800} height={400}>
             <ResponsivePie
               colors={{ datum: 'data.color' }}
               data={partsPieData}
-              margin={{ top: 70, right: 120, bottom: 70, left: 120 }}
+              margin={{ top: 70, right: 40, bottom: 70, left: 100 }}
               theme={responsivePieTheme}
             />
           </Box>
         </Box>
 
         <Box sx={styleSx.pieBoxSx}>
-          <Typography variant="h6" marginBottom={-3}>
+          <Typography variant="h5" marginBottom={-3} marginLeft={6}>
             {anomaliesPieData.length > 0 ? t("anomalies") : ""}
           </Typography>
-          <Box width={600} height={400}>
+          <Box width={800} height={400}>
             <ResponsivePie
               data={anomaliesPieData}
               arcLinkLabelsStraightLength={0}
-              margin={{ top: 70, right: 120, bottom: 70, left: 120 }}
+              arcLabelsSkipAngle={10}
+              arcLinkLabelsSkipAngle={10}
+              margin={{ top: 70, right: 40, bottom: 70, left: 100 }}
               theme={responsivePieTheme}
+              legends={responsivePieLegends}
             />
           </Box>
         </Box>
