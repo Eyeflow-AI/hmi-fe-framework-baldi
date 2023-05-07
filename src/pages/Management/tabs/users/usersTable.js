@@ -196,8 +196,8 @@ export default function UsersTable({
 
   const onChangeUserRole = (rowParms) => (newValue) => {
     let username = rowParms?.row?.username;
-    let roleTypePermissions = accessControlData?.roles?.[newValue] ?? [];
-    let roleTypes = accessControlData?.types ?? [];
+    let roleTypePermissions = Object.keys(accessControlData?.roles?.[newValue]?.types ?? {});
+    let roleTypes = Object.keys(accessControlData?.types ?? {});
     let newAccessControl = {};
     roleTypes.forEach((role) => {
       newAccessControl[role] = roleTypePermissions.includes(role);

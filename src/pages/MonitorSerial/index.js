@@ -37,18 +37,21 @@ export default function Monitor({ pageOptions }) {
 
   const { _id: stationId } = GetSelectedStation();
   const [queryParams, setQueryParams] = useState(null);
-
+  // eslint-disable-next-line
   const { serialList, loading: loadingSerialList, loadSerialList } = GetSerialList({ stationId, queryParams, sleepTime: pageOptions.options.getEventSleepTime });
   const { runningSerial, loadRunningSerial } = GetRunningSerial({ stationId, sleepTime: pageOptions.options.getEventSleepTime });
 
   const [selectedSerial, setSelectedSerial] = useState(null);
+  // eslint-disable-next-line
   const [selectedSerialCountData, setSelectedSerialCountData] = useState(null);
   const [loadingSelected, setLoadingSelected] = useState(false);
 
-  const onChangeEvent = (serialId) => {
-    setSelectedSerial(null);
-    if (serialId) {
+  const onChangeEvent = (serialId, changedSerial = true) => {
+    if (changedSerial) {
+      setSelectedSerial(null);
       setLoadingSelected(true);
+    };
+    if (serialId) {
       API.get.serial({ stationId, serialId })
         .then((data) => {
           setSelectedSerial(data?.serial);
@@ -70,8 +73,6 @@ export default function Monitor({ pageOptions }) {
 
   // useEffect(() => {console.log({runningBatch})}, [runningBatch]);
   useEffect(() => {
-    console.log({ serialList, t: serialList.findIndex((el) => el._id === selectedSerial?._id) === -1 })
-    console.log({ x: serialList.map(el => el._id) })
     if (selectedSerial
       && (selectedSerial._id !== runningSerial?._id)
       && serialList.findIndex((el) => el._id === selectedSerial._id) === -1) {
@@ -103,10 +104,11 @@ export default function Monitor({ pageOptions }) {
   };
 
   const updateAll = () => {
-    loadSerialList();
-    loadRunningSerial();
+    // loadSerialList();
+    // loadRunningSerial();
+    console.log({ serialList })
     if (selectedSerial) {
-      onChangeEvent(selectedSerial._id);
+      onChangeEvent(selectedSerial._id, false);
     };
   };
 
@@ -131,6 +133,14 @@ export default function Monitor({ pageOptions }) {
         .catch(console.error);
     };
   };
+
+  useEffect(() => {
+    if (selectedSerial) {
+      updateAll();
+    };
+    // eslint-disable-next-line
+  }, [serialList]);
+
 
   return (
     <PageWrapper>
