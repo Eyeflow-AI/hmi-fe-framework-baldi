@@ -36,7 +36,12 @@ const components = {
 };
 
 
-export default function Routes({ station, authenticated, hasUserManagementPermission, hasCaptureImagesPermission }) {
+export default function Routes({
+  station
+  , authenticated
+  // , hasUserManagementPermission
+  // , hasCaptureImagesPermission
+}) {
 
   return useMemo(() => {
 
