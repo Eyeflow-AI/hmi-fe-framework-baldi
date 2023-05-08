@@ -24,7 +24,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 // Internal
 import API from "../../../../api";
-import CreateRoleDialog from "./createRoleDialog";
+import RoleDialog from "./roleDialog";
 
 // Third-Party
 import { useTranslation } from "react-i18next";
@@ -105,9 +105,11 @@ export default function RolesTable() {
 
 
   const [accessControlData, setAccessControlData] = useState({});
-  const [createRoleDialog, setCreateRoleDialog] = useState(false);
+  const [roleDialog, setRoleDialog] = useState(false);
+  const [roleDialogTitle, setRoleDialogTitle] = useState('');
   const [types, setTypes] = useState([]);
   const [roles, setRoles] = useState([]);
+  const [selectedRoleToEdit, setSelectedRoleToEdit] = useState(null);
 
 
   const getAccessControlData = () => {
@@ -117,6 +119,19 @@ export default function RolesTable() {
       })
   }
 
+  const handleCreateRole = () => {
+    setRoleDialogTitle(t("create_role"));
+    setRoleDialog(true);
+  }
+
+
+  const handleEditRole = (role) => {
+    if (role.editable) {
+      setRoleDialogTitle(t("edit_role"));
+      setSelectedRoleToEdit(role);
+      setRoleDialog(true);
+    }
+  }
 
   useEffect(() => {
     getAccessControlData();
@@ -162,6 +177,13 @@ export default function RolesTable() {
       setColumns(['role', 'description', ...types]);
     }
   }, [accessControlData]);
+
+  useEffect(() => {
+    if (!roleDialog) {
+      setRoleDialogTitle('');
+      setSelectedRoleToEdit(null);
+    }
+  }, [roleDialog])
 
   return (
 
@@ -210,8 +232,13 @@ export default function RolesTable() {
               <TableRow
                 sx={{
                   cursor: row?.editable ? 'pointer' : 'default',
+                  "&:hover": {
+                    backgroundColor: row?.editable ? 'rgba(0, 0, 0, 0.1)' : null,
+                  }
                 }}
-                key={`${row.role}`}>
+                key={`${row.role}`}
+                onClick={() => handleEditRole(row)}
+              >
                 <TableCell component="th" scope="row">
                   {row.role}
                 </TableCell>
@@ -267,15 +294,17 @@ export default function RolesTable() {
         <Button
           variant="contained"
           startIcon={<AddIcon />}
-          onClick={() => setCreateRoleDialog(true)}
+          onClick={() => handleCreateRole()}
         >
           {t('add_role')}
         </Button>
 
       </Box>
-      <CreateRoleDialog
-        open={createRoleDialog}
-        onClose={() => setCreateRoleDialog(false)}
+      <RoleDialog
+        title={roleDialogTitle}
+        open={roleDialog}
+        onClose={() => setRoleDialog(false)}
+        selectedRoleInfo={selectedRoleToEdit}
         types={types}
         roles={roles}
         getAccessControlData={getAccessControlData}

@@ -94,9 +94,15 @@ const API = {
     userRole: ({ username, newRole }, setLoading) => request(instance.put(`auth/user/role`, { username, newRole }), setLoading),
     resetPassword: ({ username, newPassword }, setLoading) => request(instance.put(`auth/user/reset-password`, { username, newPassword }), setLoading),
 
+
+    role: ({ roleName, description, types, oldRoleName }, setLoading) => request(instance.put(`auth/role`, { roleName, description, types, oldRoleName }), setLoading),
+
   },
   delete: {
     user: ({ username }, setLoading) => request(instance.delete(`auth/user`, { data: { username } }), setLoading),
+
+    role: ({ roleName }, setLoading) => request(instance.delete(`auth/role`, { data: { roleName } }), setLoading),
+
   }
 };
 
