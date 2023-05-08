@@ -22,7 +22,7 @@ export const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loadingLogin = false;
-        console.log({action})
+        console.log({ action })
         state.user = action.payload;
       })
       .addCase(login.rejected, (state) => {
@@ -37,8 +37,8 @@ export const getUserUsername = (state) => state.auth.user?.tokenPayload?.payload
 export const getUserTokenPayload = (state) => state.auth.user?.tokenPayload?.payload;
 export const getUserInitials = (state) => state.auth.user?.tokenPayload?.payload?.profile?.initials;
 export const getUserAccessControl = (state) => state.auth.user?.tokenPayload?.payload?.accessControl;
-export const getHasUserManagementPermission = (state) => Boolean(state.auth.user?.tokenPayload?.payload?.accessControl?.userManagement);
-export const getHasCaptureImagesPermission = (state) => Boolean(state.auth.user?.tokenPayload?.payload?.accessControl?.captureImages);
+// export const getHasUserManagementPermission = (state) => Boolean(state.auth.user?.tokenPayload?.payload?.accessControl?.userManagement);
+// export const getHasCaptureImagesPermission = (state) => Boolean(state.auth.user?.tokenPayload?.payload?.accessControl?.captureImages);
 export const getUserAuthenticated = (state) => Boolean(state.auth.user);
 export const getLoadingLogin = (state) => state.auth.loadingLogin;
 

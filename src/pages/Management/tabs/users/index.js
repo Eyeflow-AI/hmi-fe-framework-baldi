@@ -106,6 +106,10 @@ export default function UserManagement() {
     // eslint-disable-next-line
   }, []);
 
+  useEffect(() => {
+    getAccessControlData();
+  }, [selectedView])
+
   return (
     <>
       <Box

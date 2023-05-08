@@ -9,11 +9,16 @@ import GetRoutes from './GetRoutes';
 function App() {
 
   const authenticated = useSelector(getUserAuthenticated);
-  const hasUserManagementPermission = useSelector(getHasUserManagementPermission);
-  const hasCaptureImagesPermission = useSelector(getHasCaptureImagesPermission);
+  // const hasUserManagementPermission = useSelector(getHasUserManagementPermission);
+  // const hasCaptureImagesPermission = useSelector(getHasCaptureImagesPermission);
   const station = useSelector(getStation);
 
-  const routesList = GetRoutes({station, authenticated, hasUserManagementPermission, hasCaptureImagesPermission});
+  const routesList = GetRoutes({
+    station
+    , authenticated
+    // , hasUserManagementPermission
+    // , hasCaptureImagesPermission
+  });
   return useRoutes(routesList);
 };
 
