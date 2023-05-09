@@ -155,6 +155,7 @@ export default function LanguagesTable({
           default: usedLanguages.default === language.id
         });
       });
+      rows.sort((a, b) => a.label.localeCompare(b.label));
       setRows(rows)
     }
   }, [availableLanguages, usedLanguages]);

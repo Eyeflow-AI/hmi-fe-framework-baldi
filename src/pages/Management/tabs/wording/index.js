@@ -17,11 +17,10 @@ export default function Wording() {
 
   const [availableLanguages, setAvailableLanguages] = useState([]);
   const [usedLanguages, setUsedLanguages] = useState({});
-  const [fromToData, setFromToData] = useState(null);
   const [selectedView, setSelectedView] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+  const getLanguagesInfo = async () => {
     API.get.languagesData()
       .then(async (response) => {
         const { availableLanguages, usedLanguages } = response ?? {
@@ -38,12 +37,19 @@ export default function Wording() {
         }
       })
       .catch(console.error);
+  }
+
+  useEffect(() => {
+    getLanguagesInfo();
     return () => {
       setAvailableLanguages([]);
       setUsedLanguages({});
     };
   }, []);
 
+  useEffect(() => {
+    getLanguagesInfo();
+  }, [selectedView])
 
   return (
     <Box
