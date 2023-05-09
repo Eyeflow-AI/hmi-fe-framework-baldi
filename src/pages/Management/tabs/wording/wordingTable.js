@@ -27,6 +27,7 @@ import { Button, Tooltip } from "@mui/material";
 // Third-party
 import { useTranslation } from "react-i18next";
 import { copyToClipboard } from "sdk-fe-eyeflow";
+import { use } from "i18next";
 
 function TablePaginationActions(props) {
   const { t } = useTranslation();
@@ -89,15 +90,11 @@ export default function WordingTable({
 }) {
 
   const { t } = useTranslation();
+  console.log({ availableLanguages, usedLanguages })
 
   const [page, setPage] = useState(0);
   const rowsPerPage = 9;
-  const columns = [
-    'dataset_name',
-    'class_label',
-    'class_color',
-    'icon',
-  ];
+  const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -128,12 +125,34 @@ export default function WordingTable({
   //   }
   // }, [languagesData, fromToData])
 
+  useEffect(() => {
+    if (usedLanguages?.languageList?.length > 0) {
+      let defaultLanguageId = usedLanguages?.default ?? 'en';
+      let columns = [];
+      let defaultLanguage = usedLanguages.languageList.find((language) => language.id === defaultLanguageId);
+      let otherLanguages = usedLanguages.languageList.filter((language) => language.id !== defaultLanguageId && language.active);
+      otherLanguages = otherLanguages.map((language) => language.label);
+
+      columns.push(defaultLanguage?.label);
+      columns = columns.concat(otherLanguages);
+      setColumns(columns);
+    }
+  }, [usedLanguages])
+
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer
+      component={Paper}
+      sx={{
+        width: "100%",
+      }}
+    >
       <Table
-        sx={{ minWidth: 500 }}
-        aria-label="fromTo Table"
+        sx={{
+          minWidth: 500,
+        }}
+        aria-label="wording Table"
+
       >
         <TableHead>
           <TableRow>
