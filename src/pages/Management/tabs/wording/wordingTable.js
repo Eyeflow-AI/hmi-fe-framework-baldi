@@ -27,7 +27,6 @@ import { Button, Tooltip } from "@mui/material";
 // Third-party
 import { useTranslation } from "react-i18next";
 import { copyToClipboard } from "sdk-fe-eyeflow";
-import { use } from "i18next";
 
 function TablePaginationActions(props) {
   const { t } = useTranslation();
@@ -95,6 +94,7 @@ export default function WordingTable({
   const [page, setPage] = useState(0);
   const rowsPerPage = 9;
   const [columns, setColumns] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [rows, setRows] = useState([]);
 
   // Avoid a layout jump when reaching the last page with empty rows.

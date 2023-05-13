@@ -2,11 +2,10 @@
 import React, { useEffect, useState } from 'react';
 
 // Design
-import Box from '@mui/material/Box';
+import { Box, List, ListItemButton, Tooltip, Typography } from '@mui/material';
 
 // Internal
 import PageWrapper from '../../components/PageWrapper';
-import { List, ListItemButton, Tooltip, Typography } from '@mui/material';
 import API from '../../api';
 
 // Third-party

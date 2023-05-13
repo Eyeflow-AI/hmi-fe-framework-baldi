@@ -10,13 +10,14 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { t } from 'i18next';
-import { colors } from 'sdk-fe-eyeflow';
+
 
 // Internal
-import ImageDialog from './imageDialog';
+import ImageDialog from '../ImageDialog';
 
 // Third-party
+import { t } from 'i18next';
+import { colors } from 'sdk-fe-eyeflow';
 
 const mainBoxSx = Object.assign({}, window.app_config.style.box, {
   bgcolor: 'background.paper',
@@ -105,7 +106,6 @@ export default function EventSerialDataBox({
     >
       <Grid
         container
-        // width='100%'
         height='100%'
         spacing={1}
         direction="column"
