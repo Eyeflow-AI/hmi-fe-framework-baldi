@@ -1,8 +1,6 @@
 // React
 import { useEffect, Fragment } from 'react';
 
-
-
 // Design
 
 
@@ -13,7 +11,7 @@ import getStationListThunk from './store/thunks/stationList';
 import getPartsListThunk from './store/thunks/partsList';
 import addInterceptors from './api/addInterceptors';
 import getOriginalURLPath from './utils/functions/getOriginalURLPath';
-import GetActiveAlert from './utils/Hooks/GetActiveAlert';
+// import GetActiveAlert from './utils/Hooks/GetActiveAlert';
 
 // Thirdy-party
 import { useDispatch, useSelector } from 'react-redux';

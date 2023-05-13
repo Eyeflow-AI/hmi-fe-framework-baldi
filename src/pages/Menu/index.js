@@ -29,11 +29,8 @@ export default function Home({ pageOptions }) {
 
   const { pageList } = useMemo(() => {
     let pageList = [];
-    const authorizationList = Object.entries(user?.tokenPayload?.payload?.accessControl).map(([key, value]) => {
-      if (value) {
-        return key;
-      }
-    });
+    const authorizationList = [];
+    Object.entries(user?.tokenPayload?.payload?.accessControl).forEach(([key, value]) => { if (value) authorizationList.push(key); });
 
     for (let pageData of (pageOptions?.options?.pageList ?? [])) {
       let showPage = authorizationList.some((auth) => pageData?.acl?.includes(auth) ?? true);

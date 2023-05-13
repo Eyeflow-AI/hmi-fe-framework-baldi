@@ -15,6 +15,7 @@ const History = lazy(() => import("./pages/History"));
 const homeURL = "/app/:stationSlugLabel/home";
 
 const Query = lazy(() => import("./toolsPages/Query"));
+const ImagesAnalyser = lazy(() => import("./toolsPages/ImagesAnalyser"));
 
 function NotFound() {
   return (
@@ -33,6 +34,7 @@ const components = {
   History: (pageOptions) => <History pageOptions={pageOptions} />,
 
   Query: (pageOptions) => <Query pageOptions={pageOptions} />,
+  ImagesAnalyser: (pageOptions) => <ImagesAnalyser pageOptions={pageOptions} />,
 };
 
 

@@ -1,6 +1,10 @@
 import { useRoutes } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { getUserAuthenticated, getHasUserManagementPermission, getHasCaptureImagesPermission } from './store/slices/auth';
+import {
+  getUserAuthenticated
+  // , getHasUserManagementPermission
+  // , getHasCaptureImagesPermission
+} from './store/slices/auth';
 import { getStation } from './store/slices/app';
 
 import GetRoutes from './GetRoutes';

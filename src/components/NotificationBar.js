@@ -1,5 +1,5 @@
 // React
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 // Design
 import Alert from '@mui/material/Alert';
