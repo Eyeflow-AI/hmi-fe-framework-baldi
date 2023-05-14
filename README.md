@@ -53,4 +53,5 @@
 | Dot Editor  | ![tools dot editor](imagesDocumentation/tools_dotEditor.png "tools dot editor")  |  
 | Query  | ![tools query](imagesDocumentation/tools_query.png "tools query")  |  
 | Images Analyser  | ![tools images analyser](imagesDocumentation/tools_imagesAnalyser.png "tools images analyser")  |  
+| Monitor  | ![tools monitor](imagesDocumentation/tools_monitor.png "tools monitor")  |  
 | Object Builder  | ![tools object builder](imagesDocumentation/tools_objectBuilder.png "tools object builder")  |  
