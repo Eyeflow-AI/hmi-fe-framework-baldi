@@ -15,7 +15,7 @@ const History = lazy(() => import("./pages/History"));
 const homeURL = "/app/:stationSlugLabel/home";
 
 const Query = lazy(() => import("./toolsPages/Query"));
-const ImagesAnalyser = lazy(() => import("./toolsPages/ImagesAnalyser"));
+const Monitor = lazy(() => import("./toolsPages/Monitor"));
 
 function NotFound() {
   return (
@@ -34,7 +34,7 @@ const components = {
   History: (pageOptions) => <History pageOptions={pageOptions} />,
 
   Query: (pageOptions) => <Query pageOptions={pageOptions} />,
-  ImagesAnalyser: (pageOptions) => <ImagesAnalyser pageOptions={pageOptions} />,
+  Monitor: (pageOptions) => <Monitor pageOptions={pageOptions} />,
 };
 
 
@@ -55,6 +55,7 @@ export default function Routes({
       let aclCondition = true; //TODO
       if (value.active && aclCondition && value.path.startsWith("/app")) {
         // console.log(`Loading page: ${key}. Station: ${station?.label}. Path: ${value.path}`);
+        console.log({ value })
         appRoutes.push({
           path: value.path,
           element: components[value.component](value)
