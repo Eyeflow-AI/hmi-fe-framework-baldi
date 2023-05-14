@@ -86,7 +86,7 @@ export default function Monitor({ pageOptions }) {
               return (
                 <Grid
                   item
-                  xs={GRID_SIZES[imagesList.length]}
+                  xs={pageOptions?.options?.GRID_SIZES[String(imagesList.length)]}
                   key={index}
                   sx={{
                     justifyContent: 'center',
@@ -113,8 +113,8 @@ export default function Monitor({ pageOptions }) {
                       style={{
                         objectFit: 'contain',
                         // width: "calc(2560px * 0.15)",
-                        width: IMAGE_SIZES[imagesList.length],
-                        height: IMAGE_SIZES[imagesList.length],
+                        width: pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)],
+                        height: pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)],
                         display: 'block',
                         margin: 'auto',
                         paddingBottom: '.5rem',
