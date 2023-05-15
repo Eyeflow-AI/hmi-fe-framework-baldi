@@ -2,7 +2,25 @@
 import React, { useEffect, useState } from 'react';
 
 // Design
-import { Box, List, ListItemButton, Tooltip, Typography } from '@mui/material';
+import {
+  Box
+  , List
+  , ListItemButton
+  , Tooltip
+  , Typography
+  , Button
+  , TextField
+  , MenuItem
+  , FormControl
+  , InputLabel
+  , Select,
+  Stack
+} from '@mui/material';
+import SaveIcon from '@mui/icons-material/Save';
+import FolderIcon from '@mui/icons-material/Folder';
+import InputAdornment from '@mui/material/InputAdornment';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 // Internal
 import PageWrapper from '../../components/PageWrapper';
@@ -11,7 +29,8 @@ import API from '../../api';
 // Third-party
 import ReactJSONViewer from 'react-json-viewer';
 import { useTranslation } from "react-i18next";
-
+import JSONInput from 'react-json-editor-ajrm';
+import locale from 'react-json-editor-ajrm/locale/en';
 
 const style = {
   mainBox: Object.assign({}, window.app_config.style.box, {
@@ -32,13 +51,60 @@ var jsonData = [{
   "done": false
 }];
 
+const SEARCH_METHODS = [
+  {
+    method: 'find',
+  },
+  {
+    method: 'aggregate',
+  },
+  {
+    method: 'count',
+  },
+  // {
+  //   method: 'distinct',
+  // },
+  {
+    method: 'estimatedDocumentCount',
+  },
+  {
+    method: 'findOne',
+  },
+  // {
+  //   method: 'findOneAndDelete',
+  // },
+  // {
+  //   method: 'findOneAndRemove',
+  // },
+  // {
+  //   method: 'findOneAndReplace',
+  // },
+  // {
+  //   method: 'findOneAndUpdate',
+  // },
+  // {
+  //   method: 'insertMany',
+  // },
+  // {
+  //   method: 'insertOne',
+  // },
+  // {
+  //   method: 'replaceOne',
+  // },
+  // {
+  //   method: 'updateMany',
+  // },
+  // {
+  //   method: 'updateOne',
+]
+
 export default function Query({ pageOptions }) {
 
   const { t } = useTranslation();
 
   const [queryData, setQueryData] = useState(null);
   const [selectedQuery, setSelectedQuery] = useState('');
-
+  const [searchMethod, setSearchMethod] = useState('');
 
   const getData = () => {
     API.get.query({})
@@ -53,6 +119,15 @@ export default function Query({ pageOptions }) {
   useEffect(() => {
     getData();
   }, []);
+
+
+  const saveQuery = () => {
+    console.log('saveQuery');
+  }
+
+  const handleSearchMethodChange = (event) => {
+    setSearchMethod(event.target.value);
+  };
 
   return (
     <PageWrapper>
@@ -126,19 +201,56 @@ export default function Query({ pageOptions }) {
               width: 'calc(100% - 250px)',
             }}
           >
-            Query Editor
             <Box
               sx={{
                 display: 'flex',
                 flexGrow: 1,
                 height: '100px',
                 width: '100%',
+                marginTop: 1
               }}
             >
-              toolbar:
-              collection_name
-              search_method
-              chart:(
+              <TextField
+                id="collection-name"
+                label={t('collection_name')}
+                variant="outlined"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <FolderIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <FormControl
+                sx={{
+                  minWidth: 200,
+                }}
+              >
+                <InputLabel id="search-method-input-label">{t('search_method')}</InputLabel>
+                <Select
+                  labelId="search-method-select"
+                  id="demo-simple-select"
+                  value={searchMethod}
+                  label={t('search_method')}
+                  onChange={handleSearchMethodChange}
+                >
+                  {
+                    SEARCH_METHODS.map((method, index) => {
+                      return (
+                        <MenuItem
+                          key={index}
+                          value={method.method}
+                        >
+                          {method.method}
+                        </MenuItem>
+                      )
+                    })
+                  }
+                </Select>
+              </FormControl>
+
+              {/* chart:(
               type
               title
               localeId
@@ -147,7 +259,7 @@ export default function Query({ pageOptions }) {
               width
               height
               colors_result
-              )
+              ) */}
             </Box>
             <Box
               sx={{
@@ -157,9 +269,72 @@ export default function Query({ pageOptions }) {
                 width: '100%',
               }}
             >
-              {
-                JSON.stringify(queryData?.[selectedQuery])
-              }
+
+              <JSONInput
+                id='a_unique_id'
+                placeholder={queryData?.[selectedQuery] ?? {}}
+                // colors={darktheme}
+                locale={locale}
+                height={'100%'}
+                width={'100%'}
+                fontSize={50}
+                waitAfterKeyPress={3000}
+                style={{
+                  body: {
+                    fontSize: '20px',
+                  }
+                }}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                width: '100%',
+              }}
+            >
+              <Box
+                sx={{
+                  flexGrow: 1,
+                }}
+              >
+                <Stack direction='row' justifyContent='flex-start' gap={1}>
+                  <Button
+                    onClick={saveQuery}
+                    variant='contained'
+                    startIcon={<DeleteIcon />}
+                    color='error'
+                  >
+                    {t('delete')}
+                  </Button>
+                  <Button
+                    onClick={saveQuery}
+                    variant='contained'
+                    startIcon={<SaveIcon />}
+                  >
+                    {t('save')}
+                  </Button>
+                </Stack>
+              </Box>
+              <Box
+                sx={{
+                  flexGrow: 1,
+                }}
+              >
+                <Stack direction="row" justifyContent='flex-end' gap={1}>
+                  <Button
+                    onClick={saveQuery}
+                    variant='contained'
+                    startIcon={<PlayArrowIcon />}
+                    color='success'
+                    sx={{
+                      marginLeft: 1
+                    }}
+                  >
+                    {t('run_query')}
+                  </Button>
+                </Stack>
+              </Box>
             </Box>
           </Box>
           <Box
