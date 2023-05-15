@@ -75,7 +75,6 @@ export default function Login() {
 
   const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
-  const [errMessage, setErrMessage] = useState('');
 
   const onClickLoginButton = (event) => {
     event.preventDefault();
@@ -95,12 +94,10 @@ export default function Login() {
   };
 
   const onChangeUser = (event) => {
-    setErrMessage('');
     setUser(event.currentTarget.value);
   };
 
   const onChangePassword = (event) => {
-    setErrMessage('');
     setPassword(event.currentTarget.value);
   };
 
@@ -134,7 +131,6 @@ export default function Login() {
                   autoFocus
                   onChange={onChangeUser}
                   sx={styleSx.textfield}
-                  error={Boolean(errMessage)}
                 />
               </Grid>
 
@@ -153,8 +149,6 @@ export default function Login() {
                     autoComplete="off"
                     onChange={onChangePassword}
                     sx={styleSx.textfield}
-                    helperText={t(errMessage)}
-                    error={Boolean(errMessage)}
                   />
                 </Box>
               </Grid>
