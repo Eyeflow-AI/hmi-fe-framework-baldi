@@ -19,6 +19,7 @@ import SiliconCopyright from '../../components/SiliconCopyright';
 import login from '../../store/thunks/login';
 import { getStationList, getStationId, setStationId } from '../../store/slices/app';
 import { getLoadingLogin } from '../../store/slices/auth';
+import { setNotificationBar } from '../../store/slices/app';
 
 // Third-Party
 import { useTranslation } from "react-i18next";
@@ -74,33 +75,29 @@ export default function Login() {
 
   const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
-  const [errMessage, setErrMessage] = useState('');
 
   const onClickLoginButton = (event) => {
     event.preventDefault();
     dispatch(login({ username: user, password: password }))
       .then(unwrapResult)
       .catch((err) => {
-        console.log({ err });
         if (err.message === "Network Error") {
-          setErrMessage("Network Error");
+          dispatch(setNotificationBar({ show: true, type: 'error', message: "network_error" }));
         }
         else if (err.message === "Wrong username/password") {
-          setErrMessage("invalid_username/password");
+          dispatch(setNotificationBar({ show: true, type: 'error', message: 'invalid_username/password' }));
         }
         else {
-          setErrMessage("Internal Server Error");
+          dispatch(setNotificationBar({ show: true, type: 'error', message: 'internal_server_error' }));
         };
       });
   };
 
   const onChangeUser = (event) => {
-    setErrMessage('');
     setUser(event.currentTarget.value);
   };
 
   const onChangePassword = (event) => {
-    setErrMessage('');
     setPassword(event.currentTarget.value);
   };
 
@@ -134,7 +131,6 @@ export default function Login() {
                   autoFocus
                   onChange={onChangeUser}
                   sx={styleSx.textfield}
-                  error={Boolean(errMessage)}
                 />
               </Grid>
 
@@ -153,8 +149,6 @@ export default function Login() {
                     autoComplete="off"
                     onChange={onChangePassword}
                     sx={styleSx.textfield}
-                    helperText={t(errMessage)}
-                    error={Boolean(errMessage)}
                   />
                 </Box>
               </Grid>
