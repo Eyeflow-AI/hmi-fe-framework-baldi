@@ -31,16 +31,19 @@ export default function Home({ pageOptions }) {
     let pageList = [];
     const authorizationList = [];
     Object.entries(user?.tokenPayload?.payload?.accessControl).forEach(([key, value]) => { if (value) authorizationList.push(key); });
-
     for (let pageData of (pageOptions?.options?.pageList ?? [])) {
-      let showPage = authorizationList.some((auth) => pageData?.acl?.includes(auth) ?? true);
-      if (window.app_config.pages.hasOwnProperty(pageData.page) && showPage) {
-        pageList.push({ data: window.app_config.pages[pageData.page], icon: pageData.icon });
+      let userAuthorized = authorizationList.some((auth) => pageData?.acl?.includes(auth) ?? true);
+
+      if (!window.app_config.pages.hasOwnProperty(pageData.page)) {
+        console.error(`Missing page ${pageData.page} in feConfig`);
+      }
+      else if (!userAuthorized) {
+        console.log(`User is not authorized for page ${pageData.page}`);
       }
       else {
-        console.error(`Missing page ${pageData.page} in feConfig`);
+        pageList.push({ data: window.app_config.pages[pageData.page], icon: pageData.icon });
       };
-    };
+    }
     // let pageList = .map((page) => {window.app_config.pages[]});
     return { pageList };
   }, [pageOptions]);

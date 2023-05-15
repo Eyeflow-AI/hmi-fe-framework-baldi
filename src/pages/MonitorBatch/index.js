@@ -18,6 +18,9 @@ import GetRunningBatch from '../../utils/Hooks/GetRunningBatch';
 import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
 import API from '../../api';
 import ERRORS from '../../errors';
+import { setNotificationBar } from '../../store/slices/app';
+
+import { useDispatch } from 'react-redux';
 
 const style = {
   mainBox: {
@@ -36,6 +39,8 @@ const style = {
 
 export default function Monitor({pageOptions}) {
 
+  const dispatch = useDispatch();
+
   const { _id: stationId } = GetSelectedStation();
   const [queryParams, setQueryParams] = useState(null);
 
@@ -46,12 +51,10 @@ export default function Monitor({pageOptions}) {
   const isBatchRunning = Boolean(runningBatch);
 
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
-  const [createModalErrMessage, setCreateModalErrMessage] = React.useState("");
 
   const handleOpenCreateModal = () => setOpenCreateModal(true);
   const handleCloseCreateModal = () => {
     setOpenCreateModal(false);
-    setCreateModalErrMessage("");
   };
 
   useEffect(() => {
@@ -106,7 +109,7 @@ export default function Monitor({pageOptions}) {
       })
       .catch((err) => {
         if (err.code === ERRORS.EDGE_STATION_IS_NOT_REACHABLE) {
-          setCreateModalErrMessage("edge_station_is_not_reachable");
+          dispatch(setNotificationBar({ show: true, type: 'error', message: "edge_station_is_not_reachable" }));
         }
         console.error(err);
       });
@@ -195,7 +198,6 @@ export default function Monitor({pageOptions}) {
         open={openCreateModal}
         handleClose={handleCloseCreateModal}
         onClickSend={onClickSendBatchData}
-        errMessage={createModalErrMessage}
       />
     </Fragment>
   );

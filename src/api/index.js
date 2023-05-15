@@ -15,12 +15,12 @@ function request(request, setLoading) {
       setLoading(true);
     };
     request.then((result) => {
-      if (result.data) {
+      if (result?.data) {
         resolve(result.data);
       }
       else {
         let errMessage;
-        if (result.data && result.data.error && result.data.error.message) {
+        if (result?.data && result.data.error && result.data.error.message) {
           errMessage = result.data.error.message;
         }
         else {
@@ -31,7 +31,15 @@ function request(request, setLoading) {
       };
     })
       .catch((err) => {
-        if (err?.response?.data) {
+        let errMessage = err?.response?.data?.errMessage ?? err?.response?.data?.err;
+        let code = err?.response?.data?.code;
+
+        if (errMessage) {
+          let error = new Error(errMessage);
+          error.code = code;
+          reject(error);
+        }
+        else if (err?.response?.data) {
           reject(err.response.data);
         }
         else {
@@ -41,7 +49,6 @@ function request(request, setLoading) {
       .finally(() => {
         if (Boolean(setLoading)) {
           setLoading(false);
-          ;
         }
       });
   })
