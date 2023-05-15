@@ -55,7 +55,7 @@ export default function Routes({
       let aclCondition = true; //TODO
       if (value.active && aclCondition && value.path.startsWith("/app")) {
         // console.log(`Loading page: ${key}. Station: ${station?.label}. Path: ${value.path}`);
-        console.log({ value })
+        // console.log({ value })
         appRoutes.push({
           path: value.path,
           element: components[value.component](value)

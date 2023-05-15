@@ -1,6 +1,5 @@
 import store from '../store';
 import authSlice from '../store/slices/auth';
-import { setNotificationBar } from '../store/slices/app';
 
 export default function addInterceptors(instance) {
 
@@ -19,17 +18,12 @@ export default function addInterceptors(instance) {
     (response) => response,
     (error) => {
       let errMessage = error?.response?.data?.err;
-      console.log({ errMessage })
-
       if (errMessage === 'jwt expired') {
         store.dispatch(authSlice.actions.logout());
       }
-      if (errMessage === 'Wrong username/password') {
-        store.dispatch(setNotificationBar({ show: true, type: 'error', message: 'wrong_username_password' }));
-      }
       else {
         return Promise.reject(error);
-      };
+      }
     }
   );
 };

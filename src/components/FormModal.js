@@ -30,13 +30,8 @@ const style = {
   formBox: {
     width: '100%',
   },
-  errorBox: {
-    height: 40,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   footerBox: {
+    pt: 4,
     display: 'flex',
     justifyContent: 'center',
     gap: 1
@@ -102,7 +97,7 @@ function getDefaultValue(fieldData) {
   };
 };
 
-export default function FormModal({config, open, handleClose, onClickSend, errMessage}) {
+export default function FormModal({config, open, handleClose, onClickSend}) {
 
   const {t} = useTranslation();
 
@@ -213,11 +208,6 @@ export default function FormModal({config, open, handleClose, onClickSend, errMe
             )}
           </Grid>
 
-          <Box sx={style.errorBox}>
-            <Typography color="error">
-              {errMessage ? t(errMessage) : ""}
-            </Typography>
-          </Box>
           <Box sx={style.footerBox}>
             <Button color="inherit" variant="outlined" onClick={handleClose}>{t('cancel')}</Button>
             <Button disabled={sendDisabled} variant="contained" onClick={_onClickSend}>{t('send')}</Button>

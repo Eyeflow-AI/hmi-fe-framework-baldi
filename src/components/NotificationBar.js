@@ -13,7 +13,9 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from 'react-redux';
 
 
-
+const style = {
+  alert: {width: '100%', position: 'absolute', zIndex: 99999999, top: 0}
+}
 
 export default function NotificationBar() {
 
@@ -21,9 +23,7 @@ export default function NotificationBar() {
   const dispatch = useDispatch();
   const info = useSelector(getNotificationBarInfo);
   const { show, type, message } = info;
-  console.log({ info })
-
-
+  // console.log({ info })
 
   useEffect(() => {
     if (show) {
@@ -40,12 +40,7 @@ export default function NotificationBar() {
         show &&
         <Alert
           severity={type}
-          sx={{
-            width: '100%'
-            , position: 'absolute'
-            , zIndex: 1000
-            , top: 0
-          }}
+          sx={style.alert}
         >
           <AlertTitle>{t(type)}</AlertTitle>
           {t(message)}
