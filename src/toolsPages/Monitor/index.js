@@ -50,6 +50,7 @@ export default function Monitor({ pageOptions }) {
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [infoURL, setInfoURL] = useState('');
+  const [imageURL, setImageURL] = useState('');
   const [imagePath, setImagePath] = useState('');
   const { imagesList } = GetImagesList({ url: infoURL, sleepTime: pageOptions?.options?.sleepTime });
 
@@ -63,6 +64,7 @@ export default function Monitor({ pageOptions }) {
   useEffect(() => {
     if (pageOptions?.options?.infoURL) {
       setInfoURL(pageOptions?.options?.infoURL);
+      setImageURL(pageOptions?.options?.imageURL);
     }
   }, [pageOptions]);
 
@@ -109,7 +111,7 @@ export default function Monitor({ pageOptions }) {
                   >
                     <CardMedia
                       component="img"
-                      image={`${infoURL}/${item.camera_name}?time=${new Date().getTime()}`}
+                      image={`${imageURL}/${item.camera_name}?time=${new Date().getTime()}`}
                       style={{
                         objectFit: 'contain',
                         // width: "calc(2560px * 0.15)",
