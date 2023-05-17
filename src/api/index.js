@@ -62,6 +62,10 @@ const API = {
     user: ({ username, password }, setLoading) => request(instance.post(`auth/user`, { username, password }), setLoading),
 
     role: ({ roleName, description, types }, setLoading) => request(instance.post(`auth/role`, { roleName, description, types }), setLoading),
+
+    addQuery: ({ collectionName, searchMethod, queryName, query }, setLoading) => request(instance.post(`queries/add-query`, { collectionName, searchMethod, queryName, query }), setLoading),
+
+    runQuery: ({ collectionName, searchMethod, query }, setLoading) => request(instance.post(`queries/run-query`, { collectionName, searchMethod, query }), setLoading),
   },
   get: {
     batchList: ({ params, stationId }, setLoading) => request(instance.get(`batch/${stationId}/list`, { params }), setLoading),
@@ -104,11 +108,15 @@ const API = {
 
     role: ({ roleName, description, types, oldRoleName }, setLoading) => request(instance.put(`auth/role`, { roleName, description, types, oldRoleName }), setLoading),
 
+    saveQuery: ({ collectionName, searchMethod, queryName, query }, setLoading) => request(instance.put(`queries/save-query`, { collectionName, searchMethod, queryName, query }), setLoading),
+
   },
   delete: {
     user: ({ username }, setLoading) => request(instance.delete(`auth/user`, { data: { username } }), setLoading),
 
     role: ({ roleName }, setLoading) => request(instance.delete(`auth/role`, { data: { roleName } }), setLoading),
+
+    query: ({ queryName }, setLoading) => request(instance.delete(`queries/remove-query`, { data: { queryName } }), setLoading),
 
   }
 };
