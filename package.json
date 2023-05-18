@@ -31,7 +31,8 @@
     "react-window": "^1.8.8",
     "redux-persist": "^6.0.0",
     "sdk-fe-eyeflow": "^0.0.30",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "react-json-view": "latest"
   },
   "scripts": {
     "start": "react-scripts start",

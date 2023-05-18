@@ -15,9 +15,9 @@ import {
   , InputLabel
   , Select
   , Stack
-  , Checkbox
-  , FormControlLabel
   , ListItemText
+  , CircularProgress,
+  IconButton
 } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import FolderIcon from '@mui/icons-material/Folder';
@@ -25,7 +25,9 @@ import InputAdornment from '@mui/material/InputAdornment';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
-import StraightenIcon from '@mui/icons-material/Straighten';
+import DataObjectRoundedIcon from '@mui/icons-material/DataObjectRounded';
+import BackupTableRoundedIcon from '@mui/icons-material/BackupTableRounded';
+import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded';
 
 // Internal
 import PageWrapper from '../../components/PageWrapper';
@@ -66,6 +68,7 @@ export default function Query({ pageOptions }) {
   const dispatch = useDispatch();
 
   const [view, setView] = useState('query_view');
+  const [resultView, setResultView] = useState('json');
   const [queryData, setQueryData] = useState(null);
   const [selectedQuery, setSelectedQuery] = useState('');
   const [searchMethod, setSearchMethod] = useState('');
@@ -75,6 +78,7 @@ export default function Query({ pageOptions }) {
   const [collectionName, setCollectionName] = useState('');
   const [showAddQueryDialog, setShowAddQueryDialog] = useState(false);
   const [jsonData, setJsonData] = useState({});
+  const [loadingRunQuery, setLoadingRunQuery] = useState(false);
 
   const getData = () => {
     API.get.query({})
@@ -137,6 +141,7 @@ export default function Query({ pageOptions }) {
 
   const runQuery = () => {
     if (selectedQuery) {
+      setLoadingRunQuery(true);
       API.post.runQuery({
         searchMethod: searchMethod,
         collectionName: collectionName,
@@ -152,6 +157,7 @@ export default function Query({ pageOptions }) {
           dispatch(setNotificationBar({ message: t('failed_to_run_query'), type: 'error', show: true }))
         })
         .finally(() => {
+          setLoadingRunQuery(false);
         });
     }
   }
@@ -447,8 +453,8 @@ export default function Query({ pageOptions }) {
                   <Button
                     onClick={runQuery}
                     variant='contained'
-                    startIcon={<PlayArrowIcon />}
-                    disabled={errorInText || collectionName === '' || searchMethod === ''}
+                    startIcon={loadingRunQuery ? <CircularProgress size={20} /> : <PlayArrowIcon />}
+                    disabled={errorInText || collectionName === '' || searchMethod === '' || loadingRunQuery}
                     color='success'
                     sx={{
                       marginLeft: 1
@@ -476,27 +482,40 @@ export default function Query({ pageOptions }) {
                 width: '100%',
                 height: '80px',
                 overflow: 'hidden',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
             >
-              <Tooltip title={t('csv_view')}>
-                <img
-                  src={`${window.app_config.hosts['hmi-files-ws'].url}/fontawesome/svgs/solid/file-csv.svg`}
-                  alt={t('csv_view')}
-                />
-              </Tooltip>
 
               <Tooltip title={t('json_view')}>
-                <img
-                  src={`${window.app_config.hosts['hmi-files-ws'].url}/mui/icons/data_object_24px.svg`}
-                  alt={t('json_view')}
-                />
+                <span>
+                  <IconButton
+                    onClick={() => setResultView('json')}
+                    disabled={resultView === 'json'}
+                  >
+                    <DataObjectRoundedIcon />
+                  </IconButton>
+                </span>
               </Tooltip>
-
+              <Tooltip title={t('csv_view')}>
+                <span>
+                  <IconButton
+                    onClick={() => setResultView('csv')}
+                    disabled={resultView === 'csv'}
+                  >
+                    <AttachFileRoundedIcon />
+                  </IconButton>
+                </span>
+              </Tooltip>
               <Tooltip title={t('table_view')}>
-                <img
-                  src={`${window.app_config.hosts['hmi-files-ws'].url}/fontawesome/svgs/solid/table.svg`}
-                  alt={t('table_view')}
-                />
+                <span>
+                  <IconButton
+                    onClick={() => setResultView('table')}
+                    disabled={resultView === 'table'}
+                  >
+                    <BackupTableRoundedIcon />
+                  </IconButton>
+                </span>
               </Tooltip>
             </Box>
             <Box
@@ -508,27 +527,32 @@ export default function Query({ pageOptions }) {
                 overflow: 'auto',
               }}
             >
-              {/* <ReactJSONViewer
-                json={jsonData}
-              /> */}
 
-
-              <JSONInput
-                id='a_unique_i'
-                placeholder={jsonData}
-                // colors={darktheme}
-                locale={locale}
-                height={'100%'}
-                width={'100%'}
-                fontSize={50}
-                waitAfterKeyPress={3000}
-                style={{
-                  body: {
-                    fontSize: '20px',
-                  }
-                }}
-                onChange={handleTextChange}
-              />
+              {
+                resultView === 'table' &&
+                <ReactJSONViewer
+                  json={jsonData.data}
+                />
+              }
+              {
+                resultView === 'json' &&
+                <JSONInput
+                  id='a_unique_i'
+                  placeholder={jsonData}
+                  // colors={darktheme}
+                  locale={locale}
+                  height={'100%'}
+                  width={'100%'}
+                  fontSize={50}
+                  waitAfterKeyPress={3000}
+                  style={{
+                    body: {
+                      fontSize: '20px',
+                    }
+                  }}
+                  onChange={handleTextChange}
+                />
+              }
             </Box>
           </Box>
 
