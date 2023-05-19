@@ -6,7 +6,6 @@ import {
   Box
   , List
   , ListItemButton
-  , Tooltip
   , Typography
   , Button
   , TextField
@@ -17,7 +16,6 @@ import {
   , Stack
   , ListItemText
   , CircularProgress,
-  IconButton
 } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import FolderIcon from '@mui/icons-material/Folder';
@@ -25,9 +23,6 @@ import InputAdornment from '@mui/material/InputAdornment';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
-import DataObjectRoundedIcon from '@mui/icons-material/DataObjectRounded';
-import BackupTableRoundedIcon from '@mui/icons-material/BackupTableRounded';
-import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded';
 
 // Internal
 import PageWrapper from '../../components/PageWrapper';
@@ -42,6 +37,8 @@ import { useTranslation } from "react-i18next";
 import JSONInput from 'react-json-editor-ajrm';
 import locale from 'react-json-editor-ajrm/locale/en';
 import { useDispatch } from 'react-redux';
+import JsonView from 'react18-json-view'
+import 'react18-json-view/src/style.css'
 
 const style = {
   mainBox: Object.assign({}, window.app_config.style.box, {
@@ -68,6 +65,7 @@ export default function Query({ pageOptions }) {
   const dispatch = useDispatch();
 
   const [view, setView] = useState('query_view');
+  // eslint-disable-next-line no-unused-vars
   const [resultView, setResultView] = useState('json');
   const [queryData, setQueryData] = useState(null);
   const [selectedQuery, setSelectedQuery] = useState('');
@@ -140,6 +138,7 @@ export default function Query({ pageOptions }) {
   }
 
   const runQuery = () => {
+    setJsonData({});
     if (selectedQuery) {
       setLoadingRunQuery(true);
       API.post.runQuery({
@@ -185,14 +184,15 @@ export default function Query({ pageOptions }) {
       setCollectionName(collectioName);
       setSearchMethod(searchMethod);
       setCurrentText(method);
-
     }
+    // eslint-disable-next-line no-unused-vars
   }, [selectedQuery]);
 
   useEffect(() => {
     if (!showAddQueryDialog) {
       getData();
     }
+    // eslint-disable-next-line no-unused-vars
   }, [showAddQueryDialog])
 
 
@@ -314,9 +314,9 @@ export default function Query({ pageOptions }) {
               sx={{
                 display: 'flex',
                 flexGrow: 1,
-                height: '100px',
+                height: '85px',
                 width: '100%',
-                marginTop: 1
+                marginTop: 1,
               }}
             >
               <TextField
@@ -378,7 +378,7 @@ export default function Query({ pageOptions }) {
               sx={{
                 display: 'flex',
                 flexGrow: 1,
-                height: 'calc(100% - 200px)',
+                height: 'calc(100%)',
                 width: '100%',
                 marginBottom: 2,
               }}
@@ -391,7 +391,6 @@ export default function Query({ pageOptions }) {
                 locale={locale}
                 height={'100%'}
                 width={'100%'}
-                fontSize={50}
                 waitAfterKeyPress={3000}
                 style={{
                   body: {
@@ -480,50 +479,7 @@ export default function Query({ pageOptions }) {
                 display: 'flex',
                 flexDirection: 'row',
                 width: '100%',
-                height: '80px',
-                overflow: 'hidden',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-
-              <Tooltip title={t('json_view')}>
-                <span>
-                  <IconButton
-                    onClick={() => setResultView('json')}
-                    disabled={resultView === 'json'}
-                  >
-                    <DataObjectRoundedIcon />
-                  </IconButton>
-                </span>
-              </Tooltip>
-              <Tooltip title={t('csv_view')}>
-                <span>
-                  <IconButton
-                    onClick={() => setResultView('csv')}
-                    disabled={resultView === 'csv'}
-                  >
-                    <AttachFileRoundedIcon />
-                  </IconButton>
-                </span>
-              </Tooltip>
-              <Tooltip title={t('table_view')}>
-                <span>
-                  <IconButton
-                    onClick={() => setResultView('table')}
-                    disabled={resultView === 'table'}
-                  >
-                    <BackupTableRoundedIcon />
-                  </IconButton>
-                </span>
-              </Tooltip>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                width: '100%',
-                height: 'calc(100% - 80px)',
+                height: 'calc(100%)',
                 overflow: 'auto',
               }}
             >
@@ -536,22 +492,13 @@ export default function Query({ pageOptions }) {
               }
               {
                 resultView === 'json' &&
-                <JSONInput
-                  id='a_unique_i'
-                  placeholder={jsonData}
-                  // colors={darktheme}
-                  locale={locale}
+                <JsonView
+                  src={jsonData}
                   height={'100%'}
                   width={'100%'}
-                  fontSize={50}
-                  waitAfterKeyPress={3000}
-                  style={{
-                    body: {
-                      fontSize: '20px',
-                    }
-                  }}
-                  onChange={handleTextChange}
+
                 />
+
               }
             </Box>
           </Box>
