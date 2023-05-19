@@ -27,7 +27,6 @@ import { setNotificationBar } from '../../store/slices/app';
 // Third-party
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
-import { copyToClipboard } from 'sdk-fe-eyeflow';
 import API from '../../api';
 
 export default function AddQueryDialog({ open, setOpen, pageOptions, existingQueries }) {
@@ -86,14 +85,14 @@ export default function AddQueryDialog({ open, setOpen, pageOptions, existingQue
     }
     else {
       setAddingLoading(false);
-    }
-    console.log({ collectionName, searchMethod, queryName, searchMethodFormat });
+    };
   }
 
   useEffect(() => {
     if (queryName) {
       setQueryNameAlreadyExists(existingQueries?.includes(queryName));
     }
+    // eslint-disable-next-line no-unused-vars
   }, [queryName])
 
 

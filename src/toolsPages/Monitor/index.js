@@ -10,7 +10,6 @@ import ImageDialog from '../../components/ImageDialog';
 import GetImagesList from '../utils/Hooks/GetImagesList';
 
 // Third-party
-import { useTranslation } from "react-i18next";
 
 const style = {
   mainBox: Object.assign({}, window.app_config.style.box, {
@@ -23,28 +22,10 @@ const style = {
   }),
 };
 
-const GRID_SIZES = {
-  1: 12,
-  2: 7,
-  3: 6,
-  4: 6,
-  5: 4,
-  6: 4,
-}
-
-const IMAGE_SIZES = {
-  1: '1000px',
-  2: '800px',
-  3: '480px',
-  4: '480px',
-  5: '450px',
-  6: '450px',
-}
 
 
 export default function Monitor({ pageOptions }) {
 
-  const { t } = useTranslation();
 
 
   const [openDialog, setOpenDialog] = useState(false);
