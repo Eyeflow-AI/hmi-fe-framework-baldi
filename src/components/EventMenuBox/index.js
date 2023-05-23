@@ -1,5 +1,5 @@
 // React
-import React, { useEffect, useState, Fragment } from 'react';
+import React, { useEffect, useState, Fragment, useMemo } from 'react';
 
 
 //Design
@@ -107,12 +107,18 @@ export default function EventMenuList({
   const { t } = useTranslation();
 
   const eventsLength = events?.length ?? 0;
-  const itemMenuHeight = config?.itemHeight ?? 200;
 
-  const batchButtonBoxHeight = type === "batch" ? itemMenuHeight + 10 : 0;
-  const serialButtonBoxHeight = type === "serial" ? itemMenuHeight + 10 : 0;
+  const {itemMenuHeight, buttonBoxHeight, hasMainButton, queryFields, dateField} = useMemo(() => {
+    const itemMenuHeight = config?.itemHeight ?? 200;
+    return {
+      itemMenuHeight,
+      buttonBoxHeight: itemMenuHeight + 10,
+      hasMainButton: config?.hasMainButton ?? true,
+      queryFields: config?.queryFields ?? [],
+      dateField: config?.dateField ?? "event_time",
+    }
+  }, [config]);
 
-  const dateField = config?.dateField ?? "event_time";
 
   const startBatchIcon = config?.startBatchIcon;
   const startSerialIcon = config?.startSerialIcon;
@@ -159,12 +165,13 @@ export default function EventMenuList({
   };
 
   useEffect(() => {
-    if (type === "batch") {
-      setMenuBoxHeight(height - batchButtonBoxHeight);
-    } else if (type === "serial") {
-      setMenuBoxHeight(height - serialButtonBoxHeight);
+    if (hasMainButton) {
+      setMenuBoxHeight(height - buttonBoxHeight);
     }
-  }, [type, height, batchButtonBoxHeight, serialButtonBoxHeight])
+    else {
+      setMenuBoxHeight(height);
+    }
+  }, [height, hasMainButton, buttonBoxHeight])
 
   useEffect(() => {
     if (runningEvent?._id !== selectedEventId) {
@@ -174,8 +181,10 @@ export default function EventMenuList({
 
   return (
     <Box id="event-menu-box" width={width} sx={styleSx.mainBox}>
-      {type === "batch" && (
-        <Box height={batchButtonBoxHeight} sx={styleSx.defaultBox}>
+      {hasMainButton && (
+      <>
+      {type === "batch"  && (
+        <Box height={buttonBoxHeight} sx={styleSx.defaultBox}>
           {runningEvent
             ? (
               <EventMenuItem
@@ -188,7 +197,7 @@ export default function EventMenuList({
             )
             : (
               <ButtonBase>
-                <Box height={batchButtonBoxHeight} width={width} onClick={onClickCreateBatch} sx={styleSx.createBatchButton}>
+                <Box height={buttonBoxHeight} width={width} onClick={onClickCreateBatch} sx={styleSx.createBatchButton}>
                   <img alt="" src={startBatchIcon} style={styleSx.createBatchButtonIcon} />
                   {t("new_batch")}
                 </Box>
@@ -199,7 +208,7 @@ export default function EventMenuList({
       )}
 
       {type === "serial" && (
-        <Box height={serialButtonBoxHeight} sx={styleSx.defaultBox}>
+        <Box height={buttonBoxHeight} sx={styleSx.defaultBox}>
           {runningEvent
             ? (
               <EventMenuItem
@@ -214,14 +223,14 @@ export default function EventMenuList({
             (
               config?.trigger === 'manual' ?
                 <ButtonBase>
-                  <Box height={serialButtonBoxHeight} width={width} onClick={onClickCreateBatch} sx={styleSx.createSerialButton}>
+                  <Box height={buttonBoxHeight} width={width} onClick={onClickCreateBatch} sx={styleSx.createSerialButton}>
                     <img alt="" src={startSerialIcon} style={styleSx.createSerialButtonIcon} />
                     {t("start")}
                   </Box>
                 </ButtonBase>
                 :
                 <Box
-                  height={serialButtonBoxHeight}
+                  height={buttonBoxHeight}
                   width={width}
                   sx={styleSx.noEventBox}
                 >
@@ -233,6 +242,9 @@ export default function EventMenuList({
         </Box>
       )
       }
+      </>
+      )}
+      
       <Box id="menu-box" height={menuBoxHeight} sx={styleSx.menuBox} >
         <Box id="filter-box" sx={styleSx.filterBox} >
           <DesktopDatePicker
