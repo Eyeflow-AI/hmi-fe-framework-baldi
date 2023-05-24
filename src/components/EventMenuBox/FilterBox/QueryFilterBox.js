@@ -37,7 +37,14 @@ const components = {
       onChange={onChange}
       renderInput={(params) => <TextField {...params} />}
     />
-  )
+  ),
+  "text": ({label, value, onChange}) => (
+    <TextField
+      label={label}
+      value={value}
+      onChange={onChange}
+    />
+  ),
 }
 export default function DateFilterBox({
   queryFields,
@@ -50,20 +57,36 @@ export default function DateFilterBox({
 
   useEffect(() => {
     setInputList(queryFields.map((queryField) => {
+      let defaultValue;
+      if (queryField.type === "date") {
+        if (queryField.field === "min_event_time") {
+          defaultValue = new Date(getQueryDateString(new Date()));
+        }
+        else if (queryField.field === "max_event_time") {
+          defaultValue = new Date(getQueryDateString(new Date(), { dayTimeDelta: 1 }));
+        }
+        else {
+          defaultValue = new Date();
+        };
+      }
+      else if (queryField.type === "text") {
+        defaultValue = "";
+      }
+
       return {
         type: queryField.type,
-        label: queryField.label,
-        value: queryField.type === "date" ? new Date() : "",
+        label: queryField.locale,
+        field: queryField.field,
+        value: defaultValue,
       }
     }))
   }, [queryFields]);
 
-  // useEffect(() => { //Update query params
-  //   onChangeParams({ min_event_time: getQueryDateString(dateValue), max_event_time: getQueryDateString(dateValue, { dayTimeDelta: 1 }) });
-  //   // eslint-disable-next-line
-  // }, [dateValue]);
+  const handleChange = (index, type) => (newValue) => {
+    if (type === "text") {
+      newValue = newValue.target.value;
+    };
 
-  const handleChange = (index) => (newValue) => {
     setInputList((prevInputList) => {
       const newInputList = [...prevInputList];
       newInputList[index].value = newValue;
@@ -72,14 +95,24 @@ export default function DateFilterBox({
   };
 
   const handleSearch = () => {
-
+    let newValue = {};
+    let deleteKeys = [];
+    inputList.forEach((inputData) => {
+      if (inputData.value === "") {
+        deleteKeys.push(inputData.field);
+      }
+      else {
+        newValue[inputData.field] = inputData.value;
+      }
+    });
+    onChangeParams(newValue, deleteKeys);
   };
 
   return (
     <Box id="filter-box" sx={styleSx.filterBox} >
       {inputList.map((inputData, index) => (
         <Box key={index}>
-          {components[inputData.type]({label: t(inputData.label), value: inputData.value, onChange: handleChange(index)})}
+          {components[inputData.type]({label: t(inputData.label), value: inputData.value, onChange: handleChange(index, inputData.type)})}
         </Box>
       ))}
       <Button fullWidth variant="contained" aria-label="search" onClick={handleSearch}>

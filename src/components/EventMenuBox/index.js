@@ -4,17 +4,14 @@ import React, { useEffect, useState, useMemo } from 'react';
 
 //Design
 import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
 import ButtonBase from '@mui/material/ButtonBase';
 
 //Internal
-import getQueryDateString from '../../utils/functions/getQueryDateString';
 import EventMenuItem from './EventMenuItem';
 import EventMenuList from './EventMenuList';
 import FilterBox from './FilterBox';
 
 //Third-party
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { useTranslation } from "react-i18next";
 import { colors } from 'sdk-fe-eyeflow';
 
