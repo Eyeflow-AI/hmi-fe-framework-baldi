@@ -141,7 +141,12 @@ export default function Monitor({pageOptions}) {
           console.log("batch resumed");
           updateAll();
         })
-        .catch(console.error);
+        .catch((err) => {
+          if (err.code === ERRORS.EDGE_STATION_IS_NOT_REACHABLE) {
+            dispatch(setNotificationBar({ show: true, type: 'error', message: "edge_station_is_not_reachable" }));
+          }
+          console.error(err);
+        });
     };
   };
 
