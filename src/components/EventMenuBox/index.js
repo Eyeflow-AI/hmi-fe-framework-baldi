@@ -1,20 +1,19 @@
 // React
-import React, { useEffect, useState, Fragment, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 
 
 //Design
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import ButtonBase from '@mui/material/ButtonBase';
-import CircularProgress from '@mui/material/CircularProgress';
 
 //Internal
 import getQueryDateString from '../../utils/functions/getQueryDateString';
 import EventMenuItem from './EventMenuItem';
+import EventMenuList from './EventMenuList';
+import FilterBox from './FilterBox';
 
 //Third-party
-import { FixedSizeList as List } from 'react-window';
-import AutoSizer from 'react-virtualized-auto-sizer';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { useTranslation } from "react-i18next";
 import { colors } from 'sdk-fe-eyeflow';
@@ -70,26 +69,9 @@ const styleSx = {
     flexDirection: 'column',
   }
   ),
-  filterBox: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 80,
-    paddingLeft: 1,
-    paddingRight: 1,
-    paddingTop: 1,
-  },
-  listBox: {
-    height: '100%',
-    boxShadow: 'inset 0 2px 4px #00000040',
-    margin: 1,
-    alignItems: 'center',
-    borderRadius: window.app_config.style.box.borderRadius,
-    bgcolor: 'background.paperLighter',
-  },
 }
 
-export default function EventMenuList({
+export default function EventMenuBox({
   type,
   onClickCreateBatch,
   height,
@@ -105,8 +87,6 @@ export default function EventMenuList({
 }) {
 
   const { t } = useTranslation();
-
-  const eventsLength = events?.length ?? 0;
 
   const {itemMenuHeight, buttonBoxHeight, hasMainButton, queryFields, dateField} = useMemo(() => {
     const itemMenuHeight = config?.itemHeight ?? 200;
@@ -124,45 +104,9 @@ export default function EventMenuList({
   const startSerialIcon = config?.startSerialIcon;
   const noEventIcon = config?.noEventIcon;
 
-  const [dateValue, setDateValue] = useState(new Date());
   const [menuBoxHeight, setMenuBoxHeight] = useState(height);
 
-  useEffect(() => { //Update query params
-    onChangeParams({ min_event_time: getQueryDateString(dateValue), max_event_time: getQueryDateString(dateValue, { dayTimeDelta: 1 }) });
-    // eslint-disable-next-line
-  }, [dateValue]);
-
   const onEventClick = (eventData) => () => onChangeEvent(eventData._id);
-
-  function ItemRenderer({ index, style }) {
-
-    let eventData = events[index];
-    let eventIndex = eventData?.index ?? 0;
-    let selected = selectedEventId === eventData._id;
-    const customStyle = Object.assign(
-      { display: 'flex', justifyContent: 'center', paddingLeft: 4, paddingRight: 4, paddingTop: 2, paddingBottom: 2 },
-      style
-    );
-
-    return (
-      <div
-        key={`item-${index}`}
-        style={customStyle}
-      >
-        <EventMenuItem
-          index={eventIndex}
-          dateField={dateField}
-          eventData={eventData}
-          selected={selected}
-          onClick={onEventClick(eventData)}
-        />
-      </div>
-    )
-  };
-
-  const handleDateChange = (newValue) => {
-    setDateValue(newValue);
-  };
 
   useEffect(() => {
     if (hasMainButton) {
@@ -177,7 +121,7 @@ export default function EventMenuList({
     if (runningEvent?._id !== selectedEventId) {
       onChangeEvent(null);
     }
-  }, [dateValue])
+  }, [queryParams])
 
   return (
     <Box id="event-menu-box" width={width} sx={styleSx.mainBox}>
@@ -246,51 +190,15 @@ export default function EventMenuList({
       )}
       
       <Box id="menu-box" height={menuBoxHeight} sx={styleSx.menuBox} >
-        <Box id="filter-box" sx={styleSx.filterBox} >
-          <DesktopDatePicker
-            label={t("date")}
-            inputFormat="yyyy/MM/dd"
-            value={dateValue}
-            onChange={handleDateChange}
-            renderInput={(params) => <TextField {...params} />}
-          />
-        </Box>
-
-        <Box id="list-box" sx={styleSx.listBox}>
-          {(eventsLength === 0 && loadingData)
-            ? (
-              <Box height="100%" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-                {`${t('loading')}...`}
-                <CircularProgress />
-              </Box>
-            )
-            : (
-              <Fragment>
-                {eventsLength === 0
-                  ? (
-                    <Box height="100%" display="flex" justifyContent="center" alignItems="center">
-                      {t("no_data")}
-                    </Box>
-                  )
-                  : (
-                    <AutoSizer>
-                      {({ height, width }) => (
-                        <List
-                          height={height}
-                          width={width}
-                          itemSize={itemMenuHeight}
-                          itemCount={eventsLength}
-                        >
-                          {ItemRenderer}
-                        </List>
-                      )}
-                    </AutoSizer>
-                  )
-                }
-              </Fragment>
-            )
-          }
-        </Box>
+        <FilterBox onChangeParams={onChangeParams} queryFields={queryFields}/>
+        <EventMenuList
+          events={events}
+          selectedEventId={selectedEventId}
+          loadingData={loadingData}
+          onChangeEvent={onChangeEvent}
+          dateField={dateField}
+          itemMenuHeight={itemMenuHeight}
+        />
       </Box>
     </Box>
   );
