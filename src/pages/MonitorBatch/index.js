@@ -82,18 +82,15 @@ export default function Monitor({pageOptions}) {
     // eslint-disable-next-line
   }, [selectedBatch, batchList, runningBatch, stationId]);
 
-  useEffect(() => {
-    if (queryParams && queryParams.station !== stationId) {
-      setQueryParams((params) => Object.assign({}, params, { station: stationId }));
-    };
-  }, [stationId, queryParams]);
-
-  const onChangeParams = (newValue) => {
+  const onChangeParams = (newValue, deleteKeys=[]) => {
     setQueryParams((params) => {
       let newParams = Boolean(params) ? { ...params } : {};
       Object.assign(newParams, newValue);
       if (!newParams.hasOwnProperty("station")) {
         newParams["station"] = stationId;
+      };
+      for (let key of deleteKeys) {
+        delete newParams[key];
       };
       return newParams;
     });
@@ -141,7 +138,12 @@ export default function Monitor({pageOptions}) {
           console.log("batch resumed");
           updateAll();
         })
-        .catch(console.error);
+        .catch((err) => {
+          if (err.code === ERRORS.EDGE_STATION_IS_NOT_REACHABLE) {
+            dispatch(setNotificationBar({ show: true, type: 'error', message: "edge_station_is_not_reachable" }));
+          }
+          console.error(err);
+        });
     };
   };
 
