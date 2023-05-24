@@ -171,7 +171,12 @@ export default function Query({ pageOptions }) {
       let searchMethod = queryData[selectedQuery]?.search_method ?? '';
       let collectioName = queryData[selectedQuery]?.collection_name ?? '';
       let method = {};
-      if (searchMethod === 'aggregate') {
+      if (Object.keys(queryData[selectedQuery]).includes('restrictionsSet')) {
+        method = {
+          ...queryData[selectedQuery]?.restrictionsSet ?? {},
+        }
+      }
+      else if (searchMethod === 'aggregate') {
         method = {
           pipeline: queryData[selectedQuery]?.pipeline ?? [],
         }
