@@ -9,9 +9,50 @@ import Typography from "@mui/material/Typography";
 
 // Third-party
 import { useTranslation } from "react-i18next";
-import { ResponsiveBar } from '@nivo/bar'
+import { ResponsivePie } from '@nivo/pie';
+import { colors } from 'sdk-fe-eyeflow';
 
 
+const responsivePieTheme = {
+  tooltip: {
+    container: {
+      background: colors.paper.blue.dark
+    }
+  },
+  labels: {
+    text: {
+      fontSize: 21,
+      fill: '#ffffff',
+      textShadow: "1px 1px 2px #353535"
+    }
+  },
+};
+
+const responsivePieLegends = [
+  {
+    anchor: 'left',
+    direction: 'column',
+    justify: false,
+    // translateY: 56,
+    translateX: -80,
+    itemsSpacing: 10,
+    itemWidth: 150,
+    itemHeight: 18,
+    itemTextColor: '#999',
+    itemDirection: 'left-to-right',
+    itemOpacity: 1,
+    symbolSize: 18,
+    symbolShape: 'circle',
+    // effects: [
+    //   {
+    //     on: 'hover',
+    //     style: {
+    //       itemTextColor: '#000'
+    //     }
+    //   }
+    // ]
+  }
+];
 
 export default function Bar({ chart }) {
 
@@ -48,7 +89,9 @@ export default function Bar({ chart }) {
       data.forEach((item) => {
         let _item = {
           id: item._id,
+          label: item._id,
           [item._id]: item.value,
+          value: item.value,
         }
         if (chart?.chartInfo?.colors_results?.length > 0 && chart?.chartInfo?.colors_results?.[item._id]) {
           _item.color = chart.chartInfo.colors_results[item._id]
@@ -62,6 +105,8 @@ export default function Bar({ chart }) {
     }
     // setData(chart.result)
   }, [chart])
+
+  console.log({ chart, info })
 
   return (
     <Box
@@ -95,31 +140,14 @@ export default function Bar({ chart }) {
               flexGrow: 1,
             }}
           >
-            <ResponsiveBar
+            <ResponsivePie
               data={info}
-              keys={keys}
-              indexBy="id"
-              margin={{ top: 100, right: 130, bottom: 100, left: 60 }}
-              padding={0.3}
-              valueScale={{ type: 'linear' }}
-              indexScale={{ type: 'band', round: true }}
-              colors={queryHasColors ? (i) => { console.log(i); return i.data.color } : { scheme: 'nivo' }}
-              axisTop={null}
-              axisRight={null}
-              labelSkipWidth={12}
-              labelSkipHeight={12}
-              labelTextColor={{
-                from: 'color',
-                modifiers: [
-                  [
-                    'darker',
-                    1.6
-                  ]
-                ]
-              }}
-              role="application"
-              ariaLabel={t(chart.chartInfo.localeId)}
-              barAriaLabel={function (e) { return e.id + ": " + e[e.id] }}
+              arcLinkLabelsStraightLength={0}
+              arcLabelsSkipAngle={10}
+              arcLinkLabelsSkipAngle={10}
+              margin={{ top: 70, right: 40, bottom: 70, left: 100 }}
+              theme={responsivePieTheme}
+              legends={responsivePieLegends}
             />
           </Box>
 
