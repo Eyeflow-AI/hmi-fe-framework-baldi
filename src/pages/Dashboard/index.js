@@ -13,9 +13,11 @@ import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
 // Third-party
 import { useTranslation } from "react-i18next";
 import Bar from '../../components/Charts/Bar';
+import Pie from '../../components/Charts/Pie';
 
 const charts = {
   bar: (chart) => <Bar chart={chart} />,
+  pie: (chart) => <Pie chart={chart} />,
 }
 
 
@@ -65,6 +67,7 @@ export default function Dashboard({ pageOptions }) {
         console.error(err);
       }
     }
+    console.log({ chartsToBuild })
     setBuiltChats(chartsToBuild);
   };
 
