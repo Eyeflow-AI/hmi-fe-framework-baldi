@@ -31,8 +31,9 @@ import ExpectedFormatsDialog from './expectedFormatsDialog';
 import AddQueryDialog from './addQueryDialog';
 import { setNotificationBar } from '../../store/slices/app';
 
+
+
 // Third-party
-import ReactJSONViewer from 'react-json-viewer';
 import { useTranslation } from "react-i18next";
 import JSONInput from 'react-json-editor-ajrm';
 import locale from 'react-json-editor-ajrm/locale/en';
@@ -64,9 +65,7 @@ export default function Query({ pageOptions }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const [view, setView] = useState('query_view');
   // eslint-disable-next-line no-unused-vars
-  const [resultView, setResultView] = useState('json');
   const [queryData, setQueryData] = useState(null);
   const [selectedQuery, setSelectedQuery] = useState('');
   const [searchMethod, setSearchMethod] = useState('');
@@ -223,39 +222,6 @@ export default function Query({ pageOptions }) {
               sx={{
                 display: 'flex',
                 flexDirection: 'row',
-                width: '95%',
-                height: '100px',
-                overflow: 'hidden',
-                justifyContent: 'center',
-                alignItems: 'center',
-                flexDirection: 'column',
-                gap: 1,
-                paddingLeft: 1,
-                paddingRight: 1,
-              }}
-            >
-              <Button
-                variant="contained"
-                fullWidth
-                onClick={() => setView('query_view')}
-                disabled={view === 'query_view'}
-              >
-                {t('query_view')}
-              </Button>
-              <Button
-                variant="contained"
-                fullWidth
-                onClick={() => setView('collection_view')}
-                // disabled={view === 'collection_view'}
-                disabled={true}
-              >
-                {t('collection_view')}
-              </Button>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
                 width: '100%',
                 height: '30px',
                 overflow: 'hidden',
@@ -368,16 +334,6 @@ export default function Query({ pageOptions }) {
                   }
                 </Select>
               </FormControl>
-              {/* chart:(
-              type
-              title
-              localeId
-              x_axis
-              y_axis
-              width
-              height
-              colors_result
-              ) */}
             </Box>
             <Box
               sx={{
@@ -488,23 +444,12 @@ export default function Query({ pageOptions }) {
                 overflow: 'auto',
               }}
             >
+              <JsonView
+                src={jsonData}
+                height={'100%'}
+                width={'100%'}
 
-              {
-                resultView === 'table' &&
-                <ReactJSONViewer
-                  json={jsonData.data}
-                />
-              }
-              {
-                resultView === 'json' &&
-                <JsonView
-                  src={jsonData}
-                  height={'100%'}
-                  width={'100%'}
-
-                />
-
-              }
+              />
             </Box>
           </Box>
 

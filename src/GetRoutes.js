@@ -16,6 +16,8 @@ const homeURL = "/app/:stationSlugLabel/home";
 
 const Query = lazy(() => import("./toolsPages/Query"));
 const Monitor = lazy(() => import("./toolsPages/Monitor"));
+const ChecklistConnector = lazy(() => import("./toolsPages/ChecklistConnector"));
+const AppParameters = lazy(() => import("./toolsPages/AppParameters"));
 
 function NotFound() {
   return (
@@ -35,6 +37,8 @@ const components = {
 
   Query: (pageOptions) => <Query pageOptions={pageOptions} />,
   Monitor: (pageOptions) => <Monitor pageOptions={pageOptions} />,
+  ChecklistConnector: (pageOptions) => <ChecklistConnector pageOptions={pageOptions} />,
+  AppParameters: (pageOptions) => <AppParameters pageOptions={pageOptions} />
 };
 
 
