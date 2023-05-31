@@ -55,3 +55,5 @@
 | Images Analyser  | ![tools images analyser](imagesDocumentation/tools_imagesAnalyser.png "tools images analyser")  |  
 | Monitor  | ![tools monitor](imagesDocumentation/tools_monitor.png "tools monitor")  |  
 | Object Builder  | ![tools object builder](imagesDocumentation/tools_objectBuilder.png "tools object builder")  |  
+| CheckList Connector  | ![tools checklist connector](imagesDocumentation/tools_checklistConnector.png "tools checklist connector")  |  
+| App Parameters  | ![tools app parameters](imagesDocumentation/tools_appParameters.png "tools app parameters")  |  

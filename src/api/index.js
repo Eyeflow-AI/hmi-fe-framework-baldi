@@ -93,6 +93,8 @@ const API = {
     accessControlData: (setLoading) => request(instance.get(`auth/access-control-data`), setLoading),
     userList: (setLoading) => request(instance.get(`auth/users-list`), setLoading),
     alert: ({ stationId }, setLoading) => request(instance.get(`alerts/${stationId}`), setLoading),
+
+    appParameters: (setLoading) => request(instance.get(`app/parameters`), setLoading),
   },
   put: {
     batchPause: ({ stationId, batchId }, setLoading) => request(instance.put(`batch/${stationId}/${batchId}/pause`), setLoading),

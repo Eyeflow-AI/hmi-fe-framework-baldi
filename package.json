@@ -24,7 +24,6 @@
     "react-i18next": "^12.1.4",
     "react-json-editor-ajrm": "^2.5.14",
     "react-json-view": "latest",
-    "react-json-viewer": "^3.0.1",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.9.0",
     "react-scripts": "5.0.1",
