@@ -94,7 +94,10 @@ const API = {
     userList: (setLoading) => request(instance.get(`auth/users-list`), setLoading),
     alert: ({ stationId }, setLoading) => request(instance.get(`alerts/${stationId}`), setLoading),
 
-    appParameters: (setLoading) => request(instance.get(`app/parameters`), setLoading),
+    appParameters: (setLoading) => request(instance.get(`internal/parameters`), setLoading),
+    checklistReferences: (setLoading) => request(instance.get(`checklist/references`), setLoading),
+    checklistRegions: (id, setLoading) => request(instance.get(`checklist/regions/${id}`), setLoading),
+    checklistSchemas: (setLoading) => request(instance.get(`checklist/schemas`), setLoading),
   },
   put: {
     batchPause: ({ stationId, batchId }, setLoading) => request(instance.put(`batch/${stationId}/${batchId}/pause`), setLoading),
@@ -111,6 +114,8 @@ const API = {
     role: ({ roleName, description, types, oldRoleName }, setLoading) => request(instance.put(`auth/role`, { roleName, description, types, oldRoleName }), setLoading),
 
     saveQuery: ({ collectionName, searchMethod, queryName, query }, setLoading) => request(instance.put(`queries/save-query`, { collectionName, searchMethod, queryName, query }), setLoading),
+
+    checklistReference: ({ _id, reference }, setLoading) => request(instance.put(`checklist/reference`, { _id, reference }), setLoading),
 
   },
   delete: {
