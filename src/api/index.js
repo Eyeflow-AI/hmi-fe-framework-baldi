@@ -117,6 +117,8 @@ const API = {
 
     checklistReference: ({ _id, reference }, setLoading) => request(instance.put(`checklist/reference`, { _id, reference }), setLoading),
 
+    referenceToSchema: ({ referenceName, referenceType }, setLoading) => request(instance.put(`checklist/reference-to-schema`, { referenceName, referenceType }), setLoading),
+
   },
   delete: {
     user: ({ username }, setLoading) => request(instance.delete(`auth/user`, { data: { username } }), setLoading),
