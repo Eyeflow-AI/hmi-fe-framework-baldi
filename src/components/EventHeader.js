@@ -1,5 +1,5 @@
 // React
-import React, {useMemo} from 'react';
+import React, { useMemo } from 'react';
 
 
 import Box from '@mui/material/Box';
@@ -29,7 +29,7 @@ const mainBoxSx = Object.assign(
 
 const styleSx = {
   mainBox: mainBoxSx,
-  mainBoxDisabled: Object.assign({}, mainBoxSx, {opacity: 0.8}),
+  mainBoxDisabled: Object.assign({}, mainBoxSx, { opacity: 0.8 }),
   itemBox: {
     display: 'flex',
     flexDirection: 'column',
@@ -43,13 +43,13 @@ const styleSx = {
   }
 };
 
-export default function EventHeader({data, config, disabled}) {
+export default function EventHeader({ data, config, disabled }) {
 
   const { t } = useTranslation();
 
-  const {fields} = useMemo(() => {
+  const { fields } = useMemo(() => {
     return {
-      fields: config.fields.map(({label, field, type, defaultValue}) => {
+      fields: config.fields.map(({ label, field, type, defaultValue }) => {
         let thisData = defaultValue ?? "";
         let value = accessObjValueWithMongoNotation(data, field);
         if (value) {
@@ -61,14 +61,14 @@ export default function EventHeader({data, config, disabled}) {
           };
         };
 
-        return {label, field, data: thisData};
+        return { label: t(label), field, data: thisData };
       })
     };
   }, [data, config]);
 
   return (
     <Box width={config.width} height={config.height} sx={disabled ? styleSx.mainBoxDisabled : styleSx.mainBox}>
-      {Boolean(data) && fields.map(({data, label}, index) => (
+      {Boolean(data) && fields.map(({ data, label }, index) => (
         <LabelBox key={index} title={t(label)} label={data} />
       ))}
     </Box>

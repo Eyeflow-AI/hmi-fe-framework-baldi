@@ -141,7 +141,6 @@ export default function Monitor({ pageOptions }) {
     // eslint-disable-next-line
   }, [serialList]);
 
-
   return (
     <PageWrapper>
       {({ width, height }) =>
