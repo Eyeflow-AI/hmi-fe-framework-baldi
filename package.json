@@ -31,7 +31,7 @@
     "react-window": "^1.8.8",
     "react18-json-view": "^0.0.8",
     "redux-persist": "^6.0.0",
-    "sdk-fe-eyeflow": "^0.0.30",
+    "sdk-fe-eyeflow": "^0.0.31",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -57,5 +57,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "overrides": {
+    "react-json-view": {
+      "react": "18.2.0",
+      "react-dom": "18.2.0"
+    }
   }
 }
