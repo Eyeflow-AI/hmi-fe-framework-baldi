@@ -35,7 +35,7 @@ export default function ControlledOpenSelect({ title, disabled, value, setValue,
 				{/* <MenuItem value="">
 					<em>None</em>
 				</MenuItem> */}
-				{choices.map((el, index) => (
+				{choices && choices.map((el, index) => (
 					<MenuItem key={index} value={el}>{el}</MenuItem>
 				))}
 			</Select>
