@@ -4,12 +4,13 @@ import React, {useEffect, useState, useMemo, useCallback} from 'react';
 // Design
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import Select from '../../components/Select'
+import Typography from '@mui/material/Typography';
 
 // Internal
 import PageWrapper from '../../components/PageWrapper';
 import API from '../../api';
 import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
+import Select from '../../components/Select'
 
 // Third-party
 import { FixedSizeList } from "react-window";
@@ -24,16 +25,21 @@ const style = {
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 1
+    gap: 1,
   },
   menuBox: Object.assign({}, window.app_config.style.box, {
     bgcolor: 'background.paper',
     height: '100%',
-    width: 300,
     gap: 1,
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    p: 1,
   }),
+  listBox: {
+    flexGrow: 1,
+    boxShadow: `inset 0 0 4px black`,
+    borderRadius: 1
+  },
   imageBox: Object.assign({}, window.app_config.style.box, {
     bgcolor: 'background.paper',
     height: '100%',
@@ -76,6 +82,7 @@ function getImageDataList (filesList) {
     imageData = null;
   };
 
+  newFilesList.sort((a, b) => b.birthtime - a.birthtime);
   return newFilesList;
 };
 
@@ -88,9 +95,9 @@ const getButtonStyle = ({ selected, width, height }) => {
     fontSize: 18,
     cursor: 'pointer',
     color: 'white',
-    width: selected ? width - 30 : width - 40,
+    width: selected ? width : width - 10,
     padding: 1,
-    background: selected ? colors.darkGray : `${colors.darkGray}40`,
+    background: selected ? colors.blue : `${colors.blue}60`,
     boxShadow: (theme) => selected ? `inset 0 0 0 2px ${colors.darkGray}, ${theme.shadows[5]}` : theme.shadows[2],
     "&:hover": {
       boxShadow: (theme) => selected ? `inset 0 0 0 2px ${colors.darkGray}, ${theme.shadows[5]}` : theme.shadows[5],
@@ -106,11 +113,12 @@ export default function ImageAnalyser({ pageOptions }) {
 
   const { _id: stationId } = GetSelectedStation();
 
-  const {dirPath, itemHeight, itemWidth} = useMemo(() => {
+  const {dirPath, itemHeight, itemWidth, menuWidth} = useMemo(() => {
     return {
       dirPath: pageOptions?.options?.dirPath,
       itemHeight: 150,
-      itemWidth: 280,
+      itemWidth: 290,
+      menuWidth: 310,
     };
   }, [pageOptions]);
 
@@ -152,6 +160,8 @@ export default function ImageAnalyser({ pageOptions }) {
     setSelectedId('');
     setIdList([]);
     setImageList([]);
+    setSelectedImage('');
+
     if (selectedDay) {
       let params = {
         dirPath: `${dirPath}/${selectedDay}`,
@@ -179,6 +189,8 @@ export default function ImageAnalyser({ pageOptions }) {
   const onSelectId = useCallback((selectedId) => {
     setSelectedId(selectedId);
     setImageList([]);
+    setSelectedImage('');
+
     if (selectedId) {
       let params = {
         dirPath: `${dirPath}/${selectedDay}/${selectedId}`,
@@ -196,16 +208,34 @@ export default function ImageAnalyser({ pageOptions }) {
   }, [dirPath, selectedDay, stationId]);
 
   const onSelectImage = (imageData) => () => {
-    console.log(imageData);
-    setSelectedImage(imageData);
+    if (imageData.hasJson) {
+      let jsonFileURL = imageData.jsonFileData.fileURL;
+      fetch(jsonFileURL)
+        .then((response) => response.json())
+        .then((jsonData) => {
+          imageData.jsonData = jsonData;
+          console.log(imageData);
+          setSelectedImage(imageData);
+        })
+        .catch((err) => {
+          console.error(err);
+          console.log(imageData);
+          setSelectedImage(imageData);
+        })
+    }
+    else {
+      console.log(imageData);
+      setSelectedImage(imageData);
+    }
   };
 
   function itemRenderer({ index, style }) {
     const imageData = imageList[index];
-    const selected = imageData?.id === selectedImage?.id;
+    const selected = imageData?.name === selectedImage?.name;
+    let errMessage = imageData.hasJson ? '' : 'json_file_missing';
 
     const customStyle = Object.assign(
-      { display: 'flex', justifyContent: 'center' },
+      { display: 'flex', justifyContent: 'center', alignItems: 'center' },
       style
     );
 
@@ -228,7 +258,20 @@ export default function ImageAnalyser({ pageOptions }) {
             justifyContent='center'
           >
             <Grid item>
-              {`Has json: ${imageData.hasJson}`}
+              <Typography>
+                {index + 1}
+              </Typography>
+              <Typography variant='body2'>
+                {imageData.name}
+              </Typography>
+              <Typography variant='body2'>
+                {`${imageData.birthtime}`} <br />
+              </Typography>
+              {errMessage && (
+              <Typography color='error' variant='body2'>
+                {errMessage}
+              </Typography>
+              )}
             </Grid>
           </Grid>
         </Box>
@@ -238,13 +281,13 @@ export default function ImageAnalyser({ pageOptions }) {
 
   return (
     <PageWrapper>
-      {(width, height) =>
+      {({ width, height }) =>
         <Box
           width={width}
           height={height}
           sx={style.mainBox}
         >
-          <Box sx={style.menuBox}>
+          <Box width={menuWidth} sx={style.menuBox}>
             <Select
               choices={dayList}
               // title
@@ -259,7 +302,7 @@ export default function ImageAnalyser({ pageOptions }) {
               value={selectedId}
               setValue={onSelectId}
             />
-            <Box flexGrow={1}>
+            <Box sx={style.listBox}>
               <AutoSizer>
                 {({ height, width }) => (
                   <FixedSizeList
@@ -281,8 +324,9 @@ export default function ImageAnalyser({ pageOptions }) {
                 alt=""
                 style={{
                   objectFit: 'contain',
-                  height: 'auto',
-                  width: 200,
+                  maxHeight: '100%',
+                  width: 'auto',
+                  maxWidth: width - menuWidth - 10,
                 }}
               />
             )}

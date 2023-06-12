@@ -204,7 +204,7 @@ export default function Query({ pageOptions }) {
 
   return (
     <PageWrapper>
-      {(width, height) =>
+      {({ width, height }) =>
         <Box
           width={width}
           height={height}
