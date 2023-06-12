@@ -11,6 +11,7 @@ import PageWrapper from '../../components/PageWrapper';
 import API from '../../api';
 import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
 import Select from '../../components/Select'
+import RegionBox from './RegionBox';
 
 // Third-party
 import { FixedSizeList } from "react-window";
@@ -45,6 +46,18 @@ const style = {
     height: '100%',
     flexGrow: 1
   }),
+  imgWrapper: {
+    position: 'relative',
+    display: 'inline-block',
+  },
+  imgDrawer: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    height: '100%',
+    width: '100%',
+    // border: '1px solid yellow'
+  }
 };
 
 function getImageDataList (filesList) {
@@ -95,7 +108,7 @@ const getButtonStyle = ({ selected, width, height }) => {
     fontSize: 18,
     cursor: 'pointer',
     color: 'white',
-    width: selected ? width : width - 10,
+    width,
     padding: 1,
     background: selected ? colors.blue : `${colors.blue}60`,
     boxShadow: (theme) => selected ? `inset 0 0 0 2px ${colors.darkGray}, ${theme.shadows[5]}` : theme.shadows[2],
@@ -122,13 +135,15 @@ export default function ImageAnalyser({ pageOptions }) {
     };
   }, [pageOptions]);
 
+  // eslint-disable-next-line no-unused-vars
   const [loadingFilesList, setLoadingFilesList] = useState(false);
   const [dayList, setDayList] = useState([]);
   const [selectedDay, setSelectedDay] = useState('');
   const [idList, setIdList] = useState([]);
   const [selectedId, setSelectedId] = useState('');
   const [imageList, setImageList] = useState([]);
-  const [selectedImage, setSelectedImage] = useState('');
+  const [selectedImageData, setSelectedImageData] = useState(null);
+  const [imageURL, setSelectedImageURL] = useState('');
 
   useEffect(() => {
     if (!dirPath) {
@@ -155,12 +170,22 @@ export default function ImageAnalyser({ pageOptions }) {
     }
   }, [dirPath, stationId]);
 
+  useEffect(() => {
+    if (selectedImageData) {
+      console.log({selectedImageData});
+      setSelectedImageURL(selectedImageData.fileURL);
+    }
+    else {
+      setSelectedImageURL('');
+    }
+  }, [selectedImageData]);
+
   const onSelectDay = useCallback((selectedDay) => {
     setSelectedDay(selectedDay);
     setSelectedId('');
     setIdList([]);
     setImageList([]);
-    setSelectedImage('');
+    setSelectedImageData(null);
 
     if (selectedDay) {
       let params = {
@@ -189,7 +214,7 @@ export default function ImageAnalyser({ pageOptions }) {
   const onSelectId = useCallback((selectedId) => {
     setSelectedId(selectedId);
     setImageList([]);
-    setSelectedImage('');
+    setSelectedImageData(null);
 
     if (selectedId) {
       let params = {
@@ -214,24 +239,21 @@ export default function ImageAnalyser({ pageOptions }) {
         .then((response) => response.json())
         .then((jsonData) => {
           imageData.jsonData = jsonData;
-          console.log(imageData);
-          setSelectedImage(imageData);
+          setSelectedImageData(imageData);
         })
         .catch((err) => {
           console.error(err);
-          console.log(imageData);
-          setSelectedImage(imageData);
+          setSelectedImageData(imageData);
         })
     }
     else {
-      console.log(imageData);
-      setSelectedImage(imageData);
+      setSelectedImageData(imageData);
     }
   };
 
   function itemRenderer({ index, style }) {
     const imageData = imageList[index];
-    const selected = imageData?.name === selectedImage?.name;
+    const selected = imageData?.name === selectedImageData?.name;
     let errMessage = imageData.hasJson ? '' : 'json_file_missing';
 
     const customStyle = Object.assign(
@@ -318,17 +340,27 @@ export default function ImageAnalyser({ pageOptions }) {
             </Box>
           </Box>
           <Box sx={style.imageBox}>
-            {selectedImage && (
-              <img
-                src={selectedImage.fileURL}
-                alt=""
-                style={{
-                  objectFit: 'contain',
-                  maxHeight: '100%',
-                  width: 'auto',
-                  maxWidth: width - menuWidth - 10,
-                }}
-              />
+            {selectedImageData && imageURL && (
+              <div id="img-wrapper" style={style.imgWrapper}>
+                <img
+                  id="img"
+                  src={imageURL}
+                  alt=""
+                  style={{
+                    objectFit: 'contain',
+                    maxHeight: height,
+                    width: 'auto',
+                    maxWidth: width - menuWidth - 10,
+                  }}
+                />
+                {selectedImageData.hasJson &&
+                <div id="img-drawer" style={style.imgDrawer}>
+                  {selectedImageData.jsonData.map((data, index) => (
+                    <RegionBox key={index} data={data}/>
+                  ))}
+                </div>
+                }
+              </div>
             )}
           </Box>
         </Box>
