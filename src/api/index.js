@@ -98,6 +98,8 @@ const API = {
     checklistReferences: (setLoading) => request(instance.get(`checklist/references`), setLoading),
     checklistRegions: (id, setLoading) => request(instance.get(`checklist/regions/${id}`), setLoading),
     checklistSchemas: (setLoading) => request(instance.get(`checklist/schemas`), setLoading),
+
+    filesList: ({params, stationId}, setLoading) => request(instance.get(`files/${stationId}/list`, { params }), setLoading),
   },
   put: {
     batchPause: ({ stationId, batchId }, setLoading) => request(instance.put(`batch/${stationId}/${batchId}/pause`), setLoading),

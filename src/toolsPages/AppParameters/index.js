@@ -47,7 +47,7 @@ export default function ChecklistConnector({ pageOptions }) {
 
   return (
     <PageWrapper>
-      {(width, height) =>
+      {({ width, height }) =>
         <Box
           width={width}
           height={height}
