@@ -1,5 +1,5 @@
 // React
-import React, {useEffect, useState, useMemo, useCallback} from 'react';
+import React, {useEffect, useState, useMemo, useCallback, useRef} from 'react';
 
 // Design
 import Box from '@mui/material/Box';
@@ -11,12 +11,16 @@ import PageWrapper from '../../components/PageWrapper';
 import API from '../../api';
 import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
 import Select from '../../components/Select'
+import AppBar from './AppBar';
 import RegionBox from './RegionBox';
 
 // Third-party
 import { FixedSizeList } from "react-window";
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { colors } from 'sdk-fe-eyeflow';
+import { TransformWrapper, TransformComponent } from "@pronestor/react-zoom-pan-pinch";
+
+const appBarHeight = 64;
 
 const style = {
   mainBox: {
@@ -41,12 +45,16 @@ const style = {
     boxShadow: `inset 0 0 4px black`,
     borderRadius: 1
   },
-  imageBox: Object.assign({}, window.app_config.style.box, {
-    bgcolor: 'background.paper',
+  imageBox: {
     height: '100%',
-    flexGrow: 1
-  }),
+    flexGrow: 1,
+    gap: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
   imgWrapper: {
+    boxShadow: 1,
     position: 'relative',
     display: 'inline-block',
   },
@@ -95,7 +103,10 @@ function getImageDataList (filesList) {
     imageData = null;
   };
 
-  newFilesList.sort((a, b) => b.birthtime - a.birthtime);
+  newFilesList.sort((a, b) => b.birthtime - a.birthtime).map((fileData, index) => {
+    fileData.index = index;
+    return fileData;
+  });
   return newFilesList;
 };
 
@@ -126,6 +137,8 @@ export default function ImageAnalyser({ pageOptions }) {
 
   const { _id: stationId } = GetSelectedStation();
 
+  const listRef = useRef();
+
   const {dirPath, itemHeight, itemWidth, menuWidth} = useMemo(() => {
     return {
       dirPath: pageOptions?.options?.dirPath,
@@ -144,6 +157,50 @@ export default function ImageAnalyser({ pageOptions }) {
   const [imageList, setImageList] = useState([]);
   const [selectedImageData, setSelectedImageData] = useState(null);
   const [imageURL, setSelectedImageURL] = useState('');
+  const [showDetections, setShowDetections] = useState(true);
+
+  const onSelectImage = useCallback((imageData) => () => {
+    if (imageData.hasJson) {
+      let jsonFileURL = imageData.jsonFileData.fileURL;
+      fetch(jsonFileURL)
+        .then((response) => response.json())
+        .then((jsonData) => {
+          imageData.jsonData = jsonData;
+          listRef.current.scrollToItem(imageData.index, 'auto');
+          setSelectedImageData(imageData);
+        })
+        .catch((err) => {
+          console.error(err);
+          listRef.current.scrollToItem(imageData.index, 'auto');
+          setSelectedImageData(imageData);
+        })
+    }
+    else {
+      listRef.current.scrollToItem(imageData.index, 'auto');
+      setSelectedImageData(imageData);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Arrow key event listener
+    const handleKeyDown = (event) => {
+      if (['ArrowLeft', 'ArrowUp'].includes(event.key)) {
+        if (selectedImageData?.index > 0) {
+          onSelectImage(imageList[selectedImageData.index - 1])();
+        }
+      }
+      else if (['ArrowRight', 'ArrowDown'].includes(event.key)) {
+        if (selectedImageData?.index < imageList.length - 1) {
+          onSelectImage(imageList[selectedImageData.index + 1])();
+        }
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      console.log('remove event listener');
+      window.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [imageList, selectedImageData, onSelectImage]);
 
   useEffect(() => {
     if (!dirPath) {
@@ -232,25 +289,6 @@ export default function ImageAnalyser({ pageOptions }) {
     };
   }, [dirPath, selectedDay, stationId]);
 
-  const onSelectImage = (imageData) => () => {
-    if (imageData.hasJson) {
-      let jsonFileURL = imageData.jsonFileData.fileURL;
-      fetch(jsonFileURL)
-        .then((response) => response.json())
-        .then((jsonData) => {
-          imageData.jsonData = jsonData;
-          setSelectedImageData(imageData);
-        })
-        .catch((err) => {
-          console.error(err);
-          setSelectedImageData(imageData);
-        })
-    }
-    else {
-      setSelectedImageData(imageData);
-    }
-  };
-
   function itemRenderer({ index, style }) {
     const imageData = imageList[index];
     const selected = imageData?.name === selectedImageData?.name;
@@ -281,7 +319,7 @@ export default function ImageAnalyser({ pageOptions }) {
           >
             <Grid item>
               <Typography>
-                {index + 1}
+                {imageData.index + 1}
               </Typography>
               <Typography variant='body2'>
                 {imageData.name}
@@ -300,6 +338,30 @@ export default function ImageAnalyser({ pageOptions }) {
       </div>
     )
   };
+
+  const onClickLeft = useCallback(() => {
+    if (selectedImageData) {
+      let index = selectedImageData.index;
+      if (index > 0) {
+        let imageData = imageList[index - 1];
+        onSelectImage(imageData)();
+      }
+    }
+  }, [imageList, onSelectImage, selectedImageData]);
+  const onClickLeftDisabled = !selectedImageData || selectedImageData.index <= 0;
+
+  const onClickRight = useCallback(() => {
+    if (selectedImageData) {
+      let index = selectedImageData.index;
+      if (index < imageList.length - 1) {
+        let imageData = imageList[index + 1];
+        onSelectImage(imageData)();
+      }
+    }
+  }, [imageList, onSelectImage, selectedImageData]);
+  const onClickRightDisabled = !selectedImageData || selectedImageData.index >= imageList.length - 1;
+
+  const onChangeShowDetections = useCallback(() => {setShowDetections(!showDetections)}, [showDetections]);
 
   return (
     <PageWrapper>
@@ -328,6 +390,7 @@ export default function ImageAnalyser({ pageOptions }) {
               <AutoSizer>
                 {({ height, width }) => (
                   <FixedSizeList
+                    ref={listRef}
                     height={height}
                     width={width}
                     itemSize={itemHeight}
@@ -339,30 +402,52 @@ export default function ImageAnalyser({ pageOptions }) {
               </AutoSizer>
             </Box>
           </Box>
-          <Box sx={style.imageBox}>
-            {selectedImageData && imageURL && (
-              <div id="img-wrapper" style={style.imgWrapper}>
-                <img
-                  id="img"
-                  src={imageURL}
-                  alt=""
-                  style={{
-                    objectFit: 'contain',
-                    maxHeight: height,
-                    width: 'auto',
-                    maxWidth: width - menuWidth - 10,
-                  }}
+
+          <TransformWrapper
+            // wheel={{ step: 0.2 }}
+            // limitToBounds={true}
+          >
+            {({ resetTransform }) => (
+              <Box sx={style.imageBox}>
+                <AppBar
+                  height={appBarHeight}
+                  onClickLeft={onClickLeft}
+                  onClickRight={onClickRight}
+                  onClickLeftDisabled={onClickLeftDisabled}
+                  onClickRightDisabled={onClickRightDisabled}
+                  showDetections={showDetections}
+                  onChangeShowDetections={onChangeShowDetections}
                 />
-                {selectedImageData.hasJson &&
-                <div id="img-drawer" style={style.imgDrawer}>
-                  {selectedImageData.jsonData.map((data, index) => (
-                    <RegionBox key={index} data={data}/>
-                  ))}
-                </div>
-                }
-              </div>
+                  <div>
+                    <TransformComponent>
+                      {selectedImageData && imageURL && (
+                        <Box id="img-wrapper" sx={style.imgWrapper}>
+                          <img
+                            id="img"
+                            src={imageURL}
+                            alt=""
+                            onLoad={() => resetTransform()}
+                            style={{
+                              objectFit: 'contain',
+                              maxHeight: height - appBarHeight,
+                              width: 'auto',
+                              maxWidth: width - menuWidth - 10,
+                            }}
+                          />
+                          {showDetections && selectedImageData.hasJson &&
+                          <div id="img-drawer" style={style.imgDrawer}>
+                            {selectedImageData.jsonData?.map((data, index) => (
+                              <RegionBox key={index} data={data}/>
+                            ))}
+                          </div>
+                          }
+                        </Box>
+                      )}
+                    </TransformComponent>
+                  </div>
+              </Box>
             )}
-          </Box>
+          </TransformWrapper>
         </Box>
       }
     </PageWrapper>

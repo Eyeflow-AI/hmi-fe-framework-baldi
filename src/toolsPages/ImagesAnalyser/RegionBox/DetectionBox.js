@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 
-import Tooltip from "@mui/material/Tooltip";
+import Typography from '@mui/material/Typography';
 
 import {colors} from "sdk-fe-eyeflow";
 
@@ -8,6 +8,12 @@ const style = {
   region: {
     position: 'absolute',
     color: colors.yellow,
+  },
+  text: {
+    position: 'absolute',
+    color: colors.yellow,
+    top: '100%',
+    textShadow: "1px 1px 2px black",
   },
 }
 export default function DetectionBox({data}) {
@@ -41,9 +47,10 @@ export default function DetectionBox({data}) {
   }, [data])
 
   return (
-    <Tooltip title={label}>
-      <div style={regionStyle}>
-      </div>
-    </Tooltip>
+    <div style={regionStyle}>
+      <Typography sx={style.text}>
+        {label}
+      </Typography>
+    </div>
   )
 }
