@@ -20,7 +20,9 @@ import API from '../../api';
 import ERRORS from '../../errors';
 import { setNotificationBar } from '../../store/slices/app';
 
+// Third-party
 import { useDispatch } from 'react-redux';
+
 
 const style = {
   mainBox: {
@@ -37,7 +39,9 @@ const style = {
 };
 
 
-export default function Monitor({pageOptions}) {
+
+
+export default function Monitor({ pageOptions }) {
 
   const dispatch = useDispatch();
 
@@ -46,8 +50,8 @@ export default function Monitor({pageOptions}) {
 
   const { batchList, loading: loadingBatchList, loadBatchList } = GetBatchList({ stationId, queryParams, sleepTime: pageOptions.options.getEventSleepTime });
 
-  const {batchId, onChangeBatchId, batch: selectedBatch} = GetBatch({ stationId, sleepTime: pageOptions.options.getEventSleepTime });
-  const {runningBatch, loadRunningBatch} = GetRunningBatch({stationId, sleepTime: pageOptions.options.getEventSleepTime});
+  const { batchId, onChangeBatchId, batch: selectedBatch } = GetBatch({ stationId, sleepTime: pageOptions.options.getEventSleepTime });
+  const { runningBatch, loadRunningBatch } = GetRunningBatch({ stationId, sleepTime: pageOptions.options.getEventSleepTime });
   const isBatchRunning = Boolean(runningBatch);
 
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
@@ -82,7 +86,7 @@ export default function Monitor({pageOptions}) {
     // eslint-disable-next-line
   }, [selectedBatch, batchList, runningBatch, stationId]);
 
-  const onChangeParams = (newValue, deleteKeys=[]) => {
+  const onChangeParams = (newValue, deleteKeys = []) => {
     setQueryParams((params) => {
       let newParams = Boolean(params) ? { ...params } : {};
       Object.assign(newParams, newValue);
@@ -150,23 +154,23 @@ export default function Monitor({pageOptions}) {
   return (
     <Fragment>
       <PageWrapper>
-        {({width, height}) => 
+        {({ width, height }) =>
           <Box width={width} height={height} sx={style.mainBox}>
             {/* <Box id="monitor-event-menu-box" width={pageOptions.options.eventMenuWidth}> */}
-              <EventMenuBox
-                type="batch"
-                width={pageOptions.options.eventMenuWidth}
-                onClickCreateBatch={onClickCreateBatch}
-                runningEvent={runningBatch}
-                events={batchList}
-                loadingData={loadingBatchList}
-                selectedEventId={batchId}
-                onChangeEvent={onChangeBatchId}
-                queryParams={queryParams}
-                onChangeParams={onChangeParams}
-                config={pageOptions.components.EventMenuBox}
-                height={height}
-              />
+            <EventMenuBox
+              type="batch"
+              width={pageOptions.options.eventMenuWidth}
+              onClickCreateBatch={onClickCreateBatch}
+              runningEvent={runningBatch}
+              events={batchList}
+              loadingData={loadingBatchList}
+              selectedEventId={batchId}
+              onChangeEvent={onChangeBatchId}
+              queryParams={queryParams}
+              onChangeParams={onChangeParams}
+              config={pageOptions.components.EventMenuBox}
+              height={height}
+            />
             <Box id="monitor-data-box" sx={style.dataBox}>
               <EventHeader
                 data={selectedBatch}
@@ -193,7 +197,7 @@ export default function Monitor({pageOptions}) {
               </Box>
             </Box>
           </Box>
-      }
+        }
       </PageWrapper>
       <CreateBatchModal
         config={pageOptions.components.CreateBatchModal}
