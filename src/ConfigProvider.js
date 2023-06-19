@@ -1,19 +1,22 @@
+// React
 import { useEffect, Fragment, useState } from 'react';
 
-import { useDispatch, useSelector } from 'react-redux';
 
+// Internal
 import getStationListThunk from './store/thunks/stationList';
 import getFeConfigThunk from './store/thunks/feConfig';
-import {getFeConfig, setAppBarButtonList, setLanguageList} from './store/slices/app';
+import { getFeConfig, setAppBarButtonList, setLanguageList } from './store/slices/app';
 import { prepare as prepareLocale } from './locale';
-
 import Clock from './utils/Hooks/Clock';
 
-                                                       //10 minutes
-function ConfigProvider({ children, getConfigSleepTime=10*60*1000 }) {
+// Third-party
+import { useDispatch, useSelector } from 'react-redux';
+
+//10 minutes
+function ConfigProvider({ children, getConfigSleepTime = 10 * 60 * 1000 }) {
 
   const dispatch = useDispatch();
-  const {clock} = Clock({sleepTime: getConfigSleepTime});
+  const { clock } = Clock({ sleepTime: getConfigSleepTime });
   const feConfig = useSelector(getFeConfig);
   const [configLoaded, setConfigLoaded] = useState(false);
 

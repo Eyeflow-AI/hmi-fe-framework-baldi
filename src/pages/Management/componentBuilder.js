@@ -9,6 +9,7 @@ import FromTo from './tabs/fromTo';
 import General from './tabs/general';
 import Users from './tabs/users';
 import Wording from './tabs/wording';
+import Stations from './tabs/stations';
 
 // Third-party
 
@@ -18,6 +19,7 @@ const TABS = {
   general: General,
   users: Users,
   wording: Wording,
+  stations: Stations,
 }
 export default function Builder({
   tab

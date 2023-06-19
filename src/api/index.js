@@ -99,7 +99,7 @@ const API = {
     checklistRegions: (id, setLoading) => request(instance.get(`checklist/regions/${id}`), setLoading),
     checklistSchemas: (setLoading) => request(instance.get(`checklist/schemas`), setLoading),
 
-    filesList: ({params, stationId}, setLoading) => request(instance.get(`files/${stationId}/list`, { params }), setLoading),
+    filesList: ({ params, stationId }, setLoading) => request(instance.get(`files/${stationId}/list`, { params }), setLoading),
   },
   put: {
     batchPause: ({ stationId, batchId }, setLoading) => request(instance.put(`batch/${stationId}/${batchId}/pause`), setLoading),
@@ -120,6 +120,8 @@ const API = {
     checklistReference: ({ _id, reference }, setLoading) => request(instance.put(`checklist/reference`, { _id, reference }), setLoading),
 
     referenceToSchema: ({ referenceName, referenceType }, setLoading) => request(instance.put(`checklist/reference-to-schema`, { referenceName, referenceType }), setLoading),
+
+    station: ({ stationId, stationName, parms }, setLoading) => request(instance.put(`station/${stationId}`, { label: stationName, parms }), setLoading),
 
   },
   delete: {
