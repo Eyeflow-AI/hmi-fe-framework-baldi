@@ -32,7 +32,6 @@ export default function RoleDialog({
   , getAccessControlData
   , selectedRoleInfo = null
 }) {
-  console.log({ selectedRoleInfo })
 
   const { t } = useTranslation();
   const [description, setDescription] = useState('');
