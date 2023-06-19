@@ -32,7 +32,7 @@ export default function History() {
 
   return (
     <PageWrapper>
-      {(width, height) =>
+      {({ width, height }) =>
       <Box width={width} height={height} sx={styleSx.dataBox}>
         TODO: History
       </Box>
