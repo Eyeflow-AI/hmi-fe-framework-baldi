@@ -145,7 +145,6 @@ export default function Monitor({ pageOptions }) {
     <PageWrapper>
       {({ width, height }) =>
         <Box width={width} height={height} sx={style.mainBox}>
-          {/* <Box id="monitor-event-menu-box" width={pageOptions.options.eventMenuWidth}> */}
           <EventMenuBox
             type="serial"
             width={pageOptions.options.eventMenuWidth}

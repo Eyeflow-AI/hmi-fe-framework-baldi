@@ -27,7 +27,6 @@ export default function StationDialog({
   , stations
   , onClose
   , title
-  , getAccessControlData
   , selectedStationInfo = null
 }) {
 
@@ -43,7 +42,6 @@ export default function StationDialog({
   const handleClose = () => {
     setStationName('');
     setParms('');
-    getAccessControlData();
     onClose(false);
   };
 
