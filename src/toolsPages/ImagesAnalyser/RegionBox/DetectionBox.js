@@ -2,32 +2,39 @@ import { useMemo } from "react"
 
 import Typography from '@mui/material/Typography';
 
-import {colors} from "sdk-fe-eyeflow";
-
 const style = {
   region: {
     position: 'absolute',
-    color: colors.yellow,
   },
   text: {
     position: 'absolute',
-    color: colors.yellow,
+    color: 'inherit',
     top: '100%',
+    textShadow: "1px 1px 2px black",
+  },
+  confidenceText: {
+    position: 'absolute',
+    color: 'inherit',
+    top: 'calc(100% + 1rem)',
     textShadow: "1px 1px 2px black",
   },
 }
 export default function DetectionBox({data}) {
   
-  let {label, regionStyle} = useMemo(() => {
+  let {label, confidence, regionStyle} = useMemo(() => {
     let top = 0;
     let left = 0;
     let width = 0;
     let height = 0;
     let regionStyle = {...style.region};
     let label = '';
+    let confidence = '';
+    let color = '';
 
     if (data) {
       label = data.item;
+      confidence = data.confidence;
+      color = data.color;
       let {x_min, y_min, x_max, y_max} = data.bbox_normalized;
       top = `${y_min * 100}%`;
       left = `${x_min * 100}%`;
@@ -38,18 +45,21 @@ export default function DetectionBox({data}) {
         left,
         width,
         height,
-        // border: `3px solid ${colors.yellow}`,
-        boxShadow: `0 0 0 2px ${colors.yellow}, 1px 1px 2px 2px black`,
+        color,
+        boxShadow: `0 0 0 2px ${color}, 1px 1px 2px 2px black`,
       });
     };
   
-    return {label, regionStyle};
+    return {label, confidence, regionStyle};
   }, [data])
 
   return (
     <div style={regionStyle}>
       <Typography sx={style.text}>
         {label}
+      </Typography>
+      <Typography sx={style.confidenceText}>
+        {confidence}
       </Typography>
     </div>
   )

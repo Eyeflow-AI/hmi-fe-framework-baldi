@@ -2,18 +2,16 @@ import { useMemo } from "react"
 
 import Typography from "@mui/material/Typography";
 
-import {colors} from "sdk-fe-eyeflow";
-
 import DetectionBox from "./DetectionBox";
 
 
 const style = {
   region: {
     position: 'absolute',
-    color: colors.blue,
   },
   text: {
     marginLeft: 1,
+    color: 'inherit',
     textShadow: "1px 1px 2px black",
   }
 }
@@ -26,9 +24,12 @@ export default function RegionBox({data}) {
     let height = 0;
     let regionStyle = {...style.region};
     let label = '';
+    let color = '';
 
     if (data) {
-      label = data.region;
+      let confidence = data.confidence;
+      label = `${data.region} - ${confidence}`;
+      color = data.color;
       let {x_min, y_min, x_max, y_max} = data.bbox_normalized;
       console.log({data});
       top = `${y_min * 100}%`;
@@ -40,7 +41,8 @@ export default function RegionBox({data}) {
         left,
         width,
         height,
-        border: `3px solid ${colors.blue}`,
+        color,
+        border: `3px solid ${color}`,
       });
     };
   
