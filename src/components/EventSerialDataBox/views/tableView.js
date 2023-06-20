@@ -90,6 +90,7 @@ const getAnnotatedImg = ({
     ctx.drawImage(img, 0, 0, img.width, img.height);
 
     if (bboxRegion) {
+      // console.log({ bboxRegion })
       let [x_min, x_max, y_min, y_max] = expandCoordinates({
         imgWidth: img.width / scale,
         imgHeight: img.height / scale,
@@ -99,7 +100,7 @@ const getAnnotatedImg = ({
         y_max: bboxRegion?.y_max ?? bboxRegion?.bbox?.y_max,
         expandBox
       });
-      ctx.strokeStyle = colors.eyeflow.green.dark;
+      ctx.strokeStyle = bboxRegion?.color ?? colors.eyeflow.green.dark;
       ctx.lineWidth = 3;
       ctx.strokeRect(
         parseInt(x_min * scale - 1),
@@ -120,6 +121,7 @@ const getAnnotatedImg = ({
     if (options.severalAnnotations) {
 
       (Array.isArray(bbox) && bbox.length > 0 ? bbox : []).forEach((bb, i) => {
+        // console.log({ bb })
         let [x_min, x_max, y_min, y_max] = expandCoordinates({
           imgWidth: img.width / scale,
           imgHeight: img.height / scale,
@@ -130,8 +132,9 @@ const getAnnotatedImg = ({
           expandBox
         });
 
-
-        ctx.strokeStyle = colors.eyeflow.green.dark;
+        strokeStyle = bb?.color ?? colors.eyeflow.green.dark;
+        ctx.strokeStyle = strokeStyle;
+        // console.log({ strokeStyle })
         ctx.lineWidth = 3;
         ctx.strokeRect(
           parseInt(x_min * scale - 1),
@@ -188,7 +191,8 @@ const getAnnotatedImg = ({
         bbox.y_max,
         expandBox
       );
-      ctx.strokeStyle = '#555555';
+      strokeStyle = bbox?.color ?? colors.eyeflow.green.dark;
+      ctx.strokeStyle = strokeStyle;
       ctx.lineWidth = 3;
       ctx.strokeRect(
         parseInt(x_min * scale - 1),
