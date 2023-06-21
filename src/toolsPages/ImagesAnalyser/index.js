@@ -19,6 +19,8 @@ import { FixedSizeList } from "react-window";
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { colors } from 'sdk-fe-eyeflow';
 import { TransformWrapper, TransformComponent } from "@pronestor/react-zoom-pan-pinch";
+import JsonView from 'react18-json-view'
+import 'react18-json-view/src/style.css'
 
 const appBarHeight = 64;
 
@@ -45,6 +47,24 @@ const style = {
     boxShadow: `inset 0 0 4px black`,
     borderRadius: 1
   },
+  dataBox: {
+    height: '100%',
+    flexGrow: 1,
+    gap: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  jsonBox: Object.assign({}, window.app_config.style.box, {
+    bgcolor: 'background.paper',
+    height: '100%',
+    width: '100%',
+    // gap: 1,
+    // display: 'flex',
+    // flexDirection: 'column',
+    p: 1,
+    overflowY: 'auto',
+  }),
   imageBox: {
     height: '100%',
     flexGrow: 1,
@@ -158,6 +178,7 @@ export default function ImageAnalyser({ pageOptions }) {
   const [selectedImageData, setSelectedImageData] = useState(null);
   const [imageURL, setSelectedImageURL] = useState('');
   const [showDetections, setShowDetections] = useState(true);
+  const [showJson, setShowJson] = useState(false);
 
   const onSelectImage = useCallback((imageData) => () => {
     if (imageData.hasJson) {
@@ -361,6 +382,7 @@ export default function ImageAnalyser({ pageOptions }) {
   }, [imageList, onSelectImage, selectedImageData]);
   const onClickRightDisabled = !selectedImageData || selectedImageData.index >= imageList.length - 1;
 
+  const onChangeView = useCallback(() => {setShowJson(!showJson)}, [showJson]);
   const onChangeShowDetections = useCallback(() => {setShowDetections(!showDetections)}, [showDetections]);
 
   return (
@@ -403,51 +425,68 @@ export default function ImageAnalyser({ pageOptions }) {
             </Box>
           </Box>
 
-          <TransformWrapper
-            // wheel={{ step: 0.2 }}
-            // limitToBounds={true}
-          >
-            {({ resetTransform }) => (
-              <Box sx={style.imageBox}>
-                <AppBar
-                  height={appBarHeight}
-                  onClickLeft={onClickLeft}
-                  onClickRight={onClickRight}
-                  onClickLeftDisabled={onClickLeftDisabled}
-                  onClickRightDisabled={onClickRightDisabled}
-                  showDetections={showDetections}
-                  onChangeShowDetections={onChangeShowDetections}
-                />
-                  <div>
-                    <TransformComponent>
-                      {selectedImageData && imageURL && (
-                        <Box id="img-wrapper" sx={style.imgWrapper}>
-                          <img
-                            id="img"
-                            src={imageURL}
-                            alt=""
-                            onLoad={() => resetTransform()}
-                            style={{
-                              objectFit: 'contain',
-                              maxHeight: height - appBarHeight,
-                              width: 'auto',
-                              maxWidth: width - menuWidth - 10,
-                            }}
-                          />
-                          {showDetections && selectedImageData.hasJson &&
-                          <div id="img-drawer" style={style.imgDrawer}>
-                            {selectedImageData.jsonData?.map((data, index) => (
-                              <RegionBox key={index} data={data}/>
-                            ))}
-                          </div>
-                          }
-                        </Box>
-                      )}
-                    </TransformComponent>
-                  </div>
-              </Box>
+          <Box sx={style.dataBox}>
+
+            {selectedImageData && imageURL && (
+            <AppBar
+              height={appBarHeight}
+              onClickLeft={onClickLeft}
+              onClickRight={onClickRight}
+              onClickLeftDisabled={onClickLeftDisabled}
+              onClickRightDisabled={onClickRightDisabled}
+              showDetections={showDetections}
+              showJson={showJson}
+              onChangeView={onChangeView}
+              onChangeShowDetections={onChangeShowDetections}
+            />
             )}
-          </TransformWrapper>
+
+            {showJson
+            ? (
+              <Box sx={style.jsonBox}>
+                <JsonView
+                  src={selectedImageData}
+                  height={'100%'}
+                  width={'100%'}
+                />
+              </Box>
+            )
+            : (
+            <TransformWrapper
+              // wheel={{ step: 0.2 }}
+              // limitToBounds={true}
+            >
+              {({ resetTransform }) => (
+                <TransformComponent>
+                  {selectedImageData && imageURL && (
+                    <Box id="img-wrapper" sx={style.imgWrapper}>
+                      <img
+                        id="img"
+                        src={imageURL}
+                        alt=""
+                        onLoad={() => resetTransform()}
+                        style={{
+                          objectFit: 'contain',
+                          maxHeight: height - appBarHeight,
+                          width: 'auto',
+                          maxWidth: width - menuWidth - 10,
+                        }}
+                      />
+                      {showDetections && selectedImageData.hasJson &&
+                      <div id="img-drawer" style={style.imgDrawer}>
+                        {selectedImageData.jsonData?.map((data, index) => (
+                          <RegionBox key={index} data={data}/>
+                        ))}
+                      </div>
+                      }
+                    </Box>
+                  )}
+                </TransformComponent>
+              )}
+            </TransformWrapper>
+            )
+            }
+          </Box>
         </Box>
       }
     </PageWrapper>

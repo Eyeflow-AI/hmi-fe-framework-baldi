@@ -7,6 +7,8 @@ import LabelIcon from '@mui/icons-material/Label';
 import LabelOutlinedIcon from '@mui/icons-material/LabelOutlined';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DownloadIcon from '@mui/icons-material/Download';
+import DataObjectIcon from '@mui/icons-material/DataObject';
+import PanoramaIcon from '@mui/icons-material/Panorama';
 
 const style = {
   appBar: Object.assign({}, window.app_config.style.box, {
@@ -21,7 +23,7 @@ const style = {
 }
 
 
-export default function AppBar ({height, onClickRight, onClickLeft, onClickLeftDisabled, onClickRightDisabled, showDetections, onChangeShowDetections}) {
+export default function AppBar ({height, onClickRight, onClickLeft, onClickLeftDisabled, onClickRightDisabled, showDetections, showJson, onChangeShowDetections, onChangeView}) {
   return (
     <Box height={height} sx={style.appBar}>
       <Grid justifyContent="space-between" alignContent="center" container sx={style.grid}>
@@ -42,6 +44,14 @@ export default function AppBar ({height, onClickRight, onClickLeft, onClickLeftD
                 onClick={onChangeShowDetections}
               >
                 {showDetections ? <LabelIcon/> : <LabelOutlinedIcon/>}
+              </IconButton>
+            </Grid>
+            <Grid item>
+              <IconButton
+                size='large'
+                onClick={onChangeView}
+              >
+                {showJson ? <PanoramaIcon/> : <DataObjectIcon/>}
               </IconButton>
             </Grid>
             <Grid item>
