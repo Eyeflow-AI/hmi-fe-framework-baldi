@@ -95,6 +95,8 @@ const API = {
     alert: ({ stationId }, setLoading) => request(instance.get(`alerts/${stationId}`), setLoading),
 
     appParameters: (setLoading) => request(instance.get(`internal/parameters`), setLoading),
+    appParameterDocument: ({ parameterName }, setLoading) => request(instance.get(`internal/parameter-document?name=${parameterName}`), setLoading),
+
     checklistReferences: (setLoading) => request(instance.get(`checklist/references`), setLoading),
     checklistRegions: (id, setLoading) => request(instance.get(`checklist/regions/${id}`), setLoading),
     checklistSchemas: (setLoading) => request(instance.get(`checklist/schemas`), setLoading),
@@ -122,6 +124,8 @@ const API = {
     referenceToSchema: ({ referenceName, referenceType }, setLoading) => request(instance.put(`checklist/reference-to-schema`, { referenceName, referenceType }), setLoading),
 
     station: ({ stationId, stationName, parms }, setLoading) => request(instance.put(`station/${stationId}`, { label: stationName, parms }), setLoading),
+
+    appParameterDocument: ({ document }, setLoading) => request(instance.put(`internal/parameter-document`, { document }), setLoading),
 
   },
   delete: {
