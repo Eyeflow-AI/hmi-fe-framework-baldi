@@ -1,5 +1,5 @@
 // React
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 // Design
 import IconButton from '@mui/material/IconButton';
@@ -17,6 +17,7 @@ import { getStation, getStationList, setStationId, getLanguageList, getAppBarBut
 import authSlice, { getUserInitials } from '../store/slices/auth';
 import updatePath from '../utils/functions/updatePath';
 import getOriginalURLPath from '../utils/functions/getOriginalURLPath';
+import AlertsDialog from './AlertsDialog';
 
 // Third-party
 import { useLocation, useNavigate } from "react-router-dom";
@@ -77,6 +78,7 @@ export default function CustomAppBar() {
   const alerts = useSelector(getAlerts);
   const alertsLength = alerts.length;
 
+  const [alertsDialogOpen, setAlertsDialogOpen] = useState(false);
   const [stationAnchorEl, setStationAnchorEl] = useState(null);
   const [languageAnchorEl, setLanguageAnchorEl] = useState(null);
   const [avatarAnchorEl, setAvatarAnchorEl] = useState(null);
@@ -88,10 +90,15 @@ export default function CustomAppBar() {
 
   // const user = useSelector(getUser);
 
+  const handleCloseAlertsDialog = useCallback(() => {
+    console.log("CLOSDE")
+    setAlertsDialogOpen(false);
+  }, [setAlertsDialogOpen]);
+
   const handleClickAvatar = (event) => setAvatarAnchorEl(event.currentTarget);
   const handleCloseAvatarMenu = (event) => setAvatarAnchorEl(null);
 
-  const handleClickAlerts = () => console.log("alerts");
+  const handleClickAlerts = () => setAlertsDialogOpen(true);
   const handleClickStation = (event) => setStationAnchorEl(event.currentTarget);
   const handleCloseStationMenu = (event) => setStationAnchorEl(null);
 
@@ -254,6 +261,12 @@ export default function CustomAppBar() {
           {t('Logout')}
         </MenuItem>
       </Menu>
+
+      <AlertsDialog
+        open={alertsDialogOpen}
+        handleClose={handleCloseAlertsDialog}
+        alerts={alerts}
+      />
     </>
   );
 }
