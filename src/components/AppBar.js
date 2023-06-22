@@ -266,6 +266,7 @@ export default function CustomAppBar() {
         open={alertsDialogOpen}
         handleClose={handleCloseAlertsDialog}
         alerts={alerts}
+        stationId={station?._id}
       />
     </>
   );

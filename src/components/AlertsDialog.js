@@ -3,15 +3,16 @@ import React, { } from "react";
 
 // Design
 import Box from '@mui/material/Box';
+import IconButton from "@mui/material/IconButton";
 import Typography from '@mui/material/Typography';
 import Dialog from '@mui/material/Dialog';
-
+import DeleteIcon from '@mui/icons-material/Delete';
 
 // Third-party
 import { useTranslation } from "react-i18next";
 import { FixedSizeList } from "react-window";
 import { colors } from 'sdk-fe-eyeflow';
-
+import API from '../api';
 
 const DIALOG_WIDTH = 900;
 const DIALOG_HEIGHT = 600;
@@ -44,9 +45,17 @@ const style = {
   }
 }
 
-export default function AlertsDialog({open, alerts, handleClose}) {
+export default function AlertsDialog({open, alerts, stationId, handleClose}) {
 
   const { t } = useTranslation();
+
+  const onClickDelete = (alertId) => {
+    API.delete.alert({stationId, alertId})
+      .then((data) => {
+        console.log({data})
+      })
+      .catch(console.error);
+  };
 
   function itemRenderer({ index, style }) {
     const alertData = alerts[index];
@@ -54,10 +63,11 @@ export default function AlertsDialog({open, alerts, handleClose}) {
     const buttonStyle = {
       display: 'flex',
       borderRadius: '4px',
-      justifyContent: 'center',
+      // justifyContent: 'center',
+      pl: 1,
+      alignItems: 'center',
       height: ITEM_HEIGHT-3,
       fontSize: 18,
-      cursor: 'pointer',
       color: Boolean(alertData.color) ? alertData.color : 'white',
       background: Boolean(alertData.color_text) ? alertData.color_text : colors.blue,
       width: DIALOG_WIDTH - 20,
@@ -69,6 +79,9 @@ export default function AlertsDialog({open, alerts, handleClose}) {
         <Box sx={buttonStyle}>
           {alertData.date}<br/>
           {alertData.alert.locale_id}
+          <IconButton onClick={() => onClickDelete(alertData._id)}>
+            <DeleteIcon />
+          </IconButton>
         </Box>
       </div>
     )

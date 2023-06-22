@@ -128,7 +128,7 @@ const API = {
     user: ({ username }, setLoading) => request(instance.delete(`auth/user`, { data: { username } }), setLoading),
     delete: ({ stationId, alertId }, setLoading) => request(instance.delete(`alerts/${stationId}/${alertId}`), setLoading),
     role: ({ roleName }, setLoading) => request(instance.delete(`auth/role`, { data: { roleName } }), setLoading),
-
+    alert: ({ stationId, alertId }, setLoading) => request(instance.delete(`alerts/${stationId}/${alertId}`), setLoading),
     query: ({ queryName }, setLoading) => request(instance.delete(`queries/remove-query`, { data: { queryName } }), setLoading),
 
   }
