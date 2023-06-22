@@ -13,10 +13,12 @@ import { useTranslation } from "react-i18next";
 import { FixedSizeList } from "react-window";
 import { colors } from 'sdk-fe-eyeflow';
 import API from '../api';
+import {dateFormat} from "sdk-fe-eyeflow";
+
 
 const DIALOG_WIDTH = 900;
 const DIALOG_HEIGHT = 600;
-const ITEM_HEIGHT = 100;
+const ITEM_HEIGHT = 80;
 const APPBAR_HEIGHT = 50;
 const ALERTBOX_HEIGHT = DIALOG_HEIGHT - APPBAR_HEIGHT;
 
@@ -64,7 +66,8 @@ export default function AlertsDialog({open, alerts, stationId, handleClose}) {
       display: 'flex',
       borderRadius: '4px',
       // justifyContent: 'center',
-      pl: 1,
+      pl: 2,
+      pr: 2,
       alignItems: 'center',
       height: ITEM_HEIGHT-3,
       fontSize: 18,
@@ -77,8 +80,10 @@ export default function AlertsDialog({open, alerts, stationId, handleClose}) {
     return (
       <div key={`item-${index}`} style={style}>
         <Box sx={buttonStyle}>
-          {alertData.date}<br/>
-          {alertData.alert.locale_id}
+          <Box flexGrow={1}>
+            {dateFormat(alertData.date)}<br/>
+            {alertData.alert.locale_id}
+          </Box>
           <IconButton onClick={() => onClickDelete(alertData._id)}>
             <DeleteIcon />
           </IconButton>
