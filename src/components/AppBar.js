@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 // Design
 import IconButton from '@mui/material/IconButton';
+import Badge from '@mui/material/Badge';
 import CardMedia from '@mui/material/CardMedia';
 import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
@@ -12,7 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { deepOrange } from '@mui/material/colors';
 
 // Internal
-import { getStation, getStationList, setStationId, getLanguageList, getAppBarButtonList } from '../store/slices/app';
+import { getStation, getStationList, setStationId, getLanguageList, getAppBarButtonList, getAlerts } from '../store/slices/app';
 import authSlice, { getUserInitials } from '../store/slices/auth';
 import updatePath from '../utils/functions/updatePath';
 import getOriginalURLPath from '../utils/functions/getOriginalURLPath';
@@ -73,6 +74,8 @@ export default function CustomAppBar() {
   const languageList = useSelector(getLanguageList);
   const appBarButtonList = useSelector(getAppBarButtonList);
   const userInitials = useSelector(getUserInitials);
+  const alerts = useSelector(getAlerts);
+  const alertsLength = alerts.length;
 
   const [stationAnchorEl, setStationAnchorEl] = useState(null);
   const [languageAnchorEl, setLanguageAnchorEl] = useState(null);
@@ -88,6 +91,7 @@ export default function CustomAppBar() {
   const handleClickAvatar = (event) => setAvatarAnchorEl(event.currentTarget);
   const handleCloseAvatarMenu = (event) => setAvatarAnchorEl(null);
 
+  const handleClickAlerts = () => console.log("alerts");
   const handleClickStation = (event) => setStationAnchorEl(event.currentTarget);
   const handleCloseStationMenu = (event) => setStationAnchorEl(null);
 
@@ -119,7 +123,10 @@ export default function CustomAppBar() {
     // console.log(window.app_config.components.AppBar)
     let newButtonList = appBarButtonList.map((buttonData) => {
       let copyButtonData = { ...buttonData };
-      if (copyButtonData.id === "station") {
+      if (copyButtonData.id === "alerts") {
+        copyButtonData.onClick = handleClickAlerts;
+      }
+      else if (copyButtonData.id === "station") {
         copyButtonData.onClick = handleClickStation;
       }
       else if (copyButtonData.id === "language") {
@@ -147,9 +154,6 @@ export default function CustomAppBar() {
           />
         </ButtonBase>
 
-
-
-
         <Box
           sx={{
             display: 'flex',
@@ -166,9 +170,20 @@ export default function CustomAppBar() {
 
           {buttonList.map((buttonProps, index) =>
             <Tooltip key={index} title={t(buttonProps.label)}>
+              {buttonProps.type === "alerts"
+              ? (
+              <Badge showZero badgeContent={alertsLength} color={alertsLength === 0 ? "success" : "error"}>
+                <IconButton onClick={buttonProps.onClick} size='small'>
+                  <img alt="" src={buttonProps.icon} style={style.buttonImage} />
+                </IconButton>
+              </Badge>
+              )
+              : (
               <IconButton onClick={buttonProps.onClick} size='small'>
                 <img alt="" src={buttonProps.icon} style={style.buttonImage} />
               </IconButton>
+              )
+              }
             </Tooltip>
           )}
 

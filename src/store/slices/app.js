@@ -18,6 +18,7 @@ export const initialState = {
   loadingAlerts: false,
   alertsHash: null,
   alerts: [],
+
   feConfig: null,
   loadingFeConfig: false,
   languageList: [],
@@ -131,6 +132,9 @@ export const getStationList = (state) => state.app.stationList ?? [];
 
 export const getPartsList = (state) => state.app.partsList ?? [];
 export const getPartsObj = (state) => state.app.partsObj ?? {};
+
+export const getLoadingAlerts = (state) => state.app.loadingAlerts;
+export const getAlerts = (state) => state.app.alerts ?? [];
 
 export const getFeConfig = (state) => state.app.feConfig;
 export const getNotificationBarInfo = (state) => state.app.notificationBar;
