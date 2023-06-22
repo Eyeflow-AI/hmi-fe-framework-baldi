@@ -112,6 +112,9 @@ export default function Monitor({ pageOptions }) {
         if (err.code === ERRORS.EDGE_STATION_IS_NOT_REACHABLE) {
           dispatch(setNotificationBar({ show: true, type: 'error', message: "edge_station_is_not_reachable" }));
         }
+        else {
+          dispatch(setNotificationBar({ show: true, type: 'error', message: "internal_server_error" }));
+        }
         console.error(err);
       });
   };
