@@ -14,7 +14,9 @@ import { FixedSizeList } from "react-window";
 import { colors } from 'sdk-fe-eyeflow';
 import API from '../api';
 import {dateFormat} from "sdk-fe-eyeflow";
+import { useDispatch } from 'react-redux';
 
+import alertsThunk from '../store/thunks/alerts';
 
 const DIALOG_WIDTH = 900;
 const DIALOG_HEIGHT = 600;
@@ -41,7 +43,7 @@ const style = {
   alertBoxSx: {
     width: DIALOG_WIDTH,
     height: ALERTBOX_HEIGHT,
-    overflowY: 'scroll',
+    // overflowY: 'scroll',
     overflowX: 'hidden',
     // display: 'flex',
   }
@@ -50,11 +52,13 @@ const style = {
 export default function AlertsDialog({open, alerts, stationId, handleClose}) {
 
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
   const onClickDelete = (alertId) => {
     API.delete.alert({stationId, alertId})
       .then((data) => {
-        console.log({data})
+        console.log({data});
+        dispatch(alertsThunk({stationId}));
       })
       .catch(console.error);
   };
