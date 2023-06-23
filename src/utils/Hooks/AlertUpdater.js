@@ -12,7 +12,7 @@ export default function AlertUpdated({ sleepTime = 2500 } = {}) {
   const dispatch = useDispatch();
   const { clock } = Clock({ sleepTime });
   const stationData = GetSelectedStation();
-  const stationId = stationData?.stationId ?? null;
+  const stationId = stationData?._id ?? null;
 
   useEffect(() => {
     if (stationId) {
