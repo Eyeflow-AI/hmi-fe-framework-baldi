@@ -65,7 +65,7 @@ export default function AlertsDialog({open, alerts, stationId, handleClose}) {
 
   function itemRenderer({ index, style }) {
     const alertData = alerts[index];
-    console.log({alertData})
+    // console.log({alertData})
     const buttonStyle = {
       display: 'flex',
       borderRadius: '4px',
@@ -73,11 +73,15 @@ export default function AlertsDialog({open, alerts, stationId, handleClose}) {
       pl: 2,
       pr: 2,
       alignItems: 'center',
-      height: ITEM_HEIGHT-3,
+      mt: 0.5,
+      height: ITEM_HEIGHT-5,
       fontSize: 18,
-      color: Boolean(alertData.color) ? alertData.color : 'white',
-      background: Boolean(alertData.color_text) ? alertData.color_text : colors.blue,
-      width: DIALOG_WIDTH - 20,
+      ml: 'auto',
+      mr: 'auto',
+      color: Boolean(alertData?.alert?.color_text) ? alertData.alert.color_text : 'white',
+      background: Boolean(alertData?.alert?.color) ? alertData.alert.color : colors.blue,
+      textShadow: '1px 1px 1px rgba(0,0,0,0.5)',
+      width: DIALOG_WIDTH - 50,
       // padding: 1,
     };
 
@@ -86,7 +90,7 @@ export default function AlertsDialog({open, alerts, stationId, handleClose}) {
         <Box sx={buttonStyle}>
           <Box flexGrow={1}>
             {dateFormat(alertData.date)}<br/>
-            {alertData.alert.locale_id}
+            {t(alertData.alert.locale_id)}
           </Box>
           <IconButton onClick={() => onClickDelete(alertData._id)}>
             <DeleteIcon />
