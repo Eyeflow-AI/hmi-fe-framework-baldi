@@ -58,7 +58,8 @@ export default function EventMenuItem({ index, dateField, eventData, selected, o
 
   const { t } = useTranslation();
   const filesWSURL = window.app_config.hosts['hmi-files-ws']['url'];
-  let thumbURL = eventData.thumbURL ? `${filesWSURL}/${eventData.thumbURL}` : '';
+  console.log({ t: eventData.thumbURL })
+  let thumbURL = eventData?.thumbURL ?? '';
   let thumbStyle = Boolean(eventData.thumbStyle) ? eventData.thumbStyle : style.itemImage;
   let status = eventData.status ?? '';
   let eventTimeString = Boolean(eventData[dateField]) ? dateFormat(eventData[dateField]) : "";
