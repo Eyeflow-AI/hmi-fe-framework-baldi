@@ -42,7 +42,7 @@ export default function RegionBox({data}) {
         width,
         height,
         color,
-        border: `3px solid ${color}`,
+        boxShadow: `0 0 0 2px ${color}, 1px 1px 2px 2px black`,
       });
     };
   
@@ -57,6 +57,9 @@ export default function RegionBox({data}) {
       {data && data.detections && data.detections.map((detection, index) => 
         <DetectionBox key={index} data={detection} />
       )}
+      {/* {data && data.original_detections && data.original_detections.map((detection, index) =>
+        <DetectionBox key={index} data={detection} forceColor={"#ff0000"}/>
+      )} */}
     </div>
   )
 }
