@@ -19,7 +19,7 @@ const style = {
     textShadow: "1px 1px 2px black",
   },
 }
-export default function DetectionBox({data, forceColor}) {
+export default function DetectionBox({data}) {
   
   let {label, confidence, regionStyle} = useMemo(() => {
     let top = 0;
@@ -34,7 +34,7 @@ export default function DetectionBox({data, forceColor}) {
     if (data) {
       label = data.item;
       confidence = data.confidence;
-      color = forceColor ?? data.color;
+      color = data.in_frame ? data.color : "#ff0000";
       let {x_min, y_min, x_max, y_max} = data.bbox_normalized;
       top = `${y_min * 100}%`;
       left = `${x_min * 100}%`;
