@@ -65,14 +65,6 @@ const style = {
     p: 1,
     overflowY: 'auto',
   }),
-  imageBox: {
-    height: '100%',
-    flexGrow: 1,
-    gap: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
   imgWrapper: {
     boxShadow: 1,
     position: 'relative',
@@ -472,7 +464,7 @@ export default function ImageAnalyser({ pageOptions }) {
                           maxHeight: height - appBarHeight,
                           width: 'auto',
                           maxWidth: width - menuWidth - 10,
-                          // display: 'block'
+                          display: 'block'
                         }}
                       />
                       {showDetections && selectedImageData.hasJson &&
