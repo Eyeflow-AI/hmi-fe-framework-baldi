@@ -65,18 +65,11 @@ const style = {
     p: 1,
     overflowY: 'auto',
   }),
-  imageBox: {
-    height: '100%',
-    flexGrow: 1,
-    gap: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
   imgWrapper: {
     boxShadow: 1,
     position: 'relative',
-    display: 'inline-block',
+    // height: 'auto'
+    // display: 'block',
   },
   imgDrawer: {
     position: 'absolute',
@@ -448,6 +441,7 @@ export default function ImageAnalyser({ pageOptions }) {
                   src={selectedImageData}
                   height={'100%'}
                   width={'100%'}
+                  theme={'monokai'}
                 />
               </Box>
             )
@@ -470,6 +464,7 @@ export default function ImageAnalyser({ pageOptions }) {
                           maxHeight: height - appBarHeight,
                           width: 'auto',
                           maxWidth: width - menuWidth - 10,
+                          display: 'block'
                         }}
                       />
                       {showDetections && selectedImageData.hasJson &&
