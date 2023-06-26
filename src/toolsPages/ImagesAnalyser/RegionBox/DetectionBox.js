@@ -34,7 +34,7 @@ export default function DetectionBox({data}) {
     if (data) {
       label = data.item;
       confidence = data.confidence;
-      color = data.in_frame ? data.color : "#ff0000";
+      color = (data.in_frame ?? true) ? data.color : "#ff0000";
       let {x_min, y_min, x_max, y_max} = data.bbox_normalized;
       top = `${y_min * 100}%`;
       left = `${x_min * 100}%`;
