@@ -4,12 +4,13 @@ import QueryFilterBox from "./QueryFilterBox";
 export default function FilterBox(props) {
 
   let type = props.queryFields?.length > 0 ? "query" : "date";
+  console.log({ type })
 
   return (
     <>
       {type === "query"
-      ? <QueryFilterBox {...props} />
-      : <DateFilterBox {...props} />
+        ? <QueryFilterBox {...props} />
+        : <DateFilterBox {...props} />
       }
     </>
   );

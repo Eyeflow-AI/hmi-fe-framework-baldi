@@ -82,10 +82,11 @@ export default function EventMenuBox({
   onChangeEvent,
   config
 }) {
+  console.log({ config })
 
   const { t } = useTranslation();
 
-  const {itemMenuHeight, buttonBoxHeight, hasMainButton, queryFields, dateField} = useMemo(() => {
+  const { itemMenuHeight, buttonBoxHeight, hasMainButton, queryFields, dateField } = useMemo(() => {
     const itemMenuHeight = config?.itemHeight ?? 200;
     return {
       itemMenuHeight,
@@ -123,71 +124,71 @@ export default function EventMenuBox({
   return (
     <Box id="event-menu-box" width={width} sx={styleSx.mainBox}>
       {hasMainButton && (
-      <>
-      {type === "batch"  && (
-        <Box height={buttonBoxHeight} sx={styleSx.defaultBox}>
-          {runningEvent
-            ? (
-              <EventMenuItem
-                index={null}
-                dateField={dateField}
-                eventData={runningEvent}
-                selected={runningEvent._id === selectedEventId}
-                onClick={onEventClick(runningEvent)}
-              />
-            )
-            : (
-              <ButtonBase>
-                <Box height={buttonBoxHeight} width={width} onClick={onClickCreateBatch} sx={styleSx.createBatchButton}>
-                  <img alt="" src={startBatchIcon} style={styleSx.createBatchButtonIcon} />
-                  {t("new_batch")}
-                </Box>
-              </ButtonBase>
-            )
+        <>
+          {type === "batch" && (
+            <Box height={buttonBoxHeight} sx={styleSx.defaultBox}>
+              {runningEvent
+                ? (
+                  <EventMenuItem
+                    index={null}
+                    dateField={dateField}
+                    eventData={runningEvent}
+                    selected={runningEvent._id === selectedEventId}
+                    onClick={onEventClick(runningEvent)}
+                  />
+                )
+                : (
+                  <ButtonBase>
+                    <Box height={buttonBoxHeight} width={width} onClick={onClickCreateBatch} sx={styleSx.createBatchButton}>
+                      <img alt="" src={startBatchIcon} style={styleSx.createBatchButtonIcon} />
+                      {t("new_batch")}
+                    </Box>
+                  </ButtonBase>
+                )
+              }
+            </Box>
+          )}
+
+          {type === "serial" && (
+            <Box height={buttonBoxHeight} sx={styleSx.defaultBox}>
+              {runningEvent
+                ? (
+                  <EventMenuItem
+                    index={null}
+                    dateField={dateField}
+                    eventData={runningEvent}
+                    selected={runningEvent._id === selectedEventId}
+                    onClick={onEventClick(runningEvent)}
+                  />
+                )
+                :
+                (
+                  config?.trigger === 'manual' ?
+                    <ButtonBase>
+                      <Box height={buttonBoxHeight} width={width} onClick={onClickCreateBatch} sx={styleSx.createSerialButton}>
+                        <img alt="" src={startSerialIcon} style={styleSx.createSerialButtonIcon} />
+                        {t("start")}
+                      </Box>
+                    </ButtonBase>
+                    :
+                    <Box
+                      height={buttonBoxHeight}
+                      width={width}
+                      sx={styleSx.noEventBox}
+                    >
+                      <img alt="" src={noEventIcon} style={styleSx.createSerialButtonIcon} />
+                      {t("no_running_event")}
+                    </Box>
+                )
+              }
+            </Box>
+          )
           }
-        </Box>
+        </>
       )}
 
-      {type === "serial" && (
-        <Box height={buttonBoxHeight} sx={styleSx.defaultBox}>
-          {runningEvent
-            ? (
-              <EventMenuItem
-                index={null}
-                dateField={dateField}
-                eventData={runningEvent}
-                selected={runningEvent._id === selectedEventId}
-                onClick={onEventClick(runningEvent)}
-              />
-            )
-            :
-            (
-              config?.trigger === 'manual' ?
-                <ButtonBase>
-                  <Box height={buttonBoxHeight} width={width} onClick={onClickCreateBatch} sx={styleSx.createSerialButton}>
-                    <img alt="" src={startSerialIcon} style={styleSx.createSerialButtonIcon} />
-                    {t("start")}
-                  </Box>
-                </ButtonBase>
-                :
-                <Box
-                  height={buttonBoxHeight}
-                  width={width}
-                  sx={styleSx.noEventBox}
-                >
-                  <img alt="" src={noEventIcon} style={styleSx.createSerialButtonIcon} />
-                  {t("no_running_event")}
-                </Box>
-            )
-          }
-        </Box>
-      )
-      }
-      </>
-      )}
-      
       <Box id="menu-box" height={menuBoxHeight} sx={styleSx.menuBox} >
-        <FilterBox onChangeParams={onChangeParams} queryFields={queryFields}/>
+        <FilterBox onChangeParams={onChangeParams} queryFields={queryFields} />
         <EventMenuList
           events={events}
           selectedEventId={selectedEventId}
@@ -200,40 +201,3 @@ export default function EventMenuBox({
     </Box>
   );
 };
-//(
-//  config?.trigger === 'manual' ?
-//    <ButtonBase>
-//      <Box height={serialButtonBoxHeight} width={width} onClick={onClickCreateBatch} sx={styleSx.createSerialButton}>
-//        <img alt="" src={startSerialIcon} style={styleSx.createSerialButtonIcon} />
-//        {t("start")}
-//      </Box>
-//    </ButtonBase>
-//    :
-//    (
-//      eventsLength > 0 ?
-//        <ButtonBase>
-//          <Box
-//            height={serialButtonBoxHeight}
-//            width={width}
-//            onClick={onClickCreateBatch}
-//            sx={styleSx.createSerialButton}
-//          >
-//            <img
-//              alt=""
-//              src={startSerialIcon}
-//              style={styleSx.createSerialButtonIcon}
-//            />
-//            {t("no_event_to_show")}
-//          </Box>
-//        </ButtonBase>
-//        :
-//        <Box
-//          height={serialButtonBoxHeight}
-//          width={width}
-//          sx={styleSx.noEventBox}
-//        >
-//          <img alt="" src={noEventIcon} style={styleSx.createSerialButtonIcon} />
-//          {t("no_event_to_show")}
-//        </Box>
-//    )
-//)

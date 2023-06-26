@@ -29,7 +29,7 @@ const styleSx = {
 }
 
 const components = {
-  "date": ({label, value, onChange}) => (
+  "date": ({ label, value, onChange }) => (
     <DesktopDatePicker
       label={label}
       inputFormat="yyyy/MM/dd"
@@ -38,7 +38,7 @@ const components = {
       renderInput={(params) => <TextField {...params} />}
     />
   ),
-  "text": ({label, value, onChange}) => (
+  "text": ({ label, value, onChange }) => (
     <TextField
       label={label}
       value={value}
@@ -72,6 +72,7 @@ export default function DateFilterBox({
       else if (queryField.type === "text") {
         defaultValue = "";
       }
+      console.log({ queryField })
 
       return {
         type: queryField.type,
@@ -112,7 +113,7 @@ export default function DateFilterBox({
     <Box id="filter-box" sx={styleSx.filterBox} >
       {inputList.map((inputData, index) => (
         <Box key={index}>
-          {components[inputData.type]({label: t(inputData.label), value: inputData.value, onChange: handleChange(index, inputData.type)})}
+          {components[inputData.type]({ label: t(inputData.label), value: inputData.value, onChange: handleChange(index, inputData.type) })}
         </Box>
       ))}
       <Button fullWidth variant="contained" aria-label="search" onClick={handleSearch}>
