@@ -47,15 +47,20 @@ export default function Monitor({ pageOptions }) {
   const [loadingSelected, setLoadingSelected] = useState(false);
 
   const onChangeEvent = (serialId, changedSerial = true) => {
+
+    let collection = 'inspection_events';
+    if (serialId === runningSerial?._id) {
+      collection = 'staging_events';
+    }
     if (changedSerial) {
       setSelectedSerial(null);
       setLoadingSelected(true);
     };
     if (serialId) {
-      API.get.serial({ stationId, serialId })
+      API.get.serial({ stationId, serialId, collection })
         .then((data) => {
-          setSelectedSerial(data?.serial);
-          setSelectedSerialCountData(data.countData);
+          setSelectedSerial(data?.serial ?? null);
+          setSelectedSerialCountData(data?.countData ?? null);
         })
         .catch(console.error)
         .finally(() => {
@@ -70,6 +75,12 @@ export default function Monitor({ pageOptions }) {
     };
     // eslint-disable-next-line
   }, [selectedSerial, runningSerial]);
+
+  useEffect(() => {
+    if (selectedSerial?._id === runningSerial?._id) {
+      updateAll();
+    }
+  }, [runningSerial])
 
   // useEffect(() => {console.log({runningBatch})}, [runningBatch]);
   useEffect(() => {
@@ -106,7 +117,6 @@ export default function Monitor({ pageOptions }) {
   const updateAll = () => {
     // loadSerialList();
     // loadRunningSerial();
-    console.log({ serialList })
     if (selectedSerial) {
       onChangeEvent(selectedSerial._id, false);
     };

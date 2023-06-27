@@ -19,6 +19,7 @@ export default function GetRunningSerial({ stationId, sleepTime = 30000 } = {}) 
           let serial = response.serial;
 
           if (JSON.stringify(serial) !== JSON.stringify(data.serial)) {
+            console.log('bulbasaur')
             setData(response);
           }
           else {
@@ -29,6 +30,7 @@ export default function GetRunningSerial({ stationId, sleepTime = 30000 } = {}) 
     };
   };
 
+  console.log({ data })
   useEffect(() => {
     loadRunningSerial();
     // eslint-disable-next-line
