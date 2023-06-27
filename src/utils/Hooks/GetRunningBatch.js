@@ -10,8 +10,7 @@ export default function GetRunningBatch({ stationId, sleepTime = 30000 } = {}) {
 
   const [data, setData] = useState({ batch: null });
   const [loading, setLoading] = useState(null);
-  const {clock} = Clock({sleepTime});
-
+  const { clock } = Clock({ sleepTime });
   const loadRunningBatch = () => {
     if (stationId) {
       API.get.runningBatch({ stationId }, setLoading)

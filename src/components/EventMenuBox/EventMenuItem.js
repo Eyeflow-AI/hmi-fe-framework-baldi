@@ -57,8 +57,9 @@ style.selectedItemSx = Object.assign({}, style.itemSx, {
 export default function EventMenuItem({ index, dateField, eventData, selected, onClick }) {
 
   const { t } = useTranslation();
-
-  let thumbURL = eventData.thumbURL;
+  
+  const filesWSURL = window.app_config.hosts['hmi-files-ws']['url'];
+  let thumbURL = eventData?.thumbURL ?? '';
   let thumbStyle = Boolean(eventData.thumbStyle) ? eventData.thumbStyle : style.itemImage;
   let status = eventData.status ?? '';
   let eventTimeString = Boolean(eventData[dateField]) ? dateFormat(eventData[dateField]) : "";
