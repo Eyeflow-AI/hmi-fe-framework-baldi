@@ -11,7 +11,7 @@ import getStationListThunk from './store/thunks/stationList';
 import getPartsListThunk from './store/thunks/partsList';
 import addInterceptors from './api/addInterceptors';
 import getOriginalURLPath from './utils/functions/getOriginalURLPath';
-// import GetActiveAlert from './utils/Hooks/GetActiveAlert';
+import AlertUpdater from './utils/Hooks/AlertUpdater';
 
 // Thirdy-party
 import { useDispatch, useSelector } from 'react-redux';
@@ -24,7 +24,6 @@ function PrepareApp({ children }) {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  // const { activeAlert, loading: loadingAlert, loadAlert } = GetActiveAlert();
   const stationList = useSelector(getStationList);
   const station = useSelector(getStation);
   const stationId = station?._id ?? null;
@@ -73,6 +72,7 @@ function PrepareApp({ children }) {
 
   return (
     <Fragment>
+      <AlertUpdater />
       {stationId
         ? children
         : "Missing station list"

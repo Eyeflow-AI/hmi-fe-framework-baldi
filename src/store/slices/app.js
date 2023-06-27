@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import stationList from '../thunks/stationList';
 import partsList from '../thunks/partsList';
 import feConfig from '../thunks/feConfig';
+import alerts from '../thunks/alerts';
 
 // VARIABLES
 export const initialState = {
@@ -13,6 +14,10 @@ export const initialState = {
   partsObj: {},
   partsListHash: null,
   loadingPartsList: false,
+
+  loadingAlerts: false,
+  alertsHash: null,
+  alerts: [],
 
   feConfig: null,
   loadingFeConfig: false,
@@ -100,7 +105,22 @@ const appSlice = createSlice({
       })
       .addCase(feConfig.rejected, (state) => {
         state.loadingFeConfig = false;
+      })
+
+      .addCase(alerts.pending, (state) => {
+        state.loadingAlerts = true;
+      })
+      .addCase(alerts.fulfilled, (state, action) => {
+        state.loadingAlerts = false;
+        if (state.alertsHash !== action.payload.alertsHash) {
+          state.alerts = action.payload.alerts ?? [];
+          state.alertsHash = action.payload.alertsHash ?? null;
+        };
+      })
+      .addCase(alerts.rejected, (state) => {
+        state.loadingAlerts = false;
       });
+
   },
 });
 
@@ -112,6 +132,9 @@ export const getStationList = (state) => state.app.stationList ?? [];
 
 export const getPartsList = (state) => state.app.partsList ?? [];
 export const getPartsObj = (state) => state.app.partsObj ?? {};
+
+export const getLoadingAlerts = (state) => state.app.loadingAlerts;
+export const getAlerts = (state) => state.app.alerts ?? [];
 
 export const getFeConfig = (state) => state.app.feConfig;
 export const getNotificationBarInfo = (state) => state.app.notificationBar;
