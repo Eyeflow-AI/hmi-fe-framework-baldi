@@ -34,7 +34,7 @@ export default function DateFilterBox({
   const [dateValue, setDateValue] = useState(new Date());
 
   useEffect(() => { //Update query params
-    onChangeParams({ min_event_time: getQueryDateString(dateValue), max_event_time: getQueryDateString(dateValue, { dayTimeDelta: 1 }) });
+    onChangeParams({ min_event_time: getQueryDateString(dateValue), max_event_time: getQueryDateString(dateValue, 1, 'end') });
     // eslint-disable-next-line
   }, [dateValue]);
 

@@ -74,7 +74,7 @@ export default function Monitor({ pageOptions }) {
       onChangeEvent(runningSerial._id);
     };
     // eslint-disable-next-line
-  }, [selectedSerial, runningSerial]);
+  }, []);
 
   useEffect(() => {
     if (selectedSerial?._id === runningSerial?._id) {
@@ -99,12 +99,15 @@ export default function Monitor({ pageOptions }) {
     };
   }, [stationId, queryParams]);
 
-  const onChangeParams = (newValue) => {
+  const onChangeParams = (newValue, deleteKeys = []) => {
     setQueryParams((params) => {
       let newParams = Boolean(params) ? { ...params } : {};
       Object.assign(newParams, newValue);
       if (!newParams.hasOwnProperty("station")) {
         newParams["station"] = stationId;
+      };
+      for (let key of deleteKeys) {
+        delete newParams[key];
       };
       return newParams;
     });
@@ -115,8 +118,6 @@ export default function Monitor({ pageOptions }) {
   };
 
   const updateAll = () => {
-    // loadSerialList();
-    // loadRunningSerial();
     if (selectedSerial) {
       onChangeEvent(selectedSerial._id, false);
     };
@@ -150,6 +151,7 @@ export default function Monitor({ pageOptions }) {
     };
     // eslint-disable-next-line
   }, [serialList]);
+  console.log({ pageOptions })
 
   return (
     <PageWrapper>

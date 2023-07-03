@@ -82,7 +82,6 @@ export default function EventMenuBox({
   onChangeEvent,
   config
 }) {
-  console.log({ config })
 
   const { t } = useTranslation();
 

@@ -2,14 +2,7 @@
 import React, { useEffect, useState, Fragment } from 'react';
 
 // Design
-import { CircularProgress, Grid, Typography, Box } from '@mui/material';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import { Box } from '@mui/material';
 
 
 // Internal
@@ -17,14 +10,13 @@ import { TableView } from './views';
 
 // Third-party
 import { t } from 'i18next';
-import { colors } from 'sdk-fe-eyeflow';
 
 const mainBoxSx = Object.assign({}, window.app_config.style.box, {
   bgcolor: 'background.paper',
   // display: 'flex',
-  alignItems: 'stretch',
-  // justifyContent: 'stretch',
-  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  // flexDirection: 'column',
   // gap: 0.25,
   overflowX: 'hidden',
   overflowY: 'hidden',
@@ -50,6 +42,7 @@ export default function EventSerialDataBox({
   , loading
 }) {
 
+
   const [inspections, setInspections] = useState([]);
   const [buckets, setBuckets] = useState({});
 
@@ -67,7 +60,10 @@ export default function EventSerialDataBox({
     if (buckets) {
       const _inspections = Object.entries(buckets).map(([key, value]) => {
         if (key === 'table') {
-          return VIEWS.TABLE_VIEW({ inspections: value, config });
+          return VIEWS.TABLE_VIEW({ inspections: value, config, appBarHeight });
+        }
+        else {
+          return (<div>Not implemented yet</div>)
         }
       });
       setInspections(_inspections);
@@ -75,13 +71,15 @@ export default function EventSerialDataBox({
     else {
       setInspections([]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buckets]);
 
   return (
     <Box
       width={config.width}
-      height={appBarHeight - config.height}
+      height='100%'
       sx={disabled ? styleSx.mainBoxDisabled : styleSx.mainBox}
+    // id="event-serial-data-box" 
     >
       {
         Object.keys(buckets).length === 1 &&
@@ -93,13 +91,9 @@ export default function EventSerialDataBox({
                 {t('no_data')}
               </Box>
               :
-              inspections.map((inspection, index) => {
-                return (
-                  <Fragment key={index}>
-                    {inspection}
-                  </Fragment>
-                )
-              })
+              <Fragment>
+                {inspections[0]}
+              </Fragment>
           }
         </>
       }
@@ -110,6 +104,6 @@ export default function EventSerialDataBox({
         </>
       }
 
-    </Box>
+    </Box >
   )
 };

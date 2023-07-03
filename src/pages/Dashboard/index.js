@@ -9,11 +9,12 @@ import { CircularProgress, Typography } from '@mui/material';
 import PageWrapper from '../../components/PageWrapper';
 import API from '../../api';
 import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
+import getQueryDateString from '../../utils/functions/getQueryDateString';
+import Bar from '../../components/Charts/Bar';
+import Pie from '../../components/Charts/Pie';
 
 // Third-party
 import { useTranslation } from "react-i18next";
-import Bar from '../../components/Charts/Bar';
-import Pie from '../../components/Charts/Pie';
 
 const charts = {
   bar: (chart) => <Bar chart={chart} />,
@@ -58,16 +59,13 @@ export default function Dashboard({ pageOptions }) {
     for (let i = 0; i < charts.length; i++) {
       // setLoadingSearch(true);
       try {
-        let data = await API.get.queryData({ startTime: startDate, endTime: startDate, queryName: charts[i].query_name, stationId }, setLoadingSearch);
-        console.log(data);
-
+        let data = await API.get.queryData({ startTime: getQueryDateString(startDate), endTime: getQueryDateString(startDate, 0, 'end'), queryName: charts[i].query_name, stationId }, setLoadingSearch);
         chartsToBuild.push(data);
       }
       catch (err) {
         console.error(err);
       }
     }
-    console.log({ chartsToBuild })
     setBuiltChats(chartsToBuild);
   };
 
