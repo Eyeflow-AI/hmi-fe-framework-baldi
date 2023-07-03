@@ -35,7 +35,11 @@ export default function PageWrapper({ children }) {
     <>
       <Box id="page-wrapper-box" sx={style.mainBox}>
         <AppBar />
-        <Box id="page-box" width={pageBoxWidth} sx={style.pageBox}>
+        <Box
+          id="page-box"
+          width={pageBoxWidth}
+          sx={style.pageBox}
+        >
           {children({ width: pageBoxWidth, height: pageBoxHeight, key: Math.random() })}
         </Box>
       </Box>

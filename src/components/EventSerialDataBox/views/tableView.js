@@ -2,14 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 
 // Design
-import { CircularProgress, Grid, Typography, Box } from '@mui/material';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import { CircularProgress, Typography, Box, CardMedia } from '@mui/material';
 
 
 // Internal
@@ -19,14 +12,14 @@ import ImageDialog from '../../ImageDialog';
 import { useTranslation } from "react-i18next";
 import { colors } from 'sdk-fe-eyeflow';
 
-const GRID_SIZES = {
-  1: 12,
-  2: 12,
-  3: 6,
-  4: 6,
-  5: 6,
-  6: 6,
-}
+// const GRID_SIZES = {
+//   1: 12,
+//   2: 12,
+//   3: 6,
+//   4: 6,
+//   5: 6,
+//   6: 6,
+// }
 
 const IMAGE_SIZES = {
   1: '900px',
@@ -88,6 +81,12 @@ const getAnnotatedImg = ({
     canvas.height = img.height;
     const ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0, img.width, img.height);
+
+    const notAnnotatedCanvas = document.createElement('canvas');
+    notAnnotatedCanvas.width = img.width;
+    notAnnotatedCanvas.height = img.height;
+    const notAnnotatedCtx = notAnnotatedCanvas.getContext('2d');
+    notAnnotatedCtx.drawImage(img, 0, 0, img.width, img.height);
 
     if (bboxRegion) {
       // console.log({ bboxRegion })
@@ -175,7 +174,7 @@ const getAnnotatedImg = ({
           setAnnotatedImage(options.camera, canvas.toDataURL("image/jpeg"));
         }
         else {
-          setAnnotatedImage({ index, url: canvas.toDataURL("image/jpeg") });
+          setAnnotatedImage({ index, url: canvas.toDataURL("image/jpeg"), notAnnotatedURL: notAnnotatedCanvas.toDataURL("image/jpeg") });
 
         }
       }
@@ -219,7 +218,7 @@ const getAnnotatedImg = ({
         }
         else {
           setAnnotatedImage(canvas.toDataURL("image/jpeg"));
-          setAnnotatedImage({ index, url: canvas.toDataURL("image/jpeg") });
+          setAnnotatedImage({ index, url: canvas.toDataURL("image/jpeg"), notAnnotatedURL: notAnnotatedCanvas.toDataURL("image/jpeg") });
         }
       }
     }
@@ -234,9 +233,11 @@ export default function TableView({
   loading
   , inspections
   , config
+  , appBarHeight
 }) {
 
   const { t } = useTranslation();
+  console.log({ config })
 
 
   const hmiFilesWs = window.app_config?.hosts?.['hmi-files-ws']?.url ?? '';
@@ -251,9 +252,12 @@ export default function TableView({
     imagesURLSRef.current = newImagesURLS;
     setImagesURLS(newImagesURLS);
   }
-  const setAnnotatedImage = ({ index, url }) => {
+  const setAnnotatedImage = ({ index, url, notAnnotatedURL }) => {
     let _imagesURLS = [...imagesURLSRef.current];
-    _imagesURLS[index] = url;
+    _imagesURLS[index] = {
+      annotated: url,
+      notAnnotated: notAnnotatedURL
+    };
     setImagesURLSRef([..._imagesURLS]);
   }
 
@@ -292,24 +296,18 @@ export default function TableView({
   useEffect(() => {
     if (inspections.length === 1) {
       let checklist = inspections[0]?.event_data?.inspection_result?.check_list?.region;
-      let _classesHeaderFlag = false;
       const _imagesURLS = [];
       checklist.forEach((inspection, index) => {
         _imagesURLS.push('');
       })
       setImagesURLSRef(_imagesURLS);
       checklist.forEach((inspection, index) => {
-        console.log({ inspection })
-        // setImagesURLS({ ...imagesURLS, [String(index)]: '' });
-        // let detections = inspection?.tests?.detections;
         drawImage({
           url: `${hmiFilesWs}/eyeflow_data/event_image/${inspection?.image_path}/${inspection?.image_file}`,
           index,
           sizes: IMAGE_SIZES[checklist.length],
           region: inspection,
         });
-        // console.log({ imageURL })
-        // _imagesURLS.push(imageURL);
       })
       setDataToUse(checklist);
       // console.log({ _imagesURLS })
@@ -318,6 +316,7 @@ export default function TableView({
     else if (inspections.length > 1) {
 
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inspections]);
 
   useEffect(() => {
@@ -329,183 +328,280 @@ export default function TableView({
     }
   }, []);
 
-  console.log({ title: 'table_view', dataToUse, imagesURLS })
+
+  const HEIGHT = [1, 1, 1, 2, 2, 2];
+  const WIDTH = [1, 2, 3, 3, 3, 3];
 
   return (
-    <Grid
-      container
+    <Box
+      width={config.width}
       height='100%'
-      spacing={1}
-      direction="column"
-      justifyContent="center"
-      alignItems="space-evenly"
+      // height='100%'
+      // direction="column"
+      sx={{
+        flexWrap: 'wrap',
+        display: 'flex',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+      }}
+      id="table_view"
     >
       {
         !loading && dataToUse.length > 0 ?
           dataToUse.map((inspection, index) => (
-            <Grid
-              item
-              key={index}
-              xs={GRID_SIZES[dataToUse.length]}
+            <Box
               sx={{
-                justifyContent: 'center',
+                display: 'flex',
+                justifyContent: 'flex-start',
                 alignItems: 'center',
-                // height: '100%',
+                height: `calc(100% / ${HEIGHT[dataToUse.length - 1]})`,
+                width: `calc(100% / ${WIDTH[dataToUse.length - 1]})`,
+                flexDirection: 'column',
                 backgroundColor: inspection?.result ? `${colors.statuses['ok']}50` : `${colors.statuses['ng']}50`,
-                // opacity: 0.8,
                 border: `.02rem solid ${colors.eyeflow.blue.medium}`,
+                flexGrow: 1,
+                overflow: 'hidden',
               }}
             >
-
               <Box
                 sx={{
+                  width: '100%',
+                  height: '50%',
                   display: 'flex',
-                  justifyContent: 'flex-start',
+                  justifyContent: 'center',
                   alignItems: 'center',
-                  height: '100%',
                   flexDirection: 'column',
-                  padding: '.5rem',
+                }}
+              >
+                <Typography textAlign={'center'} textTransform={'uppercase'}>
+                  {inspection?.name}
+                  &nbsp;&nbsp;
+                  <span
+                    style={{
+                      color: inspection?.result ? colors.green : colors.red,
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {inspection.result ? t('OK') : t('NG')}
+                  </span>
+                </Typography>
+                {
+                  imagesURLS?.[index] ?
+                    <CardMedia
+                      component="img"
+                      src={imagesURLS?.[index].notAnnotated}
+                      style={{
+                        height: '100px',
+                        display: 'block',
+                        margin: 'auto',
+                        objectFit: 'contain',
+                        paddingBottom: '.5rem',
+                        cursor: 'pointer',
+                      }}
+                      alt="Inspection"
+                      onClick={() => {
+                        setDialogTitle(inspection?.name ?? '');
+                        handleImagePath({ image: imagesURLS?.[index]?.annotated });
+                        setOpenDialog(true);
+                      }}
+                    />
+                    :
+
+                    <Box
+                      sx={{
+                        width: '100%',
+                        // height: '150px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: colors.eyeflow.blue.light,
+                        border: `.02rem solid ${colors.eyeflow.blue.medium}`,
+                        borderRadius: '.5rem',
+                        color: "black"
+                      }}
+                    >
+                      <Typography textAlign={'center'} textTransform={'uppercase'}>
+                        {t('no_image')}
+                      </Typography>
+                    </Box>
+                }
+
+              </Box>
+              <Box
+                sx={{
+                  width: '100%',
+                  height: `50%`,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                  border: `.02rem solid black`,
+                  bgcolor: 'background.paper',
+                  borderRadius: '.5rem',
                 }}
               >
                 <Box
                   sx={{
                     width: '100%',
-                    // height: IMAGE_SIZES[dataToUse.length],
+                    height: '20px',
                     display: 'flex',
-                    // height: '100%',
                     justifyContent: 'center',
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: '100%',
+                      height: '100%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      flexDirection: 'row',
+                    }}
+                  >
+                    <Typography textAlign={'center'} textTransform={'uppercase'} variant="caption">
+                      {t('element')}
+                    </Typography>
+                  </Box>
+                  {
+                    inspection?.tests?.[0]?.detections?.[0]?.classes?.length > 0 &&
+                    <Box
+                      sx={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        flexDirection: 'row',
+                      }}
+                    >
+                      <Typography textAlign={'center'} textTransform={'uppercase'} variant="caption">
+                        {t('classes')}
+                      </Typography>
+                    </Box>
+                  }
+                  <Box
+                    sx={{
+                      width: '100%',
+                      height: '100%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      flexDirection: 'row',
+                    }}
+                  >
+                    <Typography textAlign={'center'} textTransform={'uppercase'} variant="caption">
+                      {t('predicted')}
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      width: '100%',
+                      height: '100%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      flexDirection: 'row',
+                    }}
+                  >
+                    <Typography textAlign={'center'} textTransform={'uppercase'} variant="caption">
+                      {t('detected')}
+                    </Typography>
+                  </Box>
+                </Box>
+                <Box
+                  sx={{
+                    overflowY: 'scroll',
+                    overflowX: 'hidden',
+                    height: `calc(100% - 20px)`,
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'flex-start',
                     alignItems: 'center',
                     flexDirection: 'column',
                   }}
                 >
-                  <Typography textAlign={'center'} textTransform={'uppercase'}>
-                    {inspection?.name}
-                    &nbsp;&nbsp;
-                    <span
-                      style={{
-                        color: inspection?.result ? colors.green : colors.red,
-                        fontWeight: 'bold',
+                  {inspection?.tests.map((row, i) => (
+                    <Box
+                      key={`${i}-tests-table`}
+                      sx={{
+                        height: '30px',
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: row?.result ? `${colors.statuses['ok']}70` : `${colors.statuses['ng']}70`,
                       }}
                     >
-                      {inspection.result ? t('OK') : t('NG')}
-                    </span>
-                  </Typography>
-                  {
-                    imagesURLS?.[index] ?
-                      <img
-                        // src="/assets/cat.webp"
-                        // src={`${hmiFilesWs}/eyeflow_data/event_image/${inspection?.image_path}/${inspection?.image_file}`}
-                        src={imagesURLS?.[index]}
-                        // src={noImageBlob}
-                        style={{
-                          // width: "calc(2560px * 0.15)",
-                          width: IMAGE_SIZES[dataToUse.length],
-                          // width: '100%',
-                          // height: '100%',
-                          display: 'block',
-                          margin: 'auto',
-                          objectFit: 'contain',
-                          paddingBottom: '.5rem',
-                          cursor: 'pointer',
-                        }}
-                        alt="Inspection"
-                        onClick={() => {
-                          setDialogTitle(inspection?.name ?? '');
-                          handleImagePath({ image: imagesURLS?.[index] });
-                          setOpenDialog(true);
-                        }}
-                      />
-                      :
-
                       <Box
                         sx={{
+                          height: '100%',
                           width: '100%',
-                          height: '150px',
                           display: 'flex',
                           justifyContent: 'center',
                           alignItems: 'center',
-                          backgroundColor: colors.eyeflow.blue.light,
-                          border: `.02rem solid ${colors.eyeflow.blue.medium}`,
-                          borderRadius: '.5rem',
-                          color: "black"
                         }}
                       >
-                        <Typography textAlign={'center'} textTransform={'uppercase'}>
-                          {t('no_image')}
+                        <Typography textAlign={'center'} textTransform={'uppercase'} variant="caption">
+                          {row?.name}
                         </Typography>
                       </Box>
-                  }
+                      {
+                        inspection?.tests?.[0]?.detections?.[0]?.classes?.length > 0 &&
+                        <Box>
+                          {row?.detections?.map((detection, i) => {
+                            let classes = detection?.classes?.map((c) => c?.class).join(', ');
+                            return (
+                              <span
+                                key={`${i}-detections`}
+                                style={{
+                                  color: 'black',
+                                  fontWeight: 'bold',
+                                }}
+                              >
+                                &nbsp;
 
-                </Box>
-                <Box
-                  sx={{
-                    width: '100%',
-                    height: dataToUse.length > 1 ? `calc(100% - 256px - ${IMAGE_SIZES[dataToUse.length]})` : `calc(100% - 128px - ${IMAGE_SIZES[dataToUse.length]})`,
-                    display: 'block',
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                  }}
-                >
-                  <TableContainer component={Paper}>
-                    <Table size="small" aria-label="info table">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>{t('element')}</TableCell>
-                          {
-                            inspection?.tests?.[0]?.detections?.[0]?.classes?.length > 0 &&
-                            <TableCell align="right">{t('classes')}</TableCell>
-                          }
-                          <TableCell align="right">{t('predicted')}</TableCell>
-                          <TableCell align="right">{t('detected')}</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {inspection?.tests.map((row, i) => (
-                          <TableRow
-                            key={`${i}-tests-table`}
-                            sx={{
-                              '&:last-child td, &:last-child th': { border: 0 },
-                              backgroundColor: row?.result ? `${colors.statuses['ok']}70` : `${colors.statuses['ng']}70`,
-                            }}
-                          >
-                            <TableCell component="th" scope="row">
-                              {row?.name}
-                            </TableCell>
-                            {
-                              inspection?.tests?.[0]?.detections?.[0]?.classes?.length > 0 &&
-                              <TableCell align="right">
-                                {row?.detections?.map((detection, i) => {
-                                  let classes = detection?.classes?.map((c) => c?.class).join(', ');
-                                  console.log({ classes })
-                                  return (
-                                    <span
-                                      key={`${i}-detections`}
-                                      style={{
-                                        color: 'black',
-                                        fontWeight: 'bold',
-                                      }}
-                                    >
-                                      &nbsp;
-                                      {classes}
-                                    </span>
-                                  )
-                                })}
-                              </TableCell>
-                            }
-                            <TableCell align="right">{row?.function_parms?.count ?? 0}</TableCell>
-                            <TableCell
-                              align="right"
-                            >
-                              {(row?.detections ?? []).length}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                                <Typography textAlign={'center'} textTransform={'uppercase'} variant="caption">
+                                  {classes}
+                                </Typography>
+                              </span>
+                            )
+                          })}
+                        </Box>
+                      }
+                      <Box
+                        sx={{
+                          height: '100%',
+                          width: '100%',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Typography textAlign={'center'} textTransform={'uppercase'} variant="caption">
+                          {row?.function_parms?.count ?? 0}
+                        </Typography>
+                      </Box>
+                      <Box
+                        sx={{
+                          height: '100%',
+                          width: '100%',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Typography textAlign={'center'} textTransform={'uppercase'} variant="caption">
+                          {(row?.detections ?? []).length}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  ))}
                 </Box>
               </Box>
-            </Grid>
+            </Box>
           ))
           :
           (
@@ -534,6 +630,6 @@ export default function TableView({
         imagePath={imagePath}
         title={dialogTitle}
       />
-    </Grid>
+    </Box>
   )
 }

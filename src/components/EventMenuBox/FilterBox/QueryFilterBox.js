@@ -63,7 +63,7 @@ export default function DateFilterBox({
           defaultValue = new Date(getQueryDateString(new Date()));
         }
         else if (queryField.field === "max_event_time") {
-          defaultValue = new Date(getQueryDateString(new Date(), { dayTimeDelta: 1 }));
+          defaultValue = new Date(getQueryDateString(new Date(), 1, 'end'));
         }
         else {
           defaultValue = new Date();
@@ -72,7 +72,6 @@ export default function DateFilterBox({
       else if (queryField.type === "text") {
         defaultValue = "";
       }
-      console.log({ queryField })
 
       return {
         type: queryField.type,

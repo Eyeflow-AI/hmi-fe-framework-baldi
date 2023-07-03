@@ -30,7 +30,6 @@ export default function GetRunningSerial({ stationId, sleepTime = 30000 } = {}) 
     };
   };
 
-  console.log({ data })
   useEffect(() => {
     loadRunningSerial();
     // eslint-disable-next-line
