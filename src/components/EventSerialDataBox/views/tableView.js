@@ -512,7 +512,7 @@ export default function TableView({
                 </Box>
                 <Box
                   sx={{
-                    overflowY: 'scroll',
+                    overflowY: 'auto',
                     overflowX: 'hidden',
                     height: `calc(100% - 20px)`,
                     width: '100%',
