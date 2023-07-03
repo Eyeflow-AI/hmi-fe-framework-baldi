@@ -45,6 +45,7 @@ export default function Monitor({ pageOptions }) {
   // eslint-disable-next-line
   const [selectedSerialCountData, setSelectedSerialCountData] = useState(null);
   const [loadingSelected, setLoadingSelected] = useState(false);
+  const [keepRunningEvent, setKeepRunningEvent] = useState(true);
 
   const onChangeEvent = (serialId, changedSerial = true) => {
 
@@ -69,7 +70,33 @@ export default function Monitor({ pageOptions }) {
     }
   };
 
+
+  const onChangeEventByClick = (serialId, changedSerial = true) => {
+
+    setKeepRunningEvent(false);
+    let collection = 'inspection_events';
+    if (serialId === runningSerial?._id) {
+      collection = 'staging_events';
+    }
+    if (changedSerial) {
+      setSelectedSerial(null);
+      setLoadingSelected(true);
+    };
+    if (serialId) {
+      API.get.serial({ stationId, serialId, collection })
+        .then((data) => {
+          setSelectedSerial(data?.serial ?? null);
+          setSelectedSerialCountData(data?.countData ?? null);
+        })
+        .catch(console.error)
+        .finally(() => {
+          setLoadingSelected(false);
+        });
+    }
+  };
+
   useEffect(() => {
+    setKeepRunningEvent(true);
     if (!selectedSerial && runningSerial) {
       onChangeEvent(runningSerial._id);
     };
@@ -80,6 +107,9 @@ export default function Monitor({ pageOptions }) {
     if (selectedSerial?._id === runningSerial?._id) {
       updateAll();
     }
+    if (!selectedSerial && runningSerial && keepRunningEvent) {
+      onChangeEvent(runningSerial._id);
+    };
   }, [runningSerial])
 
   // useEffect(() => {console.log({runningBatch})}, [runningBatch]);
@@ -151,7 +181,6 @@ export default function Monitor({ pageOptions }) {
     };
     // eslint-disable-next-line
   }, [serialList]);
-  console.log({ pageOptions })
 
   return (
     <PageWrapper>
@@ -165,7 +194,7 @@ export default function Monitor({ pageOptions }) {
             events={serialList}
             loadingData={loadingSerialList}
             selectedEventId={selectedSerial?._id ?? null}
-            onChangeEvent={onChangeEvent}
+            onChangeEvent={onChangeEventByClick}
             queryParams={queryParams}
             onChangeParams={onChangeParams}
             config={pageOptions.components.EventMenuBox}
