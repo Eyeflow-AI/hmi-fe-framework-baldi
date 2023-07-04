@@ -18,6 +18,7 @@ export default function GetImagesList({ url, sleepTime = 30000 } = {}) {
       responseType: 'json',
     })
       .then(response => {
+        console.log({ response })
         const data = response.data;
         const imagesList = data?.cameras_list ?? [];
         setImagesList(imagesList);

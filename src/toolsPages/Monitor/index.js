@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 
 // Design
-import { Box, Grid, Typography, Card, CardMedia } from '@mui/material';
+import { Box, Typography, Card, CardMedia } from '@mui/material';
 
 // Internal
 import PageWrapper from '../../components/PageWrapper';
@@ -49,6 +49,10 @@ export default function Monitor({ pageOptions }) {
     }
   }, [pageOptions]);
 
+
+  const HEIGHT = [1, 1, 1, 2, 2, 2];
+  const WIDTH = [1, 2, 3, 3, 3, 3];
+
   return (
     <PageWrapper>
       {({ width, height }) =>
@@ -57,23 +61,29 @@ export default function Monitor({ pageOptions }) {
           height={height}
           sx={style.mainBox}
         >
-          <Grid
-            container
-            height='100%'
-            justifyContent="space-evenly"
-            alignItems="space-evenly"
-            direction={imagesList.length > 2 ? 'row' : 'column'}
-            spacing={2}
+          <Box
+            sx={{
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              overflow: 'hidden',
+            }}
           >
             {imagesList.map((item, index) => {
               return (
-                <Grid
-                  item
-                  xs={pageOptions?.options?.GRID_SIZES[String(imagesList.length)]}
+                <Box
                   key={index}
                   sx={{
                     justifyContent: 'center',
                     alignItems: 'center',
+                    display: 'flex',
+                    height: `calc(100% / ${HEIGHT[imagesList.length - 1]})`,
+                    width: `calc(100% / ${WIDTH[imagesList.length - 1]})`,
+                    flexDirection: 'column',
                   }}
                 >
                   <Card
@@ -96,36 +106,23 @@ export default function Monitor({ pageOptions }) {
                       style={{
                         objectFit: 'contain',
                         // width: "calc(2560px * 0.15)",
-                        width: pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)],
+                        width: `calc(${pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)]} - 10rem)`,
                         height: pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)],
                         display: 'block',
                         margin: 'auto',
                         paddingBottom: '.5rem',
                       }}
                     />
-                    {/* <img
-                    src={`${infoURL}/${item.camera_name}?time=${new Date().getTime()}`}
-                    style={{
-                      objectFit: 'stretch',
-                      // width: "calc(2560px * 0.15)",
-                      width: IMAGE_SIZES[imagesList.length],
-                      height: IMAGE_SIZES[imagesList.length],
-                      display: 'block',
-                      margin: 'auto',
-                      paddingBottom: '.5rem',
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => { setOpenDialog(true); setDialogTitle(`${item.camera_name} - ${item.frame_time}`); setImagePath(`${infoURL}/${item.camera_name}`) }}
-                  /> */}
-                    <Typography textAlign='center'>
-                      {`${item.camera_name}`}
-                    </Typography>
                   </Card>
-                </Grid>
+
+                  <Typography textAlign='center'>
+                    {`${item.camera_name}`}
+                  </Typography>
+                </Box>
               )
             })
             }
-          </Grid>
+          </Box>
 
 
           <ImageDialog
