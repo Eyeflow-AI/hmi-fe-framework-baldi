@@ -452,7 +452,7 @@ export default function TableView({
                 >
                   <Box
                     sx={{
-                      width: '100%',
+                      width: inspection?.tests?.[0]?.detections?.[0]?.classes?.length > 0 ? '33%' : '50%',
                       height: '100%',
                       display: 'flex',
                       justifyContent: 'center',
@@ -468,7 +468,7 @@ export default function TableView({
                     inspection?.tests?.[0]?.detections?.[0]?.classes?.length > 0 &&
                     <Box
                       sx={{
-                        width: '100%',
+                        width: inspection?.tests?.[0]?.detections?.[0]?.classes?.length > 0 ? '33%' : '50%',
                         height: '100%',
                         display: 'flex',
                         justifyContent: 'center',
@@ -483,7 +483,7 @@ export default function TableView({
                   }
                   <Box
                     sx={{
-                      width: '100%',
+                      width: inspection?.tests?.[0]?.detections?.[0]?.classes?.length > 0 ? '33%' : '50%',
                       height: '100%',
                       display: 'flex',
                       justifyContent: 'center',
@@ -492,21 +492,7 @@ export default function TableView({
                     }}
                   >
                     <Typography textAlign={'center'} textTransform={'uppercase'} variant="caption">
-                      {t('predicted')}
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      width: '100%',
-                      height: '100%',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      flexDirection: 'row',
-                    }}
-                  >
-                    <Typography textAlign={'center'} textTransform={'uppercase'} variant="caption">
-                      {t('detected')}
+                      {t('detected')} / {t('predicted')}
                     </Typography>
                   </Box>
                 </Box>
@@ -526,19 +512,22 @@ export default function TableView({
                     <Box
                       key={`${i}-tests-table`}
                       sx={{
-                        height: '30px',
+                        height: '100%',
+                        maxHeight: '60px',
                         width: '100%',
                         display: 'flex',
                         flexDirection: 'row',
                         justifyContent: 'center',
                         alignItems: 'center',
                         backgroundColor: row?.result ? `${colors.statuses['ok']}70` : `${colors.statuses['ng']}70`,
+                        padding: '.2rem',
+                        margin: '.1rem',
                       }}
                     >
                       <Box
                         sx={{
                           height: '100%',
-                          width: '100%',
+                          width: inspection?.tests?.[0]?.detections?.[0]?.classes?.length > 0 ? '33%' : '50%',
                           display: 'flex',
                           justifyContent: 'center',
                           alignItems: 'center',
@@ -550,23 +539,21 @@ export default function TableView({
                       </Box>
                       {
                         inspection?.tests?.[0]?.detections?.[0]?.classes?.length > 0 &&
-                        <Box>
+                        <Box
+                          sx={{
+                            height: '100%',
+                            width: inspection?.tests?.[0]?.detections?.[0]?.classes?.length > 0 ? '33%' : '50%',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}
+                        >
                           {row?.detections?.map((detection, i) => {
                             let classes = detection?.classes?.map((c) => c?.class).join(', ');
                             return (
-                              <span
-                                key={`${i}-detections`}
-                                style={{
-                                  color: 'black',
-                                  fontWeight: 'bold',
-                                }}
-                              >
-                                &nbsp;
-
-                                <Typography textAlign={'center'} textTransform={'uppercase'} variant="caption">
-                                  {classes}
-                                </Typography>
-                              </span>
+                              <Typography textAlign={'center'} textTransform={'uppercase'} variant="caption" fontWeight={'bold'}>
+                                {classes}
+                              </Typography>
                             )
                           })}
                         </Box>
@@ -574,27 +561,14 @@ export default function TableView({
                       <Box
                         sx={{
                           height: '100%',
-                          width: '100%',
+                          width: inspection?.tests?.[0]?.detections?.[0]?.classes?.length > 0 ? '33%' : '50%',
                           display: 'flex',
                           justifyContent: 'center',
                           alignItems: 'center',
                         }}
                       >
                         <Typography textAlign={'center'} textTransform={'uppercase'} variant="caption">
-                          {row?.function_parms?.count ?? 0}
-                        </Typography>
-                      </Box>
-                      <Box
-                        sx={{
-                          height: '100%',
-                          width: '100%',
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <Typography textAlign={'center'} textTransform={'uppercase'} variant="caption">
-                          {(row?.detections ?? []).length}
+                          {(row?.detections ?? []).length} /  {row?.function_parms?.count ?? 0}
                         </Typography>
                       </Box>
                     </Box>
