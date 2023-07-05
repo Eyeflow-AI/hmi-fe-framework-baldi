@@ -373,44 +373,66 @@ export default function TableView({
                   flexDirection: 'column',
                 }}
               >
-                <Typography textAlign={'center'} textTransform={'uppercase'}>
-                  {inspection?.name}
-                  &nbsp;&nbsp;
-                  <span
-                    style={{
-                      color: inspection?.result ? colors.green : colors.red,
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    {inspection.result ? t('OK') : t('NG')}
-                  </span>
-                </Typography>
+                <Box
+                  sx={{
+                    width: '100%',
+                    height: '20%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Typography textAlign={'center'} textTransform={'uppercase'}>
+                    {inspection?.name}
+                    &nbsp;&nbsp;
+                    <span
+                      style={{
+                        color: inspection?.result ? colors.green : colors.red,
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {inspection.result ? t('OK') : t('NG')}
+                    </span>
+                  </Typography>
+                </Box>
                 {
                   imagesURLS?.[index] ?
-                    <CardMedia
-                      component="img"
-                      src={imagesURLS?.[index].notAnnotated}
-                      style={{
-                        height: '100px',
-                        display: 'block',
-                        margin: 'auto',
-                        objectFit: 'contain',
-                        paddingBottom: '.5rem',
-                        cursor: 'pointer',
+                    <Box
+                      sx={{
+                        width: '100%',
+                        height: '80%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        borderRadius: '.5rem',
+                        color: "black"
                       }}
-                      alt="Inspection"
-                      onClick={() => {
-                        setDialogTitle(inspection?.name ?? '');
-                        handleImagePath({ image: imagesURLS?.[index]?.annotated });
-                        setOpenDialog(true);
-                      }}
-                    />
+                    >
+                      <CardMedia
+                        component="img"
+                        src={imagesURLS?.[index].notAnnotated}
+                        style={{
+                          height: '100%',
+                          display: 'block',
+                          margin: 'auto',
+                          objectFit: 'contain',
+                          paddingBottom: '.5rem',
+                          cursor: 'pointer',
+                        }}
+                        alt="Inspection"
+                        onClick={() => {
+                          setDialogTitle(inspection?.name ?? '');
+                          handleImagePath({ image: imagesURLS?.[index]?.annotated });
+                          setOpenDialog(true);
+                        }}
+                      />
+                    </Box>
                     :
 
                     <Box
                       sx={{
                         width: '100%',
-                        // height: '150px',
+                        height: '80%',
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',

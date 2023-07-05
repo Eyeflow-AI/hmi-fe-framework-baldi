@@ -8,7 +8,8 @@ import {
   , ListItemButton
   , Typography
   , Button
-  , Stack
+  , Stack,
+  TextField
 } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 
@@ -19,8 +20,6 @@ import API from '../../api';
 
 // Third-party
 import { useTranslation } from "react-i18next";
-import JSONInput from 'react-json-editor-ajrm';
-import locale from 'react-json-editor-ajrm/locale/en';
 
 
 const style = {
@@ -58,23 +57,22 @@ export default function ChecklistConnector({ pageOptions }) {
   const getDocument = (selectedParam) => {
     API.get.appParameterDocument({ parameterName: selectedParam })
       .then(res => {
-        setCurrentText(res?.document ?? {});
+        setCurrentText(JSON.stringify(res?.document ?? {}, undefined, 4));
       })
       .finally(() => {
       });
   }
 
-  const handleTextChange = (event) => {
-    setCurrentText(event.jsObject);
-    setErrorInText(!Boolean(event.jsObject));
-  }
-  console.log({ currentText })
+  // const handleTextChange = (event) => {
+  //   setCurrentText(event.jsObject);
+  //   setErrorInText(!Boolean(event.jsObject));
+  // }
 
   const saveParam = () => {
-    let _currentText = currentText;
+    let _currentText = JSON.parse(currentText);
     _currentText.name = selectedParam;
     API.put.appParameterDocument({
-      document: currentText,
+      document: JSON.parse(currentText),
     })
       .then(res => {
         getData();
@@ -100,9 +98,21 @@ export default function ChecklistConnector({ pageOptions }) {
       getDocument(selectedParam);
     }
     else {
-      setCurrentText({});
+      setCurrentText(JSON.stringify({}, undefined, 4));
     }
-  }, [selectedParam])
+  }, [selectedParam]);
+
+
+  useEffect(() => {
+    if (currentText) {
+      try {
+        JSON.parse(currentText);
+        setErrorInText(false);
+      } catch (e) {
+        setErrorInText(true);
+      }
+    }
+  }, [currentText]);
 
   return (
     <PageWrapper>
@@ -176,22 +186,23 @@ export default function ChecklistConnector({ pageOptions }) {
               width: 'calc(50% - 250px)',
             }}
           >
-            <JSONInput
-              id='a_unique_id'
-              placeholder={currentText}
-              // colors={darktheme}
-              locale={locale}
-              height={'calc(100% - 50px)'}
-              width={'100%'}
-              waitAfterKeyPress={3000}
-              style={{
-                body: {
-                  fontSize: '20px',
-                }
-              }}
-              onChange={handleTextChange}
-              onBlur={waitChange}
-            />
+            <Box>
+              <TextField
+                id="outlined-basic"
+                variant="outlined"
+                value={currentText}
+                onChange={(e) => setCurrentText(e.target.value)}
+                multiline
+                rows={35}
+                fullWidth
+                error={errorInText}
+                helperText={errorInText && t('parms_must_be_json')}
+                sx={{
+                  backgroundColor: 'black',
+                }}
+              />
+            </Box>
+
             <Box
               sx={{
                 flexGrow: 1,

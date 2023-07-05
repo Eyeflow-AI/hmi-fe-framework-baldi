@@ -35,8 +35,6 @@ import { setNotificationBar } from '../../store/slices/app';
 
 // Third-party
 import { useTranslation } from "react-i18next";
-import JSONInput from 'react-json-editor-ajrm';
-import locale from 'react-json-editor-ajrm/locale/en';
 import { useDispatch } from 'react-redux';
 import JsonView from 'react18-json-view'
 import 'react18-json-view/src/style.css'
@@ -49,16 +47,6 @@ const style = {
   }),
 };
 
-// var jsonData = [{
-//   "task": "Write Book",
-//   "done": false
-// }, {
-//   "task": "Learn React",
-//   "done": true
-// }, {
-//   "task": "Buy Mobile",
-//   "done": false
-// }];
 
 export default function Query({ pageOptions }) {
 
@@ -110,14 +98,8 @@ export default function Query({ pageOptions }) {
     getData();
   }, []);
 
-  const handleTextChange = (event) => {
-    setCurrentText(event.jsObject);
-    setErrorInText(!Boolean(event.jsObject));
-  }
   const saveQuery = () => {
     if (selectedQuery && searchMethod && collectionName && currentText) {
-      console.log({ collectionName, searchMethod, selectedQuery, currentText })
-
       let data = {
         queryName: selectedQuery,
         searchMethod: searchMethod,
@@ -143,7 +125,7 @@ export default function Query({ pageOptions }) {
       API.post.runQuery({
         searchMethod: searchMethod,
         collectionName: collectionName,
-        query: JSON.stringify(currentText),
+        query: currentText,
       })
         .then(res => {
           let result = res?.result ?? [];
@@ -187,7 +169,7 @@ export default function Query({ pageOptions }) {
       }
       setCollectionName(collectioName);
       setSearchMethod(searchMethod);
-      setCurrentText(method);
+      setCurrentText(JSON.stringify(method, undefined, 4));
     }
     // eslint-disable-next-line no-unused-vars
   }, [selectedQuery]);
@@ -199,8 +181,16 @@ export default function Query({ pageOptions }) {
     // eslint-disable-next-line no-unused-vars
   }, [showAddQueryDialog])
 
-
-  console.log({ selectedQuery })
+  useEffect(() => {
+    if (currentText) {
+      try {
+        JSON.parse(currentText);
+        setErrorInText(false);
+      } catch (e) {
+        setErrorInText(true);
+      }
+    }
+  }, [currentText]);
 
   return (
     <PageWrapper>
@@ -344,21 +334,19 @@ export default function Query({ pageOptions }) {
                 marginBottom: 2,
               }}
             >
-
-              <JSONInput
-                id='a_unique_id'
-                placeholder={currentText}
-                // colors={darktheme}
-                locale={locale}
-                height={'100%'}
-                width={'100%'}
-                waitAfterKeyPress={3000}
-                style={{
-                  body: {
-                    fontSize: '20px',
-                  }
+              <TextField
+                id="outlined-basic"
+                variant="outlined"
+                value={currentText}
+                onChange={(e) => setCurrentText(e.target.value)}
+                multiline
+                rows={33}
+                fullWidth
+                error={errorInText}
+                helperText={errorInText && t('parms_must_be_json')}
+                sx={{
+                  backgroundColor: 'black',
                 }}
-                onChange={handleTextChange}
               />
             </Box>
             <Box
