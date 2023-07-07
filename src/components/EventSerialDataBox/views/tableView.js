@@ -237,8 +237,6 @@ export default function TableView({
 }) {
 
   const { t } = useTranslation();
-  console.log({ config })
-
 
   const hmiFilesWs = window.app_config?.hosts?.['hmi-files-ws']?.url ?? '';
   const [openDialog, setOpenDialog] = useState(false);
@@ -310,11 +308,27 @@ export default function TableView({
         });
       })
       setDataToUse(checklist);
-      // console.log({ _imagesURLS })
-      // setImagesURLS(_imagesURLS);
     }
     else if (inspections.length > 1) {
+      let checklist = inspections.map((inspection) => {
+        return inspection?.event_data?.inspection_result?.check_list?.region;
+      });
+      const _imagesURLS = [];
+      checklist = checklist.flat();
 
+      checklist.forEach((inspection, index) => {
+        _imagesURLS.push('');
+      })
+      setImagesURLSRef(_imagesURLS);
+      checklist.forEach((inspection, index) => {
+        drawImage({
+          url: `${hmiFilesWs}/eyeflow_data/event_image/${inspection?.image_path}/${inspection?.image_file}`,
+          index,
+          sizes: IMAGE_SIZES[checklist.length],
+          region: inspection,
+        });
+      });
+      setDataToUse(checklist);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inspections]);
