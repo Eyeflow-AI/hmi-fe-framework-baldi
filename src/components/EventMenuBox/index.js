@@ -100,6 +100,7 @@ export default function EventMenuBox({
   const startBatchIcon = config?.startBatchIcon;
   const startSerialIcon = config?.startSerialIcon;
   const noEventIcon = config?.noEventIcon;
+  const conveyorIcon = config?.conveyorIcon;
 
   const [menuBoxHeight, setMenuBoxHeight] = useState(height);
 
@@ -134,6 +135,7 @@ export default function EventMenuBox({
                     eventData={runningEvent}
                     selected={runningEvent._id === selectedEventId}
                     onClick={onEventClick(runningEvent)}
+                    conveyorIcon={conveyorIcon}
                   />
                 )
                 : (
@@ -158,6 +160,7 @@ export default function EventMenuBox({
                     eventData={runningEvent}
                     selected={runningEvent._id === selectedEventId}
                     onClick={onEventClick(runningEvent)}
+                    conveyorIcon={conveyorIcon}
                   />
                 )
                 :
@@ -195,6 +198,7 @@ export default function EventMenuBox({
           onChangeEvent={onChangeEvent}
           dateField={dateField}
           itemMenuHeight={itemMenuHeight}
+          conveyorIcon={conveyorIcon}
         />
       </Box>
     </Box>

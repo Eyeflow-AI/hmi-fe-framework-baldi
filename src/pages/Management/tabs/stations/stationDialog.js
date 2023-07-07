@@ -82,7 +82,7 @@ export default function StationDialog({
   useEffect(() => {
     if (selectedStationInfo) {
       setStationName(selectedStationInfo.label);
-      setParms(JSON.stringify(selectedStationInfo.parms));
+      setParms(JSON.stringify(selectedStationInfo.parms, undefined, 4));
     }
   }, [selectedStationInfo]);
 
