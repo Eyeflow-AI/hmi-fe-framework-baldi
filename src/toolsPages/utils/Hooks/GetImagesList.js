@@ -6,7 +6,7 @@ import axios from 'axios';
 import Clock from './Clock';
 
 
-export default function GetImagesList({ url, sleepTime = 30000 } = {}) {
+export default function GetImagesList({ url, imageBaseURL, sleepTime = 30000 } = {}) {
 
   const { clock } = Clock({ sleepTime });
   const [imagesList, setImagesList] = useState([]);
@@ -18,9 +18,22 @@ export default function GetImagesList({ url, sleepTime = 30000 } = {}) {
       responseType: 'json',
     })
       .then(response => {
-        console.log({ response })
-        const data = response.data;
-        const imagesList = data?.cameras_list ?? [];
+        const requestData = response.data;
+        const dataType = requestData?.type ?? 'edge_python';
+        let imagesList = [];
+        if (dataType === 'edge_python') {
+          imagesList = requestData?.cameras_list ?? [];
+        }
+        else if (dataType === 'edge_c') {
+          let inputs = Object.keys(requestData?.data ?? {});
+          imagesList = inputs.map((input) => requestData.data[input]);
+        };
+        imagesList.forEach((imageData => {
+          if (imageBaseURL.endsWith('/'))
+            imageData.full_url = imageBaseURL.slice(0, -1) + imageData.url_path;
+          else
+            imageData.full_url = imageBaseURL + imageData.url_path;
+        }));
         setImagesList(imagesList);
       })
       .catch(console)
@@ -29,9 +42,11 @@ export default function GetImagesList({ url, sleepTime = 30000 } = {}) {
   };
 
   useEffect(() => {
-    loadImagesList();
+    if (url && imageBaseURL) {
+      loadImagesList();
+    }
     // eslint-disable-next-line
-  }, [clock]);
+  }, [clock, url, imageBaseURL]);
 
-  return { loadImagesList, imagesList };
+  return { clock, loadImagesList, imagesList };
 };

@@ -1,5 +1,5 @@
 // React
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 
 // Design
 import { Box, Typography, Card, CardMedia } from '@mui/material';
@@ -22,18 +22,29 @@ const style = {
   }),
 };
 
-
-
 export default function Monitor({ pageOptions }) {
-
 
 
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
-  const [infoURL, setInfoURL] = useState('');
-  const [imageURL, setImageURL] = useState('');
   const [imagePath, setImagePath] = useState('');
-  const { imagesList } = GetImagesList({ url: infoURL, sleepTime: pageOptions?.options?.sleepTime });
+
+  const {imageBaseURL, infoURL} = useMemo(() => {
+    return {
+      imageBaseURL: pageOptions?.options?.imageURL ?? '',
+      infoURL: pageOptions?.options?.infoURL ?? '',
+    }
+  }, [pageOptions]);
+
+  const { clock, imagesList } = GetImagesList({ url: infoURL, imageBaseURL, sleepTime: pageOptions?.options?.sleepTime });
+
+  const onOpenDialog = useCallback((item) => {
+    return () => {
+      setOpenDialog(true);
+      setDialogTitle(`${item.camera_name} - ${item.frame_time}`);
+      setImagePath(item.full_url);
+    }
+  }, []);
 
   useEffect(() => {
     if (!openDialog) {
@@ -41,13 +52,6 @@ export default function Monitor({ pageOptions }) {
       setImagePath('');
     }
   }, [openDialog]);
-
-  useEffect(() => {
-    if (pageOptions?.options?.infoURL) {
-      setInfoURL(pageOptions?.options?.infoURL);
-      setImageURL(pageOptions?.options?.imageURL);
-    }
-  }, [pageOptions]);
 
 
   const HEIGHT = [1, 1, 1, 2, 2, 2];
@@ -98,11 +102,11 @@ export default function Monitor({ pageOptions }) {
                       borderRadius: '1rem',
                       cursor: 'pointer',
                     }}
-                    onClick={() => { setOpenDialog(true); setDialogTitle(`${item.camera_name} - ${item.frame_time}`); setImagePath(`${infoURL}/${item.camera_name}`) }}
+                    onClick={onOpenDialog(item)}
                   >
                     <CardMedia
                       component="img"
-                      image={`${imageURL}/${item.camera_name}?time=${new Date().getTime()}`}
+                      image={`${item.full_url}?time=${clock}`}
                       style={{
                         objectFit: 'contain',
                         // width: "calc(2560px * 0.15)",
@@ -123,7 +127,6 @@ export default function Monitor({ pageOptions }) {
             })
             }
           </Box>
-
 
           <ImageDialog
             open={openDialog}
