@@ -56,8 +56,6 @@ style.selectedItemSx = Object.assign({}, style.itemSx, {
 
 export default function EventMenuItem({ index, dateField, eventData, selected, onClick, conveyorIcon }) {
 
-  console.log({ conveyorIcon })
-
   const { t } = useTranslation();
 
   const filesWSURL = window.app_config.hosts['hmi-files-ws']['url'];
