@@ -32,6 +32,7 @@ export default function EventMenuList({
   onChangeEvent,
   dateField,
   itemMenuHeight,
+  conveyorIcon,
 }) {
 
   const { t } = useTranslation();
@@ -61,6 +62,7 @@ export default function EventMenuList({
           eventData={eventData}
           selected={selected}
           onClick={onEventClick(eventData)}
+          conveyorIcon={conveyorIcon}
         />
       </div>
     )
