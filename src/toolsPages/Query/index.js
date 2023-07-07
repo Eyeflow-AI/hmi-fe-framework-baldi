@@ -58,7 +58,7 @@ export default function Query({ pageOptions }) {
   const [selectedQuery, setSelectedQuery] = useState('');
   const [searchMethod, setSearchMethod] = useState('');
   const [openExpectedFormatsDialog, setOpenExpectedFormatsDialog] = useState(false);
-  const [currentText, setCurrentText] = useState({});
+  const [currentText, setCurrentText] = useState(JSON.stringify({}));
   const [errorInText, setErrorInText] = useState(false);
   const [collectionName, setCollectionName] = useState('');
   const [showAddQueryDialog, setShowAddQueryDialog] = useState(false);

@@ -54,12 +54,14 @@ style.selectedItemSx = Object.assign({}, style.itemSx, {
   boxShadow: (theme) => `${theme.shadows[2]}, inset 0 0 0 2px black`,
 });
 
-export default function EventMenuItem({ index, dateField, eventData, selected, onClick }) {
+export default function EventMenuItem({ index, dateField, eventData, selected, onClick, conveyorIcon }) {
+
+  console.log({ conveyorIcon })
 
   const { t } = useTranslation();
-  
+
   const filesWSURL = window.app_config.hosts['hmi-files-ws']['url'];
-  let thumbURL = eventData?.thumbURL ?? '';
+  let thumbURL = eventData?.thumbURL ?? conveyorIcon;
   let thumbStyle = Boolean(eventData.thumbStyle) ? eventData.thumbStyle : style.itemImage;
   let status = eventData.status ?? '';
   let eventTimeString = Boolean(eventData[dateField]) ? dateFormat(eventData[dateField]) : "";
