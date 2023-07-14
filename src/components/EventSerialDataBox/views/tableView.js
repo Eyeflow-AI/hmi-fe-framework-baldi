@@ -276,8 +276,7 @@ export default function TableView({
         severalAnnotations: true,
         returnCanvasURL: false
       }
-    }
-    )
+    })
   };
 
   const handleImagePath = ({ image }) => {
@@ -300,14 +299,22 @@ export default function TableView({
       })
       setImagesURLSRef(_imagesURLS);
       checklist.forEach((inspection, index) => {
+        checklist[index].tests.forEach((test, i) => {
+          checklist[index].tests[i].order = test?.result ? 1 : 0;
+        })
+        checklist[index].tests.sort((a, b) => {
+          return a.order - b.order;
+        })
         drawImage({
           url: `${hmiFilesWs}/eyeflow_data/event_image/${inspection?.image_path}/${inspection?.image_file}`,
           index,
           sizes: IMAGE_SIZES[checklist.length],
           region: inspection,
         });
-      })
-      setDataToUse(checklist);
+      });
+      if (JSON.stringify(dataToUse) !== JSON.stringify(checklist)) {
+        setDataToUse(checklist);
+      }
     }
     else if (inspections.length > 1) {
       let checklist = inspections.map((inspection) => {
@@ -321,6 +328,12 @@ export default function TableView({
       })
       setImagesURLSRef(_imagesURLS);
       checklist.forEach((inspection, index) => {
+        checklist[index].tests.forEach((test, i) => {
+          checklist[index].tests[i].order = test?.result ? 1 : 0;
+        })
+        checklist[index].tests.sort((a, b) => {
+          return a.order - b.order;
+        })
         drawImage({
           url: `${hmiFilesWs}/eyeflow_data/event_image/${inspection?.image_path}/${inspection?.image_file}`,
           index,
@@ -328,7 +341,10 @@ export default function TableView({
           region: inspection,
         });
       });
-      setDataToUse(checklist);
+
+      if (JSON.stringify(dataToUse) !== JSON.stringify(checklist)) {
+        setDataToUse(checklist);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inspections]);
@@ -341,7 +357,6 @@ export default function TableView({
       setImagesURLSRef([]);
     }
   }, []);
-
 
   const HEIGHT = [1, 1, 1, 2, 2, 2];
   const WIDTH = [1, 2, 3, 3, 3, 3];

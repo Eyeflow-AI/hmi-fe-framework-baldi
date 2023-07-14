@@ -1,6 +1,6 @@
 {
   "name": "hmi-fe-framework",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "private": true,
   "dependencies": {
     "@date-io/date-fns": "^2.16.0",
