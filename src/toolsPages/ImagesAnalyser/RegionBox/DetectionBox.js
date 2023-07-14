@@ -19,7 +19,7 @@ const style = {
     textShadow: "1px 1px 2px black",
   },
 }
-export default function DetectionBox({data}) {
+export default function DetectionBox({data, imageWidth, imageHeight}) {
   
   let {label, confidence, regionStyle} = useMemo(() => {
     let top = 0;
@@ -31,11 +31,14 @@ export default function DetectionBox({data}) {
     let confidence = '';
     let color = '';
 
-    if (data) {
+    if (data && imageWidth && imageHeight) {
       label = data.item;
       confidence = data.confidence;
       color = (data.in_frame ?? true) ? data.color : "#ff0000";
-      let {x_min, y_min, x_max, y_max} = data.bbox_normalized;
+      let x_min = data.bbox.x_min/imageWidth;
+      let y_min = data.bbox.y_min/imageHeight;
+      let x_max = data.bbox.x_max/imageWidth;
+      let y_max = data.bbox.y_max/imageHeight;
       top = `${y_min * 100}%`;
       left = `${x_min * 100}%`;
       width = `${(x_max - x_min) * 100}%`;
@@ -46,12 +49,12 @@ export default function DetectionBox({data}) {
         width,
         height,
         color,
-        boxShadow: `0 0 0 2px ${color}, 1px 1px 2px 2px black`,
+        boxShadow: `inset 0 0 0 2px ${color}, inset 1px 1px 2px 2px black`,
       });
     };
   
     return {label, confidence, regionStyle};
-  }, [data])
+  }, [data, imageWidth, imageHeight])
 
   return (
     <div style={regionStyle}>

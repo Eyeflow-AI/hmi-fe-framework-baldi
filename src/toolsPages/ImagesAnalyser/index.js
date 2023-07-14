@@ -172,6 +172,8 @@ export default function ImageAnalyser({ pageOptions }) {
   const [imageURL, setSelectedImageURL] = useState('');
   const [showDetections, setShowDetections] = useState(true);
   const [showJson, setShowJson] = useState(false);
+  const [imageWidth, setImageWidth] = useState(0);
+  const [imageHeight, setImageHeight] = useState(0);
 
   const onSelectImage = useCallback((imageData) => () => {
     if (imageData.hasJson) {
@@ -378,6 +380,14 @@ export default function ImageAnalyser({ pageOptions }) {
   const onChangeView = useCallback(() => {setShowJson(!showJson)}, [showJson]);
   const onChangeShowDetections = useCallback(() => {setShowDetections(!showDetections)}, [showDetections]);
 
+  const onImageLoad = (resetTransform) => (event) => {
+    const image = event.target;
+    const { naturalWidth, naturalHeight } = image;
+    setImageHeight(naturalHeight);
+    setImageWidth(naturalWidth);
+    resetTransform();
+  };
+
   return (
     <PageWrapper>
       {({ width, height }) =>
@@ -458,10 +468,10 @@ export default function ImageAnalyser({ pageOptions }) {
                         id="img"
                         src={imageURL}
                         alt=""
-                        onLoad={() => resetTransform()}
+                        onLoad={onImageLoad(resetTransform)}
                         style={{
                           objectFit: 'contain',
-                          maxHeight: height - appBarHeight,
+                          maxHeight: height - appBarHeight - 10,
                           width: 'auto',
                           maxWidth: width - menuWidth - 10,
                           display: 'block'
@@ -470,7 +480,7 @@ export default function ImageAnalyser({ pageOptions }) {
                       {showDetections && selectedImageData.hasJson &&
                       <div id="img-drawer" style={style.imgDrawer}>
                         {selectedImageData.jsonData?.map((data, index) => (
-                          <RegionBox key={index} data={data}/>
+                          <RegionBox key={index} data={data} imageWidth={imageWidth} imageHeight={imageHeight}/>
                         ))}
                       </div>
                       }
