@@ -45,7 +45,7 @@ const styleSx = {
 };
 
 
-export default function Dashboard({ pageOptions }) {
+export default function Report({ pageOptions }) {
 
   const { t } = useTranslation();
 

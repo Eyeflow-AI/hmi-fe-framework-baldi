@@ -11,6 +11,7 @@ const MonitorSerial = lazy(() => import("./pages/MonitorSerial"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Management = lazy(() => import("./pages/Management"));
 const History = lazy(() => import("./pages/History"));
+const Report = lazy(() => import("./pages/Report"));
 
 const homeURL = "/app/:stationSlugLabel/home";
 
@@ -35,6 +36,7 @@ const components = {
   Dashboard: (pageOptions) => <Dashboard pageOptions={pageOptions} />,
   Management: (pageOptions) => <Management pageOptions={pageOptions} />,
   History: (pageOptions) => <History pageOptions={pageOptions} />,
+  Report: (pageOptions) => <Report pageOptions={pageOptions} />,
 
   Query: (pageOptions) => <Query pageOptions={pageOptions} />,
   Monitor: (pageOptions) => <Monitor pageOptions={pageOptions} />,
