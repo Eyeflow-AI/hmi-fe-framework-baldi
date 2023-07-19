@@ -28,6 +28,16 @@ import { useTranslation } from "react-i18next";
 const HOME_URL = "/app/:stationSlugLabel/home";
 
 
+const appBarBoxStyle = {
+  display: 'flex',
+  width: '100%',
+  gap: 4,
+  flexDirection: 'column',
+  flexGrow: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+}
+
 const style = {
   appBar: {
     color: 'white',
@@ -42,6 +52,9 @@ const style = {
     paddingTop: 1,
     gap: 4
   },
+  appBarFirstBox: Object.assign({}, appBarBoxStyle, {justifyContent: 'flex-start'}),
+  appBarSecondBox: Object.assign({}, appBarBoxStyle, {justifyContent: 'center'}),
+  appBarThirdBox: Object.assign({}, appBarBoxStyle, {justifyContent: 'flex-end', paddingBottom: 2}),
   cardMedia: {
     height: 'auto',
     width: '50px'
@@ -63,8 +76,9 @@ const style = {
   }
 }
 
-export default function CustomAppBar() {
+export default function CustomAppBar({extraButtons}) {
 
+  const hasExtraButtons = Array.isArray(extraButtons) && extraButtons.length > 0;
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const location = useLocation();
@@ -151,29 +165,34 @@ export default function CustomAppBar() {
         width={window.app_config.components.AppBar.width ?? 64}
         sx={style.appBar}
       >
-        <ButtonBase>
-          <CardMedia
-            sx={style.cardMedia}
-            image={"/assets/EyeFlowLogo-mask.png"}
-            title="Home"
-            component="img"
-            onClick={handleClickEyeflow}
-          />
-        </ButtonBase>
+        <Box sx={style.appBarFirstBox}>
+          <ButtonBase>
+            <CardMedia
+              sx={style.cardMedia}
+              image={"/assets/EyeFlowLogo-mask.png"}
+              title="Home"
+              component="img"
+              onClick={handleClickEyeflow}
+            />
+          </ButtonBase>
+        </Box>
 
-        <Box
-          sx={{
-            display: 'flex',
-            width: '100%',
-            // height: 'calc(100vh - 80px)',
-            gap: 4,
-            flexDirection: 'column',
-            flexGrow: 1,
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-            paddingBottom: 2,
-          }}
-        >
+        {hasExtraButtons &&
+        <Box sx={style.appBarSecondBox}>
+        {
+          extraButtons.map((buttonProps, index) => (
+            <Tooltip key={index} title={t(buttonProps.label)}>
+              <IconButton onClick={buttonProps.onClick} size='small'>
+                <img alt="" src={buttonProps.icon} style={style.buttonImage} />
+              </IconButton>
+            </Tooltip>
+          ))
+        }
+        </Box>
+
+
+        }
+        <Box sx={style.appBarThirdBox}>
 
           {buttonList.map((buttonProps, index) =>
             <Tooltip key={index} title={t(buttonProps.label)}>
