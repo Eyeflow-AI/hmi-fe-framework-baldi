@@ -106,7 +106,7 @@ export default function Monitor({ pageOptions }) {
     if (selectedSerial?._id === runningSerial?._id) {
       updateAll();
     }
-    if (runningSerial && keepRunningEvent) {
+    if (runningSerial && keepRunningEvent && selectedSerial?._id !== runningSerial?._id) {
       onChangeEvent(runningSerial?._id);
     };
   }, [runningSerial])
