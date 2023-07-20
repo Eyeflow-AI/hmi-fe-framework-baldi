@@ -25,7 +25,7 @@ const style = {
 };
 
 
-export default function PageWrapper({ children }) {
+export default function PageWrapper({ children, extraButtons }) {
 
   const { width, height } = GetWindowDimentions();
   const pageBoxWidth = parseInt(width - window.app_config.components.AppBar.width - 2 * paddingPx);
@@ -34,7 +34,7 @@ export default function PageWrapper({ children }) {
   return (
     <>
       <Box id="page-wrapper-box" sx={style.mainBox}>
-        <AppBar />
+        <AppBar extraButtons={extraButtons}/>
         <Box
           id="page-box"
           width={pageBoxWidth}
