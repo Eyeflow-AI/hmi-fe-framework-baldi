@@ -42,7 +42,6 @@ export default function EventSerialDataBox({
   , loading
 }) {
 
-  console.log({ data })
   const [inspections, setInspections] = useState([]);
   const [buckets, setBuckets] = useState({});
 

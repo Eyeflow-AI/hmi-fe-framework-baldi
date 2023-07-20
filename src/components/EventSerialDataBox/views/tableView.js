@@ -295,26 +295,38 @@ export default function TableView({
       let checklist = inspections[0]?.event_data?.inspection_result?.check_list?.region;
       const _imagesURLS = [];
       checklist.forEach((inspection, index) => {
-        _imagesURLS.push('');
-      })
+        _imagesURLS.push({
+          annotated: imagesURLS?.[index]?.annotated ?? '',
+          notAnnotated: imagesURLS?.[index]?.notAnnotated ?? '',
+        });
+      });
       setImagesURLSRef(_imagesURLS);
       checklist.forEach((inspection, index) => {
         checklist[index].tests.forEach((test, i) => {
           checklist[index].tests[i].order = test?.result ? 1 : 0;
-        })
+        });
         checklist[index].tests.sort((a, b) => {
           return a.order - b.order;
-        })
-        drawImage({
-          url: `${hmiFilesWs}/eyeflow_data/event_image/${inspection?.image_path}/${inspection?.image_file}`,
-          index,
-          sizes: IMAGE_SIZES[checklist.length],
-          region: inspection,
         });
+        // drawImage({
+        //   url: `${hmiFilesWs}/eyeflow_data/event_image/${inspection?.image_path}/${inspection?.image_file}`,
+        //   index,
+        //   sizes: IMAGE_SIZES[checklist.length],
+        //   region: inspection,
+        // });
+        if (JSON.stringify(inspection) !== JSON.stringify(dataToUse[index])) {
+          console.log({ inspection, d: dataToUse[index] })
+          drawImage({
+            url: `${hmiFilesWs}/eyeflow_data/event_image/${inspection?.image_path}/${inspection?.image_file}`,
+            index,
+            sizes: IMAGE_SIZES[checklist.length],
+            region: inspection,
+          });
+        }
       });
       if (JSON.stringify(dataToUse) !== JSON.stringify(checklist)) {
         setDataToUse(checklist);
-      }
+      };
     }
     else if (inspections.length > 1) {
       let checklist = inspections.map((inspection) => {
@@ -324,7 +336,10 @@ export default function TableView({
       checklist = checklist.flat();
 
       checklist.forEach((inspection, index) => {
-        _imagesURLS.push('');
+        _imagesURLS.push({
+          annotated: imagesURLSRef.current[index]?.annotated ?? '',
+          notAnnotated: imagesURLSRef.current[index]?.notAnnotated ?? '',
+        });
       })
       setImagesURLSRef(_imagesURLS);
       checklist.forEach((inspection, index) => {
@@ -333,13 +348,16 @@ export default function TableView({
         })
         checklist[index].tests.sort((a, b) => {
           return a.order - b.order;
-        })
-        drawImage({
-          url: `${hmiFilesWs}/eyeflow_data/event_image/${inspection?.image_path}/${inspection?.image_file}`,
-          index,
-          sizes: IMAGE_SIZES[checklist.length],
-          region: inspection,
         });
+        if (JSON.stringify(inspection) !== JSON.stringify(dataToUse[index])) {
+          console.log({ inspection, d: dataToUse[index] })
+          drawImage({
+            url: `${hmiFilesWs}/eyeflow_data/event_image/${inspection?.image_path}/${inspection?.image_file}`,
+            index,
+            sizes: IMAGE_SIZES[checklist.length],
+            region: inspection,
+          });
+        }
       });
 
       if (JSON.stringify(dataToUse) !== JSON.stringify(checklist)) {
@@ -425,7 +443,7 @@ export default function TableView({
                   </Typography>
                 </Box>
                 {
-                  imagesURLS?.[index] ?
+                  imagesURLS?.[index]?.notAnnotated ?
                     <Box
                       sx={{
                         width: '100%',
