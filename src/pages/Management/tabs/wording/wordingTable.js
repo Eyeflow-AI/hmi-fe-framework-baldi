@@ -23,10 +23,13 @@ import { Button, Tooltip } from "@mui/material";
 
 // Internal
 // import API from "../../../../api";
+import { getFeConfig } from '../../../../store/slices/app';
 
 // Third-party
 import { useTranslation } from "react-i18next";
 import { copyToClipboard } from "sdk-fe-eyeflow";
+import { useSelector } from 'react-redux';
+
 
 function TablePaginationActions(props) {
   const { t } = useTranslation();
@@ -91,6 +94,8 @@ export default function WordingTable({
   const { t } = useTranslation();
   console.log({ availableLanguages, usedLanguages })
 
+
+  const feConfig = useSelector(getFeConfig);
   const [page, setPage] = useState(0);
   const rowsPerPage = 9;
   const [columns, setColumns] = useState([]);
@@ -104,8 +109,10 @@ export default function WordingTable({
     setPage(newPage);
   };
 
+
+  // console.log({ feConfig })
   // useEffect(() => {
-  //   if (languagesData) {
+  //   if (Object.keys(feConfig?.locale?.locale)?.length > 0) {
   //     let rows = [];
   //     languagesData.forEach((dataset) => {
   //       dataset.classes.forEach((classData) => {
@@ -123,7 +130,7 @@ export default function WordingTable({
   //     }
   //     setRows(rows)
   //   }
-  // }, [languagesData, fromToData])
+  // }, [feConfig])
 
   useEffect(() => {
     if (usedLanguages?.languageList?.length > 0) {

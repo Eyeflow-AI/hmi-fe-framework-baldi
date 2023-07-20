@@ -54,7 +54,16 @@ style.selectedItemSx = Object.assign({}, style.itemSx, {
   boxShadow: (theme) => `${theme.shadows[2]}, inset 0 0 0 2px black`,
 });
 
-export default function EventMenuItem({ index, dateField, eventData, selected, onClick, conveyorIcon }) {
+
+export default function EventMenuItem({
+  index
+  , dateField
+  , eventData
+  , selected
+  , onClick
+  , conveyorIcon
+  , onChangeEvent
+}) {
 
   const { t } = useTranslation();
 

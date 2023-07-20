@@ -34,7 +34,7 @@ function ConfigProvider({ children, getConfigSleepTime = 10 * 60 * 1000 }) {
       // TODO: Reset everything
       Object.assign(window.app_config, feConfig.feConfig);
       console.log("App config", window.app_config);
-      console.log("App Locale", feConfig.locale.locale)
+      console.log("App Locale", feConfig.locale.locale);
       prepareLocale(window.app_config.locale, feConfig.locale.locale);
       dispatch(setAppBarButtonList((window?.app_config?.components?.AppBar?.button_list ?? []).map((buttonData) => Object.assign({}, buttonData))));
       dispatch(setLanguageList(window.app_config.locale.languageList.filter((el) => el.active)));

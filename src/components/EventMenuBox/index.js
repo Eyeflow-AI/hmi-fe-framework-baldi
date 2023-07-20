@@ -80,6 +80,7 @@ export default function EventMenuBox({
   loadingData,
   onChangeParams,
   onChangeEvent,
+  onChangeEventByClick,
   config
 }) {
 
@@ -159,7 +160,8 @@ export default function EventMenuBox({
                     dateField={dateField}
                     eventData={runningEvent}
                     selected={runningEvent._id === selectedEventId}
-                    onClick={onEventClick(runningEvent)}
+                    onChangeEvent={() => onChangeEvent(runningEvent._id)}
+                    onClick={() => onChangeEventByClick(runningEvent._id)}
                     conveyorIcon={conveyorIcon}
                   />
                 )
@@ -196,6 +198,7 @@ export default function EventMenuBox({
           selectedEventId={selectedEventId}
           loadingData={loadingData}
           onChangeEvent={onChangeEvent}
+          onClick={onChangeEventByClick}
           dateField={dateField}
           itemMenuHeight={itemMenuHeight}
           conveyorIcon={conveyorIcon}

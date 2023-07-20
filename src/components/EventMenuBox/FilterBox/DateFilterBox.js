@@ -32,13 +32,16 @@ export default function DateFilterBox({
   const { t } = useTranslation();
 
   const [dateValue, setDateValue] = useState(new Date());
+  const [manualChanging, setManualChanging] = useState(false);
 
   useEffect(() => { //Update query params
-    onChangeParams({ min_event_time: getQueryDateString(dateValue), max_event_time: getQueryDateString(dateValue, 1, 'end') });
+    onChangeParams({ min_event_time: getQueryDateString(dateValue), max_event_time: getQueryDateString(dateValue, 1, 'end'), manualChanging });
+    setManualChanging(false);
     // eslint-disable-next-line
   }, [dateValue]);
 
   const handleDateChange = (newValue) => {
+    setManualChanging(true);
     setDateValue(newValue);
   };
 

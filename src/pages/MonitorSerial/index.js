@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 
 //Design
@@ -70,9 +70,10 @@ export default function Monitor({ pageOptions }) {
     }
   };
 
+  console.log({ keepRunningEvent })
+
 
   const onChangeEventByClick = (serialId, changedSerial = true) => {
-
     setKeepRunningEvent(false);
     let collection = 'inspection_events';
     if (serialId === runningSerial?._id) {
@@ -94,9 +95,7 @@ export default function Monitor({ pageOptions }) {
         });
     }
   };
-
   useEffect(() => {
-    setKeepRunningEvent(true);
     if (!selectedSerial && runningSerial) {
       onChangeEvent(runningSerial._id);
     };
@@ -107,11 +106,19 @@ export default function Monitor({ pageOptions }) {
     if (selectedSerial?._id === runningSerial?._id) {
       updateAll();
     }
-    if (!selectedSerial && runningSerial && keepRunningEvent) {
-      onChangeEvent(runningSerial._id);
+    if (runningSerial && keepRunningEvent) {
+      onChangeEvent(runningSerial?._id);
     };
   }, [runningSerial])
 
+  console.log({ runningSerial, selectedSerial })
+
+  useEffect(() => {
+    if (Object.keys(selectedSerial ?? {}).includes('_id') && Object.keys(runningSerial ?? {}).includes('_id') && selectedSerial?._id === runningSerial?._id) {
+      setKeepRunningEvent(true);
+      // countParamsChange.current = 0;
+    }
+  }, [selectedSerial]);
   // useEffect(() => {console.log({runningBatch})}, [runningBatch]);
   useEffect(() => {
     if (selectedSerial
@@ -120,6 +127,11 @@ export default function Monitor({ pageOptions }) {
       setSelectedSerial(null);
       // setSelectedSerialCountData(null);
     };
+    if (!selectedSerial && serialList.length > 0 && !runningSerial && keepRunningEvent) {
+      // console.log({ serialList })
+      // setSelectedSerial(serialList[0]?._id ?? null);
+      onChangeEvent(serialList[0]?._id ?? null)
+    }
     // eslint-disable-next-line
   }, [serialList]);
 
@@ -129,7 +141,14 @@ export default function Monitor({ pageOptions }) {
     };
   }, [stationId, queryParams]);
 
+  // console.log({ keepRunningEvent, c: countParamsChange.current })
   const onChangeParams = (newValue, deleteKeys = []) => {
+    // countParamsChange.current++;
+    if (newValue.hasOwnProperty("manualChanging") && newValue.manualChanging === true) {
+      delete newValue.manualChanging;
+      console.log('manualChanging')
+      setKeepRunningEvent(false);
+    }
     setQueryParams((params) => {
       let newParams = Boolean(params) ? { ...params } : {};
       Object.assign(newParams, newValue);
@@ -194,7 +213,8 @@ export default function Monitor({ pageOptions }) {
             events={serialList}
             loadingData={loadingSerialList}
             selectedEventId={selectedSerial?._id ?? null}
-            onChangeEvent={onChangeEventByClick}
+            onChangeEventByClick={onChangeEventByClick}
+            onChangeEvent={onChangeEvent}
             queryParams={queryParams}
             onChangeParams={onChangeParams}
             config={pageOptions.components.EventMenuBox}
