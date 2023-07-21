@@ -10,7 +10,28 @@ import Typography from "@mui/material/Typography";
 // Third-party
 import { useTranslation } from "react-i18next";
 import { ResponsiveBar } from '@nivo/bar'
+import { colors } from 'sdk-fe-eyeflow';
 
+
+
+
+const CustomTooltip = ({ color, value, id }) => (
+  <Box sx={{
+    background: colors.paper.blue.dark,
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    // flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 1,
+    textTransform: 'uppercase',
+  }}>
+    <div style={{ width: '15px', height: '15px', backgroundColor: color }}></div>
+    &nbsp;&nbsp;
+    {id}: {value}
+  </Box>
+);
 
 
 export default function Bar({ chart }) {
@@ -95,7 +116,7 @@ export default function Bar({ chart }) {
               flexGrow: 1,
             }}
           >
-            <ResponsiveBar
+            {/* <ResponsiveBar
               data={info}
               keys={keys}
               indexBy="id"
@@ -120,6 +141,43 @@ export default function Bar({ chart }) {
               role="application"
               ariaLabel={t(chart.chartInfo.localeId)}
               barAriaLabel={function (e) { return e.id + ": " + e[e.id] }}
+              legends={responsivePieLegends}
+              theme={responsivePieTheme}
+            /> */}
+            <ResponsiveBar
+              data={info}
+              keys={keys}
+              // indexBy="id"
+              // margin={{ top: 100, right: 130, bottom: 100, left: 60 }}
+              // padding={0.3}
+              // valueScale={{ type: 'linear' }}
+              // indexScale={{ type: 'band', round: true }}
+              colors={queryHasColors ? (i) => { console.log({ i }); return i.data.color } : { scheme: 'nivo' }}
+              tooltip={(info) => {
+                let value = info.data[info.id];
+                let color = info.color;
+                let id = info.id;
+                return (<CustomTooltip color={color} value={value} id={id} />)
+              }}
+              labelTextColor='white'
+            // axisTop={null}
+            // axisRight={null}
+            // labelSkipWidth={12}
+            // labelSkipHeight={12}
+            // labelTextColor={{
+            //   from: 'color',
+            //   modifiers: [
+            //     [
+            //       'darker',
+            //       1.6
+            //     ]
+            //   ]
+            // }}
+            // role="application"
+            // ariaLabel={t(chart.chartInfo.localeId)}
+            // barAriaLabel={function (e) { return e.id + ": " + e[e.id] }}
+            // legends={responsiveBarLegends}
+            // theme={responsivePieTheme}
             />
           </Box>
 
