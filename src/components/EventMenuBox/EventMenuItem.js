@@ -43,7 +43,7 @@ const style = {
     marginTop: -1
   },
   itemImage: {
-    height: "auto", width: "100%" //TODO: Fix height in Fire Fox
+    height: 70, width: "100%", filter: 'invert(1)'
   },
   itemFooter: {
     paddingBottom: 0.2,
@@ -66,7 +66,6 @@ export default function EventMenuItem({
 
   const { t } = useTranslation();
 
-  const filesWSURL = window.app_config.hosts['hmi-files-ws']['url'];
   let thumbURL = eventData?.thumbURL ?? conveyorIcon;
   let thumbStyle = Boolean(eventData.thumbStyle) ? eventData.thumbStyle : style.itemImage;
   let status = eventData.status ?? '';
