@@ -62,7 +62,6 @@ export default function EventMenuItem({
   , selected
   , onClick
   , conveyorIcon
-  , onChangeEvent
 }) {
 
   const { t } = useTranslation();

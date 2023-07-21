@@ -30,6 +30,9 @@ export default function GetBatch({ stationId, sleepTime = 30000 } = {}) {
           };
         })
         .catch(console.log)
+    }
+    else {
+      setData({ batch: null });
     };
   };
 
