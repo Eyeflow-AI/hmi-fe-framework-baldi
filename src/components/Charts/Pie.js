@@ -21,7 +21,7 @@ const responsivePieTheme = {
   },
   labels: {
     text: {
-      fontSize: 21,
+      fontSize: 15,
       fill: '#ffffff',
       textShadow: "1px 1px 2px #353535"
     }
@@ -34,15 +34,15 @@ const responsivePieLegends = [
     direction: 'column',
     justify: false,
     // translateY: 56,
-    translateX: -80,
-    itemsSpacing: 10,
-    itemWidth: 150,
+    translateX: -100,
+    itemsSpacing: 5,
+    itemWidth: 10,
     itemHeight: 18,
-    itemTextColor: '#999',
+    itemTextColor: 'white',
     itemDirection: 'left-to-right',
     itemOpacity: 1,
-    symbolSize: 18,
-    symbolShape: 'circle',
+    symbolSize: 12,
+    symbolShape: 'square',
     // effects: [
     //   {
     //     on: 'hover',
@@ -135,7 +135,7 @@ export default function Bar({ chart }) {
           <Box
             sx={{
               display: 'flex',
-              width: '100%',
+              width: `calc(${chart.chartInfo.width}px / ${chart?.result.length})`,
               height: 'calc(100% - 50px)',
               flexGrow: 1,
             }}
@@ -145,7 +145,7 @@ export default function Bar({ chart }) {
               arcLinkLabelsStraightLength={0}
               arcLabelsSkipAngle={10}
               arcLinkLabelsSkipAngle={10}
-              margin={{ top: 70, right: 40, bottom: 70, left: 100 }}
+              margin={{ top: 100, right: 10, bottom: 100, left: 100 }}
               theme={responsivePieTheme}
               legends={responsivePieLegends}
             />
