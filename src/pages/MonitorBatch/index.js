@@ -86,6 +86,12 @@ export default function Monitor({ pageOptions }) {
     // eslint-disable-next-line
   }, [selectedBatch, batchList, runningBatch, stationId]);
 
+  useEffect(() => {
+    if (runningBatch?._id !== selectedBatch) {
+      onChangeBatchId(null);
+    }
+  }, [queryParams])
+
   const onChangeParams = (newValue, deleteKeys = []) => {
     setQueryParams((params) => {
       let newParams = Boolean(params) ? { ...params } : {};
@@ -168,7 +174,7 @@ export default function Monitor({ pageOptions }) {
               events={batchList}
               loadingData={loadingBatchList}
               selectedEventId={batchId}
-              onChangeEvent={onChangeBatchId}
+              onChangeEventByClick={onChangeBatchId}
               queryParams={queryParams}
               onChangeParams={onChangeParams}
               config={pageOptions.components.EventMenuBox}

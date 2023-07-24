@@ -29,7 +29,6 @@ export default function EventMenuList({
   events,
   selectedEventId,
   loadingData,
-  onChangeEvent,
   onClick,
   dateField,
   itemMenuHeight,
@@ -39,9 +38,6 @@ export default function EventMenuList({
   const { t } = useTranslation();
 
   const eventsLength = events?.length ?? 0;
-
-  const onEventClick = (eventData) => () => onChangeEvent(eventData._id);
-
 
   function ItemRenderer({ index, style }) {
 
@@ -53,6 +49,8 @@ export default function EventMenuList({
       style
     );
 
+    const onEventClick = () => onClick(eventData._id);
+
     return (
       <div
         key={`item-${index}`}
@@ -63,8 +61,7 @@ export default function EventMenuList({
           dateField={dateField}
           eventData={eventData}
           selected={selected}
-          onChangeEvent={() => onChangeEvent(eventData._id)}
-          onClick={() => onClick(eventData._id)}
+          onClick={onEventClick}
           conveyorIcon={conveyorIcon}
         />
       </div>

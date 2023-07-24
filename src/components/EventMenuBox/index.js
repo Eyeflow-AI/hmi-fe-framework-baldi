@@ -76,10 +76,8 @@ export default function EventMenuBox({
   runningEvent,
   events,
   selectedEventId,
-  queryParams,
   loadingData,
   onChangeParams,
-  onChangeEvent,
   onChangeEventByClick,
   config
 }) {
@@ -105,8 +103,6 @@ export default function EventMenuBox({
 
   const [menuBoxHeight, setMenuBoxHeight] = useState(height);
 
-  const onEventClick = (eventData) => () => onChangeEvent(eventData._id);
-
   useEffect(() => {
     if (hasMainButton) {
       setMenuBoxHeight(height - buttonBoxHeight);
@@ -115,12 +111,6 @@ export default function EventMenuBox({
       setMenuBoxHeight(height);
     }
   }, [height, hasMainButton, buttonBoxHeight])
-
-  useEffect(() => {
-    if (runningEvent?._id !== selectedEventId) {
-      onChangeEvent(null);
-    }
-  }, [queryParams])
 
   return (
     <Box id="event-menu-box" width={width} sx={styleSx.mainBox}>
@@ -135,7 +125,7 @@ export default function EventMenuBox({
                     dateField={dateField}
                     eventData={runningEvent}
                     selected={runningEvent._id === selectedEventId}
-                    onClick={onEventClick(runningEvent)}
+                    onClick={() => onChangeEventByClick(runningEvent._id)}
                     conveyorIcon={conveyorIcon}
                   />
                 )
@@ -160,7 +150,6 @@ export default function EventMenuBox({
                     dateField={dateField}
                     eventData={runningEvent}
                     selected={runningEvent._id === selectedEventId}
-                    onChangeEvent={() => onChangeEvent(runningEvent._id)}
                     onClick={() => onChangeEventByClick(runningEvent._id)}
                     conveyorIcon={conveyorIcon}
                   />
@@ -197,7 +186,6 @@ export default function EventMenuBox({
           events={events}
           selectedEventId={selectedEventId}
           loadingData={loadingData}
-          onChangeEvent={onChangeEvent}
           onClick={onChangeEventByClick}
           dateField={dateField}
           itemMenuHeight={itemMenuHeight}
