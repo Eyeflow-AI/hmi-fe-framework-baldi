@@ -52,7 +52,9 @@ export default function Bar({ chart }) {
           id: item,
           [item]: data[item],
         }
-        if (Object.keys(chart?.chartInfo?.colors_results).length > 0 && chart?.chartInfo?.colors_results?.[item]) {
+        console.log({ chartInfo: chart.chartInfo, chart });
+
+        if (Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0 && chart?.chartInfo?.colors_results?.[item]) {
           _item.color = chart.chartInfo.colors_results[item]
         }
 
@@ -60,7 +62,7 @@ export default function Bar({ chart }) {
       })
       setInfo(newInfo);
       setKeys(newKeys);
-      setQueryHasColors(Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 ? true : false);
+      setQueryHasColors(Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0 ? true : false);
     }
     else if (chart.result.length > 1) {
       let newKeys = chart.result.map((item) => item._id);
