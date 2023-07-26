@@ -8,10 +8,9 @@ import { Box, Typography, Card, CardMedia } from '@mui/material';
 import PageWrapper from '../../components/PageWrapper';
 import ImageDialog from '../../components/ImageDialog';
 import GetImagesList from '../utils/Hooks/GetImagesList';
+import GetEdgeEnvVar from '../../utils/Hooks/GetEdgeEnvVar';
 
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import FiberManualRecordOutlinedIcon from '@mui/icons-material/FiberManualRecordOutlined';
-import { use } from 'i18next';
+import axios from 'axios';
 // Third-party
 
 const style = {
@@ -22,25 +21,26 @@ const style = {
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  }),
+ }),
 };
 
 export default function ImagesCapturer({ pageOptions }) {
 
-  const [recording, setRecording] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [imagePath, setImagePath] = useState('');
 
-  const {imageBaseURL, infoURL, appbarButtonList} = useMemo(() => {
+  const {imageBaseURL, infoURL, envVarURL, appbarButtonList} = useMemo(() => {
     return {
       imageBaseURL: pageOptions?.options?.imageURL ?? '',
       infoURL: pageOptions?.options?.infoURL ?? '',
+      envVarURL: pageOptions?.options?.envVarURL ?? '',
       appbarButtonList: pageOptions?.options?.appbarButtonList ?? [],
     }
   }, [pageOptions]);
 
   const { clock, imagesList } = GetImagesList({ url: infoURL, imageBaseURL, sleepTime: pageOptions?.options?.sleepTime });
+  const {envVar} = GetEdgeEnvVar({ url: envVarURL, sleepTime: pageOptions?.options?.sleepTime });
 
   const onOpenDialog = useCallback((item) => {
     return () => {
@@ -50,6 +50,12 @@ export default function ImagesCapturer({ pageOptions }) {
     }
   }, []);
 
+  const {recording} = useMemo(() => {
+    return {
+      recording: envVar?.video_save ?? false,
+    }
+  }, [envVar]);
+
   useEffect(() => {
     if (!openDialog) {
       setDialogTitle('');
@@ -57,14 +63,27 @@ export default function ImagesCapturer({ pageOptions }) {
     }
   }, [openDialog]);
 
-
   const HEIGHT = [1, 1, 1, 2, 2, 2];
   const WIDTH = [1, 2, 3, 3, 3, 3];
 
   const onClickRecord = useCallback(() => {
-    // #TODO request
-    setRecording(!recording);
-  }, [recording]);
+    if (envVarURL) {
+      axios({
+        method: 'put',
+        url: envVarURL,
+        responseType: 'json',
+        data: {
+          env_var: {
+            video_save: !recording,
+          }
+        }
+      })
+        .then(response => {
+          console.log({response})
+        })
+        .catch(console.error)
+    }
+  }, [recording, envVarURL]);
 
   const appButtons = useMemo(() => {
     return appbarButtonList.map((item, index) => {
