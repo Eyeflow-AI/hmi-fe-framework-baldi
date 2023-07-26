@@ -40,7 +40,7 @@ export default function ImagesCapturer({ pageOptions }) {
   }, [pageOptions]);
 
   const { clock, imagesList } = GetImagesList({ url: infoURL, imageBaseURL, sleepTime: pageOptions?.options?.sleepTime });
-  const {envVar} = GetEdgeEnvVar({ url: envVarURL, sleepTime: pageOptions?.options?.sleepTime });
+  const {envVar, updateData: updateEnvVarData} = GetEdgeEnvVar({ url: envVarURL, sleepTime: pageOptions?.options?.sleepTime });
 
   const onOpenDialog = useCallback((item) => {
     return () => {
@@ -79,7 +79,7 @@ export default function ImagesCapturer({ pageOptions }) {
         }
       })
         .then(response => {
-          console.log({response})
+          updateEnvVarData();
         })
         .catch(console.error)
     }
