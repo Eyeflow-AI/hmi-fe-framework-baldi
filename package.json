@@ -1,12 +1,13 @@
 {
   "name": "hmi-fe-framework",
-  "version": "0.32.1",
+  "version": "0.32.2",
   "private": true,
   "dependencies": {
     "@date-io/date-fns": "^2.16.0",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@mui/icons-material": "^5.11.11",
+    "@mui/lab": "^5.0.0-alpha.137",
     "@mui/material": "^5.11.13",
     "@mui/x-data-grid": "^6.2.1",
     "@mui/x-date-pickers": "^5.0.16",

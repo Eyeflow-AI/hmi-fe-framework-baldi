@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useMemo} from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import LoadingButton from '@mui/lab/LoadingButton';
 import Grid from '@mui/material/Grid';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
@@ -97,7 +97,7 @@ function getDefaultValue(fieldData) {
   };
 };
 
-export default function FormModal({config, open, handleClose, onClickSend}) {
+export default function FormModal({config, open, handleClose, onClickSend, sendLoading}) {
 
   const {t} = useTranslation();
 
@@ -210,7 +210,7 @@ export default function FormModal({config, open, handleClose, onClickSend}) {
 
           <Box sx={style.footerBox}>
             <Button color="inherit" variant="outlined" onClick={handleClose}>{t('cancel')}</Button>
-            <Button disabled={sendDisabled} variant="contained" onClick={_onClickSend}>{t('send')}</Button>
+            <LoadingButton loading={sendLoading} disabled={sendDisabled} variant="contained" onClick={_onClickSend}>{t('send')}</LoadingButton>
           </Box>
         </Box>
       </Fade>
