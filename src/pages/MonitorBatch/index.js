@@ -47,6 +47,9 @@ export default function Monitor({ pageOptions }) {
 
   const { _id: stationId } = GetSelectedStation();
   const [queryParams, setQueryParams] = useState(null);
+  const [resumeLoading, setResumeLoading] = useState(false);
+  const [pauseLoading, setPauseLoading] = useState(false);
+  const [newBatchLoading, setNewBatchLoading] = useState(false);
 
   const { batchList, loading: loadingBatchList, loadBatchList } = GetBatchList({ stationId, queryParams, sleepTime: pageOptions.options.getEventSleepTime });
 
@@ -108,7 +111,7 @@ export default function Monitor({ pageOptions }) {
 
   const onClickCreateBatch = () => handleOpenCreateModal();
   const onClickSendBatchData = (data) => {
-    API.post.batch({ stationId, data })
+    API.post.batch({ stationId, data }, setNewBatchLoading)
       .then((data) => {
         console.log(data);
         setOpenCreateModal(false);
@@ -135,7 +138,7 @@ export default function Monitor({ pageOptions }) {
 
   const onClickPause = () => {
     if (selectedBatch) {
-      API.put.batchPause({ stationId, batchId: selectedBatch._id })
+      API.put.batchPause({ stationId, batchId: selectedBatch._id }, setPauseLoading)
         .then((data) => {
           console.log("batch paused");
           updateAll();
@@ -146,7 +149,7 @@ export default function Monitor({ pageOptions }) {
 
   const onClickResume = () => {
     if (selectedBatch) {
-      API.put.batchResume({ stationId, batchId: selectedBatch._id })
+      API.put.batchResume({ stationId, batchId: selectedBatch._id }, setResumeLoading)
         .then((data) => {
           console.log("batch resumed");
           updateAll();
@@ -195,7 +198,9 @@ export default function Monitor({ pageOptions }) {
                   data={selectedBatch}
                   disabled={!selectedBatch}
                   config={pageOptions.components.EventAppBar}
+                  pauseLoading={pauseLoading}
                   onClickPause={onClickPause}
+                  resumeLoading={resumeLoading}
                   onClickResume={onClickResume}
                 />
                 <EventBatchDataBox
@@ -212,6 +217,7 @@ export default function Monitor({ pageOptions }) {
         config={pageOptions.components.CreateBatchModal}
         open={openCreateModal}
         handleClose={handleCloseCreateModal}
+        sendLoading={newBatchLoading}
         onClickSend={onClickSendBatchData}
       />
     </Fragment>
