@@ -52,7 +52,7 @@ export default function ImagesCapturer({ pageOptions }) {
 
   const {recording} = useMemo(() => {
     return {
-      recording: envVar?.video_save ?? false,
+      recording: envVar?.video_save === "start",
     }
   }, [envVar]);
 
@@ -74,7 +74,7 @@ export default function ImagesCapturer({ pageOptions }) {
         responseType: 'json',
         data: {
           env_var: {
-            video_save: !recording,
+            video_save: recording ? "stop" : "start",
           }
         }
       })
