@@ -101,6 +101,9 @@ export default function Bar({ chart }) {
         if (Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0 && chart?.chartInfo?.colors_results?.[item._id]) {
           _item.color = chart.chartInfo.colors_results[item._id]
         }
+        else {
+          _item.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+        }
         newInfo.push(_item);
       })
 
@@ -153,7 +156,7 @@ export default function Bar({ chart }) {
               margin={{ top: 100, right: 10, bottom: 100, left: 100 }}
               theme={responsivePieTheme}
               legends={responsivePieLegends}
-              colors={info.map((item) => item.color)}
+              colors={info.every(item => item.color) ? info.map((item) => item.color) : { scheme: "nivo" }}
             />
           </Box>
 

@@ -76,6 +76,9 @@ export default function Bar({ chart }) {
         if (chart?.chartInfo?.colors_results?.length > 0 && chart?.chartInfo?.colors_results?.[item._id]) {
           _item.color = chart.chartInfo.colors_results[item._id]
         }
+        else {
+          _item.color = Math.floor(Math.random() * 16777215).toString(16);
+        }
         newInfo.push(_item);
       })
 
