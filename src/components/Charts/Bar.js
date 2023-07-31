@@ -57,6 +57,9 @@ export default function Bar({ chart }) {
         if (Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0 && chart?.chartInfo?.colors_results?.[item]) {
           _item.color = chart.chartInfo.colors_results[item]
         }
+        else {
+          _item.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+        }
 
         newInfo.push(_item)
       })
@@ -77,7 +80,7 @@ export default function Bar({ chart }) {
           _item.color = chart.chartInfo.colors_results[item._id]
         }
         else {
-          _item.color = Math.floor(Math.random() * 16777215).toString(16);
+          _item.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
         }
         newInfo.push(_item);
       })
