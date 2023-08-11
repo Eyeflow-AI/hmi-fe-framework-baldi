@@ -70,8 +70,6 @@ export default function Monitor({ pageOptions }) {
     }
   };
 
-  console.log({ keepRunningEvent })
-
 
   const onChangeEventByClick = (serialId, changedSerial = true) => {
     setKeepRunningEvent(false);
@@ -243,6 +241,7 @@ export default function Monitor({ pageOptions }) {
                 config={pageOptions.components.EventSerialDataBox}
                 appBarHeight={pageOptions.components.EventAppBar.height}
                 loading={loadingSelected}
+                runningSerial={runningSerial}
               />
             </Box>
           </Box>

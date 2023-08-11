@@ -39,11 +39,13 @@ export default function EventSerialDataBox({
   , config
   , disabled
   , appBarHeight
-  , loading
+  , loading,
+  runningSerial
 }) {
 
   const [inspections, setInspections] = useState([]);
   const [buckets, setBuckets] = useState({});
+  const [isSelectedSerialRunning, setIsSelectedSerialRunning] = useState(false);
 
   useEffect(() => {
     if (data) {
@@ -59,7 +61,7 @@ export default function EventSerialDataBox({
     if (buckets) {
       const _inspections = Object.entries(buckets).map(([key, value]) => {
         if (key === 'table') {
-          return VIEWS.TABLE_VIEW({ inspections: value, config, appBarHeight });
+          return VIEWS.TABLE_VIEW({ inspections: value, config, appBarHeight, isSelectedSerialRunning, serialId: data?._id });
         }
         else {
           return (<div>Not implemented yet</div>)
@@ -72,6 +74,10 @@ export default function EventSerialDataBox({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buckets]);
+
+  useEffect(() => {
+    setIsSelectedSerialRunning(runningSerial && runningSerial._id === data?._id);
+  }, [runningSerial, data]);
 
   return (
     <Box
@@ -103,6 +109,6 @@ export default function EventSerialDataBox({
         </>
       }
 
-    </Box >
+    </Box>
   )
 };

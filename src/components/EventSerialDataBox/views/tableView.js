@@ -2,11 +2,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 
 // Design
-import { CircularProgress, Typography, Box, CardMedia } from '@mui/material';
+import { CircularProgress, Typography, Box, CardMedia, IconButton, Tooltip } from '@mui/material';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 
 
 // Internal
 import ImageDialog from '../../ImageDialog';
+import API from '../../../api';
+import GetSelectedStation from '../../../utils/Hooks/GetSelectedStation';
 
 // Third-party
 import { useTranslation } from "react-i18next";
@@ -234,6 +237,8 @@ export default function TableView({
   , inspections
   , config
   , appBarHeight
+  , isSelectedSerialRunning
+  , serialId
 }) {
 
   const { t } = useTranslation();
@@ -245,6 +250,9 @@ export default function TableView({
   const [dataToUse, setDataToUse] = useState([]);
   const imagesURLSRef = useRef([]);
   const [imagesURLS, setImagesURLS] = useState([]);
+  const [loadingFeedback, setLoadingFeedback] = useState([]);
+  const { _id: stationId } = GetSelectedStation();
+
 
   const setImagesURLSRef = (newImagesURLS) => {
     imagesURLSRef.current = newImagesURLS;
@@ -279,6 +287,23 @@ export default function TableView({
     })
   };
 
+  const handleFeedback = ({ index, regionName, serialId }) => {
+    console.log({ index, regionName, serialId })
+    let _loadingFeedback = [...loadingFeedback];
+    _loadingFeedback[index] = true;
+    setLoadingFeedback([..._loadingFeedback]);
+    API.put.feedbackSerial({
+      serialId
+      , regionName
+      , stationId
+    })
+      .then((res) => { })
+      .catch(console.log).finally(() => {
+        _loadingFeedback[index] = false;
+        setLoadingFeedback([..._loadingFeedback]);
+      })
+  }
+
   const handleImagePath = ({ image }) => {
     setImagePath(image);
   }
@@ -294,11 +319,13 @@ export default function TableView({
     if (inspections.length === 1) {
       let checklist = inspections[0]?.event_data?.inspection_result?.check_list?.region;
       const _imagesURLS = [];
+      const _loadingFeedback = [];
       checklist.forEach((inspection, index) => {
         _imagesURLS.push({
           annotated: imagesURLS?.[index]?.annotated ?? '',
           notAnnotated: imagesURLS?.[index]?.notAnnotated ?? '',
         });
+        _loadingFeedback.push(false);
       });
       setImagesURLSRef(_imagesURLS);
       checklist.forEach((inspection, index) => {
@@ -308,14 +335,7 @@ export default function TableView({
         checklist[index].tests.sort((a, b) => {
           return a.order - b.order;
         });
-        // drawImage({
-        //   url: `${hmiFilesWs}/eyeflow_data/event_image/${inspection?.image_path}/${inspection?.image_file}`,
-        //   index,
-        //   sizes: IMAGE_SIZES[checklist.length],
-        //   region: inspection,
-        // });
         if (JSON.stringify(inspection) !== JSON.stringify(dataToUse[index])) {
-          console.log({ inspection, d: dataToUse[index] })
           drawImage({
             url: `${hmiFilesWs}/eyeflow_data/event_image/${inspection?.image_path}/${inspection?.image_file}`,
             index,
@@ -333,6 +353,7 @@ export default function TableView({
         return inspection?.event_data?.inspection_result?.check_list?.region;
       });
       const _imagesURLS = [];
+      const _loadingFeedback = [];
       checklist = checklist.flat();
 
       checklist.forEach((inspection, index) => {
@@ -357,7 +378,8 @@ export default function TableView({
             sizes: IMAGE_SIZES[checklist.length],
             region: inspection,
           });
-        }
+        };
+        _loadingFeedback.push(false);
       });
 
       if (JSON.stringify(dataToUse) !== JSON.stringify(checklist)) {
@@ -429,6 +451,31 @@ export default function TableView({
                     alignItems: 'center',
                   }}
                 >
+                  {!isSelectedSerialRunning && !inspection?.feedback && !loadingFeedback[index] &&
+                    <Tooltip title={t('feedback')}>
+                      <IconButton
+                        onClick={() => handleFeedback({ index, regionName: inspection?.name, serialId })}
+                      >
+                        <FileUploadIcon />
+                      </IconButton>
+                    </Tooltip>
+                  }
+                  {!isSelectedSerialRunning && !inspection?.feedback && loadingFeedback[index] &&
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginRight: '1rem',
+                      }}
+                    >
+                      <CircularProgress
+                        sx={{
+                          color: colors.eyeflow.blue.medium,
+                        }}
+                      />
+                    </Box>
+                  }
                   <Typography textAlign={'center'} textTransform={'uppercase'}>
                     {inspection?.name}
                     &nbsp;&nbsp;
@@ -475,7 +522,6 @@ export default function TableView({
                       />
                     </Box>
                     :
-
                     <Box
                       sx={{
                         width: '100%',
@@ -494,7 +540,6 @@ export default function TableView({
                       </Typography>
                     </Box>
                 }
-
               </Box>
               <Box
                 sx={{
