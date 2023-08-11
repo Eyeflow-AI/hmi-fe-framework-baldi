@@ -19,6 +19,20 @@ const style = {
     textShadow: "1px 1px 2px black",
   },
 }
+
+function formatConfidence(confidence, decimals = 3) {
+
+  if (confidence === undefined) {
+    return '';
+  };
+  confidence = parseFloat(confidence);
+  if (isNaN(confidence)) {
+    return '';
+  };
+
+  return confidence.toFixed(decimals);
+};
+
 export default function DetectionBox({data, imageWidth, imageHeight}) {
   
   let {label, confidence, regionStyle} = useMemo(() => {
@@ -33,7 +47,7 @@ export default function DetectionBox({data, imageWidth, imageHeight}) {
 
     if (data && imageWidth && imageHeight) {
       label = data.item;
-      confidence = data.confidence;
+      confidence = formatConfidence(data.confidence);
       color = (data.in_frame ?? true) ? data.color : "#ff0000";
       let x_min = data.bbox.x_min/imageWidth;
       let y_min = data.bbox.y_min/imageHeight;
