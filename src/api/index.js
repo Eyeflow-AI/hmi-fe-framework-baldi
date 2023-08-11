@@ -128,6 +128,8 @@ const API = {
 
     appParameterDocument: ({ document }, setLoading) => request(instance.put(`internal/parameter-document`, { document }), setLoading),
 
+    feedbackSerial: ({ stationId, serialId, regionName }, setLoading) => request(instance.put(`serial/${stationId}/${serialId}/feedback/`, { regionName }), setLoading),
+
   },
   delete: {
     user: ({ username }, setLoading) => request(instance.delete(`auth/user`, { data: { username } }), setLoading),
