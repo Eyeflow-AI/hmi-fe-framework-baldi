@@ -1,5 +1,5 @@
 // React
-import React, {useEffect, useState, useMemo, useCallback, useRef} from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 
 // Design
 import Box from '@mui/material/Box';
@@ -21,6 +21,9 @@ import { colors } from 'sdk-fe-eyeflow';
 import { TransformWrapper, TransformComponent } from "@pronestor/react-zoom-pan-pinch";
 import JsonView from 'react18-json-view'
 import 'react18-json-view/src/style.css'
+import CloudDoneIcon from '@mui/icons-material/CloudDone';
+import { setNotificationBar } from '../../store/slices/app';
+
 
 const appBarHeight = 64;
 
@@ -81,13 +84,13 @@ const style = {
   }
 };
 
-function getImageDataList (filesList) {
+function getImageDataList(filesList) {
 
   filesList.sort((a, b) => b.name - a.name);
   let lenFilesList = filesList.length;
   let imageData;
   let newFilesList = [];
-  for (let i =0; i < lenFilesList; i++) {
+  for (let i = 0; i < lenFilesList; i++) {
     let fileData = filesList[i];
     if (fileData.name.endsWith('.json')) {
       if (imageData) {
@@ -95,7 +98,7 @@ function getImageDataList (filesList) {
         let jsonNameWithoutExtension = fileData.name.split('.').slice(0, -1).join('.')
         if (imageNameWithoutExtension && imageNameWithoutExtension === jsonNameWithoutExtension) {
           imageData.hasJson = true;
-          imageData.jsonFileData = {...fileData};
+          imageData.jsonFileData = { ...fileData };
           newFilesList.push(imageData);
           imageData = null;
         }
@@ -106,7 +109,7 @@ function getImageDataList (filesList) {
         imageData.hasJson = false;
         newFilesList.push(imageData);
       };
-      imageData = {...fileData};
+      imageData = { ...fileData };
     }
   }
 
@@ -152,7 +155,7 @@ export default function ImageAnalyser({ pageOptions }) {
 
   const listRef = useRef();
 
-  const {dirPath, itemHeight, itemWidth, menuWidth} = useMemo(() => {
+  const { dirPath, itemHeight, itemWidth, menuWidth } = useMemo(() => {
     return {
       dirPath: pageOptions?.options?.dirPath,
       itemHeight: 150,
@@ -174,6 +177,23 @@ export default function ImageAnalyser({ pageOptions }) {
   const [showJson, setShowJson] = useState(false);
   const [imageWidth, setImageWidth] = useState(0);
   const [imageHeight, setImageHeight] = useState(0);
+  const [jsonL, setJsonL] = useState([]);
+  // const [listToUpload, setListToUpload] = useState([]);
+
+  const handleUpdateEvent = ({ data }) => {
+    console.log("handleUpdateEvent")
+    console.log({ data })
+    API.post.toUpload({ ...data })
+      .then((res) => {
+        console.log({ res })
+        setNotificationBar({ show: true, message: 'Uploaded Successfully', type: 'success' });
+      }
+      )
+      .catch((err) => {
+        console.log({ err })
+      })
+  }
+
 
   const onSelectImage = useCallback((imageData) => () => {
     if (imageData.hasJson) {
@@ -229,7 +249,7 @@ export default function ImageAnalyser({ pageOptions }) {
         fileURL: false,
       };
 
-      API.get.filesList({params, stationId}, setLoadingFilesList)
+      API.get.filesList({ params, stationId }, setLoadingFilesList)
         .then((data) => {
           let newDirList = [];
           for (let pathData of (data?.files ?? [])) {
@@ -245,7 +265,6 @@ export default function ImageAnalyser({ pageOptions }) {
 
   useEffect(() => {
     if (selectedImageData) {
-      console.log({selectedImageData});
       setSelectedImageURL(selectedImageData.fileURL);
     }
     else {
@@ -267,13 +286,21 @@ export default function ImageAnalyser({ pageOptions }) {
         fileURL: true,
       };
 
-      API.get.filesList({params, stationId}, setLoadingFilesList)
+      API.get.filesList({ params, stationId }, setLoadingFilesList)
         .then((data) => {
           let newIdList = [];
           for (let pathData of (data?.files ?? [])) {
+
             if (pathData.isDir) {
-              newIdList.push(pathData.name);
+              let _document = {
+                jsonlURL: '',
+                name: '',
+              }
+              _document.name = pathData.name;
+              _document.jsonlURL = data.files.find((info) => `${_document.name}.jsonl` === info.name)?.fileURL ?? '';
+              newIdList.push(_document);
             };
+
           };
           setIdList(newIdList);
         })
@@ -283,6 +310,7 @@ export default function ImageAnalyser({ pageOptions }) {
         })
     };
   }, [dirPath, stationId]);
+
 
   const onSelectId = useCallback((selectedId) => {
     setSelectedId(selectedId);
@@ -296,7 +324,7 @@ export default function ImageAnalyser({ pageOptions }) {
         fileURL: true,
       };
 
-      API.get.filesList({params, stationId}, setLoadingFilesList)
+      API.get.filesList({ params, stationId }, setLoadingFilesList)
         .then((data) => setImageList(getImageDataList(data?.files ?? [])))
         .catch((err) => {
           setImageList([]);
@@ -304,6 +332,15 @@ export default function ImageAnalyser({ pageOptions }) {
         })
     };
   }, [dirPath, selectedDay, stationId]);
+
+  // const handleListToUpload = (name) => {
+  //   if (listToUpload.includes(name)) {
+  //     setListToUpload(listToUpload.filter((item) => item !== name));
+  //   }
+  //   else {
+  //     setListToUpload([...listToUpload, name]);
+  //   }
+  // }
 
   function itemRenderer({ index, style }) {
     const imageData = imageList[index];
@@ -321,6 +358,7 @@ export default function ImageAnalyser({ pageOptions }) {
       height: itemHeight - 20,
     });
 
+
     return (
       <div key={`item-${index}`} style={customStyle}>
         <Box
@@ -333,6 +371,11 @@ export default function ImageAnalyser({ pageOptions }) {
             direction='column'
             justifyContent='center'
           >
+            {jsonL.find(file => file.image_file === imageData.name)?.uploaded &&
+              <Grid item>
+                <CloudDoneIcon color='success' />
+              </Grid>
+            }
             <Grid item>
               <Typography>
                 {imageData.index + 1}
@@ -344,9 +387,9 @@ export default function ImageAnalyser({ pageOptions }) {
                 {`${imageData.birthtime}`} <br />
               </Typography>
               {errMessage && (
-              <Typography color='error' variant='body2'>
-                {errMessage}
-              </Typography>
+                <Typography color='error' variant='body2'>
+                  {errMessage}
+                </Typography>
               )}
             </Grid>
           </Grid>
@@ -377,8 +420,28 @@ export default function ImageAnalyser({ pageOptions }) {
   }, [imageList, onSelectImage, selectedImageData]);
   const onClickRightDisabled = !selectedImageData || selectedImageData.index >= imageList.length - 1;
 
-  const onChangeView = useCallback(() => {setShowJson(!showJson)}, [showJson]);
-  const onChangeShowDetections = useCallback(() => {setShowDetections(!showDetections)}, [showDetections]);
+
+  useEffect(() => {
+    let id = idList.find((item) => item.name === selectedId)
+    if (id) {
+      console.log({ id })
+      fetch(id?.jsonlURL) // Replace with the appropriate API endpoint
+        .then(response => response.text())
+        .then(text => {
+          const lines = text.split('\n');
+          const jsonData = lines.map(line => JSON.parse(line));
+          // setData(jsonData)
+          setJsonL(jsonData);
+        })
+        .catch(error => console.error('Error fetching data:', error));
+    }
+    else {
+      setJsonL([]);
+    }
+  }, [selectedId]);
+
+  const onChangeView = useCallback(() => { setShowJson(!showJson) }, [showJson]);
+  const onChangeShowDetections = useCallback(() => { setShowDetections(!showDetections) }, [showDetections]);
 
   const onImageLoad = (resetTransform) => (event) => {
     const image = event.target;
@@ -431,65 +494,70 @@ export default function ImageAnalyser({ pageOptions }) {
           <Box sx={style.dataBox}>
 
             {selectedImageData && imageURL && (
-            <AppBar
-              height={appBarHeight}
-              onClickLeft={onClickLeft}
-              onClickRight={onClickRight}
-              onClickLeftDisabled={onClickLeftDisabled}
-              onClickRightDisabled={onClickRightDisabled}
-              showDetections={showDetections}
-              showJson={showJson}
-              onChangeView={onChangeView}
-              onChangeShowDetections={onChangeShowDetections}
-            />
+              <AppBar
+                height={appBarHeight}
+                onClickLeft={onClickLeft}
+                onClickRight={onClickRight}
+                onClickLeftDisabled={onClickLeftDisabled}
+                onClickRightDisabled={onClickRightDisabled}
+                showDetections={showDetections}
+                showJson={showJson}
+                onChangeView={onChangeView}
+                onChangeShowDetections={onChangeShowDetections}
+                selectedImageData={selectedImageData}
+                metadata={jsonL.find((item) => item.image_file === selectedImageData.name)}
+                handleUpdateEvent={handleUpdateEvent}
+                selectedId={selectedId}
+                selectedDay={selectedDay}
+              />
             )}
 
             {showJson
-            ? (
-              <Box sx={style.jsonBox}>
-                <JsonView
-                  src={selectedImageData}
-                  height={'100%'}
-                  width={'100%'}
-                  theme={'monokai'}
-                />
-              </Box>
-            )
-            : (
-            <TransformWrapper
-              // wheel={{ step: 0.2 }}
-              // limitToBounds={true}
-            >
-              {({ resetTransform }) => (
-                <TransformComponent>
-                  {selectedImageData && imageURL && (
-                    <Box id="img-wrapper" sx={style.imgWrapper}>
-                      <img
-                        id="img"
-                        src={imageURL}
-                        alt=""
-                        onLoad={onImageLoad(resetTransform)}
-                        style={{
-                          objectFit: 'contain',
-                          maxHeight: height - appBarHeight - 10,
-                          width: 'auto',
-                          maxWidth: width - menuWidth - 10,
-                          display: 'block'
-                        }}
-                      />
-                      {showDetections && selectedImageData.hasJson &&
-                      <div id="img-drawer" style={style.imgDrawer}>
-                        {selectedImageData.jsonData?.map((data, index) => (
-                          <RegionBox key={index} data={data} imageWidth={imageWidth} imageHeight={imageHeight}/>
-                        ))}
-                      </div>
-                      }
-                    </Box>
+              ? (
+                <Box sx={style.jsonBox}>
+                  <JsonView
+                    src={selectedImageData}
+                    height={'100%'}
+                    width={'100%'}
+                    theme={'monokai'}
+                  />
+                </Box>
+              )
+              : (
+                <TransformWrapper
+                // wheel={{ step: 0.2 }}
+                // limitToBounds={true}
+                >
+                  {({ resetTransform }) => (
+                    <TransformComponent>
+                      {selectedImageData && imageURL && (
+                        <Box id="img-wrapper" sx={style.imgWrapper}>
+                          <img
+                            id="img"
+                            src={imageURL}
+                            alt=""
+                            onLoad={onImageLoad(resetTransform)}
+                            style={{
+                              objectFit: 'contain',
+                              maxHeight: height - appBarHeight - 10,
+                              width: 'auto',
+                              maxWidth: width - menuWidth - 10,
+                              display: 'block'
+                            }}
+                          />
+                          {showDetections && selectedImageData.hasJson &&
+                            <div id="img-drawer" style={style.imgDrawer}>
+                              {selectedImageData.jsonData?.map((data, index) => (
+                                <RegionBox key={index} data={data} imageWidth={imageWidth} imageHeight={imageHeight} />
+                              ))}
+                            </div>
+                          }
+                        </Box>
+                      )}
+                    </TransformComponent>
                   )}
-                </TransformComponent>
-              )}
-            </TransformWrapper>
-            )
+                </TransformWrapper>
+              )
             }
           </Box>
         </Box>
