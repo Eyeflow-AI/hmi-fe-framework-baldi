@@ -451,7 +451,7 @@ export default function TableView({
                     alignItems: 'center',
                   }}
                 >
-                  {!isSelectedSerialRunning && !inspection?.feedback && !loadingFeedback[index] &&
+                  {!isSelectedSerialRunning && !inspection?.feedback && !loadingFeedback[index] && inspection?.image_path && inspection?.image_path &&
                     <Tooltip title={t('feedback')}>
                       <IconButton
                         onClick={() => handleFeedback({ index, regionName: inspection?.name, serialId })}
@@ -460,7 +460,7 @@ export default function TableView({
                       </IconButton>
                     </Tooltip>
                   }
-                  {!isSelectedSerialRunning && !inspection?.feedback && loadingFeedback[index] &&
+                  {!isSelectedSerialRunning && !inspection?.feedback && loadingFeedback[index] && inspection?.image_path && inspection?.image_path &&
                     <Box
                       sx={{
                         display: 'flex',
