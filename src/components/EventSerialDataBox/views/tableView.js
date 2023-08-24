@@ -10,6 +10,7 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import ImageDialog from '../../ImageDialog';
 import API from '../../../api';
 import GetSelectedStation from '../../../utils/Hooks/GetSelectedStation';
+import GetStationsList from '../../../utils/Hooks/GetStationsList';
 
 // Third-party
 import { useTranslation } from "react-i18next";
@@ -252,6 +253,8 @@ export default function TableView({
   const [imagesURLS, setImagesURLS] = useState([]);
   const [loadingFeedback, setLoadingFeedback] = useState([]);
   const { _id: stationId } = GetSelectedStation();
+  const stationsList = GetStationsList();
+
 
 
   const setImagesURLSRef = (newImagesURLS) => {
@@ -316,6 +319,10 @@ export default function TableView({
   }, [openDialog]);
 
   useEffect(() => {
+    let filesWSToUse = hmiFilesWs;
+    if (isSelectedSerialRunning) {
+      filesWSToUse = stationsList?.find((station) => station?._id === stationId)?.parms?.host ?? hmiFilesWs;
+    };
     if (inspections.length === 1) {
       let checklist = inspections[0]?.event_data?.inspection_result?.check_list?.region;
       const _imagesURLS = [];
@@ -337,7 +344,7 @@ export default function TableView({
         });
         if (JSON.stringify(inspection) !== JSON.stringify(dataToUse[index])) {
           drawImage({
-            url: `${hmiFilesWs}/eyeflow_data/event_image/${inspection?.image_path}/${inspection?.image_file}`,
+            url: `${filesWSToUse}/eyeflow_data/event_image/${inspection?.image_path}/${inspection?.image_file}`,
             index,
             sizes: IMAGE_SIZES[checklist.length],
             region: inspection,
@@ -373,7 +380,7 @@ export default function TableView({
         if (JSON.stringify(inspection) !== JSON.stringify(dataToUse[index])) {
           console.log({ inspection, d: dataToUse[index] })
           drawImage({
-            url: `${hmiFilesWs}/eyeflow_data/event_image/${inspection?.image_path}/${inspection?.image_file}`,
+            url: `${filesWSToUse}/eyeflow_data/event_image/${inspection?.image_path}/${inspection?.image_file}`,
             index,
             sizes: IMAGE_SIZES[checklist.length],
             region: inspection,
