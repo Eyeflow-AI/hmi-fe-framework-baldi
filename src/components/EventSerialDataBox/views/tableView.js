@@ -321,7 +321,8 @@ export default function TableView({
   useEffect(() => {
     let filesWSToUse = hmiFilesWs;
     if (isSelectedSerialRunning) {
-      filesWSToUse = stationsList?.find((station) => station?._id === stationId)?.parms?.host ?? hmiFilesWs;
+      let station = stationsList?.find((station) => station?._id === stationId);
+      filesWSToUse = station?.parms?.host && station?.parms?.filesPort ? `${station?.parms?.host}:${station?.parms?.filesPort}` : hmiFilesWs;
     };
     if (inspections.length === 1) {
       let checklist = inspections[0]?.event_data?.inspection_result?.check_list?.region;
