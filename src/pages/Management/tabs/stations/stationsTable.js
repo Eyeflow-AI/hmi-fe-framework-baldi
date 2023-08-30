@@ -166,9 +166,18 @@ export default function StationsTable({ stations }) {
                 // align={column.align}
                 // style={{ minWidth: column.minWidth }}
                 align="center"
-                colSpan={2}
+              // colSpan={2}
               >
                 {t('parameters')}
+              </TableCell>
+              <TableCell
+                key={`${'edges'}-title`}
+                // align={column.align}
+                // style={{ minWidth: column.minWidth }}
+                align="center"
+              // colSpan={2}
+              >
+                {t('edges')}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -197,6 +206,9 @@ export default function StationsTable({ stations }) {
                 </TableCell>
                 <TableCell style={{ width: 160 }} align="center">
                   {JSON.stringify(row.parms)}
+                </TableCell>
+                <TableCell style={{ width: 160 }} align="center">
+                  {JSON.stringify(row.edges)}
                 </TableCell>
 
                 <TableCell align="center">

@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography';
 import PageWrapper from '../../components/PageWrapper';
 import API from '../../api';
 import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
+import GetStationsList from '../../utils/Hooks/GetStationsList';
 import Select from '../../components/Select'
 import AppBar from './AppBar';
 import RegionBox from './RegionBox';
@@ -152,6 +153,8 @@ const getButtonStyle = ({ selected, width, height }) => {
 export default function ImageAnalyser({ pageOptions }) {
 
   const { _id: stationId } = GetSelectedStation();
+  const stationsList = GetStationsList();
+  console.log({ stationsList })
 
   const listRef = useRef();
 
@@ -179,10 +182,22 @@ export default function ImageAnalyser({ pageOptions }) {
   const [imageHeight, setImageHeight] = useState(0);
   const [jsonL, setJsonL] = useState([]);
   // const [listToUpload, setListToUpload] = useState([]);
+  const [_stationsList, set_stationsList] = useState([]);
+
+  useEffect(() => {
+    if (stationsList) {
+      set_stationsList(stationsList.map((el) => {
+        return {
+          name: el.label,
+          _id: el._id,
+          parms: el.parms,
+        }
+      }));
+    }
+  }, [stationsList]);
 
   const handleUpdateEvent = ({ data }) => {
     console.log("handleUpdateEvent")
-    console.log({ data })
     API.post.toUpload({ ...data })
       .then((res) => {
         console.log({ res })
@@ -424,7 +439,6 @@ export default function ImageAnalyser({ pageOptions }) {
   useEffect(() => {
     let id = idList.find((item) => item.name === selectedId)
     if (id) {
-      console.log({ id })
       fetch(id?.jsonlURL) // Replace with the appropriate API endpoint
         .then(response => response.text())
         .then(text => {
@@ -460,6 +474,13 @@ export default function ImageAnalyser({ pageOptions }) {
           sx={style.mainBox}
         >
           <Box width={menuWidth} sx={style.menuBox}>
+            <Select
+              choices={_stationsList}
+              // title
+              // disabled
+              value={selectedDay}
+              setValue={onSelectDay}
+            />
             <Select
               choices={dayList}
               // title

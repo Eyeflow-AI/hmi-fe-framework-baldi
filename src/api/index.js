@@ -125,7 +125,7 @@ const API = {
 
     referenceToSchema: ({ referenceName, referenceType }, setLoading) => request(instance.put(`checklist/reference-to-schema`, { referenceName, referenceType }), setLoading),
 
-    station: ({ stationId, stationName, parms }, setLoading) => request(instance.put(`station/${stationId}`, { label: stationName, parms }), setLoading),
+    station: ({ stationId, stationName, parms, edges }, setLoading) => request(instance.put(`station/${stationId}`, { label: stationName, parms, edges }), setLoading),
 
     appParameterDocument: ({ document }, setLoading) => request(instance.put(`internal/parameter-document`, { document }), setLoading),
 

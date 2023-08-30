@@ -11,6 +11,7 @@ import ImageDialog from '../../ImageDialog';
 import API from '../../../api';
 import GetSelectedStation from '../../../utils/Hooks/GetSelectedStation';
 import GetStationsList from '../../../utils/Hooks/GetStationsList';
+import IPV6toIPv4 from '../../../utils/functions/ipv4Format';
 
 // Third-party
 import { useTranslation } from "react-i18next";
@@ -320,12 +321,16 @@ export default function TableView({
 
   useEffect(() => {
     let filesWSToUse = hmiFilesWs;
-    if (isSelectedSerialRunning) {
-      let station = stationsList?.find((station) => station?._id === stationId);
-      filesWSToUse = station?.parms?.host && station?.parms?.filesPort ? `${station?.parms?.host}:${station?.parms?.filesPort}` : hmiFilesWs;
-    };
+
+    let station = stationsList?.find((station) => station?._id === stationId);
+
     if (inspections.length === 1) {
       let checklist = inspections[0]?.event_data?.inspection_result?.check_list?.region;
+      if (isSelectedSerialRunning) {
+        let edge = station?.edges?.find((edge) => edge?.host === `http://${IPV6toIPv4(inspections?.[0]?.host)}`);
+        let url = `${edge?.host}:${edge?.filesPort}`;
+        filesWSToUse = url;
+      };
       const _imagesURLS = [];
       const _loadingFeedback = [];
       checklist.forEach((inspection, index) => {
@@ -364,6 +369,14 @@ export default function TableView({
       const _loadingFeedback = [];
       checklist = checklist.flat();
 
+      let filesWSsToUse = [];
+      if (isSelectedSerialRunning) {
+        filesWSsToUse = inspections.map((inspection) => {
+          let edge = station?.edges?.find((edge) => edge?.host === `http://${IPV6toIPv4(inspection?.host)}`);
+          let url = `${edge?.host}:${edge?.filesPort}`;
+          return url;
+        });
+      };
       checklist.forEach((inspection, index) => {
         _imagesURLS.push({
           annotated: imagesURLSRef.current[index]?.annotated ?? '',
@@ -379,9 +392,8 @@ export default function TableView({
           return a.order - b.order;
         });
         if (JSON.stringify(inspection) !== JSON.stringify(dataToUse[index])) {
-          console.log({ inspection, d: dataToUse[index] })
           drawImage({
-            url: `${filesWSToUse}/eyeflow_data/event_image/${inspection?.image_path}/${inspection?.image_file}`,
+            url: `${filesWSsToUse.length > 0 ? filesWSsToUse[index] : filesWSToUse}/eyeflow_data/event_image/${inspection?.image_path}/${inspection?.image_file}`,
             index,
             sizes: IMAGE_SIZES[checklist.length],
             region: inspection,
