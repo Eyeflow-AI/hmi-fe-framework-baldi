@@ -35,9 +35,11 @@ export default function StationDialog({
 
   const { t } = useTranslation();
   const [parms, setParms] = useState('');
+  const [edges, setEdges] = useState('');
   const [stationName, setStationName] = useState('');
   const [stationNameError, setStationNameError] = useState(false);
   const [parmsError, setParmsError] = useState(false);
+  const [edgesError, setEdgesError] = useState(false);
 
   const handleClose = () => {
     setStationName('');
@@ -46,11 +48,12 @@ export default function StationDialog({
   };
 
   const handleEditStation = () => {
-    if (stationName && !stationNameError && !parmsError) {
+    if (stationName && !stationNameError && !parmsError && !edgesError) {
       API.put.station({
         stationId: selectedStationInfo._id,
         stationName,
         parms,
+        edges
       }).then(() => { })
         .catch(console.log)
         .finally(() => {
@@ -80,9 +83,26 @@ export default function StationDialog({
   }, [parms]);
 
   useEffect(() => {
+    if (edges) {
+      try {
+        JSON.parse(edges);
+        if (!Array.isArray(JSON.parse(edges))) {
+          setEdgesError(true);
+        }
+        else {
+          setEdgesError(false);
+        }
+      } catch (e) {
+        setEdgesError(true);
+      }
+    }
+  }, [edges]);
+
+  useEffect(() => {
     if (selectedStationInfo) {
       setStationName(selectedStationInfo.label);
       setParms(JSON.stringify(selectedStationInfo.parms, undefined, 4));
+      setEdges(JSON.stringify(selectedStationInfo.edges, undefined, 4));
     }
   }, [selectedStationInfo]);
 
@@ -114,6 +134,19 @@ export default function StationDialog({
           error={parmsError}
           helperText={parmsError && t('parms_must_be_json')}
           onChange={(e) => setParms(e.target.value)}
+        />
+        <TextField
+          autoFocus
+          margin="dense"
+          id="edges"
+          label={t('edges')}
+          type="text"
+          fullWidth
+          multiline
+          value={edges}
+          error={edgesError}
+          helperText={edgesError && t('edges_must_be_an_array_of_objects_and_json')}
+          onChange={(e) => setEdges(e.target.value)}
         />
       </DialogContent>
       <DialogActions>
