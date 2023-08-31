@@ -253,13 +253,6 @@ export default function ImageAnalyser({ pageOptions }) {
 
   useEffect(() => {
     if (selectedImageData) {
-      // let station = stationsList.find((item) => item.label === selectedStation);
-      // let edge = station?.edges.find((item) => item.name === selectedEdge);
-      // let host = edge?.host ?? '';
-      // let filePort = edge?.filesPort ?? '';
-      // let path = pageOptions?.options?.dirPath;
-      // let url = `${host}:${filePort}${path}/${selectedImageData?.inspection_date}/${selectedImageData?.inspection_id}/${selectedImageData?.image_file}`;
-      // console.log({ url })
       setSelectedImageURL(selectedImageData?.image_url);
     }
     else {
@@ -362,15 +355,6 @@ export default function ImageAnalyser({ pageOptions }) {
     setImageList(newImagesList);
   }
 
-  // const handleListToUpload = (name) => {
-  //   if (listToUpload.includes(name)) {
-  //     setListToUpload(listToUpload.filter((item) => item !== name));
-  //   }
-  //   else {
-  //     setListToUpload([...listToUpload, name]);
-  //   }
-  // }
-
   function itemRenderer({ index, style }) {
     const imageData = imageList[index];
     const selected = imageData?.index === selectedImageData?.index;
@@ -450,23 +434,6 @@ export default function ImageAnalyser({ pageOptions }) {
   const onClickRightDisabled = !selectedImageData || selectedImageData.index >= imageList.length - 1;
 
 
-  // useEffect(() => {
-  //   let id = idList.find((item) => item.name === selectedId)
-  //   if (id) {
-  //     fetch(id?.jsonlURL) // Replace with the appropriate API endpoint
-  //       .then(response => response.text())
-  //       .then(text => {
-  //         const lines = text.split('\n');
-  //         const jsonData = lines.map(line => JSON.parse(line));
-  //         // setData(jsonData)
-  //         setJsonL(jsonData);
-  //       })
-  //       .catch(error => console.error('Error fetching data:', error));
-  //   }
-  //   else {
-  //     setJsonL([]);
-  //   }
-  // }, [selectedId]);
 
   const onChangeView = useCallback(() => { setShowJson(!showJson) }, [showJson]);
   const onChangeShowDetections = useCallback(() => { setShowDetections(!showDetections) }, [showDetections]);

@@ -350,7 +350,7 @@ export default function TableView({
         });
         if (JSON.stringify(inspection) !== JSON.stringify(dataToUse[index])) {
           drawImage({
-            url: `${filesWSToUse}/eyeflow_data/event_image/${inspection?.image_path}/${inspection?.image_file}`,
+            url: `${filesWSToUse}/eyeflow_data/event_image/${inspection?.image?.image_path ?? inspection?.image_path}/${inspection?.image?.image_file ?? inspection?.image_file}`,
             index,
             sizes: IMAGE_SIZES[checklist.length],
             region: inspection,
@@ -393,7 +393,7 @@ export default function TableView({
         });
         if (JSON.stringify(inspection) !== JSON.stringify(dataToUse[index])) {
           drawImage({
-            url: `${filesWSsToUse.length > 0 ? filesWSsToUse[index] : filesWSToUse}/eyeflow_data/event_image/${inspection?.image_path}/${inspection?.image_file}`,
+            url: `${filesWSsToUse.length > 0 ? filesWSsToUse[index] : filesWSToUse}/eyeflow_data/event_image/${inspection?.image?.image_path ?? inspection?.image_path}/${inspection?.image?.image_file ?? inspection?.image_file}`,
             index,
             sizes: IMAGE_SIZES[checklist.length],
             region: inspection,
@@ -420,6 +420,19 @@ export default function TableView({
 
   const HEIGHT = [1, 1, 1, 2, 2, 2];
   const WIDTH = [1, 2, 3, 3, 3, 3];
+  console.log({ inspections, dataToUse })
+
+  const isThereClasses = (inspection) => {
+    let isThere = false;
+    inspection?.tests?.forEach((test) => {
+      test?.detections?.forEach((detection) => {
+        if (detection?.classes?.length > 0) {
+          isThere = true;
+        }
+      })
+    })
+    return isThere;
+  }
 
   return (
     <Box
@@ -586,7 +599,7 @@ export default function TableView({
                 >
                   <Box
                     sx={{
-                      width: inspection?.tests?.[0]?.detections?.[0]?.classes?.length > 0 ? '33%' : '50%',
+                      width: isThereClasses(inspection) ? '33%' : '50%',
                       height: '100%',
                       display: 'flex',
                       justifyContent: 'center',
@@ -599,10 +612,10 @@ export default function TableView({
                     </Typography>
                   </Box>
                   {
-                    inspection?.tests?.[0]?.detections?.[0]?.classes?.length > 0 &&
+                    isThereClasses(inspection) &&
                     <Box
                       sx={{
-                        width: inspection?.tests?.[0]?.detections?.[0]?.classes?.length > 0 ? '33%' : '50%',
+                        width: isThereClasses(inspection) ? '33%' : '50%',
                         height: '100%',
                         display: 'flex',
                         justifyContent: 'center',
@@ -617,7 +630,7 @@ export default function TableView({
                   }
                   <Box
                     sx={{
-                      width: inspection?.tests?.[0]?.detections?.[0]?.classes?.length > 0 ? '33%' : '50%',
+                      width: isThereClasses(inspection) ? '33%' : '50%',
                       height: '100%',
                       display: 'flex',
                       justifyContent: 'center',
@@ -661,7 +674,7 @@ export default function TableView({
                       <Box
                         sx={{
                           height: '100%',
-                          width: inspection?.tests?.[0]?.detections?.[0]?.classes?.length > 0 ? '33%' : '50%',
+                          width: isThereClasses(inspection) ? '33%' : '50%',
                           display: 'flex',
                           justifyContent: 'center',
                           alignItems: 'center',
@@ -672,11 +685,11 @@ export default function TableView({
                         </Typography>
                       </Box>
                       {
-                        inspection?.tests?.[0]?.detections?.[0]?.classes?.length > 0 &&
+                        isThereClasses(inspection) &&
                         <Box
                           sx={{
                             height: '100%',
-                            width: inspection?.tests?.[0]?.detections?.[0]?.classes?.length > 0 ? '33%' : '50%',
+                            width: isThereClasses(inspection) ? '33%' : '50%',
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
@@ -695,7 +708,7 @@ export default function TableView({
                       <Box
                         sx={{
                           height: '100%',
-                          width: inspection?.tests?.[0]?.detections?.[0]?.classes?.length > 0 ? '33%' : '50%',
+                          width: isThereClasses(inspection) ? '33%' : '50%',
                           display: 'flex',
                           justifyContent: 'center',
                           alignItems: 'center',
