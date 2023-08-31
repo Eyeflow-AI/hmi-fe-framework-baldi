@@ -104,6 +104,9 @@ const API = {
     checklistSchemas: (setLoading) => request(instance.get(`checklist/schemas`), setLoading),
 
     filesList: ({ params, stationId }, setLoading) => request(instance.get(`files/${stationId}/list`, { params }), setLoading),
+    filesListNgnix: ({ params }, setLoading) => request(instance.get(`files/list-nginx`, { params }), setLoading),
+    filesListMongo: ({ params }, setLoading) => request(instance.get(`files/list-mongo`, { params }), setLoading),
+    folderListMongo: ({ params }, setLoading) => request(instance.get(`files/folder-list-mongo`, { params }), setLoading),
   },
   put: {
     batchPause: ({ stationId, batchId }, setLoading) => request(instance.put(`batch/${stationId}/${batchId}/pause`), setLoading),

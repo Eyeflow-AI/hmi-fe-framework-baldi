@@ -154,7 +154,7 @@ export default function ImageAnalyser({ pageOptions }) {
 
   const { _id: stationId } = GetSelectedStation();
   const stationsList = GetStationsList();
-  console.log({ stationsList })
+
 
   const listRef = useRef();
 
@@ -183,6 +183,10 @@ export default function ImageAnalyser({ pageOptions }) {
   const [jsonL, setJsonL] = useState([]);
   // const [listToUpload, setListToUpload] = useState([]);
   const [_stationsList, set_stationsList] = useState([]);
+  const [selectedStation, setSelectedStation] = useState({});
+  const [edgesList, setEdgesList] = useState([]);
+  const [selectedEdge, setSelectedEdge] = useState({});
+  const [inspections, setInspections] = useState([]);
 
   useEffect(() => {
     if (stationsList) {
@@ -197,39 +201,38 @@ export default function ImageAnalyser({ pageOptions }) {
   }, [stationsList]);
 
   const handleUpdateEvent = ({ data }) => {
-    console.log("handleUpdateEvent")
     API.post.toUpload({ ...data })
       .then((res) => {
-        console.log({ res })
         setNotificationBar({ show: true, message: 'Uploaded Successfully', type: 'success' });
       }
       )
-      .catch((err) => {
-        console.log({ err })
-      })
-  }
+      .catch(console.log)
+  };
+
+
 
 
   const onSelectImage = useCallback((imageData) => () => {
-    if (imageData.hasJson) {
-      let jsonFileURL = imageData.jsonFileData.fileURL;
-      fetch(jsonFileURL)
-        .then((response) => response.json())
-        .then((jsonData) => {
-          imageData.jsonData = jsonData;
-          listRef.current.scrollToItem(imageData.index, 'auto');
-          setSelectedImageData(imageData);
-        })
-        .catch((err) => {
-          console.error(err);
-          listRef.current.scrollToItem(imageData.index, 'auto');
-          setSelectedImageData(imageData);
-        })
-    }
-    else {
-      listRef.current.scrollToItem(imageData.index, 'auto');
-      setSelectedImageData(imageData);
-    }
+    // if (imageData.hasJson) {
+    let station = stationsList.find((item) => item.label === selectedStation);
+    let edge = station?.edges.find((item) => item.name === selectedEdge);
+    let host = edge?.host ?? '';
+    let filePort = edge?.filesPort ?? '';
+    let path = pageOptions?.options?.dirPath;
+    let url = `${host}:${filePort}${path}/${imageData?.inspection_date}/${imageData?.inspection_id}/${imageData?.json_file}`;
+    // console.log({ url })
+    fetch(url)
+      .then((response) => response.json())
+      .then((jsonData) => {
+        imageData.jsonData = jsonData;
+        listRef.current.scrollToItem(imageData.index, 'auto');
+        setSelectedImageData(imageData);
+      })
+      .catch((err) => {
+        console.error(err);
+        listRef.current.scrollToItem(imageData.index, 'auto');
+        setSelectedImageData(imageData);
+      })
   }, []);
 
   useEffect(() => {
@@ -254,99 +257,106 @@ export default function ImageAnalyser({ pageOptions }) {
   }, [imageList, selectedImageData, onSelectImage]);
 
   useEffect(() => {
-    if (!dirPath) {
-      console.error('Missing option dirPath in pageOptions.options');
-    };
-    if (stationId && dirPath) {
-      let params = {
-        dirPath,
-        depth: 0,
-        fileURL: false,
-      };
-
-      API.get.filesList({ params, stationId }, setLoadingFilesList)
-        .then((data) => {
-          let newDirList = [];
-          for (let pathData of (data?.files ?? [])) {
-            if (pathData.isDir) {
-              newDirList.push(pathData.name);
-            };
-          };
-          setDayList(newDirList);
-        })
-        .catch(console.error)
-    }
-  }, [dirPath, stationId]);
-
-  useEffect(() => {
     if (selectedImageData) {
-      setSelectedImageURL(selectedImageData.fileURL);
+      let station = stationsList.find((item) => item.label === selectedStation);
+      let edge = station?.edges.find((item) => item.name === selectedEdge);
+      let host = edge?.host ?? '';
+      let filePort = edge?.filesPort ?? '';
+      let path = pageOptions?.options?.dirPath;
+      let url = `${host}:${filePort}${path}/${selectedImageData?.inspection_date}/${selectedImageData?.inspection_id}/${selectedImageData?.image_file}`;
+      console.log({ url })
+      setSelectedImageURL(url);
     }
     else {
       setSelectedImageURL('');
     }
   }, [selectedImageData]);
 
-  const onSelectDay = useCallback((selectedDay) => {
-    setSelectedDay(selectedDay);
+  const onSelectDay = (_selectedDay) => {
+
+    setSelectedDay(_selectedDay);
     setSelectedId('');
     setIdList([]);
     setImageList([]);
+    setInspections([]);
     setSelectedImageData(null);
 
-    if (selectedDay) {
-      let params = {
-        dirPath: `${dirPath}/${selectedDay}`,
-        depth: 0,
-        fileURL: true,
-      };
+    if (_selectedDay) {
+      let station = stationsList.find((item) => item.label === selectedStation);
+      let edge = station?.edges.find((item) => item.name === selectedEdge);
 
-      API.get.filesList({ params, stationId }, setLoadingFilesList)
+      API.get.filesListMongo({ params: { dirPath, host: edge?.host, port: edge?.filesPort, inspectionDate: _selectedDay } }, setLoadingFilesList)
         .then((data) => {
           let newIdList = [];
-          for (let pathData of (data?.files ?? [])) {
+          let docs = data?.docs ?? [];
+          docs = docs.map((item, index) => {
+            return {
+              ...item,
+              index
+            }
+          });
 
-            if (pathData.isDir) {
-              let _document = {
-                jsonlURL: '',
-                name: '',
-              }
-              _document.name = pathData.name;
-              _document.jsonlURL = data.files.find((info) => `${_document.name}.jsonl` === info.name)?.fileURL ?? '';
-              newIdList.push(_document);
-            };
+          setInspections(docs);
+          newIdList = [...new Set(docs.map(item => item.inspection_id))]
 
-          };
           setIdList(newIdList);
         })
         .catch((err) => {
+          setInspections([]);
           setIdList([]);
           console.error(err);
         })
     };
-  }, [dirPath, stationId]);
 
+  }
 
-  const onSelectId = useCallback((selectedId) => {
-    setSelectedId(selectedId);
+  const onSelectStation = (_selectedStation) => {
+    let station = stationsList.find((item) => item.label === _selectedStation);
+    setSelectedStation(_selectedStation);
+    setSelectedEdge({});
+    setSelectedDay('');
+    setSelectedId('');
+    setIdList([]);
+    setImageList([]);
+    setDayList([]);
+    setInspections([]);
+    setSelectedImageData(null);
+    setEdgesList(station?.edges ?? []);
+  };
+
+  const onSelectEdge = (_selectedEdge) => {
+    let station = stationsList.find((item) => item.label === selectedStation);
+    let edge = station?.edges.find((item) => item.name === _selectedEdge);
+    setSelectedEdge(_selectedEdge);
+    setDayList([]);
+    setSelectedDay('');
+    setSelectedId('');
+    setIdList([]);
+    setImageList([]);
+    setInspections([]);
+    setSelectedImageData(null);
+    API.get.folderListMongo({ params: { dirPath, host: edge?.host, port: edge?.filesPort } }, setLoadingFilesList)
+      .then((data) => {
+        let inspectionDates = data?.inspectionDates ?? [];
+        setDayList(inspectionDates);
+      })
+  };
+
+  const onSelectId = (_selectedId) => {
+    setSelectedId(_selectedId);
     setImageList([]);
     setSelectedImageData(null);
-
-    if (selectedId) {
-      let params = {
-        dirPath: `${dirPath}/${selectedDay}/${selectedId}`,
-        depth: 0,
-        fileURL: true,
-      };
-
-      API.get.filesList({ params, stationId }, setLoadingFilesList)
-        .then((data) => setImageList(getImageDataList(data?.files ?? [])))
-        .catch((err) => {
-          setImageList([]);
-          console.error(err);
-        })
-    };
-  }, [dirPath, selectedDay, stationId]);
+    let newImagesList = [];
+    newImagesList = inspections.filter((item) => item.inspection_id === _selectedId);
+    newImagesList = newImagesList.map((item, index) => {
+      return {
+        ...item,
+        index
+      }
+    });
+    // listRef.current = newImagesList;
+    setImageList(newImagesList);
+  }
 
   // const handleListToUpload = (name) => {
   //   if (listToUpload.includes(name)) {
@@ -359,8 +369,8 @@ export default function ImageAnalyser({ pageOptions }) {
 
   function itemRenderer({ index, style }) {
     const imageData = imageList[index];
-    const selected = imageData?.name === selectedImageData?.name;
-    let errMessage = imageData.hasJson ? '' : 'json_file_missing';
+    const selected = imageData?.index === selectedImageData?.index;
+    // let errMessage = imageData.hasJson ? '' : 'json_file_missing';
 
     const customStyle = Object.assign(
       { display: 'flex', justifyContent: 'center', alignItems: 'center' },
@@ -386,26 +396,26 @@ export default function ImageAnalyser({ pageOptions }) {
             direction='column'
             justifyContent='center'
           >
-            {jsonL.find(file => file.image_file === imageData.name)?.uploaded &&
+            {imageData?.uploaded &&
               <Grid item>
                 <CloudDoneIcon color='success' />
               </Grid>
             }
             <Grid item>
               <Typography>
-                {imageData.index + 1}
+                {index + 1}
               </Typography>
               <Typography variant='body2'>
-                {imageData.name}
+                {imageData.image_file}
               </Typography>
               <Typography variant='body2'>
-                {`${imageData.birthtime}`} <br />
+                {`${imageData.frame_time}`} <br />
               </Typography>
-              {errMessage && (
+              {/* {errMessage && (
                 <Typography color='error' variant='body2'>
                   {errMessage}
                 </Typography>
-              )}
+              )} */}
             </Grid>
           </Grid>
         </Box>
@@ -465,6 +475,7 @@ export default function ImageAnalyser({ pageOptions }) {
     resetTransform();
   };
 
+
   return (
     <PageWrapper>
       {({ width, height }) =>
@@ -478,20 +489,27 @@ export default function ImageAnalyser({ pageOptions }) {
               choices={_stationsList}
               // title
               // disabled
-              value={selectedDay}
-              setValue={onSelectDay}
+              value={selectedStation}
+              setValue={onSelectStation}
+            />
+            <Select
+              choices={edgesList}
+              // title
+              disabled={Object.keys(selectedStation).length === 0 || edgesList.length === 0}
+              value={selectedEdge}
+              setValue={onSelectEdge}
             />
             <Select
               choices={dayList}
               // title
-              // disabled
+              disabled={Object.keys(selectedEdge).length === 0 || dayList.length === 0}
               value={selectedDay}
               setValue={onSelectDay}
             />
             <Select
               choices={idList}
               // title
-              disabled={!selectedDay}
+              disabled={!selectedDay || idList.length === 0}
               value={selectedId}
               setValue={onSelectId}
             />
@@ -566,9 +584,9 @@ export default function ImageAnalyser({ pageOptions }) {
                               display: 'block'
                             }}
                           />
-                          {showDetections && selectedImageData.hasJson &&
+                          {showDetections && selectedImageData &&
                             <div id="img-drawer" style={style.imgDrawer}>
-                              {selectedImageData.jsonData?.map((data, index) => (
+                              {selectedImageData?.jsonData?.map((data, index) => (
                                 <RegionBox key={index} data={data} imageWidth={imageWidth} imageHeight={imageHeight} />
                               ))}
                             </div>
