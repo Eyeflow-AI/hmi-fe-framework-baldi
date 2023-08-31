@@ -29,7 +29,7 @@ export default function Monitor({ pageOptions }) {
   const [dialogTitle, setDialogTitle] = useState('');
   const [imagePath, setImagePath] = useState('');
 
-  const {imageBaseURL, infoURL} = useMemo(() => {
+  const { imageBaseURL, infoURL } = useMemo(() => {
     return {
       imageBaseURL: pageOptions?.options?.imageURL ?? '',
       infoURL: pageOptions?.options?.infoURL ?? '',
@@ -39,6 +39,7 @@ export default function Monitor({ pageOptions }) {
   const { clock, imagesList } = GetImagesList({ url: infoURL, imageBaseURL, sleepTime: pageOptions?.options?.sleepTime });
 
   const onOpenDialog = useCallback((item) => {
+    console.log({ item })
     return () => {
       setOpenDialog(true);
       setDialogTitle(`${item.camera_name} - ${item.frame_time}`);
@@ -108,9 +109,9 @@ export default function Monitor({ pageOptions }) {
                       component="img"
                       image={`${item.full_url}?time=${clock}`}
                       style={{
-                        objectFit: 'contain',
+                        objectFit: 'cover',
                         // width: "calc(2560px * 0.15)",
-                        width: `calc(${pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)]} - 10rem)`,
+                        width: `calc(${pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)]})`,
                         height: pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)],
                         display: 'block',
                         margin: 'auto',

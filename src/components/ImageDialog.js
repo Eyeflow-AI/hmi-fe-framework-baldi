@@ -143,7 +143,7 @@ export default function ImageDialog({ imagePath, title, altText, style, open, se
                   >
                     <TransformComponent>
                       <img
-                        src={imagePath}
+                        src={`${imagePath}?timestamp=${new Date().getTime()}`}
                         alt={altText ?? ''}
                         onLoad={() => resetTransform()}
                         style={{
