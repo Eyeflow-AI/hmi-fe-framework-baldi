@@ -63,7 +63,7 @@ export default function AppBar({ height, onClickRight, onClickLeft, onClickLeftD
                 <DownloadIcon />
               </IconButton>
             </Grid>
-            <Grid item>
+            {/* <Grid item>
               <IconButton
                 size='large'
                 disabled={metadata?.uploaded}
@@ -84,7 +84,7 @@ export default function AppBar({ height, onClickRight, onClickLeft, onClickLeftD
                   metadata?.uploaded ? <CloudDoneIcon color="success" /> : <CloudUploadIcon />
                 }
               </IconButton>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Grid>
         <Grid item>
