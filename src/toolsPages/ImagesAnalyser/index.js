@@ -214,18 +214,13 @@ export default function ImageAnalyser({ pageOptions }) {
 
   const onSelectImage = useCallback((imageData) => () => {
     // if (imageData.hasJson) {
-    let station = stationsList.find((item) => item.label === selectedStation);
-    let edge = station?.edges.find((item) => item.name === selectedEdge);
-    let host = edge?.host ?? '';
-    let filePort = edge?.filesPort ?? '';
-    let path = pageOptions?.options?.dirPath;
-    let url = `${host}:${filePort}${path}/${imageData?.inspection_date}/${imageData?.inspection_id}/${imageData?.json_file}`;
-    // console.log({ url })
-    fetch(url)
+
+    fetch(imageData?.json_url)
       .then((response) => response.json())
       .then((jsonData) => {
         imageData.jsonData = jsonData;
         listRef.current.scrollToItem(imageData.index, 'auto');
+        console.log({ imageData })
         setSelectedImageData(imageData);
       })
       .catch((err) => {
@@ -258,14 +253,14 @@ export default function ImageAnalyser({ pageOptions }) {
 
   useEffect(() => {
     if (selectedImageData) {
-      let station = stationsList.find((item) => item.label === selectedStation);
-      let edge = station?.edges.find((item) => item.name === selectedEdge);
-      let host = edge?.host ?? '';
-      let filePort = edge?.filesPort ?? '';
-      let path = pageOptions?.options?.dirPath;
-      let url = `${host}:${filePort}${path}/${selectedImageData?.inspection_date}/${selectedImageData?.inspection_id}/${selectedImageData?.image_file}`;
-      console.log({ url })
-      setSelectedImageURL(url);
+      // let station = stationsList.find((item) => item.label === selectedStation);
+      // let edge = station?.edges.find((item) => item.name === selectedEdge);
+      // let host = edge?.host ?? '';
+      // let filePort = edge?.filesPort ?? '';
+      // let path = pageOptions?.options?.dirPath;
+      // let url = `${host}:${filePort}${path}/${selectedImageData?.inspection_date}/${selectedImageData?.inspection_id}/${selectedImageData?.image_file}`;
+      // console.log({ url })
+      setSelectedImageURL(selectedImageData?.image_url);
     }
     else {
       setSelectedImageURL('');
@@ -348,9 +343,18 @@ export default function ImageAnalyser({ pageOptions }) {
     setSelectedImageData(null);
     let newImagesList = [];
     newImagesList = inspections.filter((item) => item.inspection_id === _selectedId);
+    let station = stationsList.find((item) => item.label === selectedStation);
+    let edge = station?.edges.find((item) => item.name === selectedEdge);
+    let host = edge?.host ?? '';
+    let filePort = edge?.filesPort ?? '';
+    let path = pageOptions?.options?.dirPath;
     newImagesList = newImagesList.map((item, index) => {
+      let json_url = `${host}:${filePort}${path}/${item?.inspection_date}/${item?.inspection_id}/${item?.json_file}`;
+      let image_url = `${host}:${filePort}${path}/${item?.inspection_date}/${item?.inspection_id}/${item?.image_file}`;
       return {
         ...item,
+        json_url,
+        image_url,
         index
       }
     });
@@ -446,23 +450,23 @@ export default function ImageAnalyser({ pageOptions }) {
   const onClickRightDisabled = !selectedImageData || selectedImageData.index >= imageList.length - 1;
 
 
-  useEffect(() => {
-    let id = idList.find((item) => item.name === selectedId)
-    if (id) {
-      fetch(id?.jsonlURL) // Replace with the appropriate API endpoint
-        .then(response => response.text())
-        .then(text => {
-          const lines = text.split('\n');
-          const jsonData = lines.map(line => JSON.parse(line));
-          // setData(jsonData)
-          setJsonL(jsonData);
-        })
-        .catch(error => console.error('Error fetching data:', error));
-    }
-    else {
-      setJsonL([]);
-    }
-  }, [selectedId]);
+  // useEffect(() => {
+  //   let id = idList.find((item) => item.name === selectedId)
+  //   if (id) {
+  //     fetch(id?.jsonlURL) // Replace with the appropriate API endpoint
+  //       .then(response => response.text())
+  //       .then(text => {
+  //         const lines = text.split('\n');
+  //         const jsonData = lines.map(line => JSON.parse(line));
+  //         // setData(jsonData)
+  //         setJsonL(jsonData);
+  //       })
+  //       .catch(error => console.error('Error fetching data:', error));
+  //   }
+  //   else {
+  //     setJsonL([]);
+  //   }
+  // }, [selectedId]);
 
   const onChangeView = useCallback(() => { setShowJson(!showJson) }, [showJson]);
   const onChangeShowDetections = useCallback(() => { setShowDetections(!showDetections) }, [showDetections]);
@@ -474,6 +478,7 @@ export default function ImageAnalyser({ pageOptions }) {
     setImageWidth(naturalWidth);
     resetTransform();
   };
+
 
 
   return (
@@ -555,7 +560,7 @@ export default function ImageAnalyser({ pageOptions }) {
               ? (
                 <Box sx={style.jsonBox}>
                   <JsonView
-                    src={selectedImageData}
+                    src={selectedImageData?.jsonData ?? {}}
                     height={'100%'}
                     width={'100%'}
                     theme={'monokai'}
