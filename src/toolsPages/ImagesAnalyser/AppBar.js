@@ -24,7 +24,8 @@ const style = {
 }
 
 
-export default function AppBar({ height, onClickRight, onClickLeft, onClickLeftDisabled, onClickRightDisabled, showDetections, showJson, onChangeShowDetections, onChangeView, selectedImageData, metadata, handleUpdateEvent, selectedId, selectedDay }) {
+export default function AppBar({ height, onClickRight, onClickLeft, onClickLeftDisabled, onClickRightDisabled, showDetections, showJson, onChangeShowDetections, onChangeView, selectedImageData, metadata, handleUpdateEvent, selectedId, selectedDay, imageURL }) {
+  console.log({ metadata, selectedImageData })
   return (
     <Box height={height} sx={style.appBar}>
       <Grid justifyContent="space-between" alignContent="center" container sx={style.grid}>
@@ -63,7 +64,7 @@ export default function AppBar({ height, onClickRight, onClickLeft, onClickLeftD
                 <DownloadIcon />
               </IconButton>
             </Grid>
-            {/* <Grid item>
+            <Grid item>
               <IconButton
                 size='large'
                 disabled={metadata?.uploaded}
@@ -71,11 +72,12 @@ export default function AppBar({ height, onClickRight, onClickLeft, onClickLeftD
                   handleUpdateEvent({
                     data: {
                       jsonData: selectedImageData.jsonData[0],
-                      jsonFileData: selectedImageData.jsonFileData,
+                      jsonFileData: metadata,
                       folderInfo: {
                         folderId: selectedId,
                         folderDate: selectedDay
                       },
+                      imageURL,
                     }
                   })
                 }}
@@ -84,7 +86,7 @@ export default function AppBar({ height, onClickRight, onClickLeft, onClickLeftD
                   metadata?.uploaded ? <CloudDoneIcon color="success" /> : <CloudUploadIcon />
                 }
               </IconButton>
-            </Grid> */}
+            </Grid>
           </Grid>
         </Grid>
         <Grid item>
