@@ -132,7 +132,7 @@ export default function Monitor({ pageOptions }) {
           <ImageDialog
             open={openDialog}
             setOpen={setOpenDialog}
-            imagePath={imagePath}
+            imagePath={`${imagePath}?timestamp=${new Date().getTime()}`}
             title={dialogTitle}
           />
         </Box>

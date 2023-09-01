@@ -73,6 +73,7 @@ const getAnnotatedImg = ({
   , options = {
     severalAnnotations: false
     , returnCanvasURL: false
+    , info: {}
   } }) => {
   let strokeStyle = options.strokeStyle || colors.eyeflow.green.dark;
   let expandBox = options.expandBox || 1;
@@ -222,7 +223,7 @@ const getAnnotatedImg = ({
           setAnnotatedImage(options.camera, canvas.toDataURL("image/jpeg"));
         }
         else {
-          setAnnotatedImage(canvas.toDataURL("image/jpeg"));
+          // setAnnotatedImage(canvas.toDataURL("image/jpeg"));
           setAnnotatedImage({ index, url: canvas.toDataURL("image/jpeg"), notAnnotatedURL: notAnnotatedCanvas.toDataURL("image/jpeg") });
         }
       }
@@ -248,6 +249,7 @@ export default function TableView({
   const hmiFilesWs = window.app_config?.hosts?.['hmi-files-ws']?.url ?? '';
   const [openDialog, setOpenDialog] = useState(false);
   const [imagePath, setImagePath] = useState('');
+  const [otherImages, setOtherImages] = useState(null);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dataToUse, setDataToUse] = useState([]);
   const imagesURLSRef = useRef([]);
@@ -266,7 +268,7 @@ export default function TableView({
     let _imagesURLS = [...imagesURLSRef.current];
     _imagesURLS[index] = {
       annotated: url,
-      notAnnotated: notAnnotatedURL
+      notAnnotated: notAnnotatedURL,
     };
     setImagesURLSRef([..._imagesURLS]);
   }
@@ -275,10 +277,10 @@ export default function TableView({
     const imageScale = region?.image_scale ?? 0.5;
     let bboxes = [];
     region?.tests?.forEach((test) => {
-      bboxes = [...bboxes, ...test?.detections];
-    })
+      bboxes = [...bboxes, ...test?.detections?.filter(detection => detection.image.image_file === region?.image?.image_file)];
+    });
     getAnnotatedImg({
-      image: url
+      image: `${url}/${region?.image?.image_path ?? region?.image_path}/${region?.image?.image_file ?? region?.image_file}`
       , bboxRegion: region?.bbox
       , bbox: bboxes
       , scale: imageScale
@@ -292,7 +294,6 @@ export default function TableView({
   };
 
   const handleFeedback = ({ index, regionName, serialId }) => {
-    console.log({ index, regionName, serialId })
     let _loadingFeedback = [...loadingFeedback];
     _loadingFeedback[index] = true;
     setLoadingFeedback([..._loadingFeedback]);
@@ -308,14 +309,18 @@ export default function TableView({
       })
   }
 
-  const handleImagePath = ({ image }) => {
+  const handleImagePath = ({ image, otherImages = null }) => {
     setImagePath(image);
+    if (otherImages) {
+      setOtherImages(otherImages)
+    }
   }
 
   useEffect(() => {
     if (!openDialog) {
       setDialogTitle('');
       setImagePath('');
+      setOtherImages(null);
     }
   }, [openDialog]);
 
@@ -350,11 +355,27 @@ export default function TableView({
         });
         if (JSON.stringify(inspection) !== JSON.stringify(dataToUse[index])) {
           drawImage({
-            url: `${filesWSToUse}/eyeflow_data/event_image/${inspection?.image?.image_path ?? inspection?.image_path}/${inspection?.image?.image_file ?? inspection?.image_file}`,
+            url: `${filesWSToUse}/eyeflow_data/event_image`,
             index,
             sizes: IMAGE_SIZES[checklist.length],
             region: inspection,
           });
+          let otherImages = {};
+          inspection?.tests?.forEach((test) => {
+            test?.detections?.forEach((detection) => {
+              if (detection?.image?.image_file !== inspection?.image?.image_file) {
+                if (!Object.keys(otherImages).includes(detection?.image?.image_file)) {
+                  otherImages[detection?.image?.image_file] = {
+                    bboxes: [],
+                    url: `${filesWSToUse}/eyeflow_data/event_image/${detection?.image?.image_path ?? detection?.image_path}/${detection?.image?.image_file ?? detection?.image_file}`,
+                    annotate: true
+                  }
+                }
+                otherImages[detection?.image?.image_file].bboxes.push(detection);
+              }
+            })
+          })
+          checklist[index].otherImages = otherImages;
         }
       });
       if (JSON.stringify(dataToUse) !== JSON.stringify(checklist)) {
@@ -393,11 +414,27 @@ export default function TableView({
         });
         if (JSON.stringify(inspection) !== JSON.stringify(dataToUse[index])) {
           drawImage({
-            url: `${filesWSsToUse.length > 0 ? filesWSsToUse[index] : filesWSToUse}/eyeflow_data/event_image/${inspection?.image?.image_path ?? inspection?.image_path}/${inspection?.image?.image_file ?? inspection?.image_file}`,
+            url: `${filesWSsToUse.length > 0 ? filesWSsToUse[index] : filesWSToUse}/eyeflow_data/event_image`,
             index,
             sizes: IMAGE_SIZES[checklist.length],
             region: inspection,
           });
+          let otherImages = {};
+          inspection?.tests?.forEach((test) => {
+            test?.detections?.forEach((detection) => {
+              if (detection?.image?.image_file !== inspection?.image?.image_file) {
+                if (!Object.keys(otherImages).includes(detection?.image?.image_file)) {
+                  otherImages[detection?.image?.image_file] = {
+                    bboxes: [],
+                    url: `${filesWSToUse}/eyeflow_data/event_image/${detection?.image?.image_path ?? detection?.image_path}/${detection?.image?.image_file ?? detection?.image_file}`,
+                    annotate: true
+                  }
+                }
+                otherImages[detection?.image?.image_file].bboxes.push(detection);
+              }
+            })
+          })
+          checklist[index].otherImages = otherImages;
         };
         _loadingFeedback.push(false);
       });
@@ -420,7 +457,6 @@ export default function TableView({
 
   const HEIGHT = [1, 1, 1, 2, 2, 2];
   const WIDTH = [1, 2, 3, 3, 3, 3];
-  console.log({ inspections, dataToUse })
 
   const isThereClasses = (inspection) => {
     let isThere = false;
@@ -549,7 +585,7 @@ export default function TableView({
                         alt="Inspection"
                         onClick={() => {
                           setDialogTitle(inspection?.name ?? '');
-                          handleImagePath({ image: imagesURLS?.[index]?.annotated });
+                          handleImagePath({ image: imagesURLS?.[index]?.annotated, otherImages: inspection?.otherImages });
                           setOpenDialog(true);
                         }}
                       />
@@ -703,6 +739,12 @@ export default function TableView({
                               </Typography>
                             )
                           })}
+                          {
+                            row?.detections?.length === 0 &&
+                            <Typography textAlign={'center'} textTransform={'uppercase'} variant="caption" fontWeight={'bold'}>
+                              {row?.function_parms?.subclass ?? t('no_class')}
+                            </Typography>
+                          }
                         </Box>
                       }
                       <Box
@@ -750,6 +792,7 @@ export default function TableView({
         setOpen={setOpenDialog}
         imagePath={imagePath}
         title={dialogTitle}
+        otherImages={otherImages}
       />
     </Box>
   )

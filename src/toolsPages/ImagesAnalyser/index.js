@@ -286,6 +286,9 @@ export default function ImageAnalyser({ pageOptions }) {
 
           setInspections(docs);
           newIdList = [...new Set(docs.map(item => item.inspection_id))]
+          // reverse newIdList order
+          newIdList = newIdList.sort((a, b) => b - a);
+
 
           setIdList(newIdList);
         })

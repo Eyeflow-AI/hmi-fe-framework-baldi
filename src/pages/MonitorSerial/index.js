@@ -109,7 +109,6 @@ export default function Monitor({ pageOptions }) {
     };
   }, [runningSerial])
 
-  console.log({ runningSerial, selectedSerial })
 
   useEffect(() => {
     if (Object.keys(selectedSerial ?? {}).includes('_id') && Object.keys(runningSerial ?? {}).includes('_id') && selectedSerial?._id === runningSerial?._id) {
