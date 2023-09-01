@@ -66,7 +66,7 @@ const API = {
     addQuery: ({ collectionName, searchMethod, queryName, query }, setLoading) => request(instance.post(`queries/add-query`, { collectionName, searchMethod, queryName, query }), setLoading),
 
     runQuery: ({ collectionName, searchMethod, query }, setLoading) => request(instance.post(`queries/run-query`, { collectionName, searchMethod, query }), setLoading),
-    toUpload: ({ jsonData, jsonFileData, folderInfo }) => request(instance.post(`event/to-upload`, { jsonData, jsonFileData, folderInfo })),
+    toUpload: ({ jsonData, jsonFileData, folderInfo, imageURL }) => request(instance.post(`event/to-upload`, { jsonData, jsonFileData, folderInfo, imageURL })),
   },
   get: {
     batchList: ({ params, stationId }, setLoading) => request(instance.get(`batch/${stationId}/list`, { params }), setLoading),

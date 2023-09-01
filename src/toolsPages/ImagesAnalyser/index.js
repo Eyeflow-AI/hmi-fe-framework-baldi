@@ -180,7 +180,6 @@ export default function ImageAnalyser({ pageOptions }) {
   const [showJson, setShowJson] = useState(false);
   const [imageWidth, setImageWidth] = useState(0);
   const [imageHeight, setImageHeight] = useState(0);
-  const [jsonL, setJsonL] = useState([]);
   // const [listToUpload, setListToUpload] = useState([]);
   const [_stationsList, set_stationsList] = useState([]);
   const [selectedStation, setSelectedStation] = useState({});
@@ -200,14 +199,7 @@ export default function ImageAnalyser({ pageOptions }) {
     }
   }, [stationsList]);
 
-  const handleUpdateEvent = ({ data }) => {
-    API.post.toUpload({ ...data })
-      .then((res) => {
-        setNotificationBar({ show: true, message: 'Uploaded Successfully', type: 'success' });
-      }
-      )
-      .catch(console.log)
-  };
+
 
 
 
@@ -260,14 +252,16 @@ export default function ImageAnalyser({ pageOptions }) {
     }
   }, [selectedImageData]);
 
-  const onSelectDay = (_selectedDay) => {
+  const onSelectDay = (_selectedDay, erase = true) => {
 
     setSelectedDay(_selectedDay);
-    setSelectedId('');
-    setIdList([]);
-    setImageList([]);
-    setInspections([]);
-    setSelectedImageData(null);
+    if (erase) {
+      setSelectedId('');
+      setIdList([]);
+      setImageList([]);
+      setInspections([]);
+      setSelectedImageData(null);
+    }
 
     if (_selectedDay) {
       let station = stationsList.find((item) => item.label === selectedStation);
@@ -286,6 +280,9 @@ export default function ImageAnalyser({ pageOptions }) {
 
           setInspections(docs);
           newIdList = [...new Set(docs.map(item => item.inspection_id))]
+          // reverse newIdList order
+          newIdList = newIdList.sort((a, b) => b - a);
+
 
           setIdList(newIdList);
         })
@@ -312,17 +309,20 @@ export default function ImageAnalyser({ pageOptions }) {
     setEdgesList(station?.edges ?? []);
   };
 
-  const onSelectEdge = (_selectedEdge) => {
+  const onSelectEdge = (_selectedEdge, erase = true) => {
     let station = stationsList.find((item) => item.label === selectedStation);
     let edge = station?.edges.find((item) => item.name === _selectedEdge);
+
     setSelectedEdge(_selectedEdge);
-    setDayList([]);
-    setSelectedDay('');
-    setSelectedId('');
-    setIdList([]);
-    setImageList([]);
-    setInspections([]);
-    setSelectedImageData(null);
+    if (erase) {
+      setDayList([]);
+      setSelectedDay('');
+      setSelectedId('');
+      setIdList([]);
+      setImageList([]);
+      setInspections([]);
+      setSelectedImageData(null);
+    }
     API.get.folderListMongo({ params: { dirPath, host: edge?.host, port: edge?.filesPort } }, setLoadingFilesList)
       .then((data) => {
         let inspectionDates = data?.inspectionDates ?? [];
@@ -330,10 +330,13 @@ export default function ImageAnalyser({ pageOptions }) {
       })
   };
 
-  const onSelectId = (_selectedId) => {
+  const onSelectId = (_selectedId, erase = true) => {
     setSelectedId(_selectedId);
-    setImageList([]);
-    setSelectedImageData(null);
+    if (erase) {
+      setImageList([]);
+      setSelectedImageData(null);
+    }
+
     let newImagesList = [];
     newImagesList = inspections.filter((item) => item.inspection_id === _selectedId);
     let station = stationsList.find((item) => item.label === selectedStation);
@@ -352,8 +355,52 @@ export default function ImageAnalyser({ pageOptions }) {
       }
     });
     // listRef.current = newImagesList;
-    setImageList(newImagesList);
-  }
+
+    setImageList([...newImagesList]);
+  };
+
+  useEffect(() => {
+    let newImagesList = [];
+    newImagesList = inspections.filter((item) => item.inspection_id === selectedId);
+    let station = stationsList.find((item) => item.label === selectedStation);
+    let edge = station?.edges.find((item) => item.name === selectedEdge);
+    let host = edge?.host ?? '';
+    let filePort = edge?.filesPort ?? '';
+    let path = pageOptions?.options?.dirPath;
+    newImagesList = newImagesList.map((item, index) => {
+      let json_url = `${host}:${filePort}${path}/${item?.inspection_date}/${item?.inspection_id}/${item?.json_file}`;
+      let image_url = `${host}:${filePort}${path}/${item?.inspection_date}/${item?.inspection_id}/${item?.image_file}`;
+      return {
+        ...item,
+        json_url,
+        image_url,
+        index
+      }
+    });
+    // listRef.current = newImagesList;
+
+    setImageList([...newImagesList]);
+  }, [inspections])
+
+
+  const handleUpdateEvent = ({ data }) => {
+    API.post.toUpload({ ...data })
+      .then((res) => {
+        setNotificationBar({ show: true, message: 'Uploaded Successfully', type: 'success' });
+      }
+      )
+      .catch(console.log)
+      .finally(() => {
+        let _selectedDay = selectedDay;
+        let _selectedId = selectedId;
+        let _selectedEdge = selectedEdge;
+        let _selectedImageData = JSON.parse(JSON.stringify(selectedImageData));
+        onSelectEdge(_selectedEdge, false);
+        onSelectDay(_selectedDay, false);
+        onSelectId(_selectedId, false);
+        onSelectImage(_selectedImageData);
+      })
+  };
 
   function itemRenderer({ index, style }) {
     const imageData = imageList[index];
@@ -447,6 +494,7 @@ export default function ImageAnalyser({ pageOptions }) {
   };
 
 
+  console.log({ inspections, selectedImageData })
 
   return (
     <PageWrapper>
@@ -516,10 +564,11 @@ export default function ImageAnalyser({ pageOptions }) {
                 onChangeView={onChangeView}
                 onChangeShowDetections={onChangeShowDetections}
                 selectedImageData={selectedImageData}
-                metadata={jsonL.find((item) => item.image_file === selectedImageData.name)}
+                metadata={inspections.find((item) => item._id === selectedImageData._id)}
                 handleUpdateEvent={handleUpdateEvent}
                 selectedId={selectedId}
                 selectedDay={selectedDay}
+                imageURL={imageURL}
               />
             )}
 
