@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import SchemaIcon from '@mui/icons-material/Schema';
 import SaveIcon from '@mui/icons-material/Save';
+import TextField from '@mui/material/TextField';
 
 // Internal
 import PageWrapper from '../../components/PageWrapper';
@@ -119,6 +120,8 @@ export default function ChecklistConnector({ pageOptions }) {
       setCurrentReference({});
     }
   }, [selectedItem]);
+
+  console.log({ selectedItemRegions })
 
 
   return (
@@ -325,10 +328,24 @@ export default function ChecklistConnector({ pageOptions }) {
                   justifyContent: 'center',
                   alignItems: 'center',
                   width: '50%',
-                  height: '100%',
+                  height: '300px',
+                  overflow: 'hidden',
+                  // marginTop: '200px'
                 }}
               >
-                oi
+                <TextField
+                  id="outlined-basic"
+                  variant="outlined"
+                  value={JSON.stringify(selectedItemRegions?.checkList ?? {}, undefined, 4)}
+                  // onChange={(e) => setCurrentText(e.target.value)}
+                  disabled
+                  multiline
+                  rows={12}
+                  fullWidth
+                  sx={{
+                    backgroundColor: 'black',
+                  }}
+                />
               </Box>
             </Box>
           </Box>

@@ -20,8 +20,8 @@ import { FixedSizeList } from "react-window";
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { colors } from 'sdk-fe-eyeflow';
 import { TransformWrapper, TransformComponent } from "@pronestor/react-zoom-pan-pinch";
-import JsonView from 'react18-json-view'
-import 'react18-json-view/src/style.css'
+import JsonView from 'react18-json-view';
+import 'react18-json-view/src/style.css';
 import CloudDoneIcon from '@mui/icons-material/CloudDone';
 import { setNotificationBar } from '../../store/slices/app';
 
