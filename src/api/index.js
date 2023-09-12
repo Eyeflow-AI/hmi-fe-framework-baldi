@@ -133,6 +133,7 @@ const API = {
     appParameterDocument: ({ document }, setLoading) => request(instance.put(`internal/parameter-document`, { document }), setLoading),
 
     feedbackSerial: ({ stationId, serialId, regionName }, setLoading) => request(instance.put(`serial/${stationId}/${serialId}/feedback/`, { regionName }), setLoading),
+    feedbackOtherImages: ({info, stationId, serialId}, setLoading) => request(instance.put(`serial/${stationId}/${serialId}/feedback/other-images`, { ...info }), setLoading),
 
   },
   delete: {

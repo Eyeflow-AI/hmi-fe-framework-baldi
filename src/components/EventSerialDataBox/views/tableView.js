@@ -2,9 +2,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 
 // Design
-import { CircularProgress, Typography, Box, CardMedia, IconButton, Tooltip } from '@mui/material';
-import FileUploadIcon from '@mui/icons-material/FileUpload';
-
+import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box/';
+import CardMedia from '@mui/material/CardMedia';
 
 // Internal
 import ImageDialog from '../../ImageDialog';
@@ -257,8 +258,9 @@ export default function TableView({
   const [loadingFeedback, setLoadingFeedback] = useState([]);
   const { _id: stationId } = GetSelectedStation();
   const stationsList = GetStationsList();
+  const [feedbackInfo, setFeedbackInfo] = useState({});
 
-
+  console.log({feedbackInfo})
 
   const setImagesURLSRef = (newImagesURLS) => {
     imagesURLSRef.current = newImagesURLS;
@@ -277,7 +279,7 @@ export default function TableView({
     const imageScale = region?.image_scale ?? 0.5;
     let bboxes = [];
     region?.tests?.forEach((test) => {
-      bboxes = [...bboxes, ...test?.detections?.filter(detection => detection.image.image_file === region?.image?.image_file)];
+      bboxes = [...bboxes, ...test?.detections?.filter(detection => detection?.image?.image_file === region?.image?.image_file || detection?.image_file === region?.image?.image_file)];
     });
     getAnnotatedImg({
       image: `${url}/${region?.image?.image_path ?? region?.image_path}/${region?.image?.image_file ?? region?.image_file}`
@@ -293,27 +295,59 @@ export default function TableView({
     })
   };
 
-  const handleFeedback = ({ index, regionName, serialId }) => {
+  const handleFeedback = ({ index, regionName, serialId, obj=null}) => {
+    
     let _loadingFeedback = [...loadingFeedback];
     _loadingFeedback[index] = true;
     setLoadingFeedback([..._loadingFeedback]);
-    API.put.feedbackSerial({
-      serialId
-      , regionName
-      , stationId
-    })
-      .then((res) => { })
-      .catch(console.log).finally(() => {
-        _loadingFeedback[index] = false;
-        setLoadingFeedback([..._loadingFeedback]);
+    if (obj) {
+      console.log({index, regionName, serialId, obj})
+      let imageId = obj?.originalUrl?.split('/')?.pop()?.replace('.jpg', '');
+      let info = {
+        index,
+        regionName,
+        serialId,
+        url: obj?.originalUrl,
+        imageId,
+      }
+
+      API.put.feedbackOtherImages({
+        info,
+        stationId,
+        serialId
       })
+        .then((res) => { })
+        .catch(console.log).finally(() => {
+          _loadingFeedback[index] = false;
+          setLoadingFeedback([..._loadingFeedback]);
+        })
+    }
+    else {
+      API.put.feedbackSerial({
+        serialId
+        , regionName
+        , stationId
+      })
+        .then((res) => { })
+        .catch(console.log).finally(() => {
+          _loadingFeedback[index] = false;
+          setLoadingFeedback([..._loadingFeedback]);
+        })
+    }
+
   }
 
-  const handleImagePath = ({ image, otherImages = null }) => {
+  const handleImagePath = ({ image, otherImages = null, feedback, index, name}) => {
     setImagePath(image);
     if (otherImages) {
       setOtherImages(otherImages)
     }
+    let info = {
+      feedback: feedback,
+      index: index,
+      name: name,
+    }
+    setFeedbackInfo(info);
   }
 
   useEffect(() => {
@@ -321,6 +355,7 @@ export default function TableView({
       setDialogTitle('');
       setImagePath('');
       setOtherImages(null);
+      setFeedbackInfo({});
     }
   }, [openDialog]);
 
@@ -520,31 +555,6 @@ export default function TableView({
                     alignItems: 'center',
                   }}
                 >
-                  {!isSelectedSerialRunning && !inspection?.feedback && !loadingFeedback[index] && inspection?.image_path && inspection?.image_path &&
-                    <Tooltip title={t('feedback')}>
-                      <IconButton
-                        onClick={() => handleFeedback({ index, regionName: inspection?.name, serialId })}
-                      >
-                        <FileUploadIcon />
-                      </IconButton>
-                    </Tooltip>
-                  }
-                  {!isSelectedSerialRunning && !inspection?.feedback && loadingFeedback[index] && inspection?.image_path && inspection?.image_path &&
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginRight: '1rem',
-                      }}
-                    >
-                      <CircularProgress
-                        sx={{
-                          color: colors.eyeflow.blue.medium,
-                        }}
-                      />
-                    </Box>
-                  }
                   <Typography textAlign={'center'} textTransform={'uppercase'}>
                     {inspection?.name}
                     &nbsp;&nbsp;
@@ -585,7 +595,13 @@ export default function TableView({
                         alt="Inspection"
                         onClick={() => {
                           setDialogTitle(inspection?.name ?? '');
-                          handleImagePath({ image: imagesURLS?.[index]?.annotated, otherImages: inspection?.otherImages });
+                          handleImagePath({ 
+                            image: imagesURLS?.[index]?.annotated, 
+                            otherImages: inspection?.otherImages,
+                            feedback: Boolean(inspection?.feedback),
+                            index: index,
+                            name: inspection?.name,
+                          });
                           setOpenDialog(true);
                         }}
                       />
@@ -786,6 +802,7 @@ export default function TableView({
             </Box>
           )
       }
+      
 
       <ImageDialog
         open={openDialog}
@@ -793,6 +810,14 @@ export default function TableView({
         imagePath={imagePath}
         title={dialogTitle}
         otherImages={otherImages}
+        feedbackLoading={loadingFeedback[feedbackInfo?.index]}
+        feedbackFunction={handleFeedback}
+        hasFeedback={!isSelectedSerialRunning && !dataToUse?.find(el => el.name === feedbackInfo.name)?.feedback}
+        feedbackObj={{
+          feedbackInfo: feedbackInfo,
+          regionName: dataToUse?.[feedbackInfo?.index]?.name,
+          serialId: serialId,
+        }}
       />
     </Box>
   )

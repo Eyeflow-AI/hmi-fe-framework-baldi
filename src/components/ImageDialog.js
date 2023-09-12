@@ -12,6 +12,8 @@ import DownloadIcon from '@mui/icons-material/Download';
 import Tooltip from '@mui/material/Tooltip';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import CircularProgress from '@mui/material/CircularProgress';
 
 // Internal
 
@@ -239,7 +241,19 @@ const getAnnotatedImg = ({
 
 
 
-export default function ImageDialog({ imagePath, title, altText, style, open, setOpen, otherImages }) {
+export default function ImageDialog({ 
+  imagePath, 
+  title, 
+  altText, 
+  style, 
+  open, 
+  setOpen, 
+  otherImages,
+  feedbackLoading,
+  feedbackFunction,
+  hasFeedback,
+  feedbackObj,
+ }) {
 
   const { t } = useTranslation();
   const [noImage, setNoImage] = useState(false);
@@ -249,7 +263,15 @@ export default function ImageDialog({ imagePath, title, altText, style, open, se
     setOpen(false);
   }
 
-  console.log({ otherImages })
+  
+  const handleFeedback = ({obj}) => {
+    let _obj = null;
+    if (!obj?.originalUrl?.includes('data:image/jpeg;base64,')) {
+      _obj = obj;
+    }
+
+    feedbackFunction({ index: feedbackObj?.feedbackInfo?.index, regionName: feedbackObj?.regionName, serialId: feedbackObj?.serialId, obj: _obj })
+  }
 
 
   useEffect(() => {
@@ -341,6 +363,32 @@ export default function ImageDialog({ imagePath, title, altText, style, open, se
                       <DownloadIcon />
                     </IconButton>
                   </Tooltip>
+                  {hasFeedback && !feedbackLoading &&
+                    <Tooltip title={t('feedback')}>
+                      <IconButton
+                        // onClick={feedbackFunction}
+                        onClick={() => handleFeedback({obj: selectedObj})}
+                      >
+                        <FileUploadIcon />
+                      </IconButton>
+                    </Tooltip>
+                  }
+                  {hasFeedback && feedbackLoading &&
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginRight: '1rem',
+                      }}
+                    >
+                      <CircularProgress
+                        sx={{
+                          color: colors.eyeflow.blue.medium,
+                        }}
+                      />
+                    </Box>
+                  }
                 </Box>
               </Box>
             </Grid>
