@@ -79,6 +79,8 @@ export default function EventSerialDataBox({
     setIsSelectedSerialRunning(runningSerial && runningSerial._id === data?._id);
   }, [runningSerial, data]);
 
+  console.log({runningSerial, data, isSelectedSerialRunning})
+
   return (
     <Box
       width={config.width}

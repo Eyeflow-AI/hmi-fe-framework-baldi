@@ -247,6 +247,15 @@ export default function TableView({
 
   const { t } = useTranslation();
 
+  console.log({
+    loading
+    , inspections
+    , config
+    , appBarHeight
+    , isSelectedSerialRunning
+    , serialId
+  })
+
   const hmiFilesWs = window.app_config?.hosts?.['hmi-files-ws']?.url ?? '';
   const [openDialog, setOpenDialog] = useState(false);
   const [imagePath, setImagePath] = useState('');
@@ -275,14 +284,32 @@ export default function TableView({
     setImagesURLSRef([..._imagesURLS]);
   }
 
-  const drawImage = async ({ url, index, sizes, region }) => {
+  const drawImage = async ({ url, index, sizes, region, isSelectedSerialRunning=false }) => {
     const imageScale = region?.image_scale ?? 0.5;
     let bboxes = [];
     region?.tests?.forEach((test) => {
-      bboxes = [...bboxes, ...test?.detections?.filter(detection => detection?.image?.image_file === region?.image?.image_file || detection?.image_file === region?.image?.image_file)];
+      // console.log({bboxes, region})
+      bboxes = [...bboxes, ...test?.detections?.filter(detection => detection?.image?.image_file === region?.image?.image_file || detection?.image_file === region?.image_file) ?? []];
     });
+    let absolute_path = '';
+    let _url = '';
+    if (isSelectedSerialRunning) {
+      absolute_path = region?.image?.stage_image_path;
+    }
+    else {
+      absolute_path = region?.image?.absolute_image_path;
+    }
+    if (absolute_path) {
+      absolute_path = absolute_path.replace('/opt/eyeflow/data', 'eyeflow_data');
+      _url = `${url}/${absolute_path}/${region?.image?.image_file ?? region?.image_file}`;
+    }
+    else {
+      _url = `${url}/eyeflow_data/event_image/${region?.image?.image_path ?? region?.image_path}/${region?.image?.image_file ?? region?.image_file}`;
+    }
+    console.log({_url, isSelectedSerialRunning, region, name: region.region, absolute_path, bboxes})
     getAnnotatedImg({
-      image: `${url}/${region?.image?.image_path ?? region?.image_path}/${region?.image?.image_file ?? region?.image_file}`
+      // image: `${url}/${region?.image?.image_path ?? region?.image_path}/${region?.image?.image_file ?? region?.image_file}`
+      image: `${_url}`
       , bboxRegion: region?.bbox
       , bbox: bboxes
       , scale: imageScale
@@ -392,19 +419,36 @@ export default function TableView({
         });
         if (JSON.stringify(inspection) !== JSON.stringify(dataToUse[index])) {
           drawImage({
-            url: `${filesWSToUse}/eyeflow_data/event_image`,
+            url: `${filesWSToUse}`,
             index,
             sizes: IMAGE_SIZES[checklist.length],
             region: inspection,
+            isSelectedSerialRunning
           });
           let otherImages = {};
           inspection?.tests?.forEach((test) => {
             test?.detections?.forEach((detection) => {
               if (detection?.image?.image_file !== inspection?.image?.image_file) {
                 if (!Object.keys(otherImages).includes(detection?.image?.image_file)) {
+                  let absolute_path = '';
+                  let url = '';
+                  if (isSelectedSerialRunning) {
+                    absolute_path = detection?.image?.stage_image_path;
+                  }
+                  else {
+                    absolute_path = detection?.image?.absolute_image_path;
+                  }
+                  if (absolute_path) {
+                    absolute_path = absolute_path.replace('/opt/eyeflow/data', 'eyeflow_data');
+                    url = `${filesWSToUse}/${absolute_path}/${detection?.image?.image_file ?? detection?.image_file}`;
+                  }
+                  else {
+                    url = `${filesWSToUse}/eyeflow_data/event_image/${detection?.image?.image_path ?? detection?.image_path}/${detection?.image?.image_file ?? detection?.image_file}`;
+                  }
+                  
                   otherImages[detection?.image?.image_file] = {
                     bboxes: [],
-                    url: `${filesWSToUse}/eyeflow_data/event_image/${detection?.image?.image_path ?? detection?.image_path}/${detection?.image?.image_file ?? detection?.image_file}`,
+                    url,
                     annotate: true
                   }
                 }
@@ -451,19 +495,36 @@ export default function TableView({
         });
         if (JSON.stringify(inspection) !== JSON.stringify(dataToUse[index])) {
           drawImage({
-            url: `${filesWSsToUse.length > 0 ? filesWSsToUse[index] : filesWSToUse}/eyeflow_data/event_image`,
+            url: `${filesWSsToUse.length > 0 ? filesWSsToUse[index] : filesWSToUse}`,
             index,
             sizes: IMAGE_SIZES[checklist.length],
             region: inspection,
+            isSelectedSerialRunning
           });
           let otherImages = {};
           inspection?.tests?.forEach((test) => {
             test?.detections?.forEach((detection) => {
               if (detection?.image?.image_file !== inspection?.image?.image_file) {
                 if (!Object.keys(otherImages).includes(detection?.image?.image_file)) {
+                  let absolute_path = '';
+                  let url = '';
+                  if (isSelectedSerialRunning) {
+                    absolute_path = detection?.image?.stage_image_path;
+                  }
+                  else {
+                    absolute_path = detection?.image?.absolute_image_path;
+                  }
+                  if (absolute_path) {
+                    absolute_path = absolute_path.replace('/opt/eyeflow/data', 'eyeflow_data');
+                    url = `${filesWSToUse}/${detection?.image?.image_file ?? detection?.image_file}`;
+                  }
+                  else {
+                    url = `${filesWSToUse}/eyeflow_data/event_image/${detection?.image?.image_path ?? detection?.image_path}/${detection?.image?.image_file ?? detection?.image_file}`;
+                  }
+                  // url: `${filesWSToUse}/eyeflow_data/event_image/${detection?.image?.image_path ?? detection?.image_path}/${detection?.image?.image_file ?? detection?.image_file}`,
                   otherImages[detection?.image?.image_file] = {
                     bboxes: [],
-                    url: `${filesWSToUse}/eyeflow_data/event_image/${detection?.image?.image_path ?? detection?.image_path}/${detection?.image?.image_file ?? detection?.image_file}`,
+                    url,
                     annotate: true
                   }
                 }
@@ -537,6 +598,7 @@ export default function TableView({
                 flexGrow: 1,
                 overflow: 'hidden',
               }}
+              key={`${index}-table-view`}
             >
               <Box
                 sx={{
