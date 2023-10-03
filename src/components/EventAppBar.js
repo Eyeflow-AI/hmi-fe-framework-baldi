@@ -44,7 +44,7 @@ const style = {
   }
 };
 
-export default function EventAppBar({isBatchRunning, data, config, disabled, onClickPause, onClickResume, resumeLoading, pauseLoading}) {
+export default function EventAppBar({isBatchRunning, data, config, disabled, onClickPause, onClickResume, resumeLoading, pauseLoading, stopLoading, onClickStop}) {
 
   const { t } = useTranslation();
 
@@ -55,6 +55,7 @@ export default function EventAppBar({isBatchRunning, data, config, disabled, onC
         if (buttonData.id === "pause_or_resume") {
           if (data.status === "running") {
             buttonList.push({label: "pause", icon: buttonData.pause_icon, onClick: onClickPause, disabled: pauseLoading, loading: pauseLoading});
+            buttonList.push({label: "stop", icon: buttonData.stop_icon, onClick: onClickStop, disabled: stopLoading, loading: stopLoading});
           }
           else if (data.status === "paused") {
             buttonList.push({label: "resume", icon: buttonData.resume_icon, onClick: onClickResume, disabled: isBatchRunning || resumeLoading, loading: resumeLoading});
