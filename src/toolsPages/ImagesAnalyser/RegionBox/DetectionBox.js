@@ -48,7 +48,7 @@ export default function DetectionBox({data, imageWidth, imageHeight}) {
     if (data && imageWidth && imageHeight) {
       label = data.item;
       confidence = formatConfidence(data.confidence);
-      color = (data.in_frame ?? true) ? data.color : "#ff0000";
+      color = (data.in_frame ?? true) ? data.color : "#ababab";
       let x_min = data.bbox.x_min/imageWidth;
       let y_min = data.bbox.y_min/imageHeight;
       let x_max = data.bbox.x_max/imageWidth;
