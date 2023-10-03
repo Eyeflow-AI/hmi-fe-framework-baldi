@@ -49,6 +49,7 @@ export default function Monitor({ pageOptions }) {
   const [queryParams, setQueryParams] = useState(null);
   const [resumeLoading, setResumeLoading] = useState(false);
   const [pauseLoading, setPauseLoading] = useState(false);
+  const [stopLoading, setStopLoading] = useState(false);
   const [newBatchLoading, setNewBatchLoading] = useState(false);
 
   const { batchList, loading: loadingBatchList, loadBatchList } = GetBatchList({ stationId, queryParams, sleepTime: pageOptions.options.getEventSleepTime });
@@ -146,6 +147,17 @@ export default function Monitor({ pageOptions }) {
     };
   };
 
+  const onClickStop = () => {
+    if (selectedBatch) {
+      API.put.batchStop({ stationId, batchId: selectedBatch._id }, setStopLoading)
+        .then((data) => {
+          console.log("batch stopped");
+          updateAll();
+        })
+        .catch(console.error);
+    };
+  }
+
   const onClickResume = () => {
     if (selectedBatch) {
       API.put.batchResume({ stationId, batchId: selectedBatch._id }, setResumeLoading)
@@ -201,6 +213,8 @@ export default function Monitor({ pageOptions }) {
                   onClickPause={onClickPause}
                   resumeLoading={resumeLoading}
                   onClickResume={onClickResume}
+                  stopLoading={stopLoading}
+                  onClickStop={onClickStop}
                 />
                 <EventBatchDataBox
                   data={selectedBatch}

@@ -111,6 +111,7 @@ const API = {
   put: {
     batchPause: ({ stationId, batchId }, setLoading) => request(instance.put(`batch/${stationId}/${batchId}/pause`), setLoading),
     batchResume: ({ stationId, batchId }, setLoading) => request(instance.put(`batch/${stationId}/${batchId}/resume`), setLoading),
+    batchStop: ({ stationId, batchId }, setLoading) => request(instance.put(`batch/${stationId}/${batchId}/stop`), setLoading),
 
     activeDataset: ({ status, datasetId }, setLoading) => request(instance.put(`internal/active-dataset`, { status, datasetId }), setLoading),
     activeLanguage: ({ status, languageId }, setLoading) => request(instance.put(`internal/active-language`, { status, languageId }), setLoading),

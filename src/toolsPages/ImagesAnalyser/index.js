@@ -210,6 +210,10 @@ export default function ImageAnalyser({ pageOptions }) {
     fetch(imageData?.json_url)
       .then((response) => response.json())
       .then((jsonData) => {
+        if (jsonData && !Array.isArray(jsonData)) {
+          jsonData = [jsonData];
+        }
+
         imageData.jsonData = jsonData;
         listRef.current.scrollToItem(imageData.index, 'auto');
         console.log({ imageData })
@@ -265,7 +269,7 @@ export default function ImageAnalyser({ pageOptions }) {
 
     if (_selectedDay) {
       let station = stationsList.find((item) => item.label === selectedStation);
-      let edge = station?.edges.find((item) => item.name === selectedEdge);
+      let edge = station?.edges?.find((item) => item.name === selectedEdge);
 
       API.get.filesListMongo({ params: { dirPath, host: edge?.host, port: edge?.filesPort, inspectionDate: _selectedDay } }, setLoadingFilesList)
         .then((data) => {
@@ -311,7 +315,7 @@ export default function ImageAnalyser({ pageOptions }) {
 
   const onSelectEdge = (_selectedEdge, erase = true) => {
     let station = stationsList.find((item) => item.label === selectedStation);
-    let edge = station?.edges.find((item) => item.name === _selectedEdge);
+    let edge = station?.edges?.find((item) => item.name === _selectedEdge);
 
     setSelectedEdge(_selectedEdge);
     if (erase) {
@@ -340,7 +344,7 @@ export default function ImageAnalyser({ pageOptions }) {
     let newImagesList = [];
     newImagesList = inspections.filter((item) => item.inspection_id === _selectedId);
     let station = stationsList.find((item) => item.label === selectedStation);
-    let edge = station?.edges.find((item) => item.name === selectedEdge);
+    let edge = station?.edges?.find((item) => item.name === selectedEdge);
     let host = edge?.host ?? '';
     let filePort = edge?.filesPort ?? '';
     let path = pageOptions?.options?.dirPath;
@@ -363,7 +367,7 @@ export default function ImageAnalyser({ pageOptions }) {
     let newImagesList = [];
     newImagesList = inspections.filter((item) => item.inspection_id === selectedId);
     let station = stationsList.find((item) => item.label === selectedStation);
-    let edge = station?.edges.find((item) => item.name === selectedEdge);
+    let edge = station?.edges?.find((item) => item.name === selectedEdge);
     let host = edge?.host ?? '';
     let filePort = edge?.filesPort ?? '';
     let path = pageOptions?.options?.dirPath;
@@ -605,9 +609,9 @@ export default function ImageAnalyser({ pageOptions }) {
                               display: 'block'
                             }}
                           />
-                          {showDetections && selectedImageData &&
+                          {showDetections && selectedImageData && Array.isArray(selectedImageData.jsonData) &&
                             <div id="img-drawer" style={style.imgDrawer}>
-                              {selectedImageData?.jsonData?.map((data, index) => (
+                              {selectedImageData.jsonData.map((data, index) => (
                                 <RegionBox key={index} data={data} imageWidth={imageWidth} imageHeight={imageHeight} />
                               ))}
                             </div>
