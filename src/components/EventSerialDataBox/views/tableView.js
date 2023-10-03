@@ -285,7 +285,7 @@ export default function TableView({
   }
 
   const drawImage = async ({ url, index, sizes, region, isSelectedSerialRunning=false }) => {
-    const imageScale = region?.image_scale ?? 0.5;
+    const imageScale = region?.image?.image_scale ?? 1;
     let bboxes = [];
     region?.tests?.forEach((test) => {
       // console.log({bboxes, region})
