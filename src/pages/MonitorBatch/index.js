@@ -57,7 +57,7 @@ export default function Monitor({ pageOptions }) {
   const { runningBatch, loadRunningBatch } = GetRunningBatch({ stationId, sleepTime: pageOptions.options.getEventSleepTime });
   const isBatchRunning = Boolean(runningBatch);
 
-  const [openCreateModal, setOpenCreateModal] = React.useState(false);
+  const [openCreateModal, setOpenCreateModal] = useState(false);
 
   const handleOpenCreateModal = () => setOpenCreateModal(true);
   const handleCloseCreateModal = () => {
@@ -113,7 +113,6 @@ export default function Monitor({ pageOptions }) {
   const onClickSendBatchData = (data) => {
     API.post.batch({ stationId, data }, setNewBatchLoading)
       .then((data) => {
-        console.log(data);
         setOpenCreateModal(false);
         updateAll();
       })
