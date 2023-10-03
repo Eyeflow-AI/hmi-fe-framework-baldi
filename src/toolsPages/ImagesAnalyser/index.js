@@ -210,6 +210,10 @@ export default function ImageAnalyser({ pageOptions }) {
     fetch(imageData?.json_url)
       .then((response) => response.json())
       .then((jsonData) => {
+        if (jsonData && !Array.isArray(jsonData)) {
+          jsonData = [jsonData];
+        }
+
         imageData.jsonData = jsonData;
         listRef.current.scrollToItem(imageData.index, 'auto');
         console.log({ imageData })
@@ -605,9 +609,9 @@ export default function ImageAnalyser({ pageOptions }) {
                               display: 'block'
                             }}
                           />
-                          {showDetections && selectedImageData &&
+                          {showDetections && selectedImageData && Array.isArray(selectedImageData.jsonData) &&
                             <div id="img-drawer" style={style.imgDrawer}>
-                              {selectedImageData?.jsonData?.map((data, index) => (
+                              {selectedImageData.jsonData.map((data, index) => (
                                 <RegionBox key={index} data={data} imageWidth={imageWidth} imageHeight={imageHeight} />
                               ))}
                             </div>
