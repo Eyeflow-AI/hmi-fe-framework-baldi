@@ -260,7 +260,7 @@ export default function TableView({
   const stationsList = GetStationsList();
   const [feedbackInfo, setFeedbackInfo] = useState({});
 
-  console.log({feedbackInfo})
+  // console.log({feedbackInfo})
 
   const setImagesURLSRef = (newImagesURLS) => {
     imagesURLSRef.current = newImagesURLS;
@@ -301,7 +301,7 @@ export default function TableView({
     _loadingFeedback[index] = true;
     setLoadingFeedback([..._loadingFeedback]);
     if (obj) {
-      console.log({index, regionName, serialId, obj})
+      // console.log({index, regionName, serialId, obj})
       let imageId = obj?.originalUrl?.split('/')?.pop()?.replace('.jpg', '');
       let info = {
         index,
@@ -370,7 +370,9 @@ export default function TableView({
         let edge = station?.edges?.find((edge) => edge?.host === `http://${IPV6toIPv4(inspections?.[0]?.host)}`);
         let url = `${edge?.host}:${edge?.filesPort}`;
         filesWSToUse = url;
+        // console.log({edge, url, inspection: inspections[0], station})
       };
+      // console.log({filesWSToUse})
       const _imagesURLS = [];
       const _loadingFeedback = [];
       checklist.forEach((inspection, index) => {

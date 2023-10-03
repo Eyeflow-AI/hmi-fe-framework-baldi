@@ -44,7 +44,17 @@ const style = {
   }
 };
 
-export default function EventAppBar({isBatchRunning, data, config, disabled, onClickPause, onClickResume, resumeLoading, pauseLoading}) {
+export default function EventAppBar({
+  isBatchRunning, 
+  data,
+  config, 
+  disabled, 
+  onClickPause, 
+  onClickResume, 
+  onClickPrint,
+  resumeLoading, 
+  pauseLoading,
+}) {
 
   const { t } = useTranslation();
 
@@ -59,7 +69,15 @@ export default function EventAppBar({isBatchRunning, data, config, disabled, onC
           else if (data.status === "paused") {
             buttonList.push({label: "resume", icon: buttonData.resume_icon, onClick: onClickResume, disabled: isBatchRunning || resumeLoading, loading: resumeLoading});
           }
-        }  
+        }
+        if (buttonData.id === 'print' && data.status === 'closed') {
+          buttonList.push({
+            label: "print", 
+            icon: buttonData.icon, 
+            onClick: onClickPrint, 
+            disabled: isBatchRunning
+          });
+        }
       };
     };
 
@@ -67,7 +85,7 @@ export default function EventAppBar({isBatchRunning, data, config, disabled, onC
       buttonList,
       hasAppBar: buttonList.length > 0
     };
-  }, [isBatchRunning, data, config, onClickPause, onClickResume, pauseLoading, resumeLoading]);
+  }, [isBatchRunning, data, config, onClickPause, onClickResume, onClickPrint, pauseLoading, resumeLoading]);
 
   if (hasAppBar) {
     return (
