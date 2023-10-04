@@ -67,6 +67,7 @@ const API = {
 
     runQuery: ({ collectionName, searchMethod, query }, setLoading) => request(instance.post(`queries/run-query`, { collectionName, searchMethod, query }), setLoading),
     toUpload: ({ jsonData, jsonFileData, folderInfo, imageURL }) => request(instance.post(`event/to-upload`, { jsonData, jsonFileData, folderInfo, imageURL })),
+    task: ({ stationId, task }, setLoading) => request(instance.post(`tasks/${stationId}`, {task}), setLoading),
   },
   get: {
     batchList: ({ params, stationId }, setLoading) => request(instance.get(`batch/${stationId}/list`, { params }), setLoading),
@@ -107,6 +108,7 @@ const API = {
     filesListNgnix: ({ params }, setLoading) => request(instance.get(`files/list-nginx`, { params }), setLoading),
     filesListMongo: ({ params }, setLoading) => request(instance.get(`files/list-mongo`, { params }), setLoading),
     folderListMongo: ({ params }, setLoading) => request(instance.get(`files/folder-list-mongo`, { params }), setLoading),
+    tasks: ({ queryOBJ, stationId }, setLoading) => request(instance.get(`tasks/${stationId}?query=${queryOBJ}`), setLoading),
   },
   put: {
     batchPause: ({ stationId, batchId }, setLoading) => request(instance.put(`batch/${stationId}/${batchId}/pause`), setLoading),
