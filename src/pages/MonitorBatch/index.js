@@ -11,6 +11,7 @@ import EventHeader from '../../components/EventHeader';
 import EventAppBar from '../../components/EventAppBar';
 import EventMenuBox from '../../components/EventMenuBox';
 import CreateBatchModal from '../../components/FormModal';
+import PrintingDialog from '../../components/PrintingDialog';
 import EventBatchDataBox from '../../components/EventBatchDataBox';
 import GetBatchList from '../../utils/Hooks/GetBatchList';
 import GetBatch from '../../utils/Hooks/GetBatch';
@@ -19,6 +20,8 @@ import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
 import API from '../../api';
 import ERRORS from '../../errors';
 import { setNotificationBar } from '../../store/slices/app';
+
+
 
 // Third-party
 import { useDispatch } from 'react-redux';
@@ -59,6 +62,8 @@ export default function Monitor({ pageOptions }) {
   const isBatchRunning = Boolean(runningBatch);
 
   const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [openPrintDialog, setOpenPrintDialog] = useState(false);
+
 
   const handleOpenCreateModal = () => setOpenCreateModal(true);
   const handleCloseCreateModal = () => {
@@ -174,6 +179,28 @@ export default function Monitor({ pageOptions }) {
     };
   };
 
+
+  const onClickPrint = () => {
+    setOpenPrintDialog(true);
+  };
+
+  const printFunction = (task) => {
+    console.log({task})
+    API.post.task({ stationId, task: task?.task })
+      .then((data) => {
+        console.log("task inserted");
+        dispatch(setNotificationBar({ show: true, type: 'success', message: "task inserted" }));
+        // updateAll();
+      })
+      .catch((err) => {
+        if (err.code === ERRORS.EDGE_STATION_IS_NOT_REACHABLE) {
+          dispatch(setNotificationBar({ show: true, type: 'error', message: "edge_station_is_not_reachable" }));
+        }
+        console.error(err);
+      });
+  }
+  // console.log({selectedBatch})
+
   return (
     <Fragment>
       <PageWrapper>
@@ -215,6 +242,7 @@ export default function Monitor({ pageOptions }) {
                   onClickResume={onClickResume}
                   stopLoading={stopLoading}
                   onClickStop={onClickStop}
+                  onClickPrint={onClickPrint}
                 />
                 <EventBatchDataBox
                   data={selectedBatch}
@@ -232,6 +260,13 @@ export default function Monitor({ pageOptions }) {
         handleClose={handleCloseCreateModal}
         sendLoading={newBatchLoading}
         onClickSend={onClickSendBatchData}
+      />
+      <PrintingDialog
+        open={openPrintDialog}
+        handleClose={() => setOpenPrintDialog(false)}
+        printFunction={printFunction}
+        handleCancel={() => setOpenPrintDialog(false)}
+        data={selectedBatch}
       />
     </Fragment>
   );

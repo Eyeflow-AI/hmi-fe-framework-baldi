@@ -94,7 +94,7 @@ export default function EventAppBar({
     return (
       <Box width={config.width} height={config.height} sx={disabled ? style.mainBoxDisabled : style.mainBox}>
         {buttonList.map((buttonProps, index) => 
-        <Box sx={style.buttonBox}>
+        <Box sx={style.buttonBox} key={`${index}-button-app-bar`}>
           <Tooltip key={index} title={t(buttonProps.label)}>
             <IconButton onClick={buttonProps.onClick} disabled={buttonProps.disabled}>
               <img alt="" src={buttonProps.icon} style={Object.assign({}, style.buttonImage, {opacity: buttonProps.disabled ? 0.3 : 1})} />
