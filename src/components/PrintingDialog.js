@@ -48,7 +48,6 @@ export default function PrintingDialog({
       .then(data => {
         if (data?.ok) {
           let tasks = data?.tasks;
-          console.log({tasks})
           setTasks(tasks);
         }
       })
@@ -82,7 +81,7 @@ export default function PrintingDialog({
         <DialogContent>
         <List dense={true}>
           {
-            tasks?.map((task, index) => {
+            tasks?.length > 0 ? tasks?.map((task, index) => {
               return (
                 <ListItem
                     secondaryAction={
@@ -102,12 +101,16 @@ export default function PrintingDialog({
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText
-                      primary={task?.task?.params?.box && `Caixa - ${task?.task?.params?.box}`}
+                      primary={task?.task?.params?.alert?.info?.pack && `Caixa - ${task?.task?.params?.alert?.info?.pack ?? ''}`}
                       secondary={new Date(task?.inserted_date?.$date).toLocaleString()}
                     />
                   </ListItem>
               )
             })
+            :
+            <>
+              {t('no_printing_tasks')}
+            </>
           }
         </List>
 
