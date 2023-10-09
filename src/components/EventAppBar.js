@@ -73,12 +73,21 @@ export default function EventAppBar({
             buttonList.push({label: "resume", icon: buttonData.resume_icon, onClick: onClickResume, disabled: isBatchRunning || resumeLoading, loading: resumeLoading});
           }
         }
-        if (buttonData.id === 'print' && data.status === 'closed') {
+        if (buttonData.id === 'print') {
           buttonList.push({
             label: "print", 
             icon: buttonData.icon, 
             onClick: onClickPrint, 
-            disabled: isBatchRunning
+            // disabled: isBatchRunning
+          });
+        }
+        if (buttonData.id === 'stop' && ['running', 'paused'].includes(data.status)) {
+          buttonList.push({
+            label: "stop", 
+            icon: buttonData.icon, 
+            onClick: onClickStop, 
+            disabled: stopLoading,
+            loading: stopLoading
           });
         }
       };

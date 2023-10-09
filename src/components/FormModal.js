@@ -187,7 +187,7 @@ export default function FormModal({config, open, handleClose, onClickSend, sendL
   return (
     <Modal
       open={open}
-      onClose={handleClose}
+      // onClose={handleClose}
       closeAfterTransition
       slots={modalProps.slots}
       slotProps={modalProps.slotProps}
@@ -210,7 +210,7 @@ export default function FormModal({config, open, handleClose, onClickSend, sendL
 
           <Box sx={style.footerBox}>
             <Button color="inherit" variant="outlined" onClick={handleClose}>{t('cancel')}</Button>
-            <LoadingButton loading={sendLoading} disabled={sendDisabled} variant="contained" onClick={_onClickSend}>{t('send')}</LoadingButton>
+            <LoadingButton loading={sendLoading} disabled={sendDisabled} variant="contained" onClick={_onClickSend}>{t('confirm')}</LoadingButton>
           </Box>
         </Box>
       </Fade>

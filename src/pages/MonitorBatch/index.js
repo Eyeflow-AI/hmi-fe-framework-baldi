@@ -25,6 +25,7 @@ import { setNotificationBar } from '../../store/slices/app';
 
 // Third-party
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 
 const style = {
@@ -47,6 +48,7 @@ const style = {
 export default function Monitor({ pageOptions }) {
 
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const { _id: stationId } = GetSelectedStation();
   const [queryParams, setQueryParams] = useState(null);
@@ -185,11 +187,9 @@ export default function Monitor({ pageOptions }) {
   };
 
   const printFunction = (task) => {
-    console.log({task})
     API.post.task({ stationId, task: task?.task })
       .then((data) => {
-        console.log("task inserted");
-        dispatch(setNotificationBar({ show: true, type: 'success', message: "task inserted" }));
+        dispatch(setNotificationBar({ show: true, type: 'success', message: t("task_created") }));
         // updateAll();
       })
       .catch((err) => {
