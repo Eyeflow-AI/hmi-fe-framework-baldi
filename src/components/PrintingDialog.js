@@ -43,8 +43,9 @@ export default function PrintingDialog({
       'task.type': 'print_box_content'
     };
     queryOBJ = JSON.stringify(queryOBJ);
+    let status = 'all';
 
-    API.get.tasks({queryOBJ, stationId})
+    API.get.tasks({queryOBJ, stationId, status})
       .then(data => {
         if (data?.ok) {
           let tasks = data?.tasks;

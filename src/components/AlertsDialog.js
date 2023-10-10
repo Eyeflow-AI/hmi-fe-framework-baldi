@@ -57,7 +57,6 @@ export default function AlertsDialog({open, alerts, stationId, handleClose}) {
   const onClickDelete = (alertId) => {
     API.delete.alert({stationId, alertId})
       .then((data) => {
-        console.log({data});
         dispatch(alertsThunk({stationId}));
       })
       .catch(console.error);
