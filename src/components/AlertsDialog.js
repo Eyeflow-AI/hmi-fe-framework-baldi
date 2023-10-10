@@ -84,7 +84,6 @@ export default function AlertsDialog({open, alerts, stationId, handleClose}) {
       width: DIALOG_WIDTH - 50,
       // padding: 1,
     };
-    console.log({alertData})
 
     return (
       <div key={`item-${index}`} style={style}>
