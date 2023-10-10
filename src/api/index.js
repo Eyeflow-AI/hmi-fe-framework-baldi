@@ -108,7 +108,7 @@ const API = {
     filesListNgnix: ({ params }, setLoading) => request(instance.get(`files/list-nginx`, { params }), setLoading),
     filesListMongo: ({ params }, setLoading) => request(instance.get(`files/list-mongo`, { params }), setLoading),
     folderListMongo: ({ params }, setLoading) => request(instance.get(`files/folder-list-mongo`, { params }), setLoading),
-    tasks: ({ queryOBJ, stationId }, setLoading) => request(instance.get(`tasks/${stationId}?query=${queryOBJ}`), setLoading),
+    tasks: ({ queryOBJ, stationId, status }, setLoading) => request(instance.get(`tasks/${stationId}?status=${status}&query=${queryOBJ}`), setLoading),
   },
   put: {
     batchPause: ({ stationId, batchId }, setLoading) => request(instance.put(`batch/${stationId}/${batchId}/pause`), setLoading),
