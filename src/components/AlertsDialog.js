@@ -84,13 +84,14 @@ export default function AlertsDialog({open, alerts, stationId, handleClose}) {
       width: DIALOG_WIDTH - 50,
       // padding: 1,
     };
+    console.log({alertData})
 
     return (
       <div key={`item-${index}`} style={style}>
         <Box sx={buttonStyle}>
           <Box flexGrow={1}>
             {dateFormat(alertData.date)}<br/>
-            {t(alertData.alert.locale_id)}
+            {t(alertData.alert.locale_id)}{alertData?.info?.inspection_id && ` - ${t(alertData.info.inspection_id)}`}
           </Box>
           <IconButton onClick={() => onClickDelete(alertData._id)}>
             <DeleteIcon />
