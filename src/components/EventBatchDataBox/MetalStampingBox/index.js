@@ -14,6 +14,7 @@ const styleSx = {
     bgcolor: 'background.paper',
     display: 'flex',
     justifyContent: "space-evenly",
+    width: "calc(100vw - 502px)",
   }),
   graphBoxSx: {
     display: 'flex',

@@ -46,7 +46,7 @@ export default function DetectionBox({data, imageWidth, imageHeight}) {
     let color = '';
 
     if (data && imageWidth && imageHeight) {
-      label = data.item;
+      label = data.label ?? data.item;
       confidence = formatConfidence(data.confidence);
       color = (data.in_frame ?? true) ? data.color : "#ababab";
       let x_min = data.bbox.x_min/imageWidth;

@@ -18,7 +18,6 @@ const style = {
 export default function RegionBox({data, imageWidth, imageHeight}) {
   
   let {label, regionStyle} = useMemo(() => {
-    console.log({data, imageWidth, imageHeight});
     let regionStyle = {...style.region};
     let label = '';
 

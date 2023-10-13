@@ -4,7 +4,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
 import fetchJson from '../utils/functions/fetchJson';
-import RegionBox from '../toolsPages/ImagesAnalyser/RegionBox';
+import DetectionBox from './DetectionBox';
 
 const styleSx = {
   mainBoxSx: {
@@ -100,7 +100,7 @@ export default function ImageCard ({imageData}) {
       <img alt="" src={imageData?.image_url} style={loading? loadingImageStyle : imageStyle} onLoad={onImageLoad}/>
       {loading && <CircularProgress sx={styleSx.circularProgressSx} />}
       {detections.map((detection, index) => (
-        <RegionBox data={detection} key={index} imageWidth={imageWidth} imageHeight={imageHeight}/>
+        <DetectionBox data={detection} key={index} imageWidth={imageWidth} imageHeight={imageHeight}/>
       ))}
     </Box>
   )
