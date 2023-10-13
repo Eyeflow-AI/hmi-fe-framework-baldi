@@ -21,7 +21,7 @@ export default function GetRunningBatch({ stationId, sleepTime = 30000 } = {}) {
             setData(response);
           }
           else {
-            console.log(`Running batch did not update`);
+            // console.log(`Running batch did not update`);
           };
         })
         .catch(console.log);

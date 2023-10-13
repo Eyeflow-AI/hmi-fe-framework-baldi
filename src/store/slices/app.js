@@ -87,7 +87,7 @@ const appSlice = createSlice({
           state.partsListHash = action.payload.hash ?? null;
         }
         else {
-          console.log("partsList unchanged");
+          // console.log("partsList unchanged");
         }
       })
       .addCase(partsList.rejected, (state) => {

@@ -2,7 +2,7 @@ import { useMemo } from "react"
 
 import Typography from "@mui/material/Typography";
 
-import DetectionBox from "./DetectionBox";
+import DetectionBox from "../../../components/DetectionBox";
 
 
 const style = {
@@ -18,6 +18,7 @@ const style = {
 export default function RegionBox({data, imageWidth, imageHeight}) {
   
   let {label, regionStyle} = useMemo(() => {
+    console.log({data, imageWidth, imageHeight});
     let regionStyle = {...style.region};
     let label = '';
 

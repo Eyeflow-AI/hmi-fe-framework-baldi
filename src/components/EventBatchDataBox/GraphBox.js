@@ -100,7 +100,7 @@ export default function GraphBox({ data, config }) {
       let status = data?.status;
       let partsOk = data?.batch_data?.parts_ok ?? 0;
       let partsNg = data?.batch_data?.parts_ng ?? 0;
-      let conveyorSpeed = data?.batch_data?.conveyor_speed ?? 0;
+      let conveyorSpeed = data?.batch_data?.conveyor_speed;
       let partsProduced = partsOk + partsNg;
       let partsPieData = [];
       let anomaliesPieData = [];
@@ -151,7 +151,7 @@ export default function GraphBox({ data, config }) {
         { field: "produced", label: `${partsProduced} (${(partsProduced / totalQtt * 100).toFixed(2)}%)` },
       ];
 
-      if (status === "running") {
+      if (status === "running" && conveyorSpeed !== undefined) {
         dataList.push({ field: "speed", label: conveyorSpeed });
       };
 
