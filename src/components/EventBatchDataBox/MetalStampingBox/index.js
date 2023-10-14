@@ -14,12 +14,13 @@ const styleSx = {
     bgcolor: 'background.paper',
     display: 'flex',
     justifyContent: "space-evenly",
+    paddingRight: 1,
   }),
   graphBoxSx: {
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    width: '600px',
+    width: '50%',
     justifyContent: 'space-evenly'
     // width: '100%',
     // flexGrow: 1,
@@ -33,12 +34,12 @@ const styleSx = {
   },
   imageBoxSx: {
     display: 'flex',
-    width: "calc(100% - 600px)",
+    width: "50%",
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: "center",
     height: '100%',
-    gap: 1,
+    gap: 3,
   }
 };
 
@@ -203,15 +204,21 @@ export default function MetalStampingBox ({data, config}) {
       <Box id="image-box" sx={styleSx.imageBoxSx}>
         {imageData && (
         <Box>
-          <ImageCard imageData={imageData} />
+          <ImageCard imageData={imageData} title={t("last_inspection")}/>
         </Box>
         )}
         
         {anomalyImageData && (
         <Box>
-          <ImageCard imageData={anomalyImageData} />
+          <ImageCard imageData={anomalyImageData} title={t("last_anomaly")} color="error.main"/>
         </Box>
         )}
+
+        {/* {imageData && (
+        <Box>
+          <ImageCard imageData={imageData} title={t("last_anomaly")} color="error.main"/>
+        </Box>
+        )} */}
       </Box>
     </Box>
   );
