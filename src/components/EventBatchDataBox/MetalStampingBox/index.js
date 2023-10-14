@@ -14,7 +14,6 @@ const styleSx = {
     bgcolor: 'background.paper',
     display: 'flex',
     justifyContent: "space-evenly",
-    width: "calc(100vw - 502px)",
   }),
   graphBoxSx: {
     display: 'flex',
@@ -84,7 +83,8 @@ const responsivePieLegends = [
   }
 ];
 
-export default function InspectionImageBox ({data, config}) {
+
+export default function MetalStampingBox ({data, config}) {
 
   const { t } = useTranslation();
 
@@ -102,22 +102,6 @@ export default function InspectionImageBox ({data, config}) {
     partsPieData,
     anomaliesPieData,
   } = useMemo(() => {
-    if (!selectedCamera) return null;
-    let lastInspectionData = data?.batch_data?.last_inspection;
-    let imageData = lastInspectionData?.images?.find(image => image.camera_name === selectedCamera);
-    if (!imageData) {
-      console.error(`No image data for camera ${selectedCamera}`);
-      return null;
-    }
-
-    if (!imageData.image_url) {
-      console.error(`No image url for camera ${selectedCamera}`);
-      return null;
-    }
-
-    let anomalyImageData = data?.batch_data?.last_anomaly?.images[0];
-    // TODO select anomaly image
-
     let partsOk = data?.batch_data?.parts_ok ?? 0;
     let partsNg = data?.batch_data?.parts_ng ?? 0;
     let partsPieData = [];
@@ -155,6 +139,21 @@ export default function InspectionImageBox ({data, config}) {
       };
     }
 
+    let imageData = null;
+    if (selectedCamera) {
+      let lastInspectionData = data?.batch_data?.last_inspection;
+      imageData = lastInspectionData?.images?.find(image => image.camera_name === selectedCamera);
+      if (!imageData) {
+        console.error(`No image data for camera ${selectedCamera}`);
+      }
+      else if (!imageData.image_url) {
+        imageData = null;
+        console.error(`No image url for camera ${selectedCamera}`);
+      }
+    }
+    let anomalyImageData = data?.batch_data?.last_anomaly?.images?.[0];
+    // TODO select anomaly image
+
     return {
       imageData,
       anomalyImageData,
@@ -164,12 +163,12 @@ export default function InspectionImageBox ({data, config}) {
   }, [selectedCamera, data]);
 
   return (
-    <Box width={config?.width ?? 250} height={config?.height ?? '100%'} sx={styleSx.mainBoxSx}>
+    <Box width={config?.width ?? "calc(100vw - 502px)"} height={config?.height ?? '100%'} sx={styleSx.mainBoxSx}>
       <Box id="graph-box" sx={styleSx.graphBoxSx}>
 
         <Box marginBottom={-2} sx={styleSx.pieBoxSx}>
           <Typography variant="h5" marginBottom={-3} marginLeft={6}>
-            {partsPieData.length > 0 ? t("parts") : ""}
+            {partsPieData && partsPieData.length > 0 ? t("parts") : ""}
           </Typography>
           <Box width={800} height={400}>
             <ResponsivePie
@@ -181,7 +180,7 @@ export default function InspectionImageBox ({data, config}) {
           </Box>
         </Box>
 
-        {anomaliesPieData.length > 0 && (
+        {anomaliesPieData && anomaliesPieData.length > 0 && (
         <Box sx={styleSx.pieBoxSx}>
           <Typography variant="h5" marginBottom={-3} marginLeft={6}>
             {t("anomalies")}
