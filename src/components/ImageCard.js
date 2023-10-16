@@ -11,8 +11,8 @@ const styleSx = {
   mainBoxSx: {
     display: 'flex',
     flexDirection: 'column',
-    height: '100%',
-    width: '100%',
+    // height: '100%',
+    // width: '100%',
     // border: '1px solid red',
   },
   imageBoxSx: {
@@ -133,7 +133,7 @@ export default function ImageCard ({title, eventTime, imageData, color}) {
       <Box id="image-card" sx={styleSx.imageBoxSx}>
         <img alt="" src={imageSrc} style={loading? loadingImageStyle : imageStyle} onLoad={onImageLoad}/>
         {loading && <CircularProgress sx={styleSx.circularProgressSx} />}
-        {loading && detections.map((detection, index) => (
+        {!loading && detections.map((detection, index) => (
           <DetectionBox data={detection} key={index} imageWidth={imageWidth} imageHeight={imageHeight} showLabel={false} showConfidence={false}/>
         ))}
       </Box>

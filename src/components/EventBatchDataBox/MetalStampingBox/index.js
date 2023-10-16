@@ -43,7 +43,15 @@ const styleSx = {
     alignItems: "center",
     height: '100%',
     gap: 3,
-  }
+  },
+  cardBoxSx: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: "center",
+    height: '50%',
+    // width: '100%',
+  },
 };
 
 const responsivePieTheme = {
@@ -214,13 +222,13 @@ export default function MetalStampingBox ({data, config}) {
       </Box>
       <Box id="image-box" sx={styleSx.imageBoxSx}>
         {imageData && (
-        <Box>
+        <Box sx={styleSx.cardBoxSx}>
           <ImageCard imageData={imageData} eventTime={imageData.event_time} title={t("last_inspection")}/>
         </Box>
         )}
         
         {anomalyImageData && (
-        <Box>
+        <Box sx={styleSx.cardBoxSx}>
           <ImageCard imageData={anomalyImageData} title={t("last_anomaly")} eventTime={anomalyImageData.event_time} color="error.main"/>
         </Box>
         )}
