@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import { ResponsivePie } from '@nivo/pie'
 import { colors, dateFormat} from 'sdk-fe-eyeflow';
 import { useTranslation } from "react-i18next";
+import { cloneDeep } from 'lodash';
 
 import ImageCard from '../../ImageCard';
 
@@ -143,7 +144,7 @@ export default function MetalStampingBox ({data, config}) {
     let imageData = null;
     if (selectedCamera) {
       let lastInspectionData = data?.batch_data?.last_inspection;
-      imageData = lastInspectionData?.images?.find(image => image.camera_name === selectedCamera);
+      imageData = cloneDeep(lastInspectionData?.images?.find(image => image.camera_name === selectedCamera));
       if (!imageData) {
         console.error(`No image data for camera ${selectedCamera}`);
       }
@@ -152,14 +153,12 @@ export default function MetalStampingBox ({data, config}) {
         console.error(`No image url for camera ${selectedCamera}`);
       }
       else {
-        imageData = {...imageData};
         imageData.event_time = dateFormat(lastInspectionData?.event_time);
         // imageData.event_time = lastInspectionData?.event_time;
       }
     }
-    let anomalyImageData = data?.batch_data?.last_anomaly?.images?.[0];
+    let anomalyImageData = cloneDeep(data?.batch_data?.last_anomaly?.images?.[0]);
     if (data?.batch_data?.last_anomaly?.event_time) {
-      anomalyImageData = {...anomalyImageData};
       anomalyImageData.event_time = dateFormat(data.batch_data.last_anomaly.event_time);
     }
     // TODO select anomaly image
