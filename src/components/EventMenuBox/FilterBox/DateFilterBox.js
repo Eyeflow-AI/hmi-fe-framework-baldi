@@ -1,5 +1,5 @@
 // React
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 
 //Design
@@ -27,12 +27,15 @@ const styleSx = {
 
 export default function DateFilterBox({
   onChangeParams,
+  keepRunningEvent,
 }) {
 
   const { t } = useTranslation();
 
   const [dateValue, setDateValue] = useState(new Date());
   const [manualChanging, setManualChanging] = useState(false);
+  // keep running event as useRef
+  const keepRunningEventRef = useRef(keepRunningEvent);
 
   useEffect(() => { //Update query params
     onChangeParams({ min_event_time: getQueryDateString(dateValue), max_event_time: getQueryDateString(dateValue, 1, 'end'), manualChanging });
@@ -44,6 +47,27 @@ export default function DateFilterBox({
     setManualChanging(true);
     setDateValue(newValue);
   };
+  console.log({keepRunningEventRef})
+
+  // get today date at every minute using useEffect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // if the day is different
+      let today = (new Date());
+      if (dateValue.getDate() !== today.getDate()) {
+        // add 1 day to today
+        if (keepRunningEventRef.current) {
+          setDateValue(today);
+        }
+      }
+    }, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    keepRunningEventRef.current = keepRunningEvent;
+  }, [keepRunningEvent]);
+
 
   return (
     <Box id="filter-box" sx={styleSx.filterBox} >
