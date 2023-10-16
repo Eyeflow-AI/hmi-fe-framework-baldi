@@ -79,7 +79,8 @@ export default function EventMenuBox({
   loadingData,
   onChangeParams,
   onChangeEventByClick,
-  config
+  config,
+  keepRunningEvent,
 }) {
 
   const { t } = useTranslation();
@@ -181,7 +182,11 @@ export default function EventMenuBox({
       )}
 
       <Box id="menu-box" height={menuBoxHeight} sx={styleSx.menuBox} >
-        <FilterBox onChangeParams={onChangeParams} queryFields={queryFields} />
+        <FilterBox
+          onChangeParams={onChangeParams} 
+          queryFields={queryFields}
+          keepRunningEvent={keepRunningEvent}
+        />
         <EventMenuList
           events={events}
           selectedEventId={selectedEventId}
