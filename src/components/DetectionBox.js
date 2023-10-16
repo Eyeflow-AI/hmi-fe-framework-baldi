@@ -33,7 +33,7 @@ function formatConfidence(confidence, decimals = 3) {
   return confidence.toFixed(decimals);
 };
 
-export default function DetectionBox({data, imageWidth, imageHeight}) {
+export default function DetectionBox({data, imageWidth, imageHeight, showLabel=true, showConfidence=true}) {
   
   let {label, confidence, regionStyle} = useMemo(() => {
     let top = 0;
@@ -72,12 +72,16 @@ export default function DetectionBox({data, imageWidth, imageHeight}) {
 
   return (
     <div style={regionStyle}>
+      {showLabel &&
       <Typography sx={style.text}>
         {label}
       </Typography>
+      }
+      {showConfidence &&
       <Typography sx={style.confidenceText}>
         {confidence}
       </Typography>
+      }
     </div>
   )
 }

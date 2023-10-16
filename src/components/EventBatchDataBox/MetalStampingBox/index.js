@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
 import { ResponsivePie } from '@nivo/pie'
-import { colors } from 'sdk-fe-eyeflow';
+import { colors, dateFormat} from 'sdk-fe-eyeflow';
 import { useTranslation } from "react-i18next";
 
 import ImageCard from '../../ImageCard';
@@ -151,8 +151,16 @@ export default function MetalStampingBox ({data, config}) {
         imageData = null;
         console.error(`No image url for camera ${selectedCamera}`);
       }
+      else {
+        imageData.event_time = dateFormat(lastInspectionData?.event_time);
+        // imageData.event_time = lastInspectionData?.event_time;
+
+      }
     }
     let anomalyImageData = data?.batch_data?.last_anomaly?.images?.[0];
+    if (data?.batch_data?.last_anomaly?.event_time) {
+      anomalyImageData.event_time = dateFormat(data.batch_data.last_anomaly.event_time);
+    }
     // TODO select anomaly image
 
     return {
@@ -204,13 +212,13 @@ export default function MetalStampingBox ({data, config}) {
       <Box id="image-box" sx={styleSx.imageBoxSx}>
         {imageData && (
         <Box>
-          <ImageCard imageData={imageData} title={t("last_inspection")}/>
+          <ImageCard imageData={imageData} eventTime={imageData.event_time} title={t("last_inspection")}/>
         </Box>
         )}
         
         {anomalyImageData && (
         <Box>
-          <ImageCard imageData={anomalyImageData} title={t("last_anomaly")} color="error.main"/>
+          <ImageCard imageData={anomalyImageData} title={t("last_anomaly")} eventTime={anomalyImageData.event_time} color="error.main"/>
         </Box>
         )}
 

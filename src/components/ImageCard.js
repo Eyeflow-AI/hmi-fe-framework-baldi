@@ -26,8 +26,14 @@ const styleSx = {
     height: 40,
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingLeft: 1,
+    paddingRight: 1,
     borderRadius: '4px 4px 0 0',
+  },
+  textDate: {
+    fontSize: '0.8rem',
+    // color: 'text.secondary',
   },
   circularProgressSx: {
     position: 'absolute',
@@ -50,7 +56,7 @@ const loadingImageStyle = Object.assign({}, imageStyle, {
   opacity: '0.7',
 });
 
-export default function ImageCard ({title, imageData, color}) {
+export default function ImageCard ({title, eventTime, imageData, color}) {
   const [imageLoading, setImageLoading] = useState(true);
   const [detectionsLoading, setDetectionsLoading] = useState(false);
   const loading = imageLoading || detectionsLoading;
@@ -61,6 +67,7 @@ export default function ImageCard ({title, imageData, color}) {
 
   useEffect(() => {
     setEventData(null);
+    console.log({imageData})
     if (!imageData) {
       setImageLoading(false);
       return;
@@ -110,15 +117,18 @@ export default function ImageCard ({title, imageData, color}) {
   return (
     <Box sx={styleSx.mainBoxSx}>
       <Box id="header-box" sx={styleSx.headerBoxSx} bgcolor={color ?? "primary.main"}>
-        <Typography sx={styleSx.titleSx}>
+        <Typography>
           {title}
+        </Typography>
+        <Typography sx={styleSx.textDate}>
+          {eventTime}
         </Typography>
       </Box>
       <Box id="image-card" sx={styleSx.imageBoxSx}>
         <img alt="" src={imageData?.image_url} style={loading? loadingImageStyle : imageStyle} onLoad={onImageLoad}/>
         {loading && <CircularProgress sx={styleSx.circularProgressSx} />}
         {detections.map((detection, index) => (
-          <DetectionBox data={detection} key={index} imageWidth={imageWidth} imageHeight={imageHeight}/>
+          <DetectionBox data={detection} key={index} imageWidth={imageWidth} imageHeight={imageHeight} showLabel={false} showConfidence={false}/>
         ))}
       </Box>
     </Box>
