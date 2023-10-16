@@ -5,12 +5,12 @@ import API from '../../api';
 import Clock from './Clock';
 
 
-export default function GetSerialList({ stationId, queryParams, sleepTime = 30000 } = {}) {
+export default function GetSerialList({ stationId, queryParams, sleepTime = 30000, automaticUpdate = true } = {}) {
 
 
   const [data, setData] = useState({ serialList: [], hash: null });
   const [loading, setLoading] = useState(null);
-  const { clock } = Clock({ sleepTime });
+  const { clock } = Clock({ sleepTime, automaticUpdate});
 
   const loadSerialList = () => {
     if (queryParams && stationId) {

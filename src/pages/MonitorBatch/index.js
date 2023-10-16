@@ -57,10 +57,10 @@ export default function Monitor({ pageOptions }) {
   const [stopLoading, setStopLoading] = useState(false);
   const [newBatchLoading, setNewBatchLoading] = useState(false);
 
-  const { batchList, loading: loadingBatchList, loadBatchList } = GetBatchList({ stationId, queryParams, sleepTime: pageOptions.options.getEventSleepTime });
+  const { batchList, loading: loadingBatchList, loadBatchList } = GetBatchList({ stationId, queryParams, sleepTime: pageOptions.options.getEventSleepTime, automaticUpdate: pageOptions.options.automaticUpdate });
 
   const { batchId, onChangeBatchId, batch: selectedBatch } = GetBatch({ stationId, sleepTime: pageOptions.options.getEventSleepTime });
-  const { runningBatch, loadRunningBatch } = GetRunningBatch({ stationId, sleepTime: pageOptions.options.getEventSleepTime });
+  const { runningBatch, loadRunningBatch } = GetRunningBatch({ stationId, sleepTime: pageOptions.options.getEventSleepTime, automaticUpdate: pageOptions.options.automaticUpdate });
   const isBatchRunning = Boolean(runningBatch);
 
   const [openCreateModal, setOpenCreateModal] = useState(false);

@@ -5,12 +5,12 @@ import API from '../../api';
 import Clock from './Clock';
 
 
-export default function GetRunningBatch({ stationId, sleepTime = 30000 } = {}) {
+export default function GetRunningBatch({ stationId, sleepTime = 3000, automaticUpdate = true } = {}) {
 
 
   const [data, setData] = useState({ batch: null });
   const [loading, setLoading] = useState(null);
-  const { clock } = Clock({ sleepTime });
+  const { clock } = Clock({ sleepTime, automaticUpdate });
   const loadRunningBatch = () => {
     if (stationId) {
       API.get.runningBatch({ stationId }, setLoading)
