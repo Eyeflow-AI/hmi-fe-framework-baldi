@@ -216,6 +216,7 @@ export default function Monitor({ pageOptions }) {
             onChangeParams={onChangeParams}
             config={pageOptions.components.EventMenuBox}
             height={height}
+            keepRunningEvent={keepRunningEvent}
           />
           <Box id="monitor-data-box" sx={style.dataBox}>
             <EventHeader
