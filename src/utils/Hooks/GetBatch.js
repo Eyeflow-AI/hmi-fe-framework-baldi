@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 
 import API from '../../api';
 import Clock from './Clock';
-
+import {isEqual} from 'lodash';
 
 export default function GetBatch({ stationId, sleepTime = 30000 } = {}) {
 
@@ -22,7 +22,7 @@ export default function GetBatch({ stationId, sleepTime = 30000 } = {}) {
         .then((response) => {
           let batch = response.batch;
 
-          if (JSON.stringify(batch) !== JSON.stringify(data.batch)) {
+          if (!isEqual(batch, data.batch)) {
             setData(response);
           }
           else {

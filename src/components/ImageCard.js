@@ -65,18 +65,21 @@ export default function ImageCard ({title, eventTime, imageData, color}) {
   const [imageWidth, setImageWidth] = useState(0);
   const [imageHeight, setImageHeight] = useState(0);
 
+  const imageDataURL = imageData?.image_data_url;
+  const imageSrc = imageData?.image_url;
+
   useEffect(() => {
-    setEventData(null);
-    console.log({imageData})
-    if (!imageData) {
+    if (!imageSrc) {
       setImageLoading(false);
       return;
     }
-
     setImageLoading(true);
-    if (imageData.image_data_url) {
+  }, [imageSrc]);
+
+  useEffect(() => {
+    if (imageDataURL) {
       setDetectionsLoading(true);
-      fetchJson(imageData.image_data_url)
+      fetchJson(imageDataURL)
         .then(data => {
           setEventData(data);
         })
@@ -86,12 +89,15 @@ export default function ImageCard ({title, eventTime, imageData, color}) {
           setDetectionsLoading(false);
         });
     }
-
-  }, [imageData]);
+    else {
+      setEventData(null);
+    }
+  }, [imageDataURL]);
 
   useEffect(() => {
     if (!eventData) {
       setDetections([]);
+      setDetectionsLoading(false);
       return;
     }
 
@@ -125,9 +131,9 @@ export default function ImageCard ({title, eventTime, imageData, color}) {
         </Typography>
       </Box>
       <Box id="image-card" sx={styleSx.imageBoxSx}>
-        <img alt="" src={imageData?.image_url} style={loading? loadingImageStyle : imageStyle} onLoad={onImageLoad}/>
+        <img alt="" src={imageSrc} style={loading? loadingImageStyle : imageStyle} onLoad={onImageLoad}/>
         {loading && <CircularProgress sx={styleSx.circularProgressSx} />}
-        {detections.map((detection, index) => (
+        {loading && detections.map((detection, index) => (
           <DetectionBox data={detection} key={index} imageWidth={imageWidth} imageHeight={imageHeight} showLabel={false} showConfidence={false}/>
         ))}
       </Box>
