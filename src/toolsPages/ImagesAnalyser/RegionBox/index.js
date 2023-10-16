@@ -2,7 +2,7 @@ import { useMemo } from "react"
 
 import Typography from "@mui/material/Typography";
 
-import DetectionBox from "./DetectionBox";
+import DetectionBox from "../../../components/DetectionBox";
 
 
 const style = {

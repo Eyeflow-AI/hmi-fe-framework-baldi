@@ -22,7 +22,7 @@ export default function GetSerialList({ stationId, queryParams, sleepTime = 3000
             setData(response);
           }
           else {
-            console.log(`List not updated. Hash ${data.hash}`);
+            // console.log(`List not updated. Hash ${data.hash}`);
           };
         })
         .catch(console.log);

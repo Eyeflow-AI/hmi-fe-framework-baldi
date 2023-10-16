@@ -6,6 +6,6 @@ export default function getQueryDateString(date, dayTimeDelta = 0, dateType = 's
   else if (dateType === 'end') {
     newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() + dayTimeDelta, 23, 59, 59);
   };
-  console.log({ dateType })
+  // console.log({ dateType })
   return newDate.toISOString();
 };
