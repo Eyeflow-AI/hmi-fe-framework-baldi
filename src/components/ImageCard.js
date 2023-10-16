@@ -67,7 +67,6 @@ export default function ImageCard ({title, eventTime, imageData, color}) {
 
   useEffect(() => {
     setEventData(null);
-    console.log({imageData})
     if (!imageData) {
       setImageLoading(false);
       return;
