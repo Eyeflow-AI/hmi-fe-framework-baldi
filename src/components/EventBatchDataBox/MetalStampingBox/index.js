@@ -10,6 +10,8 @@ import { cloneDeep } from 'lodash';
 
 import ImageCard from '../../ImageCard';
 
+const GRAPH_BOX_WIDTH = 500;
+
 const styleSx = {
   mainBoxSx: Object.assign({}, window.app_config.style.box, {
     bgcolor: 'background.paper',
@@ -21,7 +23,7 @@ const styleSx = {
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    width: '50%',
+    width: `${GRAPH_BOX_WIDTH}px`,
     justifyContent: 'space-evenly'
     // width: '100%',
     // flexGrow: 1,
@@ -35,7 +37,7 @@ const styleSx = {
   },
   imageBoxSx: {
     display: 'flex',
-    width: "50%",
+    width: `calc(100% - ${GRAPH_BOX_WIDTH}px)`,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: "center",
@@ -172,19 +174,20 @@ export default function MetalStampingBox ({data, config}) {
   }, [selectedCamera, data]);
 
   return (
-    <Box width={config?.width ?? "calc(100vw - 502px)"} height={config?.height ?? '100%'} sx={styleSx.mainBoxSx}>
+    <Box width={config?.width ?? "calc(100vw - 412px)"} height={config?.height ?? '100%'} sx={styleSx.mainBoxSx}>
       <Box id="graph-box" sx={styleSx.graphBoxSx}>
 
         <Box marginBottom={-2} sx={styleSx.pieBoxSx}>
           <Typography variant="h5" marginBottom={-3} marginLeft={6}>
             {partsPieData && partsPieData.length > 0 ? t("parts") : ""}
           </Typography>
-          <Box width={800} height={400}>
+          <Box width={GRAPH_BOX_WIDTH} height={400}>
             <ResponsivePie
               colors={{ datum: 'data.color' }}
               data={partsPieData}
               margin={{ top: 70, right: 40, bottom: 70, left: 100 }}
               theme={responsivePieTheme}
+              legends={responsivePieLegends}
             />
           </Box>
         </Box>
@@ -194,7 +197,7 @@ export default function MetalStampingBox ({data, config}) {
           <Typography variant="h5" marginBottom={-3} marginLeft={6}>
             {t("anomalies")}
           </Typography>
-          <Box width={800} height={400}>
+          <Box width={GRAPH_BOX_WIDTH} height={400}>
             <ResponsivePie
               data={anomaliesPieData}
               arcLinkLabelsStraightLength={0}
