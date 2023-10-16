@@ -11,7 +11,6 @@ const styleSx = {
   mainBoxSx: {
     display: 'flex',
     flexDirection: 'column',
-    // height: '100%',
     // width: '100%',
     // border: '1px solid red',
   },
@@ -56,7 +55,7 @@ const loadingImageStyle = Object.assign({}, imageStyle, {
   opacity: '0.7',
 });
 
-export default function ImageCard ({title, eventTime, imageData, color}) {
+export default function ImageCard ({title, eventTime, imageData, color, height, width}) {
   const [imageLoading, setImageLoading] = useState(true);
   const [detectionsLoading, setDetectionsLoading] = useState(false);
   const loading = imageLoading || detectionsLoading;
@@ -121,7 +120,7 @@ export default function ImageCard ({title, eventTime, imageData, color}) {
   }
 
   return (
-    <Box sx={styleSx.mainBoxSx}>
+    <Box sx={styleSx.mainBoxSx} width={width} height={height}>
       <Box id="header-box" sx={styleSx.headerBoxSx} bgcolor={color ?? "primary.main"}>
         <Typography>
           {title}
