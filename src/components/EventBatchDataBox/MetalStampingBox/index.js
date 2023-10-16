@@ -142,8 +142,8 @@ export default function MetalStampingBox ({data, config}) {
     }
 
     let imageData = null;
-    if (selectedCamera) {
-      let lastInspectionData = data?.batch_data?.last_inspection;
+    let lastInspectionData = data?.batch_data?.last_inspection;
+    if (selectedCamera && lastInspectionData) {
       imageData = cloneDeep(lastInspectionData?.images?.find(image => image.camera_name === selectedCamera));
       if (!imageData) {
         console.error(`No image data for camera ${selectedCamera}`);
