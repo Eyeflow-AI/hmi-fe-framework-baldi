@@ -10,7 +10,8 @@ import { cloneDeep } from 'lodash';
 
 import ImageCard from '../../ImageCard';
 
-const GRAPH_BOX_WIDTH = 500;
+const ITEM_WIDTH = 500;
+const ITEM_HEIGHT = 300;
 
 const styleSx = {
   mainBoxSx: Object.assign({}, window.app_config.style.box, {
@@ -23,7 +24,7 @@ const styleSx = {
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    width: `${GRAPH_BOX_WIDTH}px`,
+    width: `${ITEM_WIDTH}px`,
     justifyContent: 'space-evenly'
     // width: '100%',
     // flexGrow: 1,
@@ -33,17 +34,26 @@ const styleSx = {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: "center",
-    height: '50%',
+    height: ITEM_HEIGHT,
   },
   imageBoxSx: {
     display: 'flex',
-    width: `calc(100% - ${GRAPH_BOX_WIDTH}px)`,
+    width: `calc(100% - ${ITEM_WIDTH}px - 20px)`,
     flexDirection: 'column',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     alignItems: "center",
     height: '100%',
     gap: 3,
-  }
+  },
+  cardBoxSx: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: "center",
+    maxHeight: `min(${ITEM_HEIGHT}px, 50%)`,
+    maxWidth: `min(${ITEM_WIDTH}px, 50%)`,
+    // width: '100%',
+  },
 };
 
 const responsivePieTheme = {
@@ -181,7 +191,7 @@ export default function MetalStampingBox ({data, config}) {
           <Typography variant="h5" marginBottom={-3} marginLeft={6}>
             {partsPieData && partsPieData.length > 0 ? t("parts") : ""}
           </Typography>
-          <Box width={GRAPH_BOX_WIDTH} height={400}>
+          <Box width={ITEM_WIDTH} height={ITEM_HEIGHT}>
             <ResponsivePie
               colors={{ datum: 'data.color' }}
               data={partsPieData}
@@ -197,7 +207,7 @@ export default function MetalStampingBox ({data, config}) {
           <Typography variant="h5" marginBottom={-3} marginLeft={6}>
             {t("anomalies")}
           </Typography>
-          <Box width={GRAPH_BOX_WIDTH} height={400}>
+          <Box width={ITEM_WIDTH} height={ITEM_HEIGHT}>
             <ResponsivePie
               data={anomaliesPieData}
               arcLinkLabelsStraightLength={0}
@@ -214,13 +224,13 @@ export default function MetalStampingBox ({data, config}) {
       </Box>
       <Box id="image-box" sx={styleSx.imageBoxSx}>
         {imageData && (
-        <Box>
+        <Box sx={styleSx.cardBoxSx}>
           <ImageCard imageData={imageData} eventTime={imageData.event_time} title={t("last_inspection")}/>
         </Box>
         )}
         
         {anomalyImageData && (
-        <Box>
+        <Box sx={styleSx.cardBoxSx}>
           <ImageCard imageData={anomalyImageData} title={t("last_anomaly")} eventTime={anomalyImageData.event_time} color="error.main"/>
         </Box>
         )}
