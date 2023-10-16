@@ -38,8 +38,8 @@ export default function Monitor({ pageOptions }) {
   const { _id: stationId } = GetSelectedStation();
   const [queryParams, setQueryParams] = useState(null);
   // eslint-disable-next-line
-  const { serialList, loading: loadingSerialList, loadSerialList } = GetSerialList({ stationId, queryParams, sleepTime: pageOptions.options.getEventSleepTime });
-  const { runningSerial, loadRunningSerial } = GetRunningSerial({ stationId, sleepTime: pageOptions.options.getEventSleepTime });
+  const { serialList, loading: loadingSerialList, loadSerialList } = GetSerialList({ stationId, queryParams, sleepTime: pageOptions.options.getEventSleepTime, automaticUpdate: pageOptions.options.automaticUpdate });
+  const { runningSerial, loadRunningSerial } = GetRunningSerial({ stationId, sleepTime: pageOptions.options.getEventSleepTime, automaticUpdate: pageOptions.options.automaticUpdate});
 
   const [selectedSerial, setSelectedSerial] = useState(null);
   // eslint-disable-next-line

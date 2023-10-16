@@ -5,12 +5,12 @@ import API from '../../api';
 import Clock from './Clock';
 
 
-export default function GetRunningSerial({ stationId, sleepTime = 30000 } = {}) {
+export default function GetRunningSerial({ stationId, sleepTime = 30000, automaticUpdate = true } = {}) {
 
 
   const [data, setData] = useState({ serial: null });
   const [loading, setLoading] = useState(null);
-  const { clock } = Clock({ sleepTime });
+  const { clock } = Clock({ sleepTime, automaticUpdate });
 
   const loadRunningSerial = () => {
     if (stationId) {
