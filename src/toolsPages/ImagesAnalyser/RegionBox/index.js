@@ -13,7 +13,7 @@ const style = {
     marginLeft: 1,
     color: 'inherit',
     textShadow: "1px 1px 2px black",
-  }
+  },
 }
 export default function RegionBox({data, imageWidth, imageHeight}) {
   

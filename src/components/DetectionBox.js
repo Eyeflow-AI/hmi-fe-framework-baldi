@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 
 const style = {
   region: {
-    position: 'absolute',
+    position: 'absolute'
   },
   text: {
     position: 'absolute',
@@ -17,7 +17,7 @@ const style = {
     color: 'inherit',
     top: 'calc(100% + 1rem)',
     textShadow: "1px 1px 2px black",
-  },
+  }
 }
 
 function formatConfidence(confidence, decimals = 3) {
