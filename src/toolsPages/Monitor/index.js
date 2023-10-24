@@ -36,6 +36,8 @@ export default function Monitor({ pageOptions }) {
     }
   }, [pageOptions]);
 
+  console.log({imageBaseURL, infoURL})
+
   const { clock, imagesList } = GetImagesList({ url: infoURL, imageBaseURL, sleepTime: pageOptions?.options?.sleepTime });
 
   const onOpenDialog = useCallback((item) => {
@@ -57,6 +59,8 @@ export default function Monitor({ pageOptions }) {
 
   const HEIGHT = [1, 1, 1, 2, 2, 2];
   const WIDTH = [1, 2, 3, 3, 3, 3];
+
+  console.log({imagesList})
 
   return (
     <PageWrapper>
@@ -109,7 +113,7 @@ export default function Monitor({ pageOptions }) {
                       component="img"
                       image={`${item.full_url}?time=${clock}`}
                       style={{
-                        objectFit: 'cover',
+                        objectFit: 'contain',
                         // width: "calc(2560px * 0.15)",
                         width: `calc(${pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)]})`,
                         height: pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)],
