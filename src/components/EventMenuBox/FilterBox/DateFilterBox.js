@@ -38,7 +38,7 @@ export default function DateFilterBox({
   const keepRunningEventRef = useRef(keepRunningEvent);
 
   useEffect(() => { //Update query params
-    onChangeParams({ min_event_time: getQueryDateString(dateValue), max_event_time: getQueryDateString(dateValue, 1, 'end'), manualChanging });
+    onChangeParams({ min_event_time: getQueryDateString(dateValue), max_event_time: getQueryDateString(dateValue, 0, 'end'), manualChanging });
     setManualChanging(false);
     // eslint-disable-next-line
   }, [dateValue]);

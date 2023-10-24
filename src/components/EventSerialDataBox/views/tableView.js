@@ -247,15 +247,6 @@ export default function TableView({
 
   const { t } = useTranslation();
 
-  console.log({
-    loading
-    , inspections
-    , config
-    , appBarHeight
-    , isSelectedSerialRunning
-    , serialId
-  })
-
   const hmiFilesWs = window.app_config?.hosts?.['hmi-files-ws']?.url ?? '';
   const [openDialog, setOpenDialog] = useState(false);
   const [imagePath, setImagePath] = useState('');
@@ -289,7 +280,9 @@ export default function TableView({
     let bboxes = [];
     region?.tests?.forEach((test) => {
       // console.log({bboxes, region})
-      bboxes = [...bboxes, ...test?.detections?.filter(detection => detection?.image?.image_file === region?.image?.image_file || detection?.image_file === region?.image_file) ?? []];
+      bboxes = [...bboxes, ...test?.detections?.filter(detection => 
+        (detection?.image?.image_file === region?.image?.image_file || detection?.image_file === region?.image_file) && detection?.inframe
+        ) ?? []];
     });
     let absolute_path = '';
     let _url = '';

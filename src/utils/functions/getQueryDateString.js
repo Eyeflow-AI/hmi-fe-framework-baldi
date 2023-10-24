@@ -7,5 +7,6 @@ export default function getQueryDateString(date, dayTimeDelta = 0, dateType = 's
     newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() + dayTimeDelta, 23, 59, 59);
   };
   // console.log({ dateType })
+  // console.log({date, dayTimeDelta, dateType, newDate: newDate.toISOString()})
   return newDate.toISOString();
 };
