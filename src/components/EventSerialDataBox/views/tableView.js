@@ -300,13 +300,13 @@ export default function TableView({
       absolute_path = region?.image?.absolute_image_path;
     }
     if (absolute_path) {
-      absolute_path = absolute_path.replace('/opt/eyeflow/data', 'eyeflow_data');
+      // absolute_path = absolute_path.replace('/opt/eyeflow/data', 'eyeflow_data');
       _url = `${url}/${absolute_path}/${region?.image?.image_file ?? region?.image_file}`;
     }
     else {
       _url = `${url}/eyeflow_data/event_image/${region?.image?.image_path ?? region?.image_path}/${region?.image?.image_file ?? region?.image_file}`;
     }
-    console.log({_url, isSelectedSerialRunning, region, name: region.region, absolute_path, bboxes})
+    // console.log({_url, isSelectedSerialRunning, region, name: region.region, absolute_path, bboxes})
     getAnnotatedImg({
       // image: `${url}/${region?.image?.image_path ?? region?.image_path}/${region?.image?.image_file ?? region?.image_file}`
       image: `${_url}`
@@ -439,7 +439,7 @@ export default function TableView({
                     absolute_path = detection?.image?.absolute_image_path;
                   }
                   if (absolute_path) {
-                    absolute_path = absolute_path.replace('/opt/eyeflow/data', 'eyeflow_data');
+                    // absolute_path = absolute_path.replace('/opt/eyeflow/data', 'eyeflow_data');
                     url = `${filesWSToUse}/${absolute_path}/${detection?.image?.image_file ?? detection?.image_file}`;
                   }
                   else {
@@ -515,8 +515,8 @@ export default function TableView({
                     absolute_path = detection?.image?.absolute_image_path;
                   }
                   if (absolute_path) {
-                    absolute_path = absolute_path.replace('/opt/eyeflow/data', 'eyeflow_data');
-                    url = `${filesWSToUse}/${detection?.image?.image_file ?? detection?.image_file}`;
+                    // absolute_path = absolute_path.replace('/opt/eyeflow/data', 'eyeflow_data');
+                    url = `${filesWSToUse}/${absolute_path}/${detection?.image?.image_file ?? detection?.image_file}`;
                   }
                   else {
                     url = `${filesWSToUse}/eyeflow_data/event_image/${detection?.image?.image_path ?? detection?.image_path}/${detection?.image?.image_file ?? detection?.image_file}`;

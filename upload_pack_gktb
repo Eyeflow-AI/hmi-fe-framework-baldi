@@ -16,7 +16,7 @@ from eyeflow_sdk.log_obj import log
 #----------------------------------------------------------------------------------------------------------------------------------
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
-BUILD_DIR = os.path.join(SCRIPT_DIR, "build")
+BUILD_DIR = os.path.join(SCRIPT_DIR, "build_container")
 os.chdir(SCRIPT_DIR)
 
 def slugify(value):
@@ -94,9 +94,12 @@ def gen_docker_image(app_name, app_version, docker_compose_file=os.path.join(SCR
 
 def generate_setup_sh(image_file, setup_sh_file=os.path.join(BUILD_DIR, "setup.sh")):
 
+    gktb_app_ip = "192.168.0.210"
     sh_content = "#!/bin/bash\n" \
                  'cd "$(dirname "$0")"' + "\n" \
-                 "docker load -i " + image_file + "\n"
+                 f"""sudo -u eyeflow -H sh -c "scp {image_file} {gktb_app_ip}:/opt/eyeflow/docker-images"\n""" \
+                 f"""sudo -u eyeflow -H sh -c "ssh {gktb_app_ip} 'docker load -i /opt/eyeflow/docker-images/{image_file}'"\n""" \
+                 f"""sudo -u eyeflow -H sh -c "ssh {gktb_app_ip} 'docker compose -f /opt/eyeflow/docker-compose.yaml up -d'"\n""" \
 
     with open(setup_sh_file, "w") as fp:
         fp.write(sh_content)
@@ -189,7 +192,7 @@ def main():
             package_json = json.load(fp)
 
         manifest = {
-            "name": package_json["name"],
+            "name": "gktb_" + package_json["name"],
             "description": package_json["description"],
             "version": package_json["version"],
         }
@@ -198,7 +201,7 @@ def main():
         shutil.rmtree(BUILD_DIR)
 
     os.makedirs(BUILD_DIR, exist_ok=True)
-    output_file, image_id, arch = gen_docker_image(manifest["name"], manifest["version"])
+    output_file, image_id, arch = gen_docker_image(package_json["name"], manifest["version"])
 
     manifest["arch"] = arch
     manifest["image_id"] = image_id
