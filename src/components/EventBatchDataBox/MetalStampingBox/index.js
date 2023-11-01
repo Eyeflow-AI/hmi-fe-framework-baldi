@@ -18,16 +18,19 @@ const styleSx = {
     bgcolor: 'background.paper',
     display: 'flex',
     justifyContent: "space-evenly",
-    paddingRight: 1,
+    // paddingRight: 1,
+    position: 'relative',
   }),
   graphBoxSx: {
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    width: `${ITEM_WIDTH}px`,
-    justifyContent: 'space-evenly'
+    width: `${ITEM_WIDTH - 80}px`,
+    justifyContent: 'space-evenly',
     // width: '100%',
     // flexGrow: 1,
+    // border: '1px solid #000000',
+    position: 'relative',
   },
   pieBoxSx: {
     display: 'flex',
@@ -38,7 +41,7 @@ const styleSx = {
   },
   imageBoxSx: {
     display: 'flex',
-    width: `calc(100% - ${ITEM_WIDTH}px - 20px)`,
+    width: `calc(100%)`,
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     alignItems: "center",
@@ -50,8 +53,8 @@ const styleSx = {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: "center",
-    maxHeight: `min(${ITEM_HEIGHT}px, 50%)`,
-    maxWidth: `min(${ITEM_WIDTH}px, 50%)`,
+    // maxHeight: `min(${ITEM_HEIGHT}px, 50%)`,
+    // maxWidth: `min(${ITEM_WIDTH}px, 50%)`,
     // width: '100%',
   },
 };
@@ -183,6 +186,8 @@ export default function MetalStampingBox ({data, config}) {
     };
   }, [selectedCamera, data]);
 
+  console.log({imageData})
+
   return (
     <Box width={config?.width ?? "calc(100vw - 412px)"} height={config?.height ?? '100%'} sx={styleSx.mainBoxSx}>
       <Box id="graph-box" sx={styleSx.graphBoxSx}>
@@ -195,7 +200,7 @@ export default function MetalStampingBox ({data, config}) {
             <ResponsivePie
               colors={{ datum: 'data.color' }}
               data={partsPieData}
-              margin={{ top: 70, right: 40, bottom: 70, left: 100 }}
+              margin={{ top: 70, right: 60, bottom: 70, left: 180 }}
               theme={responsivePieTheme}
               legends={responsivePieLegends}
             />
@@ -213,7 +218,7 @@ export default function MetalStampingBox ({data, config}) {
               arcLinkLabelsStraightLength={0}
               arcLabelsSkipAngle={10}
               arcLinkLabelsSkipAngle={10}
-              margin={{ top: 70, right: 40, bottom: 70, left: 100 }}
+              margin={{ top: 70, right: 60, bottom: 70, left: 180 }}
               theme={responsivePieTheme}
               legends={responsivePieLegends}
             />
