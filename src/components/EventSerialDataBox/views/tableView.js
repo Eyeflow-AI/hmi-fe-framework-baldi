@@ -281,7 +281,7 @@ export default function TableView({
     region?.tests?.forEach((test) => {
       // console.log({bboxes, region})
       bboxes = [...bboxes, ...test?.detections?.filter(detection => 
-        (detection?.image?.image_file === region?.image?.image_file || detection?.image_file === region?.image_file) && detection?.inframe
+        (detection?.image?.image_file === region?.image?.image_file || detection?.image_file === region?.image_file) && (detection?.inframe ?? detection?.in_frame)
         ) ?? []];
     });
     let absolute_path = '';
