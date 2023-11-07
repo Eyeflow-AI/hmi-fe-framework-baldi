@@ -6,7 +6,7 @@ import { Box, Typography, Card, CardMedia } from '@mui/material';
 
 // Internal
 import PageWrapper from '../../components/PageWrapper';
-import ImageDialog from '../../components/ImageDialog';
+import UploadImageDialog from '../../components/UploadImageDialog';
 import GetImagesList from '../utils/Hooks/GetImagesList';
 import GetEdgeEnvVar from '../../utils/Hooks/GetEdgeEnvVar';
 
@@ -21,39 +21,39 @@ const style = {
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
- }),
+  }),
 };
 
 export default function ImagesCapturer({ pageOptions }) {
-
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
+  const [takeOneFrame, setTakeOneFrame] = useState(false);
   const [imagePath, setImagePath] = useState('');
-
-  const {imageBaseURL, infoURL, envVarURL, appbarButtonList} = useMemo(() => {
+  const [imageId, setImageId] = useState('');
+  const { imageBaseURL, infoURL, envVarURL, appbarButtonList } = useMemo(() => {
     return {
       imageBaseURL: pageOptions?.options?.imageURL ?? '',
       infoURL: pageOptions?.options?.infoURL ?? '',
       envVarURL: pageOptions?.options?.envVarURL ?? '',
       appbarButtonList: pageOptions?.options?.appbarButtonList ?? [],
-    }
+    };
   }, [pageOptions]);
 
   const { clock, imagesList } = GetImagesList({ url: infoURL, imageBaseURL, sleepTime: pageOptions?.options?.sleepTime });
-  const {envVar, updateData: updateEnvVarData} = GetEdgeEnvVar({ url: envVarURL, sleepTime: pageOptions?.options?.sleepTime });
+  const { envVar, updateData: updateEnvVarData } = GetEdgeEnvVar({ url: envVarURL, sleepTime: pageOptions?.options?.sleepTime });
 
   const onOpenDialog = useCallback((item) => {
     return () => {
       setOpenDialog(true);
-      setDialogTitle(`${item.camera_name} - ${item.frame_time}`);
+      setDialogTitle(item.frame_time ? `${item.camera_name} - ${item.frame_time}` : `${item.camera_name}`);
       setImagePath(item.full_url);
-    }
+    };
   }, []);
 
-  const {recording} = useMemo(() => {
+  const { recording } = useMemo(() => {
     return {
-      recording: envVar?.video_save === "start",
-    }
+      recording: envVar?.video_save === 'start',
+    };
   }, [envVar]);
 
   useEffect(() => {
@@ -74,45 +74,73 @@ export default function ImagesCapturer({ pageOptions }) {
         responseType: 'json',
         data: {
           env_var: {
-            video_save: recording ? "stop" : "start",
-          }
-        }
+            video_save: recording ? 'stop' : 'start',
+          },
+        },
       })
-        .then(response => {
+        .then((response) => {
           updateEnvVarData();
         })
-        .catch(console.error)
+        .catch(console.error);
     }
   }, [recording, envVarURL]);
+
+  const onClickCapture = useCallback(() => {
+    if (envVarURL) {
+      setTakeOneFrame(true);
+      onClickRecord();
+      setTimeout(() => {
+        setTakeOneFrame(false);
+        onClickRecord();
+      }, 1000);
+      axios({
+        method: 'put',
+        url: envVarURL,
+        responseType: 'json',
+        data: {
+          env_var: {
+            video_save: takeOneFrame ? 'stop' : 'start',
+          },
+        },
+      })
+        .then(() => {
+          updateEnvVarData();
+        })
+        .finally(() => {
+          setImagePath(imagesList[0]?.full_url);
+          setDialogTitle(imagesList[0]?.camera_name);
+          setImageId(imagesList[0]?.id);
+          setOpenDialog(true);
+        })
+        .catch(console.error);
+    }
+  }, [envVarURL]);
 
   const appButtons = useMemo(() => {
     return appbarButtonList.map((item, index) => {
       let icon = item.icon;
       let onClick;
-      if (item.id === "start") {
+      if (item.id === 'start') {
         icon = recording ? item.stopIcon : item.recordIcon;
         onClick = onClickRecord;
-      }
-      else {
+      } else if (item.id === 'capture') {
+        onClick = onClickCapture;
+      } else {
         onClick = () => console.log(`${item.label} not implemented yet!`);
-      };
+      }
 
       return {
         ...item,
         icon,
         onClick,
-      }
-    })
-  }, [appbarButtonList, recording]);
+      };
+    });
+  }, [appbarButtonList]);
 
   return (
     <PageWrapper extraButtons={appButtons}>
-      {({ width, height }) =>
-        <Box
-          width={width}
-          height={height}
-          sx={style.mainBox}
-        >
+      {({ width, height }) => (
+        <Box width={width} height={height} sx={style.mainBox}>
           <Box
             sx={{
               width: '100%',
@@ -167,25 +195,14 @@ export default function ImagesCapturer({ pageOptions }) {
                     />
                   </Card>
 
-                  <Typography textAlign='center'>
-                    {`${item.camera_name}`}
-                  </Typography>
+                  <Typography textAlign="center">{`${item.camera_name}`}</Typography>
                 </Box>
-              )
-            })
-            }
+              );
+            })}
           </Box>
-
-          <ImageDialog
-            open={openDialog}
-            setOpen={setOpenDialog}
-            imagePath={imagePath}
-            title={dialogTitle}
-          />
+          <UploadImageDialog open={openDialog} setOpen={setOpenDialog} imagePath={imagePath} title={dialogTitle} imageId={imageId} />
         </Box>
-      }
+      )}
     </PageWrapper>
-  )
+  );
 }
-
-
