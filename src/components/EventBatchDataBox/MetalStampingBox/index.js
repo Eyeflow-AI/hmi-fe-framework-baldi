@@ -1,16 +1,21 @@
-import {useMemo} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 
+// Design
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
+// Third party
 import { ResponsivePie } from '@nivo/pie'
 import { colors, dateFormat} from 'sdk-fe-eyeflow';
 import { useTranslation } from "react-i18next";
 import { cloneDeep } from 'lodash';
+import { ResponsiveBar } from '@nivo/bar';
 
+// Internal
 import ImageCard from '../../ImageCard';
+import GetRunQuery from '../../../utils/Hooks/GetRunQuery';
 
-const ITEM_WIDTH = 500;
+const ITEM_WIDTH = 700;
 const ITEM_HEIGHT = 300;
 
 const styleSx = {
@@ -26,11 +31,15 @@ const styleSx = {
     flexDirection: 'column',
     height: '100%',
     width: `${ITEM_WIDTH - 80}px`,
-    justifyContent: 'space-evenly',
+    justifyContent: 'center',
+    padding: 1,
+    gap: 1,
+    alignItems: "center",
+    // justifyContent: 'space-evenly',
     // width: '100%',
     // flexGrow: 1,
     // border: '1px solid #000000',
-    position: 'relative',
+    // position: 'relative',
   },
   pieBoxSx: {
     display: 'flex',
@@ -38,15 +47,11 @@ const styleSx = {
     justifyContent: 'center',
     alignItems: "center",
     height: ITEM_HEIGHT,
+    width: ITEM_WIDTH,
   },
   imageBoxSx: {
-    display: 'flex',
-    width: `calc(100%)`,
-    flexDirection: 'column',
-    justifyContent: 'space-evenly',
-    alignItems: "center",
-    height: '100%',
-    gap: 3,
+    display: 'block',
+    margin: 'auto',
   },
   cardBoxSx: {
     display: 'flex',
@@ -82,7 +87,7 @@ const responsivePieLegends = [
     // translateY: 56,
     translateX: -80,
     itemsSpacing: 10,
-    itemWidth: 150,
+    itemWidth: 80,
     itemHeight: 18,
     itemTextColor: '#999',
     itemDirection: 'left-to-right',
@@ -100,10 +105,54 @@ const responsivePieLegends = [
   }
 ];
 
+const responsiveBarLegends = [
+  {
+    dataFrom: 'keys',
+    anchor: 'bottom',
+    direction: 'column',
+    // justify: false,
+    translateX: 20,
+    translateY: 50,
+    itemsSpacing: 2,
+    itemWidth: 150,
+    itemTextColor: '#999',
+    itemHeight: 18,
+    itemDirection: 'left-to-right',
+    // itemOpacity: 0.85,
+    symbolSize: 18,
+    symbolShape: 'circle',
+    // effects: [
+    //     {
+    //         on: 'hover',
+    //         style: {
+    //             itemOpacity: 1
+    //         }
+    //     }
+    // ]
+  }
+];
+
 
 export default function MetalStampingBox ({data, config}) {
 
+
   const { t } = useTranslation();
+
+
+  const {queryResponse: qrLastHourDataParts} = GetRunQuery({data: config?.lastHour?.queryParts, stationId: config?.stationId, sleepTime: 30000, run: config?.lastHour?.show});
+  const [lastHourDataPartsData, setLastHourDataPartsData] = useState([]);
+
+  const {queryResponse: qrLastHourDataAnomalies} = GetRunQuery({data: config?.lastHour?.queryAnomalies, stationId: config?.stationId, sleepTime: 30000, run: config?.lastHour?.show});
+  const [lastHourDataAnomaliesData, setLastHourDataAnomaliesData] = useState([]);
+
+
+  
+  const {queryResponse: qrTwentyFourHoursDataParts} = GetRunQuery({data: config?.last24Hours?.queryParts, stationId: config?.stationId, sleepTime: 30000, run: config?.last24Hours?.show});
+  const [twentyFourHoursDataPartsData, setTwentyFourHoursDataPartsData] = useState([]);
+
+  const {queryResponse: qrTwentyFourHoursDataAnomalies} = GetRunQuery({data: config?.last24Hours?.queryAnomalies, stationId: config?.stationId, sleepTime: 30000, run: config?.last24Hours?.show});
+  const [twentyFourHoursDataAnomaliesData, setTwentyFourHoursDataAnomaliesData] = useState([]);
+
 
   let {selectedCamera} = useMemo(() => {
     let selectedCamera = config?.selected_camera ?? null;
@@ -117,7 +166,7 @@ export default function MetalStampingBox ({data, config}) {
     imageData,
     anomalyImageData,
     partsPieData,
-    anomaliesPieData,
+    anomaliesBarData,
   } = useMemo(() => {
     let partsOk = data?.batch_data?.parts_ok ?? 0;
     let partsNg = data?.batch_data?.parts_ng ?? 0;
@@ -139,20 +188,28 @@ export default function MetalStampingBox ({data, config}) {
       ];
     };
 
-    let anomaliesPieData = [];
+    let anomaliesBarData = [];
     if (partsNg) {
       if (data?.batch_data?.hasOwnProperty("defects_count")) {
         for (let [classId, value] of Object.entries(data.batch_data.defects_count)) {
           if (value > 0) {
-            anomaliesPieData.push({
+            let data = {
               id: classId,
               label: classId, //TODO get class label
               value,
-              // color: TODO
-            });
+              [classId]: value,
+            }
+            anomaliesBarData.push(data);
+            // anomaliesBarData.push({
+            //   // id: classId,
+            //   // label: classId, //TODO get class label
+            //   // 'ok': value,
+            //   value,
+            //   // color: TODO
+            // });
           }
         };
-        anomaliesPieData.sort((a, b) => b.label - a.label);
+        anomaliesBarData.sort((a, b) => b.label - a.label);
       };
     }
 
@@ -182,59 +239,374 @@ export default function MetalStampingBox ({data, config}) {
       imageData,
       anomalyImageData,
       partsPieData,
-      anomaliesPieData,
+      anomaliesBarData,
     };
   }, [selectedCamera, data]);
+  
+  // let twentyFourHoursDataAnomaliesMemo = useMemo(() => {
+  //   let twentyFourHoursDataAnomalies = queryResponse?.result ?? [];
+  //   if (twentyFourHoursDataAnomalies.length > 0) {
+  //     twentyFourHoursDataAnomalies = twentyFourHoursDataAnomalies.map(anomaly => {
+  //       anomaly.event_time = dateFormat(anomaly.event_time);
+  //       return anomaly;
+  //     });
+  //   }
+  //   return twentyFourHoursDataAnomalies;
+  // }, [twentyFourHoursDataAnomalies]);
 
-  console.log({imageData})
+
+  useEffect(() => {
+    if (qrTwentyFourHoursDataAnomalies) {
+      let data = qrTwentyFourHoursDataAnomalies.filter(el => el.count > 0).map(el => {
+        return {
+          id: el._id,
+          label: el._id,
+          value: el.count,
+          [el._id]: el.count,
+        }
+      })
+      // data.sort((a, b) => b.label - a.label);
+      setTwentyFourHoursDataAnomaliesData(data);
+    }
+  }, [qrTwentyFourHoursDataAnomalies]);
+
+
+  useEffect(() => {
+    if (qrTwentyFourHoursDataParts) {
+      console.log({qrTwentyFourHoursDataParts})
+      let partsOk = qrTwentyFourHoursDataParts?.[0]?.totalPartsOK ?? 0;
+      let partsNg = qrTwentyFourHoursDataParts?.[0]?.totalPartsNG ?? 0;
+      let partsPieData = [];
+      if (partsOk || partsNg) {
+        partsPieData = [
+          {
+            "id": "OK",
+            "label": "OK",
+            "value": partsOk,
+            "color": colors.eyeflow.green.light
+          },
+          {
+            "id": "NG",
+            "label": "NG",
+            "value": partsNg,
+            "color": colors.eyeflow.red.dark
+          },
+        ];
+      };
+      setTwentyFourHoursDataPartsData(partsPieData);
+     }
+  }, [qrTwentyFourHoursDataParts]);
+
+  useEffect(() => {
+    if (qrLastHourDataParts) {
+      let partsOk = qrLastHourDataParts?.[0]?.totalPartsOK ?? 0;
+      let partsNg = qrLastHourDataParts?.[0]?.totalPartsNG ?? 0;
+      let partsPieData = [];
+      if (partsOk || partsNg) {
+        partsPieData = [
+          {
+            "id": "OK",
+            "label": "OK",
+            "value": partsOk,
+            "color": colors.eyeflow.green.light
+          },
+          {
+            "id": "NG",
+            "label": "NG",
+            "value": partsNg,
+            "color": colors.eyeflow.red.dark
+          },
+        ];
+      };
+      setLastHourDataPartsData(partsPieData);
+      }
+  }, [qrLastHourDataParts]);
+
+
+
+
+
+  useEffect(() => {
+    if (qrLastHourDataAnomalies) {
+      let data = qrLastHourDataAnomalies.filter(el => el.count > 0).map(el => {
+        return {
+          id: el._id,
+          label: el._id,
+          value: el.count,
+          [el._id]: el.count,
+        }
+      })
+      // data.sort((a, b) => b.label - a.label);
+      setLastHourDataAnomaliesData(data);
+    }
+  }, [qrLastHourDataAnomalies]);
+
+
+
 
   return (
-    <Box width={config?.width ?? "calc(100vw - 412px)"} height={config?.height ?? '100%'} sx={styleSx.mainBoxSx}>
+    <Box 
+      width={config?.width ?? "calc(100vw - 412px)"} 
+      height={config?.height ?? '100%'} 
+      // height={'941px'}
+      sx={styleSx.mainBoxSx}
+    >
       <Box id="graph-box" sx={styleSx.graphBoxSx}>
 
-        <Box marginBottom={-2} sx={styleSx.pieBoxSx}>
-          <Typography variant="h5" marginBottom={-3} marginLeft={6}>
-            {partsPieData && partsPieData.length > 0 ? t("parts") : ""}
-          </Typography>
-          <Box width={ITEM_WIDTH} height={ITEM_HEIGHT}>
-            <ResponsivePie
-              colors={{ datum: 'data.color' }}
-              data={partsPieData}
-              margin={{ top: 70, right: 60, bottom: 70, left: 180 }}
-              theme={responsivePieTheme}
-              legends={responsivePieLegends}
-            />
+        <Box sx={styleSx.pieBoxSx}>
+          <Box 
+            sx={{
+              // position: 'absolute',
+              top: 0,
+              left: 0,
+              // border: '1px solid #000000',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: "center",
+              height: 'calc(100% - 10px)',
+              // flexGrow: 1,
+              // height: 'calc(100% - 10px)',
+              width: 'calc(100% - 100px)',
+            }}
+          >
+            <Box
+              sx={{
+                top: 0,
+                left: 0,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: "center",
+                height: 'calc(100%)',
+                width: 'calc(50%)',
+              }}
+            >
+              <ResponsivePie
+                colors={{ datum: 'data.color' }}
+                data={partsPieData}
+                margin={{ top: 50, right: 60, bottom: 70, left: 100 }}
+                theme={responsivePieTheme}
+                legends={responsivePieLegends}
+              />   
+            </Box>         
+            {anomaliesBarData && anomaliesBarData.length > 0 && (
+              <Box
+                sx={{
+                  top: 0,
+                  left: 0,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: "center",
+                  height: 'calc(100%)',
+                  width: 'calc(50%)',
+                }}
+              >
+                <ResponsiveBar
+                  data={anomaliesBarData}
+                  arcLinkLabelsStraightLength={0}
+                  // arcLabelsSkipAngle={10}
+                  // arcLinkLabelsSkipAngle={10}
+                  // labelSkipWidth={12}
+                  padding={0.3}
+                  margin={{ top: 50, right: 20, bottom: 70, left: 100 }}
+                  theme={responsivePieTheme}
+                  // legends={responsivePieLegends}
+                  indexBy="label"
+                  keys={anomaliesBarData.map(d => d.label)}
+                  legends={responsiveBarLegends}
+                />
+              </Box>
+            )}
           </Box>
         </Box>
 
-        {anomaliesPieData && anomaliesPieData.length > 0 && (
-        <Box sx={styleSx.pieBoxSx}>
-          <Typography variant="h5" marginBottom={-3} marginLeft={6}>
-            {t("anomalies")}
-          </Typography>
-          <Box width={ITEM_WIDTH} height={ITEM_HEIGHT}>
-            <ResponsivePie
-              data={anomaliesPieData}
-              arcLinkLabelsStraightLength={0}
-              arcLabelsSkipAngle={10}
-              arcLinkLabelsSkipAngle={10}
-              margin={{ top: 70, right: 60, bottom: 70, left: 180 }}
-              theme={responsivePieTheme}
-              legends={responsivePieLegends}
-            />
+        {
+          config?.lastHour?.show && lastHourDataPartsData?.length > 0 && (
+            <Box sx={styleSx.pieBoxSx}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: "center",
+                height: '15px',
+              }}
+            >
+              <Typography 
+                textTransform='uppercase'
+                sx={{
+                  fontSize: '1.2rem',
+                  fontWeight: 'bold',
+                }}
+              >
+                {t("last_hour")}
+              </Typography>
+            </Box>
+            <Box 
+              sx={{
+                // position: 'absolute',
+                top: 0,
+                left: 0,
+                // border: '1px solid #000000',
+                display: 'flex',
+                justifyContent: 'center',
+                height: 'calc(100% - 25px)',
+                alignItems: "center",
+                width: 'calc(100% - 100px)',
+              }}
+            >
+              <Box
+                  sx={{
+                    top: 0,
+                    left: 0,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: "center",
+                    height: 'calc(100%)',
+                    width: 'calc(50%)',
+                  }}
+                >
+                  <ResponsivePie
+                    colors={{ datum: 'data.color' }}
+                    data={lastHourDataPartsData}
+                    margin={{ top: 50, right: 20, bottom: 70, left: 100 }}
+                    theme={responsivePieTheme}
+                    legends={responsivePieLegends}
+                  />            
+                </Box>
+              {lastHourDataAnomaliesData.length > 0 &  (
+                <Box
+                  sx={{
+                    top: 0,
+                    left: 0,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: "center",
+                    height: 'calc(100%)',
+                    width: 'calc(50%)',
+                  }}
+                >
+                  <ResponsiveBar
+                    data={lastHourDataAnomaliesData}
+                    arcLinkLabelsStraightLength={0}
+                    // arcLabelsSkipAngle={10}
+                    // arcLinkLabelsSkipAngle={10}
+                    // labelSkipWidth={12}
+                    padding={0.2}
+                    margin={{ top: 50, right: 20, bottom: 70, left: 100 }}
+                    theme={responsivePieTheme}
+                    // legends={responsivePieLegends}
+                    indexBy="label"
+                    keys={lastHourDataAnomaliesData.map(d => d.label)}
+                    legends={responsiveBarLegends}
+                  />
+                </Box>
+              )}
+            </Box>
           </Box>
-        </Box>
-        )}
+
+          )
+        }
+
+        {
+          config?.last24Hours?.show && twentyFourHoursDataPartsData.length > 0 && (
+
+            <Box sx={styleSx.pieBoxSx}>
+            <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: "center",
+                  height: '15px',
+                }}
+              >
+                <Typography
+                  textTransform='uppercase'
+                  sx={{
+                    fontSize: '1.2rem',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {t("last_24_hours")}
+                </Typography>
+              </Box>
+              <Box 
+                sx={{
+                  // position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  display: 'flex',
+                  height: 'calc(100% - 25px)',
+                  justifyContent: 'center',
+                  alignItems: "center",
+                  // height: '100%',
+                  width: 'calc(100% - 100px)',
+                }}
+              >
+                <Box
+                  sx={{
+                    top: 0,
+                    left: 0,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: "center",
+                    height: 'calc(100%)',
+                    width: 'calc(50%)',
+                  }}
+                >
+                  <ResponsivePie
+                    colors={{ datum: 'data.color' }}
+                    data={twentyFourHoursDataPartsData}
+                    margin={{ top: 50, right: 20, bottom: 70, left: 100 }}
+                    theme={responsivePieTheme}
+                    legends={responsivePieLegends}
+                  />
+                </Box>         
+                {twentyFourHoursDataAnomaliesData.length > 0 && (
+                  <Box
+                    sx={{
+                      top: 0,
+                      left: 0,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: "center",
+                      height: 'calc(100%)',
+                      width: 'calc(50%)',
+                    }}
+                  >
+                    <ResponsiveBar
+                      data={twentyFourHoursDataAnomaliesData}
+                      arcLinkLabelsStraightLength={0}
+                      // arcLabelsSkipAngle={10}
+                      // arcLinkLabelsSkipAngle={10}
+                      // labelSkipWidth={12}
+                      padding={0.2}
+                      margin={{ top: 50, right: 20, bottom: 70, left: 100 }}
+                      theme={responsivePieTheme}
+                      // legends={responsivePieLegends}
+                      indexBy="label"
+                      keys={twentyFourHoursDataAnomaliesData.map(d => d.label)}
+                      legends={responsiveBarLegends}
+                    />
+                  </Box>
+                )}
+              </Box>
+            </Box>
+          )
+        }
+
 
       </Box>
-      <Box id="image-box" sx={styleSx.imageBoxSx}>
+      <Box 
+        id="image-box" 
+        sx={styleSx.imageBoxSx}
+        // height={`${height}px`}
+      >
         {imageData && (
         <Box sx={styleSx.cardBoxSx}>
           <ImageCard imageData={imageData} eventTime={imageData.event_time} title={t("last_inspection")}/>
         </Box>
         )}
         
-        {anomalyImageData && (
+        {anomaliesBarData && anomaliesBarData.length > 0 && anomalyImageData && (
         <Box sx={styleSx.cardBoxSx}>
           <ImageCard imageData={anomalyImageData} title={t("last_anomaly")} eventTime={anomalyImageData.event_time} color="error.main"/>
         </Box>
