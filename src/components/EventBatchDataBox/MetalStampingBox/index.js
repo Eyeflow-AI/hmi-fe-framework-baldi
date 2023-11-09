@@ -516,7 +516,7 @@ export default function MetalStampingBox ({data, config}) {
                     legends={responsivePieLegends}
                   />            
                 </Box>
-              {lastHourDataAnomaliesData.length > 0 &  (
+              {lastHourDataAnomaliesData.length > 0 &&  (
                 <Box
                   sx={{
                     top: 0,
