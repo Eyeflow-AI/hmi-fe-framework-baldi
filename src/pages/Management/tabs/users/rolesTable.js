@@ -166,7 +166,6 @@ export default function RolesTable() {
       setRoles(_roles);
     }
     if (accessControlData?.types) {
-      console.log(accessControlData?.types)
       const types = Object.keys(accessControlData.types).map(key => {
         return {
           type: key,

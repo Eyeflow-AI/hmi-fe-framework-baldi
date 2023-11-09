@@ -22,7 +22,7 @@ export const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loadingLogin = false;
-        console.log({ action })
+        // console.log({ action })
         state.user = action.payload;
       })
       .addCase(login.rejected, (state) => {

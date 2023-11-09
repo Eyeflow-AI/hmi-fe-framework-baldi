@@ -105,7 +105,6 @@ export default function CustomAppBar({extraButtons}) {
   // const user = useSelector(getUser);
 
   const handleCloseAlertsDialog = useCallback(() => {
-    console.log("CLOSDE")
     setAlertsDialogOpen(false);
   }, [setAlertsDialogOpen]);
 

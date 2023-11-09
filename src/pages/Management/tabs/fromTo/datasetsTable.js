@@ -114,9 +114,7 @@ export default function FromToDatasetsTable({
       datasetId, status
     }).then((res) => {
       setFromToData(res);
-    }).catch((err) => {
-      console.log(err);
-    })
+    }).catch(console.log)
       .finally(() => {
         setLoadingActiveDatasetId('');
       })

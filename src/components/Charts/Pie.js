@@ -114,7 +114,7 @@ export default function Bar({ chart }) {
     // setData(chart.result)
   }, [chart])
 
-  console.log({ chart, info })
+  // console.log({ chart, info })
 
   return (
     <Box

@@ -498,7 +498,6 @@ export default function ImageAnalyser({ pageOptions }) {
   };
 
 
-  console.log({ inspections, selectedImageData })
 
   return (
     <PageWrapper>

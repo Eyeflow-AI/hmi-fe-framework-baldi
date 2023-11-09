@@ -65,7 +65,7 @@ export default function Report({ pageOptions }) {
       // setLoadingSearch(true);
       try {
         let data = await API.get.queryData({ startTime: selectedStartDate, endTime: selectedEndDate, queryName: charts[i].query_name, stationId }, setLoadingSearch);
-        console.log(data);
+        // console.log(data);
 
         chartsToBuild.push(data);
       }

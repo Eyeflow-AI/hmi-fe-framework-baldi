@@ -76,7 +76,7 @@ export default function RoleDialog({
     }
   };
   const handleDeleteRole = () => {
-    console.log({ roleName })
+    // console.log({ roleName })
     if (roleName) {
       API.delete.role({
         roleName

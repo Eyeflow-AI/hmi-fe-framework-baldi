@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 
 import API from '../../api';
 import Clock from './Clock';
-import {isEqual} from 'lodash';
 
 export default function GetRunQuery({ data, stationId, sleepTime = 30000, run } = {}) {
 

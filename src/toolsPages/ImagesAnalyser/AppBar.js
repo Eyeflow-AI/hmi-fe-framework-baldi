@@ -25,7 +25,6 @@ const style = {
 
 
 export default function AppBar({ height, onClickRight, onClickLeft, onClickLeftDisabled, onClickRightDisabled, showDetections, showJson, onChangeShowDetections, onChangeView, selectedImageData, metadata, handleUpdateEvent, selectedId, selectedDay, imageURL }) {
-  console.log({ metadata, selectedImageData })
   return (
     <Box height={height} sx={style.appBar}>
       <Grid justifyContent="space-between" alignContent="center" container sx={style.grid}>
