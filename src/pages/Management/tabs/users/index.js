@@ -91,10 +91,10 @@ export default function UserManagement() {
   };
 
   const changeUserRole = (username, newRole) => {
-    console.log({ newRole })
+    // console.log({ newRole })
     API.put.userRole({ username, newRole })
       .then((result) => {
-        console.log(result);
+        // console.log(result);
         getUserList();
       })
       .catch(console.log);

@@ -132,7 +132,6 @@ const getAnnotatedImg = ({
     if (options.severalAnnotations) {
 
       (Array.isArray(bbox) && bbox.length > 0 ? bbox : []).forEach((bb, i) => {
-        console.log({ bb })
         let [x_min, x_max, y_min, y_max] = expandCoordinates({
           imgWidth: img.width / scale,
           imgHeight: img.height / scale,

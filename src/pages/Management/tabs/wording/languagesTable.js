@@ -119,9 +119,7 @@ export default function LanguagesTable({
         usedLanguages: {}
       };
       setUsedLanguages(usedLanguages);
-    }).catch((err) => {
-      console.log(err);
-    })
+    }).catch(console.log)
       .finally(() => {
         setLoadingActiveLanguageId('');
       })
@@ -136,9 +134,7 @@ export default function LanguagesTable({
         usedLanguages: {}
       };
       setUsedLanguages(usedLanguages);
-    }).catch((err) => {
-      console.log(err);
-    })
+    }).catch(console.log)
       .finally(() => {
         setLoadingActiveLanguageId('');
       })

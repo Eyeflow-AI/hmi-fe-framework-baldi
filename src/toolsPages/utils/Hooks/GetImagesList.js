@@ -10,7 +10,6 @@ export default function GetImagesList({ url, imageBaseURL, sleepTime = 30000 } =
 
   const { clock } = Clock({ sleepTime });
   const [imagesList, setImagesList] = useState([]);
-  console.log({url})
   const loadImagesList = () => {
     axios({
       method: 'get',

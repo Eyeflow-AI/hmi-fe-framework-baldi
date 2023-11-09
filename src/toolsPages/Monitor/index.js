@@ -36,12 +36,10 @@ export default function Monitor({ pageOptions }) {
     }
   }, [pageOptions]);
 
-  console.log({imageBaseURL, infoURL})
 
   const { clock, imagesList } = GetImagesList({ url: infoURL, imageBaseURL, sleepTime: pageOptions?.options?.sleepTime });
 
   const onOpenDialog = useCallback((item) => {
-    console.log({ item })
     return () => {
       setOpenDialog(true);
       setDialogTitle(`${item.camera_name} - ${item.frame_time}`);
@@ -60,7 +58,6 @@ export default function Monitor({ pageOptions }) {
   const HEIGHT = [1, 1, 1, 2, 2, 2];
   const WIDTH = [1, 2, 3, 3, 3, 3];
 
-  console.log({imagesList})
 
   return (
     <PageWrapper>

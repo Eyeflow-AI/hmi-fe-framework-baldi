@@ -47,7 +47,6 @@ export default function DateFilterBox({
     setManualChanging(true);
     setDateValue(newValue);
   };
-  console.log({keepRunningEventRef})
 
   // get today date at every minute using useEffect
   useEffect(() => {

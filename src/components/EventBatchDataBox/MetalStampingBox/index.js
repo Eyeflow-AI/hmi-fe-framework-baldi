@@ -167,6 +167,8 @@ export default function MetalStampingBox ({data, config}) {
     anomalyImageData,
     partsPieData,
     anomaliesBarData,
+    totalBoxes,
+    currentBox
   } = useMemo(() => {
     let partsOk = data?.batch_data?.parts_ok ?? 0;
     let partsNg = data?.batch_data?.parts_ng ?? 0;
@@ -235,11 +237,21 @@ export default function MetalStampingBox ({data, config}) {
     }
     // TODO select anomaly image
 
+
+    let totalBoxes = data?.info?.total_packs ?? 0;
+    let currentBox = 0;
+    if (data?.batch_data) {
+      let sumParts = data.batch_data.parts_ok + data.batch_data.parts_ng;
+      currentBox = Math.ceil(sumParts / data.info.parts_per_pack);
+    }
+
     return {
       imageData,
       anomalyImageData,
       partsPieData,
       anomaliesBarData,
+      totalBoxes,
+      currentBox,
     };
   }, [selectedCamera, data]);
   
@@ -273,7 +285,6 @@ export default function MetalStampingBox ({data, config}) {
 
   useEffect(() => {
     if (qrTwentyFourHoursDataParts) {
-      console.log({qrTwentyFourHoursDataParts})
       let partsOk = qrTwentyFourHoursDataParts?.[0]?.totalPartsOK ?? 0;
       let partsNg = qrTwentyFourHoursDataParts?.[0]?.totalPartsNG ?? 0;
       let partsPieData = [];
@@ -378,15 +389,48 @@ export default function MetalStampingBox ({data, config}) {
                 alignItems: "center",
                 height: 'calc(100%)',
                 width: 'calc(50%)',
+                flexDirection: 'column',
               }}
             >
-              <ResponsivePie
-                colors={{ datum: 'data.color' }}
-                data={partsPieData}
-                margin={{ top: 50, right: 60, bottom: 70, left: 100 }}
-                theme={responsivePieTheme}
-                legends={responsivePieLegends}
-              />   
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: "center",
+                  height: 'calc(100% - 2rem)',
+                  width: 'calc(100%)',
+                }}
+              >
+                <ResponsivePie
+                  colors={{ datum: 'data.color' }}
+                  data={partsPieData}
+                  margin={{ top: 50, right: 60, bottom: 100, left: 100 }}
+                  theme={responsivePieTheme}
+                  legends={responsivePieLegends}
+                />
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: "center",
+                  height: '2rem',
+                  width: '18rem',
+                  marginTop: '-50px',
+                  border: '1px solid #000000',
+                  boxShadow: '0px 0px 10px 0px #000000',
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: '1.2rem',
+                    fontWeight: 'bold',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  {t("box")}: {currentBox}/{totalBoxes}
+                </Typography>
+              </Box>
             </Box>         
             {anomaliesBarData && anomaliesBarData.length > 0 && (
               <Box

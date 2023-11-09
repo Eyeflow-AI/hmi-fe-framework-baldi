@@ -55,10 +55,10 @@ export default function ChecklistConnector({ pageOptions }) {
   };
 
   const saveReference = () => {
-    console.log({ referenceToSave, _id: selectedItem.id });
+    // console.log({ referenceToSave, _id: selectedItem.id });
     API.put.checklistReference({ _id: selectedItem.id, reference: referenceToSave })
       .then(res => {
-        console.log({ res });
+        // console.log({ res });
       })
       .finally(() => {
       });
@@ -121,7 +121,6 @@ export default function ChecklistConnector({ pageOptions }) {
     }
   }, [selectedItem]);
 
-  console.log({ selectedItemRegions })
 
 
   return (

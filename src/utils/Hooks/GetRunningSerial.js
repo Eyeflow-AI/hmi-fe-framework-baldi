@@ -19,7 +19,6 @@ export default function GetRunningSerial({ stationId, sleepTime = 30000, automat
           let serial = response.serial;
 
           if (JSON.stringify(serial) !== JSON.stringify(data.serial)) {
-            console.log('bulbasaur')
             setData(response);
           }
           else {
