@@ -67,7 +67,8 @@ const API = {
 
     runQuery: ({ collectionName, searchMethod, query, variables = null }, setLoading) => request(instance.post(`queries/run-query`, { collectionName, searchMethod, query, variables }), setLoading),
     toUpload: ({ jsonData, jsonFileData, folderInfo, imageURL }) => request(instance.post(`event/to-upload`, { jsonData, jsonFileData, folderInfo, imageURL })),
-    task: ({ stationId, task }, setLoading) => request(instance.post(`tasks/${stationId}`, {task}), setLoading),
+    task: ({ stationId, task }, setLoading) => request(instance.post(`tasks/${stationId}`, { task }), setLoading),
+    uploadImageInfo: ({ data, imageBase64 }) => request(instance.post(`files/tools/upload-image-info`, { data, imageBase64 })),
   },
   get: {
     batchList: ({ params, stationId }, setLoading) => request(instance.get(`batch/${stationId}/list`, { params }), setLoading),
@@ -136,7 +137,7 @@ const API = {
     appParameterDocument: ({ document }, setLoading) => request(instance.put(`internal/parameter-document`, { document }), setLoading),
 
     feedbackSerial: ({ stationId, serialId, regionName }, setLoading) => request(instance.put(`serial/${stationId}/${serialId}/feedback/`, { regionName }), setLoading),
-    feedbackOtherImages: ({info, stationId, serialId}, setLoading) => request(instance.put(`serial/${stationId}/${serialId}/feedback/other-images`, { ...info }), setLoading),
+    feedbackOtherImages: ({ info, stationId, serialId }, setLoading) => request(instance.put(`serial/${stationId}/${serialId}/feedback/other-images`, { ...info }), setLoading),
 
   },
   delete: {
