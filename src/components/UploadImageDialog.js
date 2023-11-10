@@ -3,21 +3,22 @@ import React, { useEffect, useState } from 'react';
 
 // Design
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 import Dialog from '@mui/material/Dialog';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import CircularProgress from '@mui/material/CircularProgress';
+import Grid from '@mui/material/Grid';
+import DownloadIcon from '@mui/icons-material/Download';
+import { Button, TextField, Typography } from '@mui/material';
+import { getUser } from '../store/slices/auth';
 
 // Internal
 import API from '../api';
 
 // Third-party
-import { useTranslation } from 'react-i18next';
-import { Button, TextField, Typography } from '@mui/material';
 import { TransformWrapper, TransformComponent } from '@pronestor/react-zoom-pan-pinch';
-import { getUser } from '../store/slices/auth';
+import { downloadImage, colors, getAnnotatedImage } from 'sdk-fe-eyeflow';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
 const gridToolbarSx = {
@@ -28,50 +29,72 @@ const gridToolbarSx = {
 
 const appBarSx = {
   width: '100%',
-  height: 64,
+  height: 200,
   bgcolor: 'primary.main',
   color: 'white',
   boxShadow: 1,
 };
 
-export default function ImageDialog({ imagePath, title, open, setOpen, imageId }) {
+
+export default function ImageDialog({ imagePath, title, open, setOpen }) {
   const { t } = useTranslation();
   const [noImage, setNoImage] = useState(false);
   const [selectedObj, setSelectedObj] = useState(null);
   const [dataset, setDataset] = useState('');
   const user = useSelector(getUser);
+  const [base64Str, setBase64Str] = useState('');
+  const [errorInText, setErrorInText] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [disabled, setDisabled] = useState(false);
+
 
   const handleUpload = () => {
     let data = JSON.parse(dataset);
-    API.post
-      .postCustomEvent({
-        eventList: [
-          {
-            collection: 'events_to_upload',
-            original_collection: 'images_capture',
-            data: {
-              ...data,
-              example: imageId,
-              example_thumb: `${imageId}_thumb.jpg`,
-              example_path: data.dataset_id,
-              img_height: imgHeight,
-              img_width: imgWidth,
-              date: new Date(),
-              user_name: user,
-            },
-            imageURL: imagePath,
-          },
-        ],
-      })
+
+    setLoading(true);
+    API.post.uploadImageInfo({
+      data: {
+        ...data,
+        img_height: imgHeight,
+        img_width: imgWidth,
+        date: new Date(),
+        user_name: user.tokenPayload.payload.username ?? '',
+      },
+      imageBase64: base64Str,
+    })
       .then((res) => {
-        console.log(res);
-        handleClose();
+        setLoading(false);
       });
   };
+
+
 
   const handleClose = () => {
     setOpen(false);
   };
+
+
+  const checkJson = (json) => {
+    try {
+      let jsonParsed = JSON.parse(json);
+      if (!jsonParsed.dataset_id || !jsonParsed.part_number) {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  useEffect(() => {
+    if (dataset) {
+      let flag = checkJson(dataset);
+      setErrorInText(!flag);
+    } else {
+      setErrorInText(true);
+    }
+  }, [dataset]);
+
 
   useEffect(() => {
     if (!open) {
@@ -91,27 +114,34 @@ export default function ImageDialog({ imagePath, title, open, setOpen, imageId }
     API.get
       .appParameterDocument({ parameterName: selectedParam })
       .then((res) => {
-        setDataset(JSON.stringify(res?.document.examples.mask_map_example ?? {}, undefined, 4));
+        setDataset(JSON.stringify(res?.document.data ?? {}, undefined, 4));
       })
-      .finally(() => {});
+      .finally(() => { });
   };
 
   const [imgWidth, setImgWidth] = useState(0);
   const [imgHeight, setImgHeight] = useState(0);
 
   useEffect(() => {
-    getDocument('examples_types');
+    getDocument('example');
     let img = new Image();
     img.src = imagePath;
+    img.crossOrigin = 'Anonymous';
 
     img.onload = function () {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+
+      const dataUrl = canvas.toDataURL('image/png')
+      setBase64Str(dataUrl)
       setImgWidth(img.width);
       setImgHeight(img.height);
-
-      console.log('Image width: ' + imgWidth);
-      console.log('Image height: ' + imgHeight);
     };
   }, [imagePath]);
+
 
   return (
     <Dialog fullScreen open={open} onClose={handleClose}>
@@ -172,10 +202,9 @@ export default function ImageDialog({ imagePath, title, open, setOpen, imageId }
                       alt={''}
                       onLoad={() => resetTransform()}
                       style={{
-                        color: 'white',
-                        height: 'calc(100vh - 13rem)',
-                        width: '100%',
-                        objectFit: 'contain',
+                        objectFit: 'cover',
+                        width: "calc(2560px * 0.15)",
+                        height: "calc(1440px * 0.15)",
                       }}
                     />
                   </TransformComponent>
@@ -190,8 +219,13 @@ export default function ImageDialog({ imagePath, title, open, setOpen, imageId }
                     sx={{
                       width: '60rem',
                     }}
+                    error={errorInText}
                     value={dataset}
                     onChange={(e) => setDataset(e.target.value)}
+                    helperText={errorInText ? `O formato tem que ser este: {
+                        "dataset_id": "",
+                        "part_number": ""
+                    }` : ''}
                   />
                   <Button
                     variant="contained"
@@ -200,9 +234,9 @@ export default function ImageDialog({ imagePath, title, open, setOpen, imageId }
                     sx={{
                       width: '20rem',
                     }}
-                    disabled={!dataset}
+                    disabled={disabled || errorInText || loading}
                   >
-                    Upload Image
+                    Save image info
                   </Button>
                 </Box>
               )}

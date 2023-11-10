@@ -1,5 +1,5 @@
 // React
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 
 // Design
 import { Box, Typography, Card, CardMedia } from '@mui/material';
@@ -7,6 +7,7 @@ import { Box, Typography, Card, CardMedia } from '@mui/material';
 // Internal
 import PageWrapper from '../../components/PageWrapper';
 import UploadImageDialog from '../../components/UploadImageDialog';
+import ImageDialog from '../../components/ImageDialog';
 import GetImagesList from '../utils/Hooks/GetImagesList';
 import GetEdgeEnvVar from '../../utils/Hooks/GetEdgeEnvVar';
 
@@ -25,11 +26,11 @@ const style = {
 };
 
 export default function ImagesCapturer({ pageOptions }) {
-  const [openDialog, setOpenDialog] = useState(false);
+  const [openImageDialog, setOpenImageDialog] = useState(false);
+  const [openImageInfoDialog, setOpenImageInfoDialog] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [takeOneFrame, setTakeOneFrame] = useState(false);
   const [imagePath, setImagePath] = useState('');
-  const [imageId, setImageId] = useState('');
   const { imageBaseURL, infoURL, envVarURL, appbarButtonList } = useMemo(() => {
     return {
       imageBaseURL: pageOptions?.options?.imageURL ?? '',
@@ -38,15 +39,14 @@ export default function ImagesCapturer({ pageOptions }) {
       appbarButtonList: pageOptions?.options?.appbarButtonList ?? [],
     };
   }, [pageOptions]);
-
   const { clock, imagesList } = GetImagesList({ url: infoURL, imageBaseURL, sleepTime: pageOptions?.options?.sleepTime });
   const { envVar, updateData: updateEnvVarData } = GetEdgeEnvVar({ url: envVarURL, sleepTime: pageOptions?.options?.sleepTime });
 
   const onOpenDialog = useCallback((item) => {
     return () => {
-      setOpenDialog(true);
-      setDialogTitle(item.frame_time ? `${item.camera_name} - ${item.frame_time}` : `${item.camera_name}`);
-      setImagePath(item.full_url);
+      setOpenImageDialog(true);
+      setDialogTitle(item?.frame_time ? `${item?.camera_name} - ${item?.frame_time}` : `${item?.camera_name}`);
+      setImagePath(item?.full_url);
     };
   }, []);
 
@@ -56,12 +56,13 @@ export default function ImagesCapturer({ pageOptions }) {
     };
   }, [envVar]);
 
+
   useEffect(() => {
-    if (!openDialog) {
+    if (!openImageDialog && !openImageInfoDialog) {
       setDialogTitle('');
       setImagePath('');
     }
-  }, [openDialog]);
+  }, [openImageDialog, openImageInfoDialog]);
 
   const HEIGHT = [1, 1, 1, 2, 2, 2];
   const WIDTH = [1, 2, 3, 3, 3, 3];
@@ -78,43 +79,24 @@ export default function ImagesCapturer({ pageOptions }) {
           },
         },
       })
-        .then((response) => {
+        .then(() => {
           updateEnvVarData();
         })
         .catch(console.error);
     }
   }, [recording, envVarURL]);
 
-  const onClickCapture = useCallback(() => {
-    if (envVarURL) {
-      setTakeOneFrame(true);
-      onClickRecord();
-      setTimeout(() => {
-        setTakeOneFrame(false);
-        onClickRecord();
-      }, 1000);
-      axios({
-        method: 'put',
-        url: envVarURL,
-        responseType: 'json',
-        data: {
-          env_var: {
-            video_save: takeOneFrame ? 'stop' : 'start',
-          },
-        },
-      })
-        .then(() => {
-          updateEnvVarData();
-        })
-        .finally(() => {
-          setImagePath(imagesList[0]?.full_url);
-          setDialogTitle(imagesList[0]?.camera_name);
-          setImageId(imagesList[0]?.id);
-          setOpenDialog(true);
-        })
-        .catch(console.error);
-    }
-  }, [envVarURL]);
+  const refImagesList = useRef(imagesList);
+
+  useEffect(() => {
+    refImagesList.current = imagesList;
+  }, [imagesList]);
+
+  const onClickCapture = useCallback((item) => {
+    setDialogTitle(item?.frame_time ? `${item?.camera_name} - ${item?.frame_time} ` : `${item?.camera_name} `)
+    setImagePath(item?.full_url)
+    setOpenImageInfoDialog(true)
+  }, [imagesList])
 
   const appButtons = useMemo(() => {
     return appbarButtonList.map((item, index) => {
@@ -124,11 +106,10 @@ export default function ImagesCapturer({ pageOptions }) {
         icon = recording ? item.stopIcon : item.recordIcon;
         onClick = onClickRecord;
       } else if (item.id === 'capture') {
-        onClick = onClickCapture;
+        onClick = () => onClickCapture(refImagesList.current[0]);
       } else {
         onClick = () => console.log(`${item.label} not implemented yet!`);
       }
-
       return {
         ...item,
         icon,
@@ -182,10 +163,9 @@ export default function ImagesCapturer({ pageOptions }) {
                   >
                     <CardMedia
                       component="img"
-                      image={`${item.full_url}?time=${clock}`}
+                      image={`${item?.full_url}?time=${clock}`}
                       style={{
                         objectFit: 'contain',
-                        // width: "calc(2560px * 0.15)",
                         width: `calc(${pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)]} - 10rem)`,
                         height: pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)],
                         display: 'block',
@@ -196,13 +176,19 @@ export default function ImagesCapturer({ pageOptions }) {
                   </Card>
 
                   <Typography textAlign="center">{`${item.camera_name}`}</Typography>
-                </Box>
+                </Box >
               );
             })}
           </Box>
-          <UploadImageDialog open={openDialog} setOpen={setOpenDialog} imagePath={imagePath} title={dialogTitle} imageId={imageId} />
-        </Box>
+          <ImageDialog
+            open={openImageDialog}
+            setOpen={setOpenImageDialog}
+            imagePath={imagePath}
+            title={dialogTitle}
+          />
+          <UploadImageDialog open={openImageInfoDialog} setOpen={setOpenImageInfoDialog} imagePath={imagePath} title={dialogTitle} />
+        </Box >
       )}
-    </PageWrapper>
+    </PageWrapper >
   );
 }
