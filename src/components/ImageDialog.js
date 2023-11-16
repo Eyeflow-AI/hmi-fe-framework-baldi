@@ -440,7 +440,7 @@ export default function ImageDialog({
                   >
                     <TransformComponent>
                       <img
-                        src={selectedObj?.url}
+                        src={`${selectedObj?.url}?time=${(new Date()).toISOString()}`}
                         alt={altText ?? ''}
                         onLoad={() => resetTransform()}
                         style={{
