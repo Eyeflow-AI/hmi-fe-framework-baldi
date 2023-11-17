@@ -43,6 +43,7 @@ export default function RegionBox({data, imageWidth, imageHeight}) {
     return {label, regionStyle};
   }, [data, imageWidth, imageHeight])
 
+
   return (
     <>
       <div style={regionStyle}>

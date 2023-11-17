@@ -42,14 +42,15 @@ const styleSx = {
     marginLeft: '-20px',
   }
 };
+
 const imageStyle = {
   width: '100%',
   height: 'auto',
   objectFit: 'contain',
   opacity: '1',
   display: 'block'
-
 };
+
 const loadingImageStyle = Object.assign({}, imageStyle, {
   filter: 'blur(2px)',
   opacity: '0.7',
@@ -102,15 +103,20 @@ export default function ImageCard ({title, eventTime, imageData, color, height, 
 
     let newDetectionList = [];
     if (eventData.type === "checklist") {
-      for (let [key, detections] of Object.entries(eventData.detections ?? {})) {
-        for (let detection of detections) {
-          newDetectionList.push({...detection, dataset_id: key});
+      // for (let [key, detections] of (eventData.detections ?? [])) {
+        // console.log({eventData, x: Object.entries(eventData.detections ?? {}), imageDataURL})
+        // console.log({detections, eventData})
+
+        for (let detection of eventData.detections) {
+          // console.log({detection, imageDataURL})
+          newDetectionList.push({...detection});
         }
-      }
+      // }
     }
 
     setDetections(newDetectionList);
     setDetectionsLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventData]);
 
   const onImageLoad = (event) => {
@@ -118,6 +124,7 @@ export default function ImageCard ({title, eventTime, imageData, color, height, 
     setImageHeight(event.target.naturalHeight);
     setImageLoading(false);
   }
+
 
   return (
     <Box sx={styleSx.mainBoxSx} width={width} height={height}>

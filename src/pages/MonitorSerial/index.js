@@ -39,6 +39,7 @@ export default function Monitor({ pageOptions }) {
   const [queryParams, setQueryParams] = useState(null);
   // eslint-disable-next-line
   const { serialList, loading: loadingSerialList, loadSerialList } = GetSerialList({ stationId, queryParams, sleepTime: pageOptions.options.getEventSleepTime, automaticUpdate: pageOptions.options.automaticUpdate });
+  // eslint-disable-next-line
   const { runningSerial, loadRunningSerial } = GetRunningSerial({ stationId, sleepTime: pageOptions.options.getEventSleepTime, automaticUpdate: pageOptions.options.automaticUpdate});
 
   const [selectedSerial, setSelectedSerial] = useState(null);
@@ -46,6 +47,16 @@ export default function Monitor({ pageOptions }) {
   const [selectedSerialCountData, setSelectedSerialCountData] = useState(null);
   const [loadingSelected, setLoadingSelected] = useState(false);
   const [keepRunningEvent, setKeepRunningEvent] = useState(true);
+
+  const serialListRef = useRef(serialList);
+
+  const setSerialListRef = (data) => {
+    serialListRef.current = data;
+  };
+
+  useEffect(() => {
+    setSerialListRef(serialList);
+  }, [serialList]);
 
   const onChangeEvent = (serialId, changedSerial = true) => {
 
@@ -101,20 +112,22 @@ export default function Monitor({ pageOptions }) {
   }, []);
 
   useEffect(() => {
-    if (selectedSerial?._id === runningSerial?._id) {
-      updateAll();
+    if (Object.keys(selectedSerial ?? {}).length > 0 && selectedSerial?._id === runningSerial?._id) {
+      updateAll(selectedSerial);
     }
     if (runningSerial && keepRunningEvent && selectedSerial?._id !== runningSerial?._id) {
+      
       onChangeEvent(runningSerial?._id);
     };
+    // eslint-disable-next-line
   }, [runningSerial])
-
 
   useEffect(() => {
     if (Object.keys(selectedSerial ?? {}).includes('_id') && Object.keys(runningSerial ?? {}).includes('_id') && selectedSerial?._id === runningSerial?._id) {
       setKeepRunningEvent(true);
       // countParamsChange.current = 0;
     }
+    // eslint-disable-next-line
   }, [selectedSerial]);
   // useEffect(() => {console.log({runningBatch})}, [runningBatch]);
   useEffect(() => {
@@ -125,12 +138,14 @@ export default function Monitor({ pageOptions }) {
       // setSelectedSerialCountData(null);
     };
     if (!selectedSerial && serialList.length > 0 && !runningSerial && keepRunningEvent) {
-      // console.log({ serialList })
-      // setSelectedSerial(serialList[0]?._id ?? null);
-      onChangeEvent(serialList[0]?._id ?? null)
+
+      onChangeEvent(serialListRef.current[0]?._id ?? null, true)
+    }
+    if (Object.keys(selectedSerial ?? {}).length > 0 && serialList.length > 0 && !runningSerial && keepRunningEvent) {
+      onChangeEvent(serialListRef.current[0]?._id ?? null, true)
     }
     // eslint-disable-next-line
-  }, [serialList]);
+  }, [serialListRef.current]);
 
   useEffect(() => {
     if (queryParams && queryParams.station !== stationId) {
@@ -138,7 +153,6 @@ export default function Monitor({ pageOptions }) {
     };
   }, [stationId, queryParams]);
 
-  // console.log({ keepRunningEvent, c: countParamsChange.current })
   const onChangeParams = (newValue, deleteKeys = []) => {
     // countParamsChange.current++;
     if (newValue.hasOwnProperty("manualChanging") && newValue.manualChanging === true) {
@@ -163,7 +177,7 @@ export default function Monitor({ pageOptions }) {
     console.log("onClickCreateSerial");
   };
 
-  const updateAll = () => {
+  const updateAll = (selectedSerial) => {
     if (selectedSerial) {
       onChangeEvent(selectedSerial._id, false);
     };
@@ -174,18 +188,20 @@ export default function Monitor({ pageOptions }) {
       API.put.serialPause({ stationId, serialId: selectedSerial._id })
         .then((data) => {
           console.log("serial paused");
-          updateAll();
+          updateAll(selectedSerial);
         })
         .catch(console.error);
     };
   };
+
+  console.log({selectedSerial})
 
   const onClickResume = () => {
     if (selectedSerial) {
       API.put.serialResume({ stationId, serialId: selectedSerial._id })
         .then((data) => {
           console.log("serial resumed");
-          updateAll();
+          updateAll(selectedSerial);
         })
         .catch(console.error);
     };
@@ -193,7 +209,7 @@ export default function Monitor({ pageOptions }) {
 
   useEffect(() => {
     if (selectedSerial) {
-      updateAll();
+      updateAll(selectedSerial);
     };
     // eslint-disable-next-line
   }, [serialList]);

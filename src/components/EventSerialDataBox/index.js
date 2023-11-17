@@ -6,7 +6,7 @@ import { Box } from '@mui/material';
 
 
 // Internal
-import { TableView } from './views';
+import { TableView, ListView } from './views';
 
 // Third-party
 import { t } from 'i18next';
@@ -27,6 +27,7 @@ const mainBoxSx = Object.assign({}, window.app_config.style.box, {
 
 const VIEWS = {
   TABLE_VIEW: (props) => <TableView {...props} />,
+  LIST_VIEW: (props) => <ListView {...props} />,
 }
 
 const styleSx = {
@@ -62,6 +63,9 @@ export default function EventSerialDataBox({
       const _inspections = Object.entries(buckets).map(([key, value]) => {
         if (key === 'table') {
           return VIEWS.TABLE_VIEW({ inspections: value, config, appBarHeight, isSelectedSerialRunning, serialId: data?._id });
+        }
+        else if (key === 'list'){
+          return VIEWS.LIST_VIEW({ inspections: value, config, appBarHeight, isSelectedSerialRunning, serialId: data?._id });
         }
         else {
           return (<div>Not implemented yet</div>)

@@ -21,7 +21,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 // Third-party
 import { TransformWrapper, TransformComponent } from "@pronestor/react-zoom-pan-pinch";
 import { Typography } from "@mui/material";
-import { downloadImage, colors, getAnnotatedImage } from 'sdk-fe-eyeflow';
+import { downloadImage, colors } from 'sdk-fe-eyeflow';
 import { useTranslation } from "react-i18next";
 
 const gridToolbarSx = {
@@ -287,6 +287,7 @@ export default function ImageDialog({
       });
       // setNoImage(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
 
   const handleChangeImage = (url, originalUrl) => {
@@ -440,7 +441,7 @@ export default function ImageDialog({
                   >
                     <TransformComponent>
                       <img
-                        src={`${selectedObj?.url}?time=${(new Date()).toISOString()}`}
+                        src={selectedObj?.url?.includes('http://') ? `${selectedObj?.url}?time=${(new Date()).toISOString()}` : selectedObj?.url}
                         alt={altText ?? ''}
                         onLoad={() => resetTransform()}
                         style={{
