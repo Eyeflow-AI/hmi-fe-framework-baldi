@@ -498,7 +498,6 @@ export default function ImageAnalyser({ pageOptions }) {
   };
 
 
-
   return (
     <PageWrapper>
       {({ width, height }) =>

@@ -540,7 +540,8 @@ export default function TableView({
   useEffect(() => {
     return () => {
       imagesURLSRef.current.forEach((imageURL) => {
-        URL.revokeObjectURL(imageURL);
+        URL.revokeObjectURL(imageURL?.annotated);
+        URL.revokeObjectURL(imageURL?.notAnnotated);
       })
       setImagesURLSRef([]);
     }

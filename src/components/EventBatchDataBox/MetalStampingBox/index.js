@@ -121,6 +121,7 @@ const responsiveBarLegends = [
     // itemOpacity: 0.85,
     symbolSize: 18,
     symbolShape: 'circle',
+
     // effects: [
     //     {
     //         on: 'hover',
@@ -452,11 +453,59 @@ export default function MetalStampingBox ({data, config}) {
                   // labelSkipWidth={12}
                   padding={0.3}
                   margin={{ top: 50, right: 20, bottom: 70, left: 100 }}
-                  theme={responsivePieTheme}
+                  // theme={responsivePieTheme}
                   // legends={responsivePieLegends}
                   indexBy="label"
                   keys={anomaliesBarData.map(d => d.label)}
-                  legends={responsiveBarLegends}
+                  // legends={responsiveBarLegends}
+                  axisLeft={{
+                    tickSize: 5,
+                    tickPadding: 5,
+                    tickRotation: 0,
+                    // legend: 'count',
+                    legendOffset: -40,
+                    legendPosition: 'middle',
+                    
+                  }}
+                  yScale={{ 
+                    type: 'linear', 
+                    // min: 0, 
+                    max: 'auto',
+                    // max: 2, 
+                    stacked: false, 
+                    reverse: false 
+                  }}
+                  theme={
+                    Object.assign({}, responsivePieTheme, 
+                    {
+                    "axis": {
+                      "domain": {
+                          "line": {
+                              "stroke": "white",
+                              "strokeWidth": 1
+                          }
+                      },
+                      "legend": {
+                          "text": {
+                              "fontSize": 12,
+                              "fill": "white",
+                              "outlineWidth": 0,
+                              "outlineColor": "transparent"
+                          }
+                      },
+                      "ticks": {
+                          "line": {
+                              "stroke": "white",
+                              "strokeWidth": 1
+                          },
+                          "text": {
+                              "fontSize": 11,
+                              "fill": "white",
+                              "outlineWidth": 0,
+                              "outlineColor": "transparent"
+                          }
+                      }
+                  }})}
                 />
               </Box>
             )}
@@ -536,11 +585,58 @@ export default function MetalStampingBox ({data, config}) {
                     // labelSkipWidth={12}
                     padding={0.2}
                     margin={{ top: 50, right: 20, bottom: 70, left: 100 }}
-                    theme={responsivePieTheme}
+                    // theme={responsivePieTheme}
                     // legends={responsivePieLegends}
                     indexBy="label"
                     keys={lastHourDataAnomaliesData.map(d => d.label)}
-                    legends={responsiveBarLegends}
+                    // legends={responsiveBarLegends}
+                    axisLeft={{
+                      tickSize: 5,
+                      tickPadding: 5,
+                      tickRotation: 0,
+                      // legend: 'count',
+                      legendOffset: -40,
+                      legendPosition: 'middle'
+                    }}
+                    yScale={{ 
+                      type: 'linear', 
+                      // min: 0, 
+                      max: 'auto',
+                      // max: 2, 
+                      stacked: false, 
+                      reverse: false 
+                    }}
+                    theme={
+                      Object.assign({}, responsivePieTheme, 
+                      {
+                      "axis": {
+                        "domain": {
+                            "line": {
+                                "stroke": "white",
+                                "strokeWidth": 1
+                            }
+                        },
+                        "legend": {
+                            "text": {
+                                "fontSize": 12,
+                                "fill": "white",
+                                "outlineWidth": 0,
+                                "outlineColor": "transparent"
+                            }
+                        },
+                        "ticks": {
+                            "line": {
+                                "stroke": "white",
+                                "strokeWidth": 1
+                            },
+                            "text": {
+                                "fontSize": 11,
+                                "fill": "white",
+                                "outlineWidth": 0,
+                                "outlineColor": "transparent"
+                            }
+                        }
+                    }})}
                   />
                 </Box>
               )}
@@ -624,11 +720,58 @@ export default function MetalStampingBox ({data, config}) {
                       // labelSkipWidth={12}
                       padding={0.2}
                       margin={{ top: 50, right: 20, bottom: 70, left: 100 }}
-                      theme={responsivePieTheme}
+                      // theme={responsivePieTheme}
                       // legends={responsivePieLegends}
                       indexBy="label"
                       keys={twentyFourHoursDataAnomaliesData.map(d => d.label)}
-                      legends={responsiveBarLegends}
+                      // legends={responsiveBarLegends}
+                      axisLeft={{
+                        tickSize: 5,
+                        tickPadding: 5,
+                        tickRotation: 0,
+                        // legend: 'count',
+                        legendOffset: -40,
+                        legendPosition: 'middle',
+                      }}
+                      yScale={{ 
+                        type: 'linear', 
+                        // min: 0, 
+                        max: 'auto',
+                        // max: 2, 
+                        stacked: false, 
+                        reverse: false 
+                      }}
+                      theme={
+                        Object.assign({}, responsivePieTheme, 
+                        {
+                        "axis": {
+                          "domain": {
+                              "line": {
+                                  "stroke": "white",
+                                  "strokeWidth": 1
+                              }
+                          },
+                          "legend": {
+                              "text": {
+                                  "fontSize": 12,
+                                  "fill": "white",
+                                  "outlineWidth": 0,
+                                  "outlineColor": "transparent"
+                              }
+                          },
+                          "ticks": {
+                              "line": {
+                                  "stroke": "white",
+                                  "strokeWidth": 1
+                              },
+                              "text": {
+                                  "fontSize": 11,
+                                  "fill": "white",
+                                  "outlineWidth": 0,
+                                  "outlineColor": "transparent"
+                              }
+                          }
+                      }})}
                     />
                   </Box>
                 )}

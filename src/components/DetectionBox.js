@@ -44,6 +44,7 @@ export default function DetectionBox({data, imageWidth, imageHeight, showLabel=t
     let label = '';
     let confidence = '';
     let color = '';
+    console.log({data})
 
     if (data && imageWidth && imageHeight) {
       label = data.label ?? data.item;
