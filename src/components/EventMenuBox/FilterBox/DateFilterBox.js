@@ -72,7 +72,7 @@ export default function DateFilterBox({
     <Box id="filter-box" sx={styleSx.filterBox} >
       <DesktopDatePicker
         label={t("date")}
-        inputFormat="yyyy/MM/dd"
+        inputFormat="dd/MM/yyyy"
         value={dateValue}
         onChange={handleDateChange}
         renderInput={(params) => <TextField {...params} />}
