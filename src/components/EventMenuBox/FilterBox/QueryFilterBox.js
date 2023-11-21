@@ -14,6 +14,7 @@ import getQueryDateString from '../../../utils/functions/getQueryDateString';
 //Third-party
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { useTranslation } from "react-i18next";
+import { DesktopDateTimePicker } from '@mui/x-date-pickers';
 
 const styleSx = {
   filterBox: {
@@ -32,7 +33,7 @@ const components = {
   "date": ({ label, value, onChange }) => (
     <DesktopDatePicker
       label={label}
-      inputFormat="yyyy/MM/dd"
+      inputFormat="dd/MM/yyyy"
       value={value}
       onChange={onChange}
       renderInput={(params) => <TextField {...params} />}
@@ -45,6 +46,16 @@ const components = {
       onChange={onChange}
     />
   ),
+  "hour_minute": ({ label, value, onChange }) => (
+    <DesktopDateTimePicker
+      label={label}
+      inputFormat="dd/MM/yy HH:mm:ss"
+      value={value}
+      onChange={onChange}
+      renderInput={(params) => <TextField {...params} />}
+    />
+  ),
+
 }
 export default function DateFilterBox({
   queryFields,
@@ -58,7 +69,7 @@ export default function DateFilterBox({
   useEffect(() => {
     setInputList(queryFields.map((queryField) => {
       let defaultValue;
-      if (queryField.type === "date") {
+      if (["date", "hour_minute"].includes(queryField.type)) {
         if (queryField.field === "min_event_time") {
           defaultValue = new Date(getQueryDateString(new Date()));
         }
@@ -81,6 +92,7 @@ export default function DateFilterBox({
       }
     }))
   }, [queryFields]);
+
 
   const handleChange = (index, type) => (newValue) => {
     if (type === "text") {
