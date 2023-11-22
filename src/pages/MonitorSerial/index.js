@@ -194,7 +194,7 @@ export default function Monitor({ pageOptions }) {
     };
   };
 
-  console.log({selectedSerial})
+  // console.log({selectedSerial})
 
   const onClickResume = () => {
     if (selectedSerial) {

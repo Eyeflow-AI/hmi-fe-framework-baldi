@@ -294,7 +294,7 @@ export default function ListView({
   , serialId
 }) {
 
-  console.log({loading, inspections, config, appBarHeight, isSelectedSerialRunning, serialId})
+  // console.log({loading, inspections, config, appBarHeight, isSelectedSerialRunning, serialId})
 
   const { t } = useTranslation();
 
@@ -305,7 +305,7 @@ export default function ListView({
   const [dialogTitle, setDialogTitle] = useState('');
   const [dataToUse, setDataToUse] = useState({});
   const imageURLSRef = useRef([]);
-  const [imageURLS, setImageURLS] = useState([]);
+  const [imageURLS, setImageURLS] = useState({});
   const [loadingFeedback, setLoadingFeedback] = useState([]);
   const { _id: stationId } = GetSelectedStation();
   const stationsList = GetStationsList();
@@ -468,7 +468,7 @@ export default function ListView({
       //   _loadingFeedback.push(false);
       // });
       setImageURLSRef(_imageURL);
-      if (JSON.stringify(detections) !== JSON.stringify(dataToUse?.detections)) {
+      if (JSON.stringify(detections) !== JSON.stringify(dataToUse?.detections) || inspections[0]?.event_data?.part_data?.id !== dataToUse?.inspection?.name) {
         drawImage({
           url: `${filesWSToUse}`,
           index: 0,
@@ -477,52 +477,11 @@ export default function ListView({
           isSelectedSerialRunning,
           imageInfo
         });
-        // let otherImages = {};
-        // inspection?.tests?.forEach((test) => {
-        //   test?.detections?.forEach((detection) => {
-        //     if (detection?.image?.image_file !== inspection?.image?.image_file) {
-        //       if (!Object.keys(otherImages).includes(detection?.image?.image_file)) {
-        //         let absolute_path = '';
-        //         let url = '';
-        //         if (isSelectedSerialRunning) {
-        //           absolute_path = detection?.image?.stage_image_path;
-        //         }
-        //         else {
-        //           absolute_path = detection?.image?.absolute_image_path;
-        //         }
-        //         if (absolute_path) {
-        //           // absolute_path = absolute_path.replace('/opt/eyeflow/data', 'eyeflow_data');
-        //           url = `${filesWSToUse}/${absolute_path}/${detection?.image?.image_file ?? detection?.image_file}`;
-        //         }
-        //         else {
-        //           url = `${filesWSToUse}/eyeflow_data/event_image/${detection?.image?.image_path ?? detection?.image_path}/${detection?.image?.image_file ?? detection?.image_file}`;
-        //         }
-                
-        //         otherImages[detection?.image?.image_file] = {
-        //           bboxes: [],
-        //           url,
-        //           annotate: true
-        //         }
-        //       }
-        //       otherImages[detection?.image?.image_file].bboxes.push(detection);
-        //     }
-        //   })
-        // })
-        // checklist[index].otherImages = otherImages;
       }
-      // detections.forEach((inspection, index) => {
-      //   // checklist[index].tests.forEach((test, i) => {
-      //   //   checklist[index].tests[i].order = test?.result ? 1 : 0;
-      //   // });
-      //   // checklist[index].tests.sort((a, b) => {
-      //   //   return a.order - b.order;
-      //   // });
-  
-      // });
       let _dataToUse = {
         detections,
         inspection: {
-          name: inspections[0]?.event_data?.part_id,
+          name: inspections[0]?.event_data?.part_data?.id,
           result: inspections[0]?.event_data?.inspection_result?.ok,
           feedback: inspections[0]?.event_data?.inspection_result?.feedback,
         }
@@ -532,82 +491,7 @@ export default function ListView({
       };
     }
     else if (inspections.length > 1) {
-      // let checklist = inspections.map((inspection) => {
-      //   return inspection?.event_data?.inspection_result?.check_list?.region;
-      // });
-      // const _imagesURLS = [];
-      // const _loadingFeedback = [];
-      // checklist = checklist.flat();
-
-      // let filesWSsToUse = [];
-      // if (isSelectedSerialRunning) {
-      //   filesWSsToUse = inspections.map((inspection) => {
-      //     let edge = station?.edges?.find((edge) => edge?.host === `http://${IPV6toIPv4(inspection?.host)}`);
-      //     let url = `${edge?.host}:${edge?.filesPort}`;
-      //     return url;
-      //   });
-      // };
-      // checklist.forEach((inspection, index) => {
-      //   _imagesURLS.push({
-      //     annotated: imagesURLSRef.current[index]?.annotated ?? '',
-      //     notAnnotated: imagesURLSRef.current[index]?.notAnnotated ?? '',
-      //   });
-      // })
-      // setImagesURLSRef(_imagesURLS);
-      // checklist.forEach((inspection, index) => {
-      //   checklist[index].tests.forEach((test, i) => {
-      //     checklist[index].tests[i].order = test?.result ? 1 : 0;
-      //   })
-      //   checklist[index].tests.sort((a, b) => {
-      //     return a.order - b.order;
-      //   });
-      //   if (JSON.stringify(inspection) !== JSON.stringify(dataToUse[index])) {
-      //     drawImage({
-      //       url: `${filesWSsToUse.length > 0 ? filesWSsToUse[index] : filesWSToUse}`,
-      //       index,
-      //       sizes: IMAGE_SIZES[checklist.length],
-      //       region: inspection,
-      //       isSelectedSerialRunning
-      //     });
-      //     let otherImages = {};
-      //     inspection?.tests?.forEach((test) => {
-      //       test?.detections?.forEach((detection) => {
-      //         if (detection?.image?.image_file !== inspection?.image?.image_file) {
-      //           if (!Object.keys(otherImages).includes(detection?.image?.image_file)) {
-      //             let absolute_path = '';
-      //             let url = '';
-      //             if (isSelectedSerialRunning) {
-      //               absolute_path = detection?.image?.stage_image_path;
-      //             }
-      //             else {
-      //               absolute_path = detection?.image?.absolute_image_path;
-      //             }
-      //             if (absolute_path) {
-      //               // absolute_path = absolute_path.replace('/opt/eyeflow/data', 'eyeflow_data');
-      //               url = `${filesWSToUse}/${absolute_path}/${detection?.image?.image_file ?? detection?.image_file}`;
-      //             }
-      //             else {
-      //               url = `${filesWSToUse}/eyeflow_data/event_image/${detection?.image?.image_path ?? detection?.image_path}/${detection?.image?.image_file ?? detection?.image_file}`;
-      //             }
-      //             // url: `${filesWSToUse}/eyeflow_data/event_image/${detection?.image?.image_path ?? detection?.image_path}/${detection?.image?.image_file ?? detection?.image_file}`,
-      //             otherImages[detection?.image?.image_file] = {
-      //               bboxes: [],
-      //               url,
-      //               annotate: true
-      //             }
-      //           }
-      //           otherImages[detection?.image?.image_file].bboxes.push(detection);
-      //         }
-      //       })
-      //     })
-      //     checklist[index].otherImages = otherImages;
-      //   };
-      //   _loadingFeedback.push(false);
-      // });
-
-      // if (JSON.stringify(dataToUse) !== JSON.stringify(checklist)) {
-      //   setDataToUse(checklist);
-      // }
+      
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inspections]);
@@ -623,6 +507,7 @@ export default function ListView({
 
   const HEIGHT = [1, 1, 1, 2, 2, 2];
   const WIDTH = [1, 2, 3, 3, 3, 3];
+
 
   return (
     <Box
