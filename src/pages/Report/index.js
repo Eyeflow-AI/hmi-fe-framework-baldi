@@ -86,9 +86,11 @@ export default function Report({ pageOptions }) {
 
 
   useEffect(() => {
-    getData();
+    startSearch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageOptions]);
+
+  console.log({pageOptions})
 
   return (
     <PageWrapper>
