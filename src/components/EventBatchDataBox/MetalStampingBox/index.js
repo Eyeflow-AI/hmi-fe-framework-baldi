@@ -242,8 +242,11 @@ export default function MetalStampingBox ({data, config}) {
     let totalBoxes = data?.info?.total_packs ?? 0;
     let currentBox = 0;
     if (data?.batch_data) {
-      let sumParts = data.batch_data.parts_ok + data.batch_data.parts_ng;
-      currentBox = Math.ceil(sumParts / data.info.parts_per_pack);
+      let sumParts = data?.batch_data?.parts_ok ?? 0 + data?.batch_data?.parts_ng;
+      currentBox = Math.ceil(sumParts / data?.info?.parts_per_pack);
+      if (typeof currentBox !== 'number') {
+        currentBox = 0;
+      }
     }
 
     return {
