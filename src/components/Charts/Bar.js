@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 
 // Third-party
 import { useTranslation } from "react-i18next";
-import { ResponsiveBar } from '@nivo/bar'
+import { ResponsiveBar } from '@nivo/bar';
 import { colors } from 'sdk-fe-eyeflow';
 
 
@@ -34,6 +34,8 @@ const CustomTooltip = ({ color, value, id }) => (
 );
 
 
+
+
 export default function Bar({ chart }) {
 
   const { t } = useTranslation();
@@ -52,7 +54,6 @@ export default function Bar({ chart }) {
           id: item,
           [item]: data[item],
         }
-        console.log({ chartInfo: chart.chartInfo, chart });
 
         if (Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0 && chart?.chartInfo?.colors_results?.[item]) {
           _item.color = chart.chartInfo.colors_results[item]
@@ -88,9 +89,18 @@ export default function Bar({ chart }) {
       setInfo(newInfo);
       setKeys(newKeys);
       setQueryHasColors(Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 ? true : false);
+
+
+      // set all text tags to 50px
+      let textTags = document.getElementsByTagName('text');
+      for (let i = 0; i < textTags.length; i++) {
+        textTags[i].setAttribute('font-size', '50px');
+      }
     }
     // setData(chart.result)
   }, [chart])
+
+
 
   return (
     <Box
@@ -124,68 +134,24 @@ export default function Bar({ chart }) {
               flexGrow: 1,
             }}
           >
-            {/* <ResponsiveBar
-              data={info}
-              keys={keys}
-              indexBy="id"
-              margin={{ top: 100, right: 130, bottom: 100, left: 60 }}
-              padding={0.3}
-              valueScale={{ type: 'linear' }}
-              indexScale={{ type: 'band', round: true }}
-              colors={queryHasColors ? (i) => { console.log(i); return i.data.color } : { scheme: 'nivo' }}
-              axisTop={null}
-              axisRight={null}
-              labelSkipWidth={12}
-              labelSkipHeight={12}
-              labelTextColor={{
-                from: 'color',
-                modifiers: [
-                  [
-                    'darker',
-                    1.6
-                  ]
-                ]
-              }}
-              role="application"
-              ariaLabel={t(chart.chartInfo.localeId)}
-              barAriaLabel={function (e) { return e.id + ": " + e[e.id] }}
-              legends={responsivePieLegends}
-              theme={responsivePieTheme}
-            /> */}
             <ResponsiveBar
               data={info}
               keys={keys}
-              // indexBy="id"
-              // margin={{ top: 100, right: 130, bottom: 100, left: 60 }}
-              // padding={0.3}
-              // valueScale={{ type: 'linear' }}
-              // indexScale={{ type: 'band', round: true }}
-              colors={queryHasColors ? (i) => { console.log({ i }); return i.data.color } : { scheme: 'nivo' }}
+              colors={queryHasColors ? (i) => { return i.data.color } : { scheme: 'nivo' }}
               tooltip={(info) => {
                 let value = info.data[info.id];
                 let color = info.color;
                 let id = info.id;
                 return (<CustomTooltip color={color} value={value} id={id} />)
               }}
-              labelTextColor='white'
-            // axisTop={null}
-            // axisRight={null}
-            // labelSkipWidth={12}
-            // labelSkipHeight={12}
-            // labelTextColor={{
-            //   from: 'color',
-            //   modifiers: [
-            //     [
-            //       'darker',
-            //       1.6
-            //     ]
-            //   ]
-            // }}
-            // role="application"
-            // ariaLabel={t(chart.chartInfo.localeId)}
-            // barAriaLabel={function (e) { return e.id + ": " + e[e.id] }}
-            // legends={responsiveBarLegends}
-            // theme={responsivePieTheme}
+              theme={{
+                labels: {
+                  text: {
+                    fontSize: 35,
+                    fill: '#ffffff',
+                  }
+                },
+              }}
             />
           </Box>
 
