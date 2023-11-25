@@ -12,13 +12,14 @@ import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
 import getQueryDateString from '../../utils/functions/getQueryDateString';
 import Bar from '../../components/Charts/Bar';
 import Pie from '../../components/Charts/Pie';
+import Clock from '../../utils/Hooks/Clock';
 
 // Third-party
 import { useTranslation } from "react-i18next";
 
 const charts = {
-  bar: (chart) => <Bar chart={chart} />,
-  pie: (chart) => <Pie chart={chart} />,
+  bar: (chart) => <Bar chart={chart} key={chart?.chartInfo?.localeId} />,
+  pie: (chart) => <Pie chart={chart} key={chart?.chartInfo?.localeId} />,
 }
 
 
@@ -47,6 +48,7 @@ export default function Dashboard({ pageOptions }) {
   const { t } = useTranslation();
 
   const { _id: stationId } = GetSelectedStation();
+  const {clock} = Clock({sleepTime: pageOptions?.options?.getEventSleepTime ?? 60000});
 
   const startDate = new Date();
 
@@ -59,7 +61,7 @@ export default function Dashboard({ pageOptions }) {
     for (let i = 0; i < charts.length; i++) {
       // setLoadingSearch(true);
       try {
-        let data = await API.get.queryData({ startTime: getQueryDateString(startDate), endTime: getQueryDateString(startDate, 0, 'end'), queryName: charts[i].query_name, stationId }, setLoadingSearch);
+        let data = await API.get.queryData({ startTime: getQueryDateString(startDate), endTime: getQueryDateString(startDate, 0, 'end'), queryName: charts[i].query_name, stationId, run: false }, setLoadingSearch);
         chartsToBuild.push(data);
       }
       catch (err) {
@@ -73,6 +75,11 @@ export default function Dashboard({ pageOptions }) {
 
   }, []);
 
+  useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clock]);
+
 
   useEffect(() => {
     getData();
@@ -82,7 +89,7 @@ export default function Dashboard({ pageOptions }) {
   return (
     <PageWrapper>
       {({ width, height }) =>
-        <Box display="flex" flexDirection="column" width={width} height={height} gap={1}>
+        <Box display="flex" flexDirection="column" width={width} height={height} gap={1} key='dasbhoard-wrapper'>
           {/* TODO: Dashboard <br />
             * Anomalies Evolution (line)<br />
             * Anomalies Counting (bar)<br />
@@ -96,7 +103,7 @@ export default function Dashboard({ pageOptions }) {
           sx={styleSx.dataBox}
           >
             {
-              loadingSearch ?
+              loadingSearch && builtChats.length === 0 ?
                 <Box
                   display={'flex'}
                   sx={{
