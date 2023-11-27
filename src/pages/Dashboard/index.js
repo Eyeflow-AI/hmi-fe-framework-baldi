@@ -18,10 +18,10 @@ import { Bar, Pie, Funnel, Line } from '../../components/Charts';
 import { useTranslation } from "react-i18next";
 
 const charts = {
-  bar: (chart) => <Bar chart={chart} key={chart?.chartInfo?.localeId} />,
-  pie: (chart) => <Pie chart={chart} key={chart?.chartInfo?.localeId} />,
-  funnel: (chart) => <Funnel chart={chart} key={chart?.chartInfo?.localeId} />,
-  line: (chart) => <Line chart={chart} key={chart?.chartInfo?.localeId} />,
+  bar: (chart) => <Bar chart={chart} key={`${chart?.chartInfo?.localeId}-${chart?.chartInfo?.index}`} />,
+  pie: (chart) => <Pie chart={chart} key={`${chart?.chartInfo?.localeId}-${chart?.chartInfo?.index}`} />,
+  funnel: (chart) => <Funnel chart={chart} key={`${chart?.chartInfo?.localeId}-${chart?.chartInfo?.index}`} />,
+  line: (chart) => <Line chart={chart} key={`${chart?.chartInfo?.localeId}-${chart?.chartInfo?.index}`} />,
 }
 
 
@@ -60,18 +60,36 @@ export default function Dashboard({ pageOptions }) {
   const getData = async () => {
     const charts = pageOptions?.options?.charts ?? [];
     const chartsToBuild = [];
+    setLoadingSearch(true);
+    let flagError = false;
     for (let i = 0; i < charts.length; i++) {
-      // setLoadingSearch(true);
       try {
-        let data = await API.get.queryData({ startTime: getQueryDateString(startDate), endTime: getQueryDateString(startDate, 0, 'end'), queryName: charts[i].query_name, stationId, run: false }, setLoadingSearch);
+        let data = await API.get.queryData({ startTime: getQueryDateString(startDate), endTime: getQueryDateString(startDate, 0, 'end'), queryName: charts[i].query_name, stationId, run: false });
+        if (!data?.chartInfo?.width) {
+          data.chartInfo.width = charts.length >= 4 ? `${1/(charts.length / 2) * 100}%` : `${100 / charts.length}%`;
+        }
+        if (!data?.chartInfo?.height) {
+          data.chartInfo.height = charts.length >= 4 ? '50%' : '100%';
+        }
+        data.chartInfo.index = i;
         chartsToBuild.push(data);
       }
       catch (err) {
         console.error(err);
+        flagError = true;
       }
     }
     setBuiltChats(chartsToBuild);
+    if (flagError) {
+      setLoadingSearch(false);
+    }
   };
+
+  useEffect(() => {
+    if (builtChats.length > 0) {
+      setLoadingSearch(false);
+    }
+  }, [builtChats])
 
   useEffect(() => {
 

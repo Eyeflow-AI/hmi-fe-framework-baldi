@@ -508,7 +508,8 @@ export default function MetalStampingBox ({data, config}) {
                               "outlineColor": "transparent"
                           }
                       }
-                  }})}
+                    }
+                  })}
                 />
               </Box>
             )}
