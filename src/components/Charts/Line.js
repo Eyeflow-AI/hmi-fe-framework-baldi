@@ -33,7 +33,7 @@ const CustomTooltip = ({ color, value, id }) => (
 
 
 
-const responsivePieTheme = {
+const responsiveTheme = {
   tooltip: {
     container: {
       background: colors.paper.blue.dark
@@ -88,7 +88,7 @@ const responsivePieTheme = {
   }
 };
 
-const responsivePieLegends = [
+const responsiveLegends = [
   {
     anchor: 'bottom',
     direction: 'column',
@@ -463,8 +463,8 @@ export default function Line({ chart }) {
               // margin={{ top: 100, right: 50, bottom: 250, left: 100 }}
               margin={{ top: 20, right: 50, bottom: 250, left: 30 }}
 
-              theme={responsivePieTheme}
-              legends={responsivePieLegends}
+              theme={responsiveTheme}
+              legends={responsiveLegends}
               colors={queryHasColors ? (i) => { return i.data.color } : { scheme: 'nivo' }}
               enableArea={chart?.chartInfo?.enableArea ?? false}
               xScale={{ type: 'point' }}
