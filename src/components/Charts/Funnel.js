@@ -9,29 +9,31 @@ import Typography from "@mui/material/Typography";
 
 // Third-party
 import { useTranslation } from "react-i18next";
-import { ResponsiveBar } from '@nivo/bar';
+import { ResponsiveFunnel } from '@nivo/funnel';
 import { colors } from 'sdk-fe-eyeflow';
 
 
 
 
-const CustomTooltip = ({ color, value, id }) => (
-  <Box sx={{
-    background: colors.paper.blue.dark,
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    // flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 1,
-    textTransform: 'uppercase',
-  }}>
-    <div style={{ width: '15px', height: '15px', backgroundColor: color }}></div>
-    &nbsp;&nbsp;
-    {id}: {value}
-  </Box>
-);
+const CustomTooltip = ({ color, value, id }) => {
+  return (
+    <Box sx={{
+      background: colors.paper.blue.dark,
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      // flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 1,
+      textTransform: 'uppercase',
+    }}>
+      <div style={{ width: '15px', height: '15px', backgroundColor: color }}></div>
+      &nbsp;&nbsp;
+      {id}: {value}
+    </Box>
+  )
+};
 
 
 
@@ -53,6 +55,8 @@ export default function Bar({ chart }) {
         let _item = {
           id: item,
           [item]: data[item],
+          label: item,
+          value: data?.[item],
         }
 
         if (Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0 && chart?.chartInfo?.colors_results?.[item]) {
@@ -68,30 +72,39 @@ export default function Bar({ chart }) {
       setKeys(newKeys);
       setQueryHasColors(Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0 ? true : false);
     }
-    else if (chart.result.length > 1) {
-      let newKeys = chart.result.map((item) => item._id);
-      let data = chart.result;
-      let newInfo = [];
-      data.forEach((item) => {
-        let _item = {
-          id: item._id,
-          [item._id]: item.value,
-        }
-        if (chart?.chartInfo?.colors_results?.length > 0 && chart?.chartInfo?.colors_results?.[item._id]) {
-          _item.color = chart.chartInfo.colors_results[item._id]
-        }
-        else {
-          _item.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-        }
-        newInfo.push(_item);
-      })
+    // else if (chart.result.length > 1) {
+    //   let newKeys = chart.result.map((item) => item._id);
+    //   let data = chart.result;
+    //   let newInfo = [];
+    //   data.forEach((item) => {
+    //     let _item = {
+    //       id: item._id,
+    //       [item._id]: item.value,
+    //       label: item?._id,
+    //       value: item?.value ?? '',
+    //     }
+    //     if (chart?.chartInfo?.colors_results?.length > 0 && chart?.chartInfo?.colors_results?.[item._id]) {
+    //       _item.color = chart.chartInfo.colors_results[item._id]
+    //     }
+    //     else {
+    //       _item.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    //     }
+    //     newInfo.push(_item);
+    //   })
 
-      setInfo(newInfo);
-      setKeys(newKeys);
-      setQueryHasColors(Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 ? true : false);
-    }
+    //   setInfo(newInfo);
+    //   setKeys(newKeys);
+    //   setQueryHasColors(Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 ? true : false);
+
+
+    //   // set all text tags to 50px
+    //   let textTags = document.getElementsByTagName('text');
+    //   for (let i = 0; i < textTags.length; i++) {
+    //     textTags[i].setAttribute('font-size', '50px');
+    //   }
+    // }
+    // setData(chart.result)
   }, [chart])
-
 
 
   return (
@@ -126,24 +139,45 @@ export default function Bar({ chart }) {
               flexGrow: 1,
             }}
           >
-            <ResponsiveBar
+            <ResponsiveFunnel
               data={info}
               keys={keys}
-              colors={queryHasColors ? (i) => { return i.data.color } : { scheme: 'nivo' }}
-              tooltip={(info) => {
-                let value = info.data[info.id];
-                let color = info.color;
-                let id = info.id;
+              colors={queryHasColors ? (i) => { 
+                return i?.color 
+              } : { scheme: 'nivo' }}
+              tooltip={(i) => {
+                let value = i?.part?.data?.value;
+                let color = i?.part?.data?.color;
+                let id = i?.part?.data?.id;
+                console.log({value, color, id})
                 return (<CustomTooltip color={color} value={value} id={id} />)
+              }}
+              margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+              valueFormat=">-.4s"
+              borderWidth={20}
+              labelColor={{
+                  from: 'color',
+                  modifiers: [
+                      [
+                      "brighter",
+                      100        
+                      ]
+                  ]
               }}
               theme={{
                 labels: {
                   text: {
                     fontSize: 35,
-                    fill: '#ffffff',
                   }
                 },
               }}
+              beforeSeparatorLength={100}
+              beforeSeparatorOffset={20}
+              afterSeparatorLength={100}
+              afterSeparatorOffset={20}
+              currentPartSizeExtension={10}
+              currentBorderWidth={40}
+              motionConfig="wobbly"
             />
           </Box>
 

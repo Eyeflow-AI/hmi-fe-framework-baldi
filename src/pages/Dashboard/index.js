@@ -3,16 +3,16 @@ import React, { useEffect, useState } from 'react';
 
 // Design
 import Box from '@mui/material/Box';
-import { CircularProgress, Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
 
 // Internal
 import PageWrapper from '../../components/PageWrapper';
 import API from '../../api';
 import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
 import getQueryDateString from '../../utils/functions/getQueryDateString';
-import Bar from '../../components/Charts/Bar';
-import Pie from '../../components/Charts/Pie';
 import Clock from '../../utils/Hooks/Clock';
+import { Bar, Pie, Funnel } from '../../components/Charts';
 
 // Third-party
 import { useTranslation } from "react-i18next";
@@ -20,6 +20,7 @@ import { useTranslation } from "react-i18next";
 const charts = {
   bar: (chart) => <Bar chart={chart} key={chart?.chartInfo?.localeId} />,
   pie: (chart) => <Pie chart={chart} key={chart?.chartInfo?.localeId} />,
+  funnel: (chart) => <Funnel chart={chart} key={chart?.chartInfo?.localeId} />,
 }
 
 
