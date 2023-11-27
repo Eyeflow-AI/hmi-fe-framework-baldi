@@ -63,30 +63,6 @@ export default function Bar({ chart }) {
 
   useEffect(() => {
     if (!chart?.result?.length) return
-    // else if (chart.result.length === 1 && Object.keys(chart.result[0] ?? {}).length > 0) {
-    //   let newKeys = Object.keys(chart.result[0]);
-    //   let data = chart.result[0];
-    //   console.log({ data })
-    //   let newInfo = [];
-    //   Object.keys(data).forEach((item) => {
-    //     let _item = {
-    //       id: item,
-    //       label: item,
-    //       [item]: data[item],
-    //       value: data[item],
-    //     }
-    //     console.log({ chartInfo: chart.chartInfo, chart, _item });
-    //     if (Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0 && chart?.chartInfo?.colors_results?.[item]) {
-    //       _item.color = chart.chartInfo.colors_results[item]
-    //     }
-
-    //     newInfo.push(_item)
-    //   })
-    //   setInfo(newInfo);
-    //   setKeys(newKeys);
-    //   setQueryHasColors(Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 ? true : false);
-    // }
-    // else if (chart.result.length > 1) {
     else {
       let newKeys = chart.result.map((item) => item._id);
       let data = chart.result;
