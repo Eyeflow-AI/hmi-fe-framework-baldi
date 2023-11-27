@@ -38,7 +38,7 @@ const CustomTooltip = ({ color, value, id }) => {
 
 
 
-export default function Bar({ chart }) {
+export default function Funnel({ chart }) {
 
   const { t } = useTranslation();
   const [info, setInfo] = useState([]);

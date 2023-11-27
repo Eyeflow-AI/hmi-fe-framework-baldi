@@ -12,7 +12,7 @@ import API from '../../api';
 import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
 import getQueryDateString from '../../utils/functions/getQueryDateString';
 import Clock from '../../utils/Hooks/Clock';
-import { Bar, Pie, Funnel } from '../../components/Charts';
+import { Bar, Pie, Funnel, Line } from '../../components/Charts';
 
 // Third-party
 import { useTranslation } from "react-i18next";
@@ -21,6 +21,7 @@ const charts = {
   bar: (chart) => <Bar chart={chart} key={chart?.chartInfo?.localeId} />,
   pie: (chart) => <Pie chart={chart} key={chart?.chartInfo?.localeId} />,
   funnel: (chart) => <Funnel chart={chart} key={chart?.chartInfo?.localeId} />,
+  line: (chart) => <Line chart={chart} key={chart?.chartInfo?.localeId} />,
 }
 
 
