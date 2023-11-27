@@ -465,8 +465,8 @@ export default function Line({ chart }) {
 
               theme={responsivePieTheme}
               legends={responsivePieLegends}
-              colors={info.every(item => item.color) ? info.map((item) => item.color) : { scheme: "nivo" }}
-              enableArea={true}
+              colors={queryHasColors ? (i) => { return i.data.color } : { scheme: 'nivo' }}
+              enableArea={chart?.chartInfo?.enableArea ?? false}
               xScale={{ type: 'point' }}
               yScale={{
                   type: 'linear',
@@ -496,7 +496,7 @@ export default function Line({ chart }) {
                 legendPosition: 'middle'
               }}
               useMesh={true}
-              enableSlices="x"
+              enableSlices={chart?.chartInfo?.enableSlices ?? "x"}
             //   axisLeft={{
             //     tickSize: 5,
             //     // tickPadding: 5,
