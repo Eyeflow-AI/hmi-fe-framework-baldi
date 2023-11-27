@@ -33,8 +33,87 @@ const CustomTooltip = ({ color, value, id }) => (
   </Box>
 );
 
+const responsiveTheme = {
+  tooltip: {
+    container: {
+      background: colors.paper.blue.dark
+    }
+  },
+  labels: {
+    text: {
+      fontSize: 35,
+      fill: '#ffffff',
+      textShadow: "1px 1px 2px #353535"
+    }
+  },
+  legends: {
+    text: {
+      fontSize: 20,
+      fill: '#ffffff',
+    }
+  },
+  "grid": {
+    "line": {
+        "stroke": "#dddddd",
+        "strokeWidth": 0.1
+    }
+  },
+  "axis": {
+    "domain": {
+        "line": {
+            "stroke": "white",
+            "strokeWidth": 1
+        }
+    },
+    "legend": {
+        "text": {
+            "fontSize": 12,
+            "fill": "white",
+            "outlineWidth": 0,
+            "outlineColor": "transparent"
+        }
+    },
+    "ticks": {
+        "line": {
+            "stroke": "white",
+            "strokeWidth": 1
+        },
+        "text": {
+            "fontSize": 11,
+            "fill": "white",
+            "outlineWidth": 0,
+            "outlineColor": "transparent"
+        }
+    }
+  }
+};
 
 
+const responsiveLegends = [
+  {
+    anchor: 'bottom',
+    direction: 'column',
+    justify: false,
+    translateY: 180,
+    translateX: -50,
+    itemsSpacing: 10,
+    itemWidth: 10,
+    itemHeight: 18,
+    itemTextColor: 'white',
+    itemDirection: 'left-to-right',
+    itemOpacity: 1,
+    symbolSize: 15,
+    symbolShape: 'square',
+    effects: [
+      {
+        on: 'hover',
+        style: {
+          itemTextColor: '#000'
+        }
+      }
+    ],
+  }
+];
 
 export default function Bar({ chart }) {
 
@@ -129,6 +208,7 @@ export default function Bar({ chart }) {
             <ResponsiveBar
               data={info}
               keys={keys}
+              margin={{ top: 10, right: 0, bottom: 30, left: 50 }}
               colors={queryHasColors ? (i) => { return i.data.color } : { scheme: 'nivo' }}
               tooltip={(info) => {
                 let value = info.data[info.id];
@@ -136,13 +216,27 @@ export default function Bar({ chart }) {
                 let id = info.id;
                 return (<CustomTooltip color={color} value={value} id={id} />)
               }}
-              theme={{
-                labels: {
-                  text: {
-                    fontSize: 35,
-                    fill: '#ffffff',
-                  }
-                },
+              theme={responsiveTheme}
+              legends={responsiveLegends}
+              axisLeft={{
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 0,
+                // legend: 'food',
+                legendPosition: 'middle',
+                legendOffset: -40,
+                // truncateTickAt: 0
+              }}
+              axisTop={null}
+              axisRight={null}
+              axisBottom={{
+                  tickSize: 5,
+                  tickPadding: 5,
+                  tickRotation: 0,
+                  // legend: 'country',
+                  legendPosition: 'middle',
+                  legendOffset: 32,
+                  truncateTickAt: 0
               }}
             />
           </Box>
