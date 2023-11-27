@@ -93,8 +93,8 @@ const responsiveLegends = [
     anchor: 'bottom',
     direction: 'column',
     justify: false,
-    translateY: 180,
-    translateX: -50,
+    translateY: 100,
+    translateX: -80,
     itemsSpacing: 10,
     itemWidth: 10,
     itemHeight: 18,
@@ -118,313 +118,19 @@ export default function Line({ chart }) {
 
   const { t } = useTranslation();
   const [info, setInfo] = useState([]);
-  const [keys, setKeys] = useState([]);
   const [queryHasColors, setQueryHasColors] = useState(false);
 
   useEffect(() => {
     if (!chart?.result?.length) return
     else {
-      let newKeys = chart.result.map((item) => item._id);
-      let data = chart.result;
-      let newInfo = [];
-      data.forEach((item) => {
-        let _item = {
-          id: item._id,
-          label: item._id,
-          [item._id]: item.value,
-          value: item.value,
-        }
-        if (Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0 && chart?.chartInfo?.colors_results?.[item._id]) {
-          _item.color = chart.chartInfo.colors_results[item._id]
-        }
-        else {
-          _item.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-        }
-        newInfo.push(_item);
-      })
-
-      // setInfo(newInfo);
-      setInfo(
-        [
-          {
-            "id": "japan",
-            "color": "hsl(269, 70%, 50%)",
-            "data": [
-              {
-                "x": "plane",
-                "y": 102
-              },
-              {
-                "x": "helicopter",
-                "y": 115
-              },
-              {
-                "x": "boat",
-                "y": 243
-              },
-              {
-                "x": "train",
-                "y": 182
-              },
-              {
-                "x": "subway",
-                "y": 145
-              },
-              {
-                "x": "bus",
-                "y": 281
-              },
-              {
-                "x": "car",
-                "y": 263
-              },
-              {
-                "x": "moto",
-                "y": 269
-              },
-              {
-                "x": "bicycle",
-                "y": 224
-              },
-              {
-                "x": "horse",
-                "y": 198
-              },
-              {
-                "x": "skateboard",
-                "y": 226
-              },
-              {
-                "x": "others",
-                "y": 51
-              }
-            ]
-          },
-          {
-            "id": "france",
-            "color": "hsl(57, 70%, 50%)",
-            "data": [
-              {
-                "x": "plane",
-                "y": 238
-              },
-              {
-                "x": "helicopter",
-                "y": 216
-              },
-              {
-                "x": "boat",
-                "y": 212
-              },
-              {
-                "x": "train",
-                "y": 161
-              },
-              {
-                "x": "subway",
-                "y": 257
-              },
-              {
-                "x": "bus",
-                "y": 32
-              },
-              {
-                "x": "car",
-                "y": 193
-              },
-              {
-                "x": "moto",
-                "y": 168
-              },
-              {
-                "x": "bicycle",
-                "y": 34
-              },
-              {
-                "x": "horse",
-                "y": 268
-              },
-              {
-                "x": "skateboard",
-                "y": 218
-              },
-              {
-                "x": "others",
-                "y": 9
-              }
-            ]
-          },
-          {
-            "id": "us",
-            "color": "hsl(77, 70%, 50%)",
-            "data": [
-              {
-                "x": "plane",
-                "y": 52
-              },
-              {
-                "x": "helicopter",
-                "y": 205
-              },
-              {
-                "x": "boat",
-                "y": 213
-              },
-              {
-                "x": "train",
-                "y": 103
-              },
-              {
-                "x": "subway",
-                "y": 98
-              },
-              {
-                "x": "bus",
-                "y": 4
-              },
-              {
-                "x": "car",
-                "y": 253
-              },
-              {
-                "x": "moto",
-                "y": 255
-              },
-              {
-                "x": "bicycle",
-                "y": 134
-              },
-              {
-                "x": "horse",
-                "y": 88
-              },
-              {
-                "x": "skateboard",
-                "y": 61
-              },
-              {
-                "x": "others",
-                "y": 15
-              }
-            ]
-          },
-          {
-            "id": "germany",
-            "color": "hsl(25, 70%, 50%)",
-            "data": [
-              {
-                "x": "plane",
-                "y": 296
-              },
-              {
-                "x": "helicopter",
-                "y": 221
-              },
-              {
-                "x": "boat",
-                "y": 214
-              },
-              {
-                "x": "train",
-                "y": 258
-              },
-              {
-                "x": "subway",
-                "y": 287
-              },
-              {
-                "x": "bus",
-                "y": 147
-              },
-              {
-                "x": "car",
-                "y": 5
-              },
-              {
-                "x": "moto",
-                "y": 201
-              },
-              {
-                "x": "bicycle",
-                "y": 93
-              },
-              {
-                "x": "horse",
-                "y": 87
-              },
-              {
-                "x": "skateboard",
-                "y": 163
-              },
-              {
-                "x": "others",
-                "y": 125
-              }
-            ]
-          },
-          {
-            "id": "norway",
-            "color": "hsl(311, 70%, 50%)",
-            "data": [
-              {
-                "x": "plane",
-                "y": 149
-              },
-              {
-                "x": "helicopter",
-                "y": 5
-              },
-              {
-                "x": "boat",
-                "y": 104
-              },
-              {
-                "x": "train",
-                "y": 24
-              },
-              {
-                "x": "subway",
-                "y": 138
-              },
-              {
-                "x": "bus",
-                "y": 177
-              },
-              {
-                "x": "car",
-                "y": 214
-              },
-              {
-                "x": "moto",
-                "y": 275
-              },
-              {
-                "x": "bicycle",
-                "y": 161
-              },
-              {
-                "x": "horse",
-                "y": 170
-              },
-              {
-                "x": "skateboard",
-                "y": 135
-              },
-              {
-                "x": "others",
-                "y": 36
-              }
-            ]
-          }
-        ]
-      )
-      setKeys(newKeys);
+      let newInfo = chart?.result ?? [];
+      newInfo.id = t(newInfo.id);
+      setInfo(newInfo);
       setQueryHasColors(Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 ? true : false);
     }
     // setData(chart.result)
   }, [chart])
 
-  // console.log({ chart, info })
 
   return (
     <Box
@@ -449,22 +155,23 @@ export default function Line({ chart }) {
         </Typography>
       </Box>
       {
-        chart?.result.length > 0 ?
+        chart?.result?.length > 0 ?
           <Box
             sx={{
               display: 'flex',
               width: `calc(${chart.chartInfo.width}px / ${chart?.result.length})`,
               height: 'calc(100% - 50px)',
               flexGrow: 1,
+              // rotate: '90deg',
             }}
           >
             <ResponsiveLine
               data={info}
               // margin={{ top: 100, right: 50, bottom: 250, left: 100 }}
-              margin={{ top: 20, right: 50, bottom: 250, left: 30 }}
+              margin={{ top: 100, right: 0, bottom: 200, left: 30 }}
 
               theme={responsiveTheme}
-              legends={responsiveLegends}
+              // legends={responsiveLegends}
               colors={queryHasColors ? (i) => { return i.data.color } : { scheme: 'nivo' }}
               enableArea={chart?.chartInfo?.enableArea ?? false}
               xScale={{ type: 'point' }}
@@ -475,24 +182,24 @@ export default function Line({ chart }) {
                   stacked: false,
                   reverse: false
               }}
-              yFormat=" >-.2f"
-              pointSize={15}
+              // yFormat=" >-.2f"
+              pointSize={8}
               axisTop={null}
               axisRight={null}
               axisBottom={{
                   tickSize: 5,
                   tickPadding: 5,
                   tickRotation: 0,
-                  // legend: t('epochs'),
-                  legendOffset: 100,
+                  legend: chart?.chartInfo?.x_axis ? (t(chart?.chartInfo?.x_axis)).toUpperCase() : "",
+                  legendOffset: 50,
                   legendPosition: 'middle'
               }}
               axisLeft={{
                 tickSize: 5,
                 tickPadding: 5,
                 tickRotation: 0,
-                // legend: 'count',
-                legendOffset: -40,
+                legend: chart?.chartInfo?.y_axis ? t(chart?.chartInfo?.y_axis).toUpperCase() : "",
+                // legendOffset: -40,
                 legendPosition: 'middle'
               }}
               useMesh={true}

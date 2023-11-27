@@ -36,6 +36,87 @@ const CustomTooltip = ({ color, value, id }) => {
 };
 
 
+const responsiveLegends = [
+  {
+    anchor: 'bottom',
+    direction: 'column',
+    justify: false,
+    translateY: 180,
+    translateX: 150,
+    itemsSpacing: 10,
+    itemWidth: 10,
+    itemHeight: 18,
+    itemTextColor: 'white',
+    itemDirection: 'left-to-right',
+    itemOpacity: 1,
+    symbolSize: 15,
+    symbolShape: 'square',
+    effects: [
+      {
+        on: 'hover',
+        style: {
+          itemTextColor: '#000'
+        }
+      }
+    ],
+  }
+];
+
+
+const responsiveTheme = {
+  tooltip: {
+    container: {
+      background: colors.paper.blue.dark
+    }
+  },
+  labels: {
+    text: {
+      fontSize: 35,
+      fill: '#ffffff',
+      textShadow: "1px 1px 2px #353535"
+    }
+  },
+  legends: {
+    text: {
+      fontSize: 20,
+      fill: '#ffffff',
+    }
+  },
+  "grid": {
+    "line": {
+        "stroke": "#dddddd",
+        "strokeWidth": .6
+    }
+  },
+  "axis": {
+    "domain": {
+        "line": {
+            "stroke": "#777777",
+            "strokeWidth": 1
+        }
+    },
+    "legend": {
+        "text": {
+            "fontSize": 12,
+            "fill": "white",
+            "outlineWidth": 0,
+            "outlineColor": "transparent"
+        }
+    },
+    "ticks": {
+        "line": {
+            "stroke": "#777777",
+            "strokeWidth": 1
+        },
+        "text": {
+            "fontSize": 11,
+            "fill": "white",
+            "outlineWidth": 0,
+            "outlineColor": "transparent"
+        }
+    }
+  }
+};
 
 
 export default function Funnel({ chart }) {
@@ -67,43 +148,12 @@ export default function Funnel({ chart }) {
         }
 
         newInfo.push(_item)
-      })
+      });
+      console.log({newInfo})
       setInfo(newInfo);
       setKeys(newKeys);
       setQueryHasColors(Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0 ? true : false);
     }
-    // else if (chart.result.length > 1) {
-    //   let newKeys = chart.result.map((item) => item._id);
-    //   let data = chart.result;
-    //   let newInfo = [];
-    //   data.forEach((item) => {
-    //     let _item = {
-    //       id: item._id,
-    //       [item._id]: item.value,
-    //       label: item?._id,
-    //       value: item?.value ?? '',
-    //     }
-    //     if (chart?.chartInfo?.colors_results?.length > 0 && chart?.chartInfo?.colors_results?.[item._id]) {
-    //       _item.color = chart.chartInfo.colors_results[item._id]
-    //     }
-    //     else {
-    //       _item.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-    //     }
-    //     newInfo.push(_item);
-    //   })
-
-    //   setInfo(newInfo);
-    //   setKeys(newKeys);
-    //   setQueryHasColors(Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 ? true : false);
-
-
-    //   // set all text tags to 50px
-    //   let textTags = document.getElementsByTagName('text');
-    //   for (let i = 0; i < textTags.length; i++) {
-    //     textTags[i].setAttribute('font-size', '50px');
-    //   }
-    // }
-    // setData(chart.result)
   }, [chart])
 
 
@@ -137,11 +187,12 @@ export default function Funnel({ chart }) {
               width: '100%',
               height: 'calc(100% - 50px)',
               flexGrow: 1,
+              flexDirection: 'column',
             }}
           >
             <ResponsiveFunnel
               data={info}
-              keys={keys}
+              // keys={keys}
               colors={queryHasColors ? (i) => { 
                 return i?.color 
               } : { scheme: 'nivo' }}
@@ -149,12 +200,13 @@ export default function Funnel({ chart }) {
                 let value = i?.part?.data?.value;
                 let color = i?.part?.data?.color;
                 let id = i?.part?.data?.id;
-                console.log({value, color, id})
-                return (<CustomTooltip color={color} value={value} id={id} />)
+                return (<CustomTooltip color={color} value={value} id={t(id)} />)
               }}
-              margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
-              valueFormat=">-.4s"
-              borderWidth={20}
+              margin={{ top: 20, right: 20, bottom: 200, left: 20 }}
+              // valueFormat=">.2s"
+              // width={chart.chartInfo.width}
+              borderWidth={30}
+              borderOpacity={0.3}
               labelColor={{
                   from: 'color',
                   modifiers: [
@@ -164,21 +216,64 @@ export default function Funnel({ chart }) {
                       ]
                   ]
               }}
-              theme={{
-                labels: {
-                  text: {
-                    fontSize: 35,
-                  }
-                },
-              }}
-              beforeSeparatorLength={100}
-              beforeSeparatorOffset={20}
-              afterSeparatorLength={100}
-              afterSeparatorOffset={20}
+              // theme={{
+              //   labels: {
+              //     text: {
+              //       fontSize: 35,
+              //     }
+              //   },
+              // }}
+              theme={responsiveTheme}
+              // legends={responsiveLegends}
+              // beforeSeparatorLength={100}
+              beforeSeparatorOffset={10}
+              // afterSeparatorLength={100}
+              afterSeparatorOffset={10}
               currentPartSizeExtension={10}
-              currentBorderWidth={40}
+              currentBorderWidth={20}
               motionConfig="wobbly"
+              direction={chart?.chartInfo?.direction ?? "vertical"}
             />
+            <Box
+              sx={{
+                display: 'flex',
+                width: '100%',
+                height: '150px',
+                justifyContent: 'flex-start',
+                alignItems: 'space-around',
+                marginTop: '-150px',
+                flexDirection: 'column',
+                gap: 0,
+                marginLeft: '2rem',
+                // border: '1px solid white',
+              }}
+            >
+              {/* create the legend with the information */}
+              {
+                info.map((item, index) => {
+                  return (
+                    <Box
+                      key={index}
+                      sx={{
+                        display: 'flex',
+                        width: '100%',
+                        height: '30px',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        // border: '1px solid white',
+                      }}
+                    >
+                      <div style={{ width: '15px', height: '15px', backgroundColor: item?.color }}></div>
+                      &nbsp;&nbsp;
+                      <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} textAlign={'left'}>
+                        {t(item?.id)}
+                      </Typography>
+                    </Box>
+                  )
+                })
+              }
+
+            </Box>
           </Box>
 
           :
