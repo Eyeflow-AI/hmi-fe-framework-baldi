@@ -4,6 +4,11 @@ import React, { useEffect, useState } from "react";
 // Design
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import DownloadIcon from '@mui/icons-material/Download';
+import Tooltip from '@mui/material/Tooltip';
+import CircularProgress from "@mui/material/CircularProgress";
+
 
 // Internal
 
@@ -119,6 +124,7 @@ export default function Line({ chart }) {
   const { t } = useTranslation();
   const [info, setInfo] = useState([]);
   const [queryHasColors, setQueryHasColors] = useState(false);
+  const [loadingDownload, setLoadingDownload] = useState(false);
 
   useEffect(() => {
     if (!chart?.result?.length) return
@@ -152,6 +158,20 @@ export default function Line({ chart }) {
       >
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} textAlign={'center'}>
           {t(chart.chartInfo.localeId)}
+          {
+            chart?.chartInfo?.downloadable &&
+            (
+              loadingDownload ?
+              <CircularProgress /> :
+              <Tooltip title={t('download')}>
+                <IconButton
+                  onClick={() => chart.chartInfo.download(setLoadingDownload)}
+                >
+                  <DownloadIcon />
+                </IconButton>
+              </Tooltip>
+            )
+          }
         </Typography>
       </Box>
       {

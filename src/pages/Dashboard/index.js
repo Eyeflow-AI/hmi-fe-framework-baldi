@@ -118,9 +118,9 @@ export default function Dashboard({ pageOptions }) {
             * Parts ok/nok evolution (line)<br />
             * */}
           <Box 
-          width={width} 
-          height={height} 
-          sx={styleSx.dataBox}
+            width={width} 
+            height={height} 
+            sx={styleSx.dataBox}
           >
             {
               loadingSearch && builtChats.length === 0 ?
