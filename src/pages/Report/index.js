@@ -6,22 +6,34 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
-import { CircularProgress, Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
+
+import IconButton from '@mui/material/IconButton';
+import DownloadIcon from '@mui/icons-material/Download';
+import Tooltip from '@mui/material/Tooltip';
+import CircularProgress from '@mui/material/CircularProgress';
 
 // Internal
 import PageWrapper from '../../components/PageWrapper';
 import API from '../../api';
 import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
+import {Bar, Line, Funnel, Pie} from '../../components/Charts';
+import downloadURI from '../../utils/functions/downloadURI';
+import jsonToCSV from '../../utils/functions/jsonToCSV';
+import { setNotificationBar } from '../../store/slices/app';
+
 
 // Third-party
 import { useTranslation } from "react-i18next";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import Bar from '../../components/Charts/Bar';
 
 const charts = {
-  bar: (chart) => <Bar chart={chart} />,
+  bar: (chart) => <Bar chart={chart} key={`${chart?.chartInfo?.localeId}-${chart?.chartInfo?.index}`} />,
+  line: (chart) => <Line chart={chart}  key={`${chart?.chartInfo?.localeId}-${chart?.chartInfo?.index}`}/>,
+  funnel: (chart) => <Funnel chart={chart} key={`${chart?.chartInfo?.localeId}-${chart?.chartInfo?.index}`}/>,
+  pie: (chart) => <Pie chart={chart} key={`${chart?.chartInfo?.localeId}-${chart?.chartInfo?.index}`}/>,
 }
 
 const FILTER_HEIGHT = window.app_config.components.FilterBar.height;
@@ -39,6 +51,7 @@ const styleSx = {
   dataBox: Object.assign({}, window.app_config.style.box, {
     bgcolor: 'background.paper',
     display: 'flex',
+    flexWrap: 'wrap',
     flexGrow: 1,
     padding: 1,
   }),
@@ -57,24 +70,78 @@ export default function Report({ pageOptions }) {
 
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [builtChats, setBuiltChats] = useState([]);
+  const [downloadLoading, setDownloadLoading] = useState(false);
+
+  const downloadAll = () => {
+    if (builtChats.length > 0) {
+      setDownloadLoading(true);
+      builtChats.forEach((chart) => {
+        if (chart.chartInfo.downloadable) {
+          chart.chartInfo.download(setDownloadLoading);
+        }
+      });
+      setDownloadLoading(false);
+    }
+  }
 
   const getData = async () => {
     const charts = pageOptions?.options?.charts ?? [];
     const chartsToBuild = [];
-    for (let i = 0; i < charts.length; i++) {
-      // setLoadingSearch(true);
-      try {
-        let data = await API.get.queryData({ startTime: selectedStartDate, endTime: selectedEndDate, queryName: charts[i].query_name, stationId }, setLoadingSearch);
-        // console.log(data);
+    if (charts.length !== 0) {
+      setLoadingSearch(true);
+      let flagError = false;
+      for (let i = 0; i < charts.length; i++) {
+        // setLoadingSearch(true);
+        try {
+          let data = await API.get.queryData({ startTime: selectedStartDate, endTime: selectedEndDate, queryName: charts[i].query_name, stationId });
+          // console.log(data);
+          if (!data?.chartInfo?.width) {
+            data.chartInfo.width = charts.length >= 4 ? `${1/(charts.length / 2) * 100}%` : `${100 / charts.length}%`;
+            console.log(data.chartInfo.width);
+          }
+          if (!data?.chartInfo?.height) {
+            data.chartInfo.height = charts.length >= 4 ? '50%' : '100%';
+          }
+          data.chartInfo.downloadable = Boolean(charts?.[i]?.download_query);
+          if (data.chartInfo.downloadable) {
+            data.chartInfo.download = async (setLoading) => {
+              try {
+                setLoading(true);
+                let data = await API.get.queryData({ startTime: selectedStartDate, endTime: selectedEndDate, queryName: charts?.[i]?.download_query, stationId });
+                if (data?.result) {
+                  data = data.result;
+                  let { uri, filename } = jsonToCSV({ file: data, name: `${charts?.[i]?.download_query}_${selectedStartDate}_${selectedEndDate}` });
+                  downloadURI(uri, filename);
+                }
+              }
+              catch (err) {
+                setNotificationBar({ message: t('error_downloading'), type: 'error', show: true });
+              }
+              finally {
+                setLoading(false);
+              }
+            }
+          }
 
-        chartsToBuild.push(data);
+          data.chartInfo.index = i;
+          chartsToBuild.push(data);
+        }
+        catch (err) {
+          console.error(err);
+        }
       }
-      catch (err) {
-        console.error(err);
+      setBuiltChats(chartsToBuild);
+      if (flagError) {
+        setLoadingSearch(false);
       }
     }
-    setBuiltChats(chartsToBuild);
   };
+
+  useEffect(() => {
+    if (builtChats.length > 0) {
+      setLoadingSearch(false);
+    }
+  }, [builtChats])
 
   const startSearch = () => {
     getData();
@@ -90,12 +157,11 @@ export default function Report({ pageOptions }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageOptions]);
 
-  console.log({pageOptions})
 
   return (
     <PageWrapper>
       {({ width, height }) =>
-        <Box display="flex" flexDirection="column" width={width} height={height} gap={1}>
+        <Box display="flex" flexDirection="column" width={width} height={height} gap={1} key='report-wrapper'>
           <Box 
           height={FILTER_HEIGHT}
            width={width} 
@@ -142,19 +208,26 @@ export default function Report({ pageOptions }) {
                     {t('search')}
                   </Button>
               }
+              {
+                builtChats.length > 0 &&
+                (
+                  downloadLoading ?
+                    <CircularProgress /> :
+                    <Tooltip title={t('download_all')}>
+                      <IconButton
+                        onClick={downloadAll}
+                      >
+                        <DownloadIcon />
+                      </IconButton>
+                    </Tooltip>
+                )
+              }
             </Box>
           </Box>
-          {/* TODO: Dashboard <br />
-            * Anomalies Evolution (line)<br />
-            * Anomalies Counting (bar)<br />
-            * Parts Counting ok/nok (bar)<br />
-            * Top 10 anomalies (table)<br />
-            * Parts ok/nok evolution (line)<br />
-            * */}
           <Box 
-          width={width} 
-          height={height - FILTER_HEIGHT - 30} 
-          sx={styleSx.dataBox}
+            width={width} 
+            height={height - FILTER_HEIGHT - 30} 
+            sx={styleSx.dataBox}
           >
             {
               loadingSearch ?
