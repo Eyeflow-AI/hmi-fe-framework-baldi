@@ -79,12 +79,12 @@ export default function ImageCard ({title, eventTime, imageData, color, height, 
   useEffect(() => {
     if (imageDataURL) {
       setDetectionsLoading(true);
-      fetchJson(imageDataURL)
+      fetchJson(`${imageDataURL}?time=${Date.now()}`)
         .then(data => {
           setEventData(data);
         })
         .catch(err => {
-          console.error(err);
+          console.error({err});
           setEventData(null);
           setDetectionsLoading(false);
         });
@@ -102,12 +102,12 @@ export default function ImageCard ({title, eventTime, imageData, color, height, 
     }
 
     let newDetectionList = [];
-    if (eventData.type === "checklist") {
+    if (eventData.type === "checklist" && Array.isArray(eventData?.detections)) {
       // for (let [key, detections] of (eventData.detections ?? [])) {
         // console.log({eventData, x: Object.entries(eventData.detections ?? {}), imageDataURL})
         // console.log({detections, eventData})
 
-        for (let detection of eventData.detections) {
+        for (let detection of eventData?.detections ?? []) {
           // console.log({detection, imageDataURL})
           newDetectionList.push({...detection});
         }
@@ -119,11 +119,20 @@ export default function ImageCard ({title, eventTime, imageData, color, height, 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventData]);
 
+  console.log({detections, eventData})
+
   const onImageLoad = (event) => {
     setImageWidth(event.target.naturalWidth);
     setImageHeight(event.target.naturalHeight);
     setImageLoading(false);
   }
+
+  useEffect(() => {
+    setDetections([]);
+    setDetectionsLoading(false);
+    setImageLoading(true);
+    setEventData(null);
+  },[])
 
 
   return (
@@ -139,7 +148,7 @@ export default function ImageCard ({title, eventTime, imageData, color, height, 
       <Box id="image-card" sx={styleSx.imageBoxSx}>
         <img alt="" src={imageSrc} style={loading? loadingImageStyle : imageStyle} onLoad={onImageLoad}/>
         {loading && <CircularProgress sx={styleSx.circularProgressSx} />}
-        {!loading && detections.map((detection, index) => (
+        {!loading && eventData && detections.map((detection, index) => (
           <DetectionBox data={detection} key={index} imageWidth={imageWidth} imageHeight={imageHeight} showLabel={false} showConfidence={false}/>
         ))}
       </Box>
