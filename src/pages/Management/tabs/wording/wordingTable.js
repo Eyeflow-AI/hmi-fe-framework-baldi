@@ -18,7 +18,10 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import TableHead from '@mui/material/TableHead';
-import { Button, Tooltip } from "@mui/material";
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
+import EditIcon from '@mui/icons-material/Edit';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
 
 // Internal
@@ -92,15 +95,18 @@ export default function WordingTable({
 }) {
 
   const { t } = useTranslation();
-  console.log({ availableLanguages, usedLanguages })
 
 
   const feConfig = useSelector(getFeConfig);
+  const localeDocument = feConfig?.locale?.locale;
   const [page, setPage] = useState(0);
-  const rowsPerPage = 9;
+  const rowsPerPage = 14;
   const [columns, setColumns] = useState([]);
   // eslint-disable-next-line no-unused-vars
   const [rows, setRows] = useState([]);
+  const [languagesData, setLanguagesData] = useState({});
+
+  console.log({ localeDocument })
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -138,14 +144,64 @@ export default function WordingTable({
       let columns = [];
       let defaultLanguage = usedLanguages.languageList.find((language) => language.id === defaultLanguageId);
       let otherLanguages = usedLanguages.languageList.filter((language) => language.id !== defaultLanguageId && language.active);
-      otherLanguages = otherLanguages.map((language) => language.label);
+      otherLanguages = otherLanguages.map((language) => language);
 
-      columns.push(defaultLanguage?.label);
+      console.log({ defaultLanguage, otherLanguages })
+      columns.push({
+        active: true,
+        id: "system",
+        label: "System",
+      })
+      columns.push(defaultLanguage);
       columns = columns.concat(otherLanguages);
       setColumns(columns);
     }
   }, [usedLanguages])
 
+
+  useEffect(() => {
+
+    let languagesData = {};
+    if (columns?.length === 0) {
+      return;
+    }
+    columns?.forEach((column) => {
+      languagesData[column.id] = [];
+    });
+    Object.entries(localeDocument).forEach(([key, value]) => {
+      languagesData['system'].push({
+        word: key,
+        id: crypto.randomUUID(),
+      })
+      Object.keys(languagesData).filter(el => el !== 'system').forEach((languageId) => {
+
+        languagesData[languageId].push({
+          word: value[languageId],
+          id: crypto.randomUUID(),
+          default: value[languageId],
+        });
+      });
+    });
+    setLanguagesData(languagesData);
+
+  }, [columns]);
+
+  useEffect(() => {
+
+    let rows = [];
+    if (Object.keys(languagesData)?.length === 0) {
+      return;
+    }
+    let maxLength = languagesData['system'].length;
+    for (let i = 0; i < maxLength; i++) {
+      let row = [];
+      columns.forEach((column) => {
+        row.push(languagesData[column.id][i]);
+      });
+      rows.push(row);
+    }
+    setRows(rows);
+  }, [languagesData])
 
   return (
     <TableContainer
@@ -159,68 +215,64 @@ export default function WordingTable({
           minWidth: 500,
         }}
         aria-label="wording Table"
+        stickyHeader
 
       >
         <TableHead>
           <TableRow>
             {columns.map((column) => (
               <TableCell
-                key={`${column}-title`}
+                key={`${column.label}-title`}
               // align={column.align}
               // style={{ minWidth: column.minWidth }}
               >
-                {t(column)}
+                {t(column.label)}
               </TableCell>
             ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {(rowsPerPage > 0
-            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : rows
-          ).map((row) => (
-            <TableRow key={`${row.datasetName}-${row.classLabel}`}>
-              <TableCell component="th" scope="row">
-                {row.datasetName}
-              </TableCell>
-              <TableCell style={{ width: 160 }} align="left">
-                {row.classLabel}
-              </TableCell>
-              <TableCell
-                style={{
-                  width: 160,
-                }}
-                align="center"
+          {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+            return (
+              <TableRow
+                hover
+                role="checkbox"
+                tabIndex={-1}
+                key={index}
               >
+                {row.map((cell, index) => {
+                  return (
+                    <TableCell key={`${cell.id}-cell`}>
+                      {cell.word}
+                      {
+                        index !== 0 &&
+                        (
+                          <>
+                            <Tooltip title={t('edit')}>
+                              <IconButton>
+                                <EditIcon />
+                              </IconButton>
+                            </Tooltip>
+  
+                             <Tooltip title={t('set_to_default')}>
+                                <span>
+                                  <IconButton
+                                    disabled={cell.word === cell.default}
+                                  >
+                                    <RestartAltIcon />
+                                  </IconButton>
+                                </span>
+                              </Tooltip>
+                          </>
+                        )
+                      }
+                    </TableCell>
 
-                <Tooltip title={t('copy_hexadecimal_code')}>
-                  <span
-                    style={{
-                      height: '35px',
-                      width: '35px',
-                      backgroundColor: row.classColor,
-                      borderRadius: '50%',
-                      display: 'inline-block',
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => copyToClipboard(row.classColor)}
-                  >
-
-                  </span>
-                </Tooltip>
-              </TableCell>
-              <TableCell
-                style={{
-                  width: 160,
-                }}
-                align="left"
-              >
-                <Button variant="contained">
-                  {t('choose_an_icon')}
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
+                  )
+                })}
+              </TableRow>
+            );
+          })}
 
           {emptyRows > 0 && (
             <TableRow style={{ height: 53 * emptyRows }}>
