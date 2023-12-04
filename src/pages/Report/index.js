@@ -1,71 +1,96 @@
 // React
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 // Design
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import SearchIcon from '@mui/icons-material/Search';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import SearchIcon from "@mui/icons-material/Search";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 
-import IconButton from '@mui/material/IconButton';
-import DownloadIcon from '@mui/icons-material/Download';
-import Tooltip from '@mui/material/Tooltip';
-import CircularProgress from '@mui/material/CircularProgress';
+import IconButton from "@mui/material/IconButton";
+import DownloadIcon from "@mui/icons-material/Download";
+import Tooltip from "@mui/material/Tooltip";
+import CircularProgress from "@mui/material/CircularProgress";
 
 // Internal
-import PageWrapper from '../../components/PageWrapper';
-import API from '../../api';
-import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
-import {Bar, Line, Funnel, Pie} from '../../components/Charts';
-import downloadURI from '../../utils/functions/downloadURI';
-import jsonToCSV from '../../utils/functions/jsonToCSV';
-import { setNotificationBar } from '../../store/slices/app';
-
+import PageWrapper from "../../components/PageWrapper";
+import API from "../../api";
+import GetSelectedStation from "../../utils/Hooks/GetSelectedStation";
+import { Bar, Line, Funnel, Pie, DivergingBar } from "../../components/Charts";
+import downloadURI from "../../utils/functions/downloadURI";
+import jsonToCSV from "../../utils/functions/jsonToCSV";
+import { setNotificationBar } from "../../store/slices/app";
 
 // Third-party
 import { useTranslation } from "react-i18next";
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 const charts = {
-  bar: (chart) => <Bar chart={chart} key={`${chart?.chartInfo?.localeId}-${chart?.chartInfo?.index}`} />,
-  line: (chart) => <Line chart={chart}  key={`${chart?.chartInfo?.localeId}-${chart?.chartInfo?.index}`}/>,
-  funnel: (chart) => <Funnel chart={chart} key={`${chart?.chartInfo?.localeId}-${chart?.chartInfo?.index}`}/>,
-  pie: (chart) => <Pie chart={chart} key={`${chart?.chartInfo?.localeId}-${chart?.chartInfo?.index}`}/>,
-}
+  bar: (chart) => (
+    <Bar
+      chart={chart}
+      key={`${chart?.chartInfo?.localeId}-${chart?.chartInfo?.index}`}
+    />
+  ),
+  line: (chart) => (
+    <Line
+      chart={chart}
+      key={`${chart?.chartInfo?.localeId}-${chart?.chartInfo?.index}`}
+    />
+  ),
+  funnel: (chart) => (
+    <Funnel
+      chart={chart}
+      key={`${chart?.chartInfo?.localeId}-${chart?.chartInfo?.index}`}
+    />
+  ),
+  pie: (chart) => (
+    <Pie
+      chart={chart}
+      key={`${chart?.chartInfo?.localeId}-${chart?.chartInfo?.index}`}
+    />
+  ),
+  diverging_bar: (chart) => (
+    <DivergingBar
+      chart={chart}
+      key={`${chart?.chartInfo?.localeId}-${chart?.chartInfo?.index}`}
+    />
+  ),
+};
 
 const FILTER_HEIGHT = window.app_config.components.FilterBar.height;
 
 const styleSx = {
   filterBox: Object.assign({}, window.app_config.style.box, {
-    display: 'flex',
+    display: "flex",
     paddingLeft: 1,
-    overflow: 'hidden',
-    bgcolor: 'background.paper',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    overflow: "hidden",
+    bgcolor: "background.paper",
+    justifyContent: "flex-start",
+    alignItems: "center",
     gap: 1,
   }),
   dataBox: Object.assign({}, window.app_config.style.box, {
-    bgcolor: 'background.paper',
-    display: 'flex',
-    flexWrap: 'wrap',
+    bgcolor: "background.paper",
+    display: "flex",
+    flexWrap: "wrap",
     flexGrow: 1,
     padding: 1,
   }),
 };
 
-
 export default function Report({ pageOptions }) {
-
   const { t } = useTranslation();
 
   const { _id: stationId } = GetSelectedStation();
 
   const startDate = new Date();
-  const [selectedStartDate, setSelectedStartDate] = useState(new Date(startDate.setHours(startDate.getHours() - 24)));
+  const [selectedStartDate, setSelectedStartDate] = useState(
+    new Date(startDate.setHours(startDate.getHours() - 24))
+  );
   const [selectedEndDate, setSelectedEndDate] = useState(new Date());
 
   const [loadingSearch, setLoadingSearch] = useState(false);
@@ -82,7 +107,7 @@ export default function Report({ pageOptions }) {
       });
       setDownloadLoading(false);
     }
-  }
+  };
 
   const getData = async () => {
     const charts = pageOptions?.options?.charts ?? [];
@@ -93,40 +118,57 @@ export default function Report({ pageOptions }) {
       for (let i = 0; i < charts.length; i++) {
         // setLoadingSearch(true);
         try {
-          let data = await API.get.queryData({ startTime: selectedStartDate, endTime: selectedEndDate, queryName: charts[i].query_name, stationId });
+          let data = await API.get.queryData({
+            startTime: selectedStartDate,
+            endTime: selectedEndDate,
+            queryName: charts[i].query_name,
+            stationId,
+          });
           // console.log(data);
           if (!data?.chartInfo?.width) {
-            data.chartInfo.width = charts.length >= 4 ? `${1/(charts.length / 2) * 100}%` : `${100 / charts.length}%`;
+            data.chartInfo.width =
+              charts.length >= 4
+                ? `${(1 / (charts.length / 2)) * 100}%`
+                : `${100 / charts.length}%`;
             console.log(data.chartInfo.width);
           }
           if (!data?.chartInfo?.height) {
-            data.chartInfo.height = charts.length >= 4 ? '50%' : '100%';
+            data.chartInfo.height = charts.length >= 4 ? "50%" : "100%";
           }
           data.chartInfo.downloadable = Boolean(charts?.[i]?.download_query);
           if (data.chartInfo.downloadable) {
             data.chartInfo.download = async (setLoading) => {
               try {
                 setLoading(true);
-                let data = await API.get.queryData({ startTime: selectedStartDate, endTime: selectedEndDate, queryName: charts?.[i]?.download_query, stationId });
+                let data = await API.get.queryData({
+                  startTime: selectedStartDate,
+                  endTime: selectedEndDate,
+                  queryName: charts?.[i]?.download_query,
+                  stationId,
+                });
                 if (data?.result) {
                   data = data.result;
-                  let { uri, filename } = jsonToCSV({ file: data, name: `${charts?.[i]?.download_query}_${selectedStartDate}_${selectedEndDate}` });
+                  let { uri, filename } = jsonToCSV({
+                    file: data,
+                    name: `${charts?.[i]?.download_query}_${selectedStartDate}_${selectedEndDate}`,
+                  });
                   downloadURI(uri, filename);
                 }
-              }
-              catch (err) {
-                setNotificationBar({ message: t('error_downloading'), type: 'error', show: true });
-              }
-              finally {
+              } catch (err) {
+                setNotificationBar({
+                  message: t("error_downloading"),
+                  type: "error",
+                  show: true,
+                });
+              } finally {
                 setLoading(false);
               }
-            }
+            };
           }
 
           data.chartInfo.index = i;
           chartsToBuild.push(data);
-        }
-        catch (err) {
+        } catch (err) {
           console.error(err);
         }
       }
@@ -141,38 +183,37 @@ export default function Report({ pageOptions }) {
     if (builtChats.length > 0) {
       setLoadingSearch(false);
     }
-  }, [builtChats])
+  }, [builtChats]);
 
   const startSearch = () => {
     getData();
-  }
+  };
 
-  useEffect(() => {
-
-  }, []);
-
+  useEffect(() => {}, []);
 
   useEffect(() => {
     startSearch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageOptions]);
 
-
   return (
     <PageWrapper>
-      {({ width, height }) =>
-        <Box display="flex" flexDirection="column" width={width} height={height} gap={1} key='report-wrapper'>
-          <Box 
-          height={FILTER_HEIGHT}
-           width={width} 
-           sx={styleSx.filterBox}
-           >
+      {({ width, height }) => (
+        <Box
+          display="flex"
+          flexDirection="column"
+          width={width}
+          height={height}
+          gap={1}
+          key="report-wrapper"
+        >
+          <Box height={FILTER_HEIGHT} width={width} sx={styleSx.filterBox}>
             <Box>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateTimePicker
                   value={selectedStartDate}
                   onChange={setSelectedStartDate}
-                  label={t('start_date')}
+                  label={t("start_date")}
                   renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
@@ -182,7 +223,7 @@ export default function Report({ pageOptions }) {
                 <DateTimePicker
                   value={selectedEndDate}
                   onChange={setSelectedEndDate}
-                  label={t('end_date')}
+                  label={t("end_date")}
                   renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
@@ -190,92 +231,79 @@ export default function Report({ pageOptions }) {
 
             <Box
               sx={{
-                marginLeft: 'auto',
-                marginRight: 1
+                marginLeft: "auto",
+                marginRight: 1,
               }}
             >
-              {
-                loadingSearch ?
+              {loadingSearch ? (
+                <CircularProgress />
+              ) : (
+                <Button
+                  variant="contained"
+                  startIcon={<SearchIcon />}
+                  onClick={startSearch}
+                  disabled={loadingSearch}
+                >
+                  {t("search")}
+                </Button>
+              )}
+              {builtChats.length > 0 &&
+                (downloadLoading ? (
                   <CircularProgress />
-                  :
-
-                  <Button
-                    variant="contained"
-                    startIcon={<SearchIcon />}
-                    onClick={startSearch}
-                    disabled={loadingSearch}
-                  >
-                    {t('search')}
-                  </Button>
-              }
-              {
-                builtChats.length > 0 &&
-                (
-                  downloadLoading ?
-                    <CircularProgress /> :
-                    <Tooltip title={t('download_all')}>
-                      <IconButton
-                        onClick={downloadAll}
-                      >
-                        <DownloadIcon />
-                      </IconButton>
-                    </Tooltip>
-                )
-              }
+                ) : (
+                  <Tooltip title={t("download_all")}>
+                    <IconButton onClick={downloadAll}>
+                      <DownloadIcon />
+                    </IconButton>
+                  </Tooltip>
+                ))}
             </Box>
           </Box>
-          <Box 
-            width={width} 
-            height={height - FILTER_HEIGHT - 30} 
+          <Box
+            width={width}
+            height={height - FILTER_HEIGHT - 30}
             sx={styleSx.dataBox}
           >
-            {
-              loadingSearch ?
-                <Box
-                  display={'flex'}
-                  sx={{
-                    width: '100%',
-                    height: '100%',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <CircularProgress
-                    size='200px'
-                  />
-                </Box>
-                :
-                (
-                  builtChats.length === 0 ?
-                    <Box
-                      display={'flex'}
-                      sx={{
-                        width: '100%',
-                        height: '100%',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <Typography
-                        textTransform={'uppercase'}
-                        variant='h3'>
-                        {t('no_data_to_show')}
-                      </Typography>
-                    </Box>
-                    :
-                    builtChats.map((chart, index) => charts[chart.chartInfo.type](chart))
-                )
-            }
+            {loadingSearch ? (
+              <Box
+                display={"flex"}
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <CircularProgress size="200px" />
+              </Box>
+            ) : builtChats.length === 0 ? (
+              <Box
+                display={"flex"}
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Typography textTransform={"uppercase"} variant="h3">
+                  {t("no_data_to_show")}
+                </Typography>
+              </Box>
+            ) : (
+              builtChats.map((chart, index) =>
+                charts[chart.chartInfo.type](chart)
+              )
+            )}
           </Box>
         </Box>
-      }
+      )}
     </PageWrapper>
   );
 }
 
-
 // builtChats.map((chart, index) => {
-                      
+
 //   return (
 //     <Bar
 //       key={`chart-${index}`}
