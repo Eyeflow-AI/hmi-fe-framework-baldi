@@ -1,6 +1,6 @@
 {
   "name": "hmi-fe-framework",
-  "version": "0.77.0",
+  "version": "0.78.0",
   "description": "Frontend framework for HMI",
   "private": true,
   "dependencies": {
@@ -12,11 +12,11 @@
     "@mui/material": "^5.11.13",
     "@mui/x-data-grid": "^6.2.1",
     "@mui/x-date-pickers": "^5.0.16",
-    "@nivo/bar": "^0.80.0",
-    "@nivo/core": "^0.80.0",
+    "@nivo/bar": "^0.83.0",
+    "@nivo/core": "^0.83.0",
     "@nivo/funnel": "^0.84.0",
     "@nivo/line": "^0.84.0",
-    "@nivo/pie": "^0.80.0",
+    "@nivo/pie": "^0.83.0",
     "@pronestor/react-zoom-pan-pinch": "^2.4.5",
     "@reduxjs/toolkit": "^1.9.1",
     "axios": "^1.2.3",
