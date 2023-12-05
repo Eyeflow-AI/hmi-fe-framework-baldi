@@ -46,7 +46,7 @@ const responsiveTheme = {
   },
   labels: {
     text: {
-      // fontSize: 35,
+      fontSize: 20,
       fill: "#ffffff",
       textShadow: "1px 1px 2px #353535",
     },
@@ -191,10 +191,13 @@ export default function DivergingBar({ chart }) {
       console.log({ data });
       let newInfo = [];
       Object.entries(data).forEach(([key, value]) => {
+        let dontSave = false;
         let _item = {
           period: key,
         };
         Object.entries(value?.fields ?? {}).forEach(([field, fieldValue]) => {
+          // if (Math.abs(fieldValue) <= 0.05) dontSave = true;
+          console.log({ fieldValue, dontSave });
           _item[`${t(field)}`] = fieldValue;
           // chart?.chartInfo?.colors_results?.[i.id];
           if (queryHasColors) {
@@ -203,7 +206,7 @@ export default function DivergingBar({ chart }) {
           }
         });
 
-        newInfo.push(_item);
+        if (!dontSave) newInfo.push(_item);
       });
       setInfo(newInfo);
       // setKeys(newKeys);
@@ -316,7 +319,11 @@ export default function DivergingBar({ chart }) {
             enableGridX={true}
             theme={responsiveTheme}
             legends={responsiveLegends}
-            valueFormat={(v) => `${v}%`}
+            valueFormat={(v) =>
+              Math.abs(v) >= chart?.chartInfo?.min_value_to_show ?? 5
+                ? `${v}%`
+                : ""
+            }
             maxValue={100}
             minValue={-100}
             yScale={{
