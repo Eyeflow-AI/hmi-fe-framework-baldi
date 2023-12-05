@@ -5,33 +5,34 @@ import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-import DownloadIcon from '@mui/icons-material/Download';
-import Tooltip from '@mui/material/Tooltip';
+import DownloadIcon from "@mui/icons-material/Download";
+import Tooltip from "@mui/material/Tooltip";
 import CircularProgress from "@mui/material/CircularProgress";
 
 // Internal
 
 // Third-party
 import { useTranslation } from "react-i18next";
-import { ResponsiveBar } from '@nivo/bar';
-import { colors } from 'sdk-fe-eyeflow';
-
-
-
+import { ResponsiveBar } from "@nivo/bar";
+import { colors } from "sdk-fe-eyeflow";
 
 const CustomTooltip = ({ color, value, id }) => (
-  <Box sx={{
-    background: colors.paper.blue.dark,
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    // flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 1,
-    textTransform: 'uppercase',
-  }}>
-    <div style={{ width: '15px', height: '15px', backgroundColor: color }}></div>
+  <Box
+    sx={{
+      background: colors.paper.blue.dark,
+      width: "100%",
+      height: "100%",
+      display: "flex",
+      // flexDirection: 'column',
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 1,
+      textTransform: "uppercase",
+    }}
+  >
+    <div
+      style={{ width: "15px", height: "15px", backgroundColor: color }}
+    ></div>
     &nbsp;&nbsp;
     {id}: {value}
   </Box>
@@ -40,87 +41,85 @@ const CustomTooltip = ({ color, value, id }) => (
 const responsiveTheme = {
   tooltip: {
     container: {
-      background: colors.paper.blue.dark
-    }
+      background: colors.paper.blue.dark,
+    },
   },
   labels: {
     text: {
       fontSize: 35,
-      fill: '#ffffff',
-      textShadow: "1px 1px 2px #353535"
-    }
+      fill: "#ffffff",
+      textShadow: "1px 1px 2px #353535",
+    },
   },
   legends: {
     text: {
       fontSize: 20,
-      fill: '#ffffff',
-    }
-  },
-  "grid": {
-    "line": {
-        "stroke": "#dddddd",
-        "strokeWidth": 0.1
-    }
-  },
-  "axis": {
-    "domain": {
-        "line": {
-            "stroke": "white",
-            "strokeWidth": 1
-        }
+      fill: "#ffffff",
     },
-    "legend": {
-        "text": {
-            "fontSize": 12,
-            "fill": "white",
-            "outlineWidth": 0,
-            "outlineColor": "transparent"
-        }
+  },
+  grid: {
+    line: {
+      stroke: "#dddddd",
+      strokeWidth: 0.1,
     },
-    "ticks": {
-        "line": {
-            "stroke": "white",
-            "strokeWidth": 1
-        },
-        "text": {
-            "fontSize": 11,
-            "fill": "white",
-            "outlineWidth": 0,
-            "outlineColor": "transparent"
-        }
-    }
-  }
+  },
+  axis: {
+    domain: {
+      line: {
+        stroke: "white",
+        strokeWidth: 1,
+      },
+    },
+    legend: {
+      text: {
+        fontSize: 12,
+        fill: "white",
+        outlineWidth: 0,
+        outlineColor: "transparent",
+      },
+    },
+    ticks: {
+      line: {
+        stroke: "white",
+        strokeWidth: 1,
+      },
+      text: {
+        fontSize: 11,
+        fill: "white",
+        outlineWidth: 0,
+        outlineColor: "transparent",
+      },
+    },
+  },
 };
-
 
 const responsiveLegends = [
   {
-    anchor: 'bottom',
-    direction: 'column',
+    anchor: "bottom",
+    direction: "column",
     justify: false,
     translateY: 180,
     translateX: -50,
     itemsSpacing: 10,
     itemWidth: 10,
     itemHeight: 18,
-    itemTextColor: 'white',
-    itemDirection: 'left-to-right',
+    itemTextColor: "white",
+    itemDirection: "left-to-right",
     itemOpacity: 1,
     symbolSize: 15,
-    symbolShape: 'square',
+    symbolShape: "square",
     effects: [
       {
-        on: 'hover',
+        on: "hover",
         style: {
-          itemTextColor: '#000'
-        }
-      }
+          itemTextColor: "#000",
+        },
+      },
     ],
-  }
+  },
 ];
 
 export default function Bar({ chart }) {
-
   const { t } = useTranslation();
   const [info, setInfo] = useState([]);
   const [keys, setKeys] = useState([]);
@@ -128,8 +127,11 @@ export default function Bar({ chart }) {
   const [loadingDownload, setLoadingDownload] = useState(false);
 
   useEffect(() => {
-    if (!chart?.result?.length) return
-    else if (chart.result.length === 1 && Object.keys(chart.result[0]).length > 0) {
+    if (!chart?.result?.length) return;
+    else if (
+      chart.result.length === 1 &&
+      Object.keys(chart.result[0]).length > 0
+    ) {
       let newKeys = Object.keys(chart.result[0]);
       let data = chart.result[0];
       let newInfo = [];
@@ -137,22 +139,27 @@ export default function Bar({ chart }) {
         let _item = {
           id: item,
           [item]: data[item],
-        }
+        };
 
-        if (Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0 && chart?.chartInfo?.colors_results?.[item]) {
-          _item.color = chart.chartInfo.colors_results[item]
-        }
-        else {
+        if (
+          Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0 &&
+          chart?.chartInfo?.colors_results?.[item]
+        ) {
+          _item.color = chart.chartInfo.colors_results[item];
+        } else {
           _item.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
         }
 
-        newInfo.push(_item)
-      })
+        newInfo.push(_item);
+      });
       setInfo(newInfo);
       setKeys(newKeys);
-      setQueryHasColors(Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0 ? true : false);
-    }
-    else if (chart.result.length > 1) {
+      setQueryHasColors(
+        Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0
+          ? true
+          : false
+      );
+    } else if (chart.result.length > 1) {
       let newKeys = chart.result.map((item) => item._id);
       let data = chart.result;
       let newInfo = [];
@@ -160,126 +167,137 @@ export default function Bar({ chart }) {
         let _item = {
           id: item._id,
           [item._id]: item.value,
-        }
-        if (chart?.chartInfo?.colors_results?.length > 0 && chart?.chartInfo?.colors_results?.[item._id]) {
-          _item.color = chart.chartInfo.colors_results[item._id]
-        }
-        else {
+        };
+        if (
+          chart?.chartInfo?.colors_results?.length > 0 &&
+          chart?.chartInfo?.colors_results?.[item._id]
+        ) {
+          _item.color = chart.chartInfo.colors_results[item._id];
+        } else {
           _item.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
         }
         newInfo.push(_item);
-      })
+      });
 
       setInfo(newInfo);
       setKeys(newKeys);
-      setQueryHasColors(Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 ? true : false);
+      setQueryHasColors(
+        Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0
+          ? true
+          : false
+      );
     }
-  }, [chart])
-
-
+  }, [chart]);
 
   return (
     <Box
       sx={{
-        display: 'flex',
+        display: "flex",
         width: `${chart.chartInfo.width}`,
         height: `${chart.chartInfo.height}`,
-        flexDirection: 'column',
+        flexDirection: "column",
       }}
     >
       <Box
         sx={{
-          display: 'flex',
-          width: '100%',
-          height: '50px',
-          justifyContent: 'center',
-          alignItems: 'center',
+          display: "flex",
+          width: "100%",
+          height: "50px",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} textAlign={'center'}>
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{ flexGrow: 1 }}
+          textAlign={"center"}
+        >
           {t(chart.chartInfo.localeId)}
         </Typography>
-        {
-          chart?.chartInfo?.downloadable &&
-          (
-            loadingDownload ?
-            <CircularProgress /> :
-            <Tooltip title={t('download')}>
+        {chart?.chartInfo?.downloadable &&
+          (loadingDownload ? (
+            <CircularProgress />
+          ) : (
+            <Tooltip title={t("download")}>
               <IconButton
                 onClick={() => chart.chartInfo.download(setLoadingDownload)}
               >
                 <DownloadIcon />
               </IconButton>
             </Tooltip>
-          )
-        }
+          ))}
       </Box>
-      {
-        chart?.result.length > 0 ?
-          <Box
-            sx={{
-              display: 'flex',
-              width: '100%',
-              height: 'calc(100% - 50px)',
-              flexGrow: 1,
+      {chart?.result.length > 0 ? (
+        <Box
+          sx={{
+            display: "flex",
+            width: "100%",
+            height: "calc(100% - 50px)",
+            flexGrow: 1,
+          }}
+        >
+          <ResponsiveBar
+            data={info}
+            keys={keys}
+            margin={{ top: 10, right: 0, bottom: 30, left: 50 }}
+            colors={
+              queryHasColors
+                ? (i) => {
+                    return i.data.color;
+                  }
+                : { scheme: "nivo" }
+            }
+            tooltip={(info) => {
+              let value = info.data[info.id];
+              let color = info.color;
+              let id = info.id;
+              return <CustomTooltip color={color} value={value} id={id} />;
             }}
-          >
-            <ResponsiveBar
-              data={info}
-              keys={keys}
-              margin={{ top: 10, right: 0, bottom: 30, left: 50 }}
-              colors={queryHasColors ? (i) => { return i.data.color } : { scheme: 'nivo' }}
-              tooltip={(info) => {
-                let value = info.data[info.id];
-                let color = info.color;
-                let id = info.id;
-                return (<CustomTooltip color={color} value={value} id={id} />)
-              }}
-              theme={responsiveTheme}
-              legends={responsiveLegends}
-              axisLeft={{
-                tickSize: 5,
-                tickPadding: 5,
-                tickRotation: 0,
-                // legend: 'food',
-                legendPosition: 'middle',
-                legendOffset: -40,
-                // truncateTickAt: 0
-              }}
-              axisTop={null}
-              axisRight={null}
-              axisBottom={{
-                  tickSize: 5,
-                  tickPadding: 5,
-                  tickRotation: 0,
-                  // legend: 'country',
-                  legendPosition: 'middle',
-                  legendOffset: 32,
-                  truncateTickAt: 0
-              }}
-            />
-          </Box>
-
-          :
-          <Box
-            sx={{
-              display: 'flex',
-              width: '100%',
-              height: '100%',
-              justifyContent: 'center',
-              alignItems: 'center',
+            theme={responsiveTheme}
+            legends={responsiveLegends}
+            axisLeft={{
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+              // legend: 'food',
+              legendPosition: "middle",
+              legendOffset: -40,
+              // truncateTickAt: 0
             }}
+            axisTop={null}
+            axisRight={null}
+            axisBottom={{
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+              // legend: 'country',
+              legendPosition: "middle",
+              legendOffset: 32,
+              truncateTickAt: 0,
+            }}
+          />
+        </Box>
+      ) : (
+        <Box
+          sx={{
+            display: "flex",
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Typography
+            variant="h3"
+            component="div"
+            sx={{ flexGrow: 1 }}
+            textAlign={"center"}
           >
-            <Typography
-              variant="h3"
-              component="div"
-              sx={{ flexGrow: 1 }}
-              textAlign={'center'}
-            >
-              {t('no_data_to_show')}
-            </Typography>
-          </Box>
-      }
+            {t("no_data_to_show")}
+          </Typography>
+        </Box>
+      )}
     </Box>
   );
 }

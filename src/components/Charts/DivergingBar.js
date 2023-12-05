@@ -34,7 +34,7 @@ const CustomTooltip = ({ color, value, id }) => (
       style={{ width: "15px", height: "15px", backgroundColor: color }}
     ></div>
     &nbsp;&nbsp;
-    {id}: {value}
+    {id}: {value}%
   </Box>
 );
 
@@ -118,9 +118,14 @@ const responsiveLegends = [
     ],
   },
 ];
-// list of countries
+
 const months = ["jan", "feb", "mar"];
-const items = ["tare ok", "tare nok", "no plate"];
+const items = ["tare_ok", "tare_ng", "no_plate"];
+const _colors = [
+  `${colors.eyeflow.green.dark}80`,
+  `${colors.red}60`,
+  `${colors.red}90`,
+];
 
 const generateData = months.map((month) => {
   let monthData = {
@@ -129,9 +134,9 @@ const generateData = months.map((month) => {
   // set a random value negative or positive
   let _item = {};
 
-  items.forEach((item) => {
+  items.forEach((item, index) => {
     let isPositive = false;
-    if (item === "tare nok" || item === "no plate") {
+    if (item === "tare_nok" || item === "no_plate") {
       // monthData[item] = Math.round(Math.random() * -100);
       _item[item] = Math.round(Math.random() * -100);
     } else {
@@ -139,7 +144,7 @@ const generateData = months.map((month) => {
       _item[item] = Math.round(Math.random() * 100);
       isPositive = true;
     }
-    _item[`${item}Color`] = `hsl(${isPositive ? 120 : 0}, 70%, 50%)`;
+    _item[`${item}Color`] = _colors[index];
   });
 
   // leave the values as percentages
@@ -168,68 +173,76 @@ export default function DivergingBar({ chart }) {
   const [queryHasColors, setQueryHasColors] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
 
+  console.log({ _colors });
+
   useEffect(() => {
     if (!chart?.result?.length) return;
     else if (
       chart.result.length === 1 &&
       Object.keys(chart.result[0]).length > 0
     ) {
-      let newKeys = Object.keys(chart.result[0]);
-      let data = chart.result[0];
-      let newInfo = [];
-      Object.keys(data).forEach((item) => {
-        let _item = {
-          id: item,
-          [item]: data[item],
-        };
-
-        if (
-          Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0 &&
-          chart?.chartInfo?.colors_results?.[item]
-        ) {
-          _item.color = chart.chartInfo.colors_results[item];
-        } else {
-          _item.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-        }
-
-        newInfo.push(_item);
-      });
-      setInfo(newInfo);
-      setKeys(newKeys);
-      setQueryHasColors(
+      // let newKeys = Object.keys(chart.result[0]);
+      let queryHasColors =
         Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0
           ? true
-          : false
-      );
-    } else if (chart.result.length > 1) {
-      let newKeys = chart.result.map((item) => item._id);
-      let data = chart.result;
+          : false;
+
+      let data = chart.result[0];
+      console.log({ data });
       let newInfo = [];
-      data.forEach((item) => {
+      Object.entries(data).forEach(([key, value]) => {
         let _item = {
-          id: item._id,
-          [item._id]: item.value,
+          period: key,
         };
-        if (
-          chart?.chartInfo?.colors_results?.length > 0 &&
-          chart?.chartInfo?.colors_results?.[item._id]
-        ) {
-          _item.color = chart.chartInfo.colors_results[item._id];
-        } else {
-          _item.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-        }
+        Object.entries(value?.fields ?? {}).forEach(([field, fieldValue]) => {
+          _item[`${t(field)}`] = fieldValue;
+          // chart?.chartInfo?.colors_results?.[i.id];
+          if (queryHasColors) {
+            _item[`${t(field)}Color`] =
+              chart?.chartInfo?.colors_results?.[field];
+          }
+        });
+
         newInfo.push(_item);
       });
-
       setInfo(newInfo);
-      setKeys(newKeys);
-      setQueryHasColors(
-        Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0
-          ? true
-          : false
-      );
+      // setKeys(newKeys);
+      setQueryHasColors(queryHasColors);
+      // set keys
+      let keys = [];
+      Object.keys(chart?.chartInfo?.colors_results ?? {}).forEach((key) => {
+        keys.push(`${t(key)}`);
+      });
+      setKeys(keys);
+    } else if (chart.result.length > 1) {
+      // let newKeys = chart.result.map((item) => item._id);
+      // let data = chart.result;
+      // let newInfo = [];
+      // data.forEach((item) => {
+      //   let _item = {
+      //     id: item._id,
+      //     [item._id]: item.value,
+      //   };
+      //   if (
+      //     chart?.chartInfo?.colors_results?.length > 0 &&
+      //     chart?.chartInfo?.colors_results?.[item._id]
+      //   ) {
+      //     _item.color = chart.chartInfo.colors_results[item._id];
+      //   } else {
+      //     _item.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+      //   }
+      //   newInfo.push(_item);
+      // });
+      // setInfo(newInfo);
+      // setKeys(newKeys);
+      // setQueryHasColors(
+      //   Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0
+      //     ? true
+      //     : false
+      // );
     }
   }, [chart]);
+  console.log({ generateData, chart, info });
 
   return (
     <Box
@@ -280,30 +293,19 @@ export default function DivergingBar({ chart }) {
           }}
         >
           <ResponsiveBar
-            data={generateData}
-            // keys={keys}
-            // keys={[
-            //   "gained <= 100$",
-            //   "gained > 100$",
-            //   "lost <= 100$",
-            //   "lost > 100$",
-            // ]}
-            keys={items}
-            indexBy="month"
+            data={info}
+            keys={keys}
+            indexBy="period"
             margin={{ top: 30, right: 50, bottom: 120, left: 50 }}
-            // colors={
-            //   queryHasColors
-            //     ? (i) => {
-            //         return i.data.color;
-            //       }
-            //     : { scheme: "nivo" }
-            // }
+            colors={
+              queryHasColors
+                ? (i) => {
+                    let color = i?.data?.[`${i.id}Color`];
+                    return color;
+                  }
+                : { scheme: "nivo" }
+            }
             // colors={{ scheme: "nivo" }}
-            colors={[
-              `${colors.eyeflow.green.dark}80`,
-              `${colors.red}60`,
-              `${colors.red}90`,
-            ]}
             tooltip={(info) => {
               let value = info.data[info.id];
               let color = info.color;
