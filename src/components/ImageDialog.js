@@ -258,7 +258,7 @@ export default function ImageDialog({
   const { t } = useTranslation();
   const [noImage, setNoImage] = useState(false);
   const [selectedObj, setSelectedObj] = useState(null);
-  const { clock } = Clock({ sleepTime: 10000 });
+  const { clock } = Clock({ sleepTime: 1000 });
 
   const handleClose = () => {
     setOpen(false);
