@@ -195,9 +195,7 @@ export default function Monitor({ pageOptions }) {
                   >
                     <CardMedia
                       component="img"
-                      image={`${
-                        item.full_url
-                      }?timestamp=${new Date().getTime()}`}
+                      image={`${item.full_url}?timestamp=${clock}`}
                       alt={item.camera_name}
                       sx={{
                         width: "100%",
@@ -229,7 +227,7 @@ export default function Monitor({ pageOptions }) {
           <ImageDialog
             open={openDialog}
             setOpen={setOpenDialog}
-            imagePath={`${imagePath}?timestamp=${new Date().getTime()}`}
+            imagePath={`${imagePath}?timestamp=${clock}`}
             title={dialogTitle}
           />
         </Box>
