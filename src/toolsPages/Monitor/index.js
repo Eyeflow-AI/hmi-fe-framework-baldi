@@ -1,133 +1,229 @@
 // React
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 
 // Design
-import { Box, Typography, Card, CardMedia } from '@mui/material';
+import { Box, Typography, Card, CardMedia } from "@mui/material";
 
 // Internal
-import PageWrapper from '../../components/PageWrapper';
-import ImageDialog from '../../components/ImageDialog';
-import GetImagesList from '../utils/Hooks/GetImagesList';
+import PageWrapper from "../../components/PageWrapper";
+import ImageDialog from "../../components/ImageDialog";
+import GetImagesList from "../utils/Hooks/GetImagesList";
 
 // Third-party
 
 const style = {
   mainBox: Object.assign({}, window.app_config.style.box, {
-    bgcolor: 'background.paper',
+    bgcolor: "background.paper",
     // bgcolor: 'red',
-    display: 'flex',
+    display: "flex",
     flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   }),
 };
 
 export default function Monitor({ pageOptions }) {
-
-
   const [openDialog, setOpenDialog] = useState(false);
-  const [dialogTitle, setDialogTitle] = useState('');
-  const [imagePath, setImagePath] = useState('');
+  const [dialogTitle, setDialogTitle] = useState("");
+  const [imagePath, setImagePath] = useState("");
 
   const { imageBaseURL, infoURL } = useMemo(() => {
     return {
-      imageBaseURL: pageOptions?.options?.imageURL ?? '',
-      infoURL: pageOptions?.options?.infoURL ?? '',
-    }
+      imageBaseURL: pageOptions?.options?.imageURL ?? "",
+      infoURL: pageOptions?.options?.infoURL ?? "",
+    };
   }, [pageOptions]);
 
+  // const clock = new Date();
+  // const imagesList = [
+  //   {
+  //     camera_name: "camera_name",
+  //     frame_time: "frame_time",
+  //     // get image from public/assets
+  //     full_url: "/assets/cat.webp",
+  //   },
+  //   {
+  //     camera_name: "camera_name",
+  //     frame_time: "frame_time",
+  //     // get image from public/assets
+  //     full_url: "/assets/cat.webp",
+  //   },
+  //   {
+  //     camera_name: "camera_name",
+  //     frame_time: "frame_time",
+  //     // get image from public/assets
+  //     full_url: "/assets/cat.webp",
+  //   },
+  //   // {
+  //   //   camera_name: "camera_name",
+  //   //   frame_time: "frame_time",
+  //   //   // get image from public/assets
+  //   //   full_url: "/assets/cat.webp",
+  //   // },
+  //   // {
+  //   //   camera_name: "camera_name",
+  //   //   frame_time: "frame_time",
+  //   //   // get image from public/assets
+  //   //   full_url: "/assets/cat.webp",
+  //   // },
+  //   // {
+  //   //   camera_name: "camera_name",
+  //   //   frame_time: "frame_time",
+  //   //   // get image from public/assets
+  //   //   full_url: "/assets/cat.webp",
+  //   // },
+  //   // {
+  //   //   camera_name: "camera_name",
+  //   //   frame_time: "frame_time",
+  //   //   // get image from public/assets
+  //   //   full_url: "/assets/cat.webp",
+  //   // },
+  //   // {
+  //   //   camera_name: "camera_name",
+  //   //   frame_time: "frame_time",
+  //   //   // get image from public/assets
+  //   //   full_url: "/assets/cat.webp",
+  //   // },
+  //   // {
+  //   //   camera_name: "camera_name",
+  //   //   frame_time: "frame_time",
+  //   //   // get image from public/assets
+  //   //   full_url: "/assets/cat.webp",
+  //   // },
+  //   // {
+  //   //   camera_name: "camera_name",
+  //   //   frame_time: "frame_time",
+  //   //   // get image from public/assets
+  //   //   full_url: "/assets/cat.webp",
+  //   // },
+  //   // {
+  //   //   camera_name: "camera_name",
+  //   //   frame_time: "frame_time",
+  //   //   // get image from public/assets
+  //   //   full_url: "/assets/cat.webp",
+  //   // },
+  //   // {
+  //   //   camera_name: "camera_name",
+  //   //   frame_time: "frame_time",
+  //   //   // get image from public/assets
+  //   //   full_url: "/assets/cat.webp",
+  //   // },
+  //   // {
+  //   //   camera_name: "camera_name",
+  //   //   frame_time: "frame_time",
+  //   //   // get image from public/assets
+  //   //   full_url: "/assets/cat.webp",
+  //   // },
+  //   // {
+  //   //   camera_name: "camera_name",
+  //   //   frame_time: "frame_time",
+  //   //   // get image from public/assets
+  //   //   full_url: "/assets/cat.webp",
+  //   // },
+  //   // {
+  //   //   camera_name: "camera_name",
+  //   //   frame_time: "frame_time",
+  //   //   // get image from public/assets
+  //   //   full_url: "/assets/cat.webp",
+  //   // },
+  //   // {
+  //   //   camera_name: "camera_name",
+  //   //   frame_time: "frame_time",
+  //   //   // get image from public/assets
+  //   //   full_url: "/assets/cat.webp",
+  //   // },
+  // ];
 
-  const { clock, imagesList } = GetImagesList({ url: infoURL, imageBaseURL, sleepTime: pageOptions?.options?.sleepTime });
+  const { clock, imagesList } = GetImagesList({
+    url: infoURL,
+    imageBaseURL,
+    sleepTime: pageOptions?.options?.sleepTime,
+  });
 
   const onOpenDialog = useCallback((item) => {
     return () => {
       setOpenDialog(true);
       setDialogTitle(`${item.camera_name} - ${item.frame_time}`);
       setImagePath(item.full_url);
-    }
+    };
   }, []);
 
   useEffect(() => {
     if (!openDialog) {
-      setDialogTitle('');
-      setImagePath('');
+      setDialogTitle("");
+      setImagePath("");
     }
   }, [openDialog]);
 
-
-  const HEIGHT = [1, 1, 1, 2, 2, 2];
-  const WIDTH = [1, 2, 3, 3, 3, 3];
-
-
   return (
     <PageWrapper>
-      {({ width, height }) =>
-        <Box
-          width={width}
-          height={height}
-          sx={style.mainBox}
-        >
+      {({ width, height }) => (
+        <Box width={width} height={height} sx={style.mainBox}>
           <Box
             sx={{
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              overflow: 'hidden',
+              display: "grid",
+              // gridTempla: repeat(auto-fill, minmax(200px, 1fr));
+              gridTemplateColumns: `repeat(auto-fill, minmax(${pageOptions?.options?.minMax}, 1fr))`,
+              // gap: 16px; /* Adjust the gap as needed *
+              gap: "1px",
+              width: "calc(100% - 50px)",
+              height: "calc(100% - 10px)",
+              justifyContent: "center",
+              alignItems: "center",
+              overflow: "hidden",
             }}
           >
             {imagesList.map((item, index) => {
               return (
+                // organize the images within the possible space, all the images must get the same size
                 <Box
                   key={index}
                   sx={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    display: 'flex',
-                    height: `calc(100% / ${HEIGHT[imagesList.length - 1]})`,
-                    width: `calc(100% / ${WIDTH[imagesList.length - 1]})`,
-                    flexDirection: 'column',
+                    flex: 1,
+                    margin: "8px" /* Adjust the margin as needed */,
+                    width: "100%",
                   }}
                 >
                   <Card
                     sx={{
-                      width: '100%',
-                      height: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      boxShadow: 1,
-                      borderRadius: '1rem',
-                      cursor: 'pointer',
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: "calc(100% - 10px)",
                     }}
-                    onClick={onOpenDialog(item)}
                   >
                     <CardMedia
                       component="img"
-                      image={`${item.full_url}?time=${clock}`}
-                      style={{
-                        objectFit: 'contain',
-                        // width: "calc(2560px * 0.15)",
-                        width: `calc(${pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)]})`,
-                        height: pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)],
-                        display: 'block',
-                        margin: 'auto',
-                        paddingBottom: '.5rem',
+                      image={`${
+                        item.full_url
+                      }?timestamp=${new Date().getTime()}`}
+                      alt={item.camera_name}
+                      sx={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                        cursor: "pointer",
                       }}
+                      onClick={onOpenDialog(item)}
                     />
-                  </Card>
 
-                  <Typography textAlign='center'>
-                    {`${item.camera_name}`}
-                  </Typography>
+                    {pageOptions?.options?.showCameraName && (
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          width: "100%",
+                          height: "100%",
+                          textAlign: "center",
+                        }}
+                      >
+                        {item.camera_name}
+                      </Typography>
+                    )}
+                  </Card>
                 </Box>
-              )
-            })
-            }
+              );
+            })}
           </Box>
 
           <ImageDialog
@@ -137,9 +233,7 @@ export default function Monitor({ pageOptions }) {
             title={dialogTitle}
           />
         </Box>
-      }
+      )}
     </PageWrapper>
-  )
+  );
 }
-
-
