@@ -2,84 +2,94 @@
 import React, { useEffect, useState } from "react";
 
 // Design
-import Box from '@mui/material/Box';
-import Dialog from '@mui/material/Dialog';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import Grid from '@mui/material/Grid';
-import DownloadIcon from '@mui/icons-material/Download';
-import Tooltip from '@mui/material/Tooltip';
-import Card from '@mui/material/Card';
-import CardMedia from '@mui/material/CardMedia';
-import FileUploadIcon from '@mui/icons-material/FileUpload';
-import CircularProgress from '@mui/material/CircularProgress';
+import Box from "@mui/material/Box";
+import Dialog from "@mui/material/Dialog";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import Grid from "@mui/material/Grid";
+import DownloadIcon from "@mui/icons-material/Download";
+import Tooltip from "@mui/material/Tooltip";
+import Card from "@mui/material/Card";
+import CardMedia from "@mui/material/CardMedia";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
+import CircularProgress from "@mui/material/CircularProgress";
 
 // Internal
 
-
 // Third-party
-import { TransformWrapper, TransformComponent } from "@pronestor/react-zoom-pan-pinch";
+import {
+  TransformWrapper,
+  TransformComponent,
+} from "@pronestor/react-zoom-pan-pinch";
 import { Typography } from "@mui/material";
-import { downloadImage, colors } from 'sdk-fe-eyeflow';
+import { downloadImage, colors } from "sdk-fe-eyeflow";
 import { useTranslation } from "react-i18next";
 
 const gridToolbarSx = {
-  width: '100%',
-  justifyContent: 'space-between',
-  alignItems: 'center',
+  width: "100%",
+  justifyContent: "space-between",
+  alignItems: "center",
 };
 
 const appBarSx = {
-  width: '100%',
+  width: "100%",
   height: 64,
-  bgcolor: 'primary.main',
-  color: 'white',
-  boxShadow: 1
+  bgcolor: "primary.main",
+  color: "white",
+  boxShadow: 1,
 };
 
 // import expandCoordinates from "./utils/expandCoordinates";
 
-function expandCoordinates({ imgWidth, imgHeight, x_min, x_max, y_min, y_max, expandBox }) {
-
+function expandCoordinates({
+  imgWidth,
+  imgHeight,
+  x_min,
+  x_max,
+  y_min,
+  y_max,
+  expandBox,
+}) {
   if (expandBox) {
     let xc = (x_max + x_min) / 2;
     let halfWidth = (x_max - x_min) / 2;
     let yc = (y_max + y_min) / 2;
     let halfHeight = (y_max - y_min) / 2;
 
-    x_min = Math.round(xc - (halfWidth * expandBox));
+    x_min = Math.round(xc - halfWidth * expandBox);
     if (x_min < 0) {
       x_min = 0;
     }
-    x_max = Math.round(xc + (halfWidth * expandBox));
+    x_max = Math.round(xc + halfWidth * expandBox);
     if (x_max > imgWidth) {
       x_max = imgWidth;
-    };
-    y_min = Math.round(yc - (halfHeight * expandBox));
+    }
+    y_min = Math.round(yc - halfHeight * expandBox);
     if (y_min < 0) {
       y_min = 0;
     }
-    y_max = Math.round(yc + (halfHeight * expandBox));
+    y_max = Math.round(yc + halfHeight * expandBox);
     if (y_max > imgHeight) {
       y_max = imgHeight;
-    };
-  };
+    }
+  }
   return [x_min, x_max, y_min, y_max];
-};
+}
 
 const getAnnotatedImg = ({
-  image
-  , bbox
-  , index
-  , scale
-  , setAnnotatedImage
-  , bboxRegion = null
-  , options = {
-    severalAnnotations: false
-    , returnCanvasURL: false
-    , info: {}
-  } }) => {
+  image,
+  bbox,
+  index,
+  scale,
+  setAnnotatedImage,
+  bboxRegion = null,
+  options = {
+    severalAnnotations: false,
+    returnCanvasURL: false,
+    info: {},
+  },
+}) => {
   let strokeStyle = options.strokeStyle || colors.eyeflow.green.dark;
   let expandBox = options.expandBox || 1;
   var img = new Image();
@@ -87,17 +97,17 @@ const getAnnotatedImg = ({
   img.crossOrigin = "anonymous";
 
   img.onload = function () {
-    const canvas = document.createElement('canvas');
+    const canvas = document.createElement("canvas");
     canvas.width = img.width;
     canvas.height = img.height;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0, img.width, img.height);
-    console.log({ height: img.height, width: img.width })
+    console.log({ height: img.height, width: img.width });
 
-    const notAnnotatedCanvas = document.createElement('canvas');
+    const notAnnotatedCanvas = document.createElement("canvas");
     notAnnotatedCanvas.width = img.width;
     notAnnotatedCanvas.height = img.height;
-    const notAnnotatedCtx = notAnnotatedCanvas.getContext('2d');
+    const notAnnotatedCtx = notAnnotatedCanvas.getContext("2d");
     notAnnotatedCtx.drawImage(img, 0, 0, img.width, img.height);
 
     if (bboxRegion) {
@@ -109,7 +119,7 @@ const getAnnotatedImg = ({
         x_max: bboxRegion?.x_max ?? bboxRegion?.bbox?.x_max,
         y_min: bboxRegion?.y_min ?? bboxRegion?.bbox?.y_min,
         y_max: bboxRegion?.y_max ?? bboxRegion?.bbox?.y_max,
-        expandBox
+        expandBox,
       });
       ctx.strokeStyle = bboxRegion?.color ?? colors.eyeflow.green.dark;
       ctx.lineWidth = 3;
@@ -127,10 +137,8 @@ const getAnnotatedImg = ({
         parseInt((x_max - x_min) * scale),
         parseInt((y_max - y_min) * scale)
       );
-
     }
     if (options.severalAnnotations) {
-
       (Array.isArray(bbox) && bbox.length > 0 ? bbox : []).forEach((bb, i) => {
         let [x_min, x_max, y_min, y_max] = expandCoordinates({
           imgWidth: img.width / scale,
@@ -139,7 +147,7 @@ const getAnnotatedImg = ({
           x_max: bb?.x_max ?? bb?.bbox?.x_max,
           y_min: bb?.y_min ?? bb?.bbox?.y_min,
           y_max: bb?.y_max ?? bb?.bbox?.y_max,
-          expandBox
+          expandBox,
         });
 
         strokeStyle = bb?.color ?? colors.eyeflow.green.dark;
@@ -161,38 +169,33 @@ const getAnnotatedImg = ({
           parseInt((y_max - y_min) * scale)
         );
 
-        ctx.font = '30px Arial';
+        ctx.font = "30px Arial";
 
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = "white";
         ctx.fillText(
-          `${bb?.item} - ${i + 1}`
-          , parseInt(x_min * scale - 3)
-          , parseInt(y_min * scale - 12)
-        )
+          `${bb?.item} - ${i + 1}`,
+          parseInt(x_min * scale - 3),
+          parseInt(y_min * scale - 12)
+        );
         ctx.fillStyle = strokeStyle;
         ctx.fillText(
-          `${bb?.item} - ${i + 1}`
-          , parseInt(x_min * scale - 2)
-          , parseInt(y_min * scale - 10)
+          `${bb?.item} - ${i + 1}`,
+          parseInt(x_min * scale - 2),
+          parseInt(y_min * scale - 10)
         );
-      })
+      });
       if (options?.returnCanvasURL) {
         let canvasURL = canvas.toDataURL("image/jpeg");
-        console.log({ canvasURL })
+        console.log({ canvasURL });
         return canvasURL;
-      }
-      else {
+      } else {
         if (options?.camera) {
           setAnnotatedImage(options.camera, canvas.toDataURL("image/jpeg"));
-        }
-        else {
+        } else {
           setAnnotatedImage(canvas.toDataURL("image/jpeg"), image);
-
         }
       }
-
-    }
-    else {
+    } else {
       let [x_min, x_max, y_min, y_max] = expandCoordinates(
         img.width / scale,
         img.height / scale,
@@ -223,55 +226,55 @@ const getAnnotatedImg = ({
       if (options?.returnCanvasURL) {
         let canvasURL = canvas.toDataURL("image/jpeg");
         return canvasURL;
-      }
-      else {
+      } else {
         if (options?.camera) {
           setAnnotatedImage(options.camera, canvas.toDataURL("image/jpeg"));
-        }
-        else {
-          setAnnotatedImage({ index, url: canvas.toDataURL("image/jpeg"), notAnnotatedURL: notAnnotatedCanvas.toDataURL("image/jpeg") });
+        } else {
+          setAnnotatedImage({
+            index,
+            url: canvas.toDataURL("image/jpeg"),
+            notAnnotatedURL: notAnnotatedCanvas.toDataURL("image/jpeg"),
+          });
         }
       }
     }
-
-
   };
 };
 
-
-
-export default function ImageDialog({ 
-  imagePath, 
-  title, 
-  altText, 
-  style, 
-  open, 
-  setOpen, 
+export default function ImageDialog({
+  imagePath,
+  title,
+  altText,
+  style,
+  open,
+  setOpen,
   otherImages,
   feedbackLoading,
   feedbackFunction,
   hasFeedback,
   feedbackObj,
- }) {
-
+}) {
   const { t } = useTranslation();
   const [noImage, setNoImage] = useState(false);
   const [selectedObj, setSelectedObj] = useState(null);
 
   const handleClose = () => {
     setOpen(false);
-  }
+  };
 
-  
-  const handleFeedback = ({obj}) => {
+  const handleFeedback = ({ obj }) => {
     let _obj = null;
-    if (!obj?.originalUrl?.includes('data:image/jpeg;base64,')) {
+    if (!obj?.originalUrl?.includes("data:image/jpeg;base64,")) {
       _obj = obj;
     }
 
-    feedbackFunction({ index: feedbackObj?.feedbackInfo?.index, regionName: feedbackObj?.regionName, serialId: feedbackObj?.serialId, obj: _obj })
-  }
-
+    feedbackFunction({
+      index: feedbackObj?.feedbackInfo?.index,
+      regionName: feedbackObj?.regionName,
+      serialId: feedbackObj?.serialId,
+      obj: _obj,
+    });
+  };
 
   useEffect(() => {
     if (!open) {
@@ -279,8 +282,7 @@ export default function ImageDialog({
       if (selectedObj?.originalUrl !== imagePath) {
         URL.revokeObjectURL(selectedObj?.url);
       }
-    }
-    else {
+    } else {
       setSelectedObj({
         url: imagePath,
         originalUrl: imagePath,
@@ -288,7 +290,7 @@ export default function ImageDialog({
       // setNoImage(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open])
+  }, [open]);
 
   const handleChangeImage = (url, originalUrl) => {
     if (selectedObj?.originalUrl !== imagePath) {
@@ -300,7 +302,7 @@ export default function ImageDialog({
         originalUrl: originalUrl ?? url,
       });
     }
-  }
+  };
 
   const handleAnnotateImage = (obj) => {
     let url = obj.url;
@@ -313,48 +315,45 @@ export default function ImageDialog({
         options: {
           // returnCanvasURL: true,
           severalAnnotations: true,
-        }
-      })
-    }
-    else {
+        },
+      });
+    } else {
       handleChangeImage(url, obj.url);
     }
-  }
-
+  };
 
   return (
     <Dialog
       fullScreen
       open={open}
       onClose={handleClose}
-      sx={{
-        // zIndex: 99999999999999
-      }}
+      sx={
+        {
+          // zIndex: 99999999999999
+        }
+      }
     >
       <Box sx={appBarSx}>
-        <Toolbar style={{ textShadow: '1px 1px #00000080' }}>
+        <Toolbar style={{ textShadow: "1px 1px #00000080" }}>
           <Grid container sx={gridToolbarSx}>
             <Grid xs={10} item>
               <Box
-                display='flex'
-                justifyContent='flex-start'
-                alignItems='flex-start'
-                width='100%'
+                display="flex"
+                justifyContent="flex-start"
+                alignItems="flex-start"
+                width="100%"
                 gap={3}
               >
                 <Typography
                   sx={{
-                    fontSize: '1.5rem',
-                    textTransform: 'uppercase'
+                    fontSize: "1.5rem",
+                    textTransform: "uppercase",
                   }}
                 >
                   {title}
                 </Typography>
-                <Box
-                  display='flex'
-                  justifyContent='flex-start'
-                >
-                  <Tooltip title={t('download')}>
+                <Box display="flex" justifyContent="flex-start">
+                  <Tooltip title={t("download")}>
                     <IconButton
                       edge="start"
                       color="inherit"
@@ -363,23 +362,23 @@ export default function ImageDialog({
                       <DownloadIcon />
                     </IconButton>
                   </Tooltip>
-                  {hasFeedback && !feedbackLoading &&
-                    <Tooltip title={t('feedback')}>
+                  {hasFeedback && !feedbackLoading && (
+                    <Tooltip title={t("feedback")}>
                       <IconButton
                         // onClick={feedbackFunction}
-                        onClick={() => handleFeedback({obj: selectedObj})}
+                        onClick={() => handleFeedback({ obj: selectedObj })}
                       >
                         <FileUploadIcon />
                       </IconButton>
                     </Tooltip>
-                  }
-                  {hasFeedback && feedbackLoading &&
+                  )}
+                  {hasFeedback && feedbackLoading && (
                     <Box
                       sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginRight: '1rem',
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginRight: "1rem",
                       }}
                     >
                       <CircularProgress
@@ -388,20 +387,13 @@ export default function ImageDialog({
                         }}
                       />
                     </Box>
-                  }
+                  )}
                 </Box>
               </Box>
             </Grid>
             <Grid xs={2} item>
-              <Box
-                display='flex'
-                justifyContent='flex-end'
-              >
-                <IconButton
-                  edge="start"
-                  color="inherit"
-                  onClick={handleClose}
-                >
+              <Box display="flex" justifyContent="flex-end">
+                <IconButton edge="start" color="inherit" onClick={handleClose}>
                   <CloseIcon />
                 </IconButton>
               </Box>
@@ -410,149 +402,160 @@ export default function ImageDialog({
         </Toolbar>
       </Box>
       <Box>
-        {
-          !noImage ?
-
-            <Box
-              sx={{
-                display: 'flex',
-                width: '100%',
-                height: 'calc(100vh - 80px)',
-                justifyContent: 'center',
-                alignItems: 'center',
-                flexWrap: 'nowrap',
-                flexDirection: 'column',
-              }}
-            >
-              <TransformWrapper
-                wheel={{ step: 0.2 }}
-                limitToBounds={true}
-              >
-                {({ resetTransform }) => (
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      height: '80%',
-                      width: '100%',
-                      // position: 'absolute',
-                      justifyContent: 'center',
-                      alignItems: 'flex-start'
-                    }}
-                  >
-                    <TransformComponent>
-                      <img
-                        src={selectedObj?.url?.includes('http://') ? `${selectedObj?.url}?time=${(new Date()).toISOString()}` : selectedObj?.url}
-                        alt={altText ?? ''}
-                        onLoad={() => resetTransform()}
-                        style={{
-                          // ...style,
-                          color: 'white',
-                          height: 'calc(100vh - 15rem)',
-                          width: '100%',
-                          objectFit: 'contain'
-                        }}
-                      />
-                    </TransformComponent>
-                  </Box>
-                )}
-              </TransformWrapper>
-              {
-                otherImages && Object.keys(otherImages).length > 0 &&
+        {!noImage ? (
+          <Box
+            sx={{
+              display: "flex",
+              width: "100%",
+              height: "calc(100vh - 80px)",
+              justifyContent: "center",
+              alignItems: "center",
+              flexWrap: "nowrap",
+              flexDirection: "column",
+            }}
+          >
+            <TransformWrapper wheel={{ step: 0.2 }} limitToBounds={true}>
+              {({ resetTransform }) => (
                 <Box
                   sx={{
-                    display: 'flex',
-                    // flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    bottom: 0,
-                    marginBottom: 0,
-                    paddingTop: 0,
-                    marginTop: '2rem',
-                    height: '10rem',
-                    width: '100%',
-                    bgcolor: 'background.paper',
-                    boxShadow: 1,
-                    overflow: 'auto'
+                    display: "flex",
+                    height: "80%",
+                    width: "100%",
+                    // position: 'absolute',
+                    justifyContent: "center",
+                    alignItems: "flex-start",
                   }}
                 >
-                  <Card sx={{
-                    width: '150px',
-                    height: '100px',
-                    margin: '0.25rem',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    boxShadow: 1,
-                    borderRadius: '1rem',
-                    cursor: selectedObj?.originalUrl === imagePath ? 'default' : 'pointer',
-                    marginBottom: '1rem',
-                    border: selectedObj?.originalUrl === imagePath ? '2px solid white' : 'none',
-                  }}
-                    // key={index}
-                    onClick={() => handleChangeImage(imagePath, imagePath)}
-                  >
-                    <CardMedia
-                      component="img"
-                      image={imagePath}
+                  <TransformComponent>
+                    <img
+                      src={
+                        selectedObj?.url?.includes("http://") &
+                        !selectedObj?.url?.includes("?")
+                          ? `${
+                              selectedObj?.url
+                            }?time=${new Date().toISOString()}`
+                          : selectedObj?.url
+                      }
+                      alt={altText ?? ""}
+                      onLoad={() => resetTransform()}
                       style={{
-                        objectFit: 'cover',
-                        width: "calc(2560px * 0.15)",
-                        height: "calc(1440px * 0.15)",
+                        // ...style,
+                        color: "white",
+                        height: "calc(100vh - 15rem)",
+                        width: "100%",
+                        objectFit: "contain",
                       }}
                     />
-                  </Card>
-                  {
-                    Object.keys(otherImages).map((key, index) => {
-                      return (
-                        <Card sx={{
-                          width: '150px',
-                          height: '100px',
-                          margin: '0.25rem',
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          boxShadow: 1,
-                          borderRadius: '1rem',
-                          cursor: selectedObj?.originalUrl === otherImages?.[key].url ? 'default' : 'pointer',
-                          marginBottom: '1rem',
-                          border: selectedObj?.originalUrl === otherImages?.[key].url ? '2px solid white' : 'none',
-                        }}
-                          key={index}
-                          onClick={() => handleAnnotateImage(otherImages?.[key])}
-                        >
-                          <CardMedia
-                            component="img"
-                            image={otherImages?.[key].url}
-                            style={{
-                              objectFit: 'cover',
-                              width: "calc(2560px * 0.15)",
-                              height: "calc(1440px * 0.15)",
-                            }}
-                          />
-                        </Card>
-                      )
-
-                    })
-                  }
+                  </TransformComponent>
                 </Box>
-              }
-            </Box>
-            :
-            <Box
-              sx={{
-                display: 'flex',
-                width: '100%',
-                height: 'calc(100vh - 80px)',
-                justifyContent: 'center',
-                alignItems: 'center',
-                fontSize: '100px'
-              }}
-            >
-              No image
-            </Box>
-        }
+              )}
+            </TransformWrapper>
+            {otherImages && Object.keys(otherImages).length > 0 && (
+              <Box
+                sx={{
+                  display: "flex",
+                  // flexDirection: 'column',
+                  justifyContent: "center",
+                  alignItems: "center",
+                  bottom: 0,
+                  marginBottom: 0,
+                  paddingTop: 0,
+                  marginTop: "2rem",
+                  height: "10rem",
+                  width: "100%",
+                  bgcolor: "background.paper",
+                  boxShadow: 1,
+                  overflow: "auto",
+                }}
+              >
+                <Card
+                  sx={{
+                    width: "150px",
+                    height: "100px",
+                    margin: "0.25rem",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    boxShadow: 1,
+                    borderRadius: "1rem",
+                    cursor:
+                      selectedObj?.originalUrl === imagePath
+                        ? "default"
+                        : "pointer",
+                    marginBottom: "1rem",
+                    border:
+                      selectedObj?.originalUrl === imagePath
+                        ? "2px solid white"
+                        : "none",
+                  }}
+                  // key={index}
+                  onClick={() => handleChangeImage(imagePath, imagePath)}
+                >
+                  <CardMedia
+                    component="img"
+                    image={imagePath}
+                    style={{
+                      objectFit: "cover",
+                      width: "calc(2560px * 0.15)",
+                      height: "calc(1440px * 0.15)",
+                    }}
+                  />
+                </Card>
+                {Object.keys(otherImages).map((key, index) => {
+                  return (
+                    <Card
+                      sx={{
+                        width: "150px",
+                        height: "100px",
+                        margin: "0.25rem",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        boxShadow: 1,
+                        borderRadius: "1rem",
+                        cursor:
+                          selectedObj?.originalUrl === otherImages?.[key].url
+                            ? "default"
+                            : "pointer",
+                        marginBottom: "1rem",
+                        border:
+                          selectedObj?.originalUrl === otherImages?.[key].url
+                            ? "2px solid white"
+                            : "none",
+                      }}
+                      key={index}
+                      onClick={() => handleAnnotateImage(otherImages?.[key])}
+                    >
+                      <CardMedia
+                        component="img"
+                        image={otherImages?.[key].url}
+                        style={{
+                          objectFit: "cover",
+                          width: "calc(2560px * 0.15)",
+                          height: "calc(1440px * 0.15)",
+                        }}
+                      />
+                    </Card>
+                  );
+                })}
+              </Box>
+            )}
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              display: "flex",
+              width: "100%",
+              height: "calc(100vh - 80px)",
+              justifyContent: "center",
+              alignItems: "center",
+              fontSize: "100px",
+            }}
+          >
+            No image
+          </Box>
+        )}
       </Box>
-
-    </Dialog >
+    </Dialog>
   );
-};
+}

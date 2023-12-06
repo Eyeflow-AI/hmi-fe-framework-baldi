@@ -34,111 +34,111 @@ export default function Monitor({ pageOptions }) {
     };
   }, [pageOptions]);
 
-  // const clock = new Date();
-  // const imagesList = [
-  //   {
-  //     camera_name: "camera_name",
-  //     frame_time: "frame_time",
-  //     // get image from public/assets
-  //     full_url: "/assets/cat.webp",
-  //   },
-  //   {
-  //     camera_name: "camera_name",
-  //     frame_time: "frame_time",
-  //     // get image from public/assets
-  //     full_url: "/assets/cat.webp",
-  //   },
-  //   {
-  //     camera_name: "camera_name",
-  //     frame_time: "frame_time",
-  //     // get image from public/assets
-  //     full_url: "/assets/cat.webp",
-  //   },
-  //   // {
-  //   //   camera_name: "camera_name",
-  //   //   frame_time: "frame_time",
-  //   //   // get image from public/assets
-  //   //   full_url: "/assets/cat.webp",
-  //   // },
-  //   // {
-  //   //   camera_name: "camera_name",
-  //   //   frame_time: "frame_time",
-  //   //   // get image from public/assets
-  //   //   full_url: "/assets/cat.webp",
-  //   // },
-  //   // {
-  //   //   camera_name: "camera_name",
-  //   //   frame_time: "frame_time",
-  //   //   // get image from public/assets
-  //   //   full_url: "/assets/cat.webp",
-  //   // },
-  //   // {
-  //   //   camera_name: "camera_name",
-  //   //   frame_time: "frame_time",
-  //   //   // get image from public/assets
-  //   //   full_url: "/assets/cat.webp",
-  //   // },
-  //   // {
-  //   //   camera_name: "camera_name",
-  //   //   frame_time: "frame_time",
-  //   //   // get image from public/assets
-  //   //   full_url: "/assets/cat.webp",
-  //   // },
-  //   // {
-  //   //   camera_name: "camera_name",
-  //   //   frame_time: "frame_time",
-  //   //   // get image from public/assets
-  //   //   full_url: "/assets/cat.webp",
-  //   // },
-  //   // {
-  //   //   camera_name: "camera_name",
-  //   //   frame_time: "frame_time",
-  //   //   // get image from public/assets
-  //   //   full_url: "/assets/cat.webp",
-  //   // },
-  //   // {
-  //   //   camera_name: "camera_name",
-  //   //   frame_time: "frame_time",
-  //   //   // get image from public/assets
-  //   //   full_url: "/assets/cat.webp",
-  //   // },
-  //   // {
-  //   //   camera_name: "camera_name",
-  //   //   frame_time: "frame_time",
-  //   //   // get image from public/assets
-  //   //   full_url: "/assets/cat.webp",
-  //   // },
-  //   // {
-  //   //   camera_name: "camera_name",
-  //   //   frame_time: "frame_time",
-  //   //   // get image from public/assets
-  //   //   full_url: "/assets/cat.webp",
-  //   // },
-  //   // {
-  //   //   camera_name: "camera_name",
-  //   //   frame_time: "frame_time",
-  //   //   // get image from public/assets
-  //   //   full_url: "/assets/cat.webp",
-  //   // },
-  //   // {
-  //   //   camera_name: "camera_name",
-  //   //   frame_time: "frame_time",
-  //   //   // get image from public/assets
-  //   //   full_url: "/assets/cat.webp",
-  //   // },
-  //   // {
-  //   //   camera_name: "camera_name",
-  //   //   frame_time: "frame_time",
-  //   //   // get image from public/assets
-  //   //   full_url: "/assets/cat.webp",
-  //   // },
-  // ];
+  const clock = new Date();
+  const imagesList = [
+    {
+      camera_name: "camera_name",
+      frame_time: "frame_time",
+      // get image from public/assets
+      full_url: "/assets/cat.webp",
+    },
+    {
+      camera_name: "camera_name",
+      frame_time: "frame_time",
+      // get image from public/assets
+      full_url: "/assets/cat.webp",
+    },
+    {
+      camera_name: "camera_name",
+      frame_time: "frame_time",
+      // get image from public/assets
+      full_url: "/assets/cat.webp",
+    },
+    // {
+    //   camera_name: "camera_name",
+    //   frame_time: "frame_time",
+    //   // get image from public/assets
+    //   full_url: "/assets/cat.webp",
+    // },
+    // {
+    //   camera_name: "camera_name",
+    //   frame_time: "frame_time",
+    //   // get image from public/assets
+    //   full_url: "/assets/cat.webp",
+    // },
+    // {
+    //   camera_name: "camera_name",
+    //   frame_time: "frame_time",
+    //   // get image from public/assets
+    //   full_url: "/assets/cat.webp",
+    // },
+    // {
+    //   camera_name: "camera_name",
+    //   frame_time: "frame_time",
+    //   // get image from public/assets
+    //   full_url: "/assets/cat.webp",
+    // },
+    // {
+    //   camera_name: "camera_name",
+    //   frame_time: "frame_time",
+    //   // get image from public/assets
+    //   full_url: "/assets/cat.webp",
+    // },
+    // {
+    //   camera_name: "camera_name",
+    //   frame_time: "frame_time",
+    //   // get image from public/assets
+    //   full_url: "/assets/cat.webp",
+    // },
+    // {
+    //   camera_name: "camera_name",
+    //   frame_time: "frame_time",
+    //   // get image from public/assets
+    //   full_url: "/assets/cat.webp",
+    // },
+    // {
+    //   camera_name: "camera_name",
+    //   frame_time: "frame_time",
+    //   // get image from public/assets
+    //   full_url: "/assets/cat.webp",
+    // },
+    // {
+    //   camera_name: "camera_name",
+    //   frame_time: "frame_time",
+    //   // get image from public/assets
+    //   full_url: "/assets/cat.webp",
+    // },
+    // {
+    //   camera_name: "camera_name",
+    //   frame_time: "frame_time",
+    //   // get image from public/assets
+    //   full_url: "/assets/cat.webp",
+    // },
+    // {
+    //   camera_name: "camera_name",
+    //   frame_time: "frame_time",
+    //   // get image from public/assets
+    //   full_url: "/assets/cat.webp",
+    // },
+    // {
+    //   camera_name: "camera_name",
+    //   frame_time: "frame_time",
+    //   // get image from public/assets
+    //   full_url: "/assets/cat.webp",
+    // },
+    // {
+    //   camera_name: "camera_name",
+    //   frame_time: "frame_time",
+    //   // get image from public/assets
+    //   full_url: "/assets/cat.webp",
+    // },
+  ];
 
-  const { clock, imagesList } = GetImagesList({
-    url: infoURL,
-    imageBaseURL,
-    sleepTime: pageOptions?.options?.sleepTime,
-  });
+  // const { clock, imagesList } = GetImagesList({
+  //   url: infoURL,
+  //   imageBaseURL,
+  //   sleepTime: pageOptions?.options?.sleepTime,
+  // });
 
   const onOpenDialog = useCallback((item) => {
     return () => {
@@ -195,9 +195,7 @@ export default function Monitor({ pageOptions }) {
                   >
                     <CardMedia
                       component="img"
-                      image={`${
-                        item.full_url
-                      }?timestamp=${new Date().getTime()}`}
+                      image={`${item.full_url}?timestamp=${clock}`}
                       alt={item.camera_name}
                       sx={{
                         width: "100%",
@@ -229,7 +227,7 @@ export default function Monitor({ pageOptions }) {
           <ImageDialog
             open={openDialog}
             setOpen={setOpenDialog}
-            imagePath={`${imagePath}?timestamp=${new Date().getTime()}`}
+            imagePath={`${imagePath}?timestamp=${clock}`}
             title={dialogTitle}
           />
         </Box>
