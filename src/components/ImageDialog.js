@@ -16,6 +16,7 @@ import FileUploadIcon from "@mui/icons-material/FileUpload";
 import CircularProgress from "@mui/material/CircularProgress";
 
 // Internal
+import Clock from "../utils/Hooks/Clock";
 
 // Third-party
 import {
@@ -257,6 +258,7 @@ export default function ImageDialog({
   const { t } = useTranslation();
   const [noImage, setNoImage] = useState(false);
   const [selectedObj, setSelectedObj] = useState(null);
+  const { clock } = Clock({ sleepTime: 10000 });
 
   const handleClose = () => {
     setOpen(false);
@@ -431,9 +433,9 @@ export default function ImageDialog({
                       src={
                         selectedObj?.url?.includes("http://") &
                         !selectedObj?.url?.includes("?")
-                          ? `${
-                              selectedObj?.url
-                            }?time=${new Date().toISOString()}`
+                          ? `${selectedObj?.url}?time=${clock}`
+                          : selectedObj?.url?.includes("?")
+                          ? `${selectedObj?.url}&time=${clock}`
                           : selectedObj?.url
                       }
                       alt={altText ?? ""}
