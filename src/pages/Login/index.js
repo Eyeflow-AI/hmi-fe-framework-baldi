@@ -28,7 +28,6 @@ import { useTranslation } from "react-i18next";
 import { unwrapResult } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 
-
 const styleSx = {
   mainBox: {
     display: 'flex',
@@ -78,9 +77,12 @@ export default function Login() {
   const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
 
-  const checkLoginByIp = (ip) => {
+  const checkLoginByIp = () => {
     dispatch(loginByIp())
       .then(unwrapResult)
+      .catch((err) => {
+        console.log(err.message);
+      });
   }
 
   useEffect(() => {
@@ -189,7 +191,7 @@ export default function Login() {
                         // onClick={onClickLoginButton}
                         variant="contained"
                         sx={styleSx.loginButton}
-                        disabled={user === '' || password === '' || loginLoading}
+                        disabled={loginLoading}
                       >
                         {t('Login')}
                       </Button>
