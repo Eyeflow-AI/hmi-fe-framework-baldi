@@ -1,10 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import login from '../thunks/login';
+import loginByIp from '../thunks/loginByIp';
 
 // VARIABLES
 export const initialState = {
   user: null,
-  loadingLogin: false
+  loadingLogin: false,
+  loadingLoginByIp: false,
 };
 
 export const authSlice = createSlice({
@@ -26,6 +28,16 @@ export const authSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(login.rejected, (state) => {
+        state.loadingLogin = false;
+      })
+      .addCase(loginByIp.pending, (state) => {
+        state.loadingLogin = true;
+      })
+      .addCase(loginByIp.fulfilled, (state, action) => {
+        state.loadingLogin = false;
+        state.user = action.payload;
+      })
+      .addCase(loginByIp.rejected, (state, action) => {
         state.loadingLogin = false;
       });
   },
