@@ -1,5 +1,5 @@
 // React
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 // Design
 import Box from '@mui/material/Box';
@@ -14,7 +14,8 @@ import { getUser } from '../../store/slices/auth';
 
 // Third-party
 import { useNavigate } from "react-router-dom";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setNotificationBar } from '../../store/slices/app';
 
 
 const style = {
@@ -22,6 +23,7 @@ const style = {
 };
 
 export default function Home({ pageOptions }) {
+  const dispatch = useDispatch();
 
   const station = GetSelectedStation();
   const navigate = useNavigate();
@@ -47,6 +49,15 @@ export default function Home({ pageOptions }) {
     // let pageList = .map((page) => {window.app_config.pages[]});
     return { pageList };
   }, [pageOptions]);
+
+
+  useEffect(() => {
+    if (pageList.length === 1) {
+      navigate(updatePath(pageList[0].data.path, station), { state: { changeType: "click" } });
+    } else if (pageList.length === 0) {
+      dispatch(setNotificationBar({ show: true, type: 'error', message: "no_pages_available_to_access" }));
+    }
+  })
 
   const onButtonClick = (pageData) => {
     navigate(updatePath(pageData.path, station), { state: { changeType: "click" } });

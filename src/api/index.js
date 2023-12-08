@@ -58,6 +58,7 @@ const API = {
   wsURL: window.app_config.ws_url,
   post: {
     login: ({ username, password }, setLoading) => request(instance.post(`auth/login`, { username, password }), setLoading),
+    loginByIp: (_, setLoading) => request(instance.post(`auth/login/ip`), setLoading),
     batch: ({ stationId, data }, setLoading) => request(instance.post(`batch/${stationId}`, data), setLoading),
     user: ({ username, password }, setLoading) => request(instance.post(`auth/user`, { username, password }), setLoading),
 

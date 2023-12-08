@@ -1,5 +1,5 @@
 // React
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 // Design
 import Button from '@mui/material/Button';
@@ -17,6 +17,7 @@ import Select from '@mui/material/Select';
 // Internal
 import SiliconCopyright from '../../components/SiliconCopyright';
 import login from '../../store/thunks/login';
+import loginByIp from '../../store/thunks/loginByIp';
 import { getStationList, getStationId, setStationId } from '../../store/slices/app';
 import { getLoadingLogin } from '../../store/slices/auth';
 import { setNotificationBar } from '../../store/slices/app';
@@ -76,6 +77,15 @@ export default function Login() {
 
   const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
+
+  const checkLoginByIp = (ip) => {
+    dispatch(loginByIp())
+      .then(unwrapResult)
+  }
+
+  useEffect(() => {
+    checkLoginByIp();
+  }, []);
 
   const onClickLoginButton = (event) => {
     event.preventDefault();
@@ -179,6 +189,7 @@ export default function Login() {
                         // onClick={onClickLoginButton}
                         variant="contained"
                         sx={styleSx.loginButton}
+                        disabled={user === '' || password === '' || loginLoading}
                       >
                         {t('Login')}
                       </Button>
