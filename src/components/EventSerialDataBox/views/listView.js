@@ -300,10 +300,12 @@ const InspectionList = ({ data, result }) => {
         display: "flex",
         justifyContent: "flex-start",
         alignItems: "flex-start",
-        backgroundColor: result
-          ? `${colors.statuses["ok"]}50`
-          : `${colors.statuses["ng"]}50`,
+        // backgroundColor: result
+        //   ? `${colors.statuses["ok"]}50`
+        //   : `${colors.statuses["ng"]}50`,
         // border: `.02rem solid ${colors.eyeflow.blue.medium}`,
+        bgcolor: "background.paper",
+
         flexGrow: 1,
         overflow: "hidden",
         width: "400px",
@@ -320,7 +322,7 @@ const InspectionList = ({ data, result }) => {
           width: "100%",
           height: "3rem",
           // border: `.02rem solid ${colors.eyeflow.blue.medium}`,
-          bgcolor: "background.paper",
+          // bgcolor: "background.paper",
         }}
       >
         <Box
@@ -382,6 +384,10 @@ const InspectionList = ({ data, result }) => {
                 flexDirection: "row",
                 width: "100%",
                 height: "3rem",
+                backgroundColor:
+                  value == "ok"
+                    ? `${colors.statuses["ok"]}50`
+                    : `${colors.statuses["ng"]}50`,
               }}
               key={`${index}-table-item`}
             >
@@ -609,6 +615,7 @@ export default function ListView({
           return detection;
         }
       });
+      console.log({ detections });
       if (isSelectedSerialRunning) {
         let edge = station?.edges?.find(
           (edge) =>
