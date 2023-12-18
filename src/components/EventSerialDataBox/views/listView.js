@@ -446,6 +446,7 @@ export default function ListView({
   serialId,
 }) {
   // console.log({loading, inspections, config, appBarHeight, isSelectedSerialRunning, serialId})
+  console.log({ config });
 
   const { t } = useTranslation();
 
@@ -812,14 +813,16 @@ export default function ListView({
                   </Typography>
                 </Box>
               )}
-              {Object.keys(dataToUse?.inspection?.table).length > 0 && (
-                <Box>
-                  <InspectionList
-                    data={dataToUse?.inspection?.table}
-                    result={dataToUse?.inspection?.result}
-                  />
-                </Box>
-              )}
+              {Object.keys(config).includes("showTable") &&
+                config?.showTable &&
+                Object.keys(dataToUse?.inspection?.table).length > 0 && (
+                  <Box>
+                    <InspectionList
+                      data={dataToUse?.inspection?.table}
+                      result={dataToUse?.inspection?.result}
+                    />
+                  </Box>
+                )}
             </Box>
           </Box>
         </Box>
