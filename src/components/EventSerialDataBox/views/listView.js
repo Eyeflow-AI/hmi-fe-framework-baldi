@@ -446,7 +446,7 @@ export default function ListView({
   serialId,
 }) {
   // console.log({loading, inspections, config, appBarHeight, isSelectedSerialRunning, serialId})
-  console.log({ config });
+  // console.log({ config });
 
   const { t } = useTranslation();
 
