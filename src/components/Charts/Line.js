@@ -32,21 +32,25 @@ const CustomTooltip = ({ color, value, id }) => {
         textTransform: "uppercase",
       }}
     >
-      <div
-        style={{ width: "15px", height: "15px", backgroundColor: color }}
-      ></div>
-      &nbsp;&nbsp;
+      {color && (
+        <>
+          <div
+            style={{ width: "15px", height: "15px", backgroundColor: color }}
+          />
+          &nbsp;&nbsp;
+        </>
+      )}
       {id}: {value}
     </Box>
   );
 };
 
 const responsiveTheme = {
-  tooltip: {
-    container: {
-      background: colors.paper.blue.dark,
-    },
-  },
+  // tooltip: {
+  //   container: {
+  //     background: colors.paper.blue.dark,
+  //   },
+  // },
   labels: {
     text: {
       fontSize: 35,
@@ -95,32 +99,6 @@ const responsiveTheme = {
     },
   },
 };
-
-const responsiveLegends = [
-  {
-    anchor: "bottom",
-    direction: "column",
-    justify: false,
-    translateY: 100,
-    translateX: -80,
-    itemsSpacing: 10,
-    itemWidth: 10,
-    itemHeight: 18,
-    itemTextColor: "white",
-    itemDirection: "left-to-right",
-    itemOpacity: 1,
-    symbolSize: 15,
-    symbolShape: "square",
-    effects: [
-      {
-        on: "hover",
-        style: {
-          itemTextColor: "#000",
-        },
-      },
-    ],
-  },
-];
 
 export default function Line({ chart }) {
   const { t } = useTranslation();
@@ -192,16 +170,15 @@ export default function Line({ chart }) {
             width: `calc(${chart.chartInfo.width}px / ${chart?.result.length})`,
             height: "calc(100% - 50px)",
             flexGrow: 1,
-            // rotate: '90deg',
+            // rotate: "90deg",
           }}
         >
           <ResponsiveLine
             tooltip={(data) => {
               let value = data?.point?.data?.y;
-              // let color = info.color;
+              let color = data?.color;
               let id = data?.point?.data?.x;
-              console.log({ data });
-              return <CustomTooltip value={value} id={id} />;
+              return <CustomTooltip value={value} id={id} color={color} />;
             }}
             data={info}
             margin={{ top: 20, right: 30, bottom: 100, left: 80 }}
@@ -251,8 +228,12 @@ export default function Line({ chart }) {
               legendPosition: "middle",
             }}
             useMesh={true}
-            enableSlices={chart?.chartInfo?.enableSlices ?? "x"}
+            // enableSlices={chart?.chartInfo?.enableSlices ?? "x"}
             // enableSlices={"y"}
+            // tooltip={(value) => {
+            //   console.log({ value });
+            //   return <CustomTooltip value={value} />;
+            // }}
           />
         </Box>
       ) : (
