@@ -245,7 +245,7 @@ export default function DivergingBar({ chart }) {
       // );
     }
   }, [chart]);
-  console.log({ generateData, chart, info });
+  // console.log({ generateData, chart, info });
 
   return (
     <Box
@@ -362,16 +362,16 @@ export default function DivergingBar({ chart }) {
               // truncateTickAt: 0,
               format: (value) => `${value}%`,
             }}
-            axisBottom={{
-              tickSize: 5,
-              tickPadding: 5,
-              tickRotation: 0,
-              // legend: 'country',
-              legendPosition: "middle",
-              legendOffset: 32,
-              truncateTickAt: 0,
-            }}
-            // axisBottom={null}
+            // axisBottom={{
+            //   tickSize: 5,
+            //   tickPadding: 5,
+            //   tickRotation: 0,
+            //   // legend: 'country',
+            //   legendPosition: "middle",
+            //   legendOffset: 32,
+            //   truncateTickAt: 0,
+            // }}
+            axisBottom={null}
           />
         </Box>
       ) : (
