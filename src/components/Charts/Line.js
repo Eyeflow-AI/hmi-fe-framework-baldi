@@ -100,6 +100,32 @@ const responsiveTheme = {
   },
 };
 
+const responsiveLegends = [
+  {
+    anchor: "bottom",
+    direction: "column",
+    justify: false,
+    translateY: 130,
+    translateX: -200,
+    itemsSpacing: 5,
+    itemWidth: 10,
+    itemHeight: 18,
+    itemTextColor: "white",
+    itemDirection: "left-to-right",
+    itemOpacity: 1,
+    symbolSize: 12,
+    symbolShape: "square",
+    // effects: [
+    //   {
+    //     on: 'hover',
+    //     style: {
+    //       itemTextColor: '#000'
+    //     }
+    //   }
+    // ]
+  },
+];
+
 export default function Line({ chart }) {
   const { t } = useTranslation();
   const [info, setInfo] = useState([]);
@@ -177,11 +203,12 @@ export default function Line({ chart }) {
             tooltip={(data) => {
               let value = data?.point?.data?.y;
               let color = data?.color;
-              let id = data?.point?.data?.x;
+              let id = data?.point?.serieId;
+              // console.log({ _d: data });
               return <CustomTooltip value={value} id={id} color={color} />;
             }}
             data={info}
-            margin={{ top: 20, right: 30, bottom: 100, left: 80 }}
+            margin={{ top: 20, right: 30, bottom: 150, left: 80 }}
             theme={responsiveTheme}
             colors={
               queryHasColors
@@ -234,6 +261,7 @@ export default function Line({ chart }) {
             //   console.log({ value });
             //   return <CustomTooltip value={value} />;
             // }}
+            legends={responsiveLegends}
           />
         </Box>
       ) : (
