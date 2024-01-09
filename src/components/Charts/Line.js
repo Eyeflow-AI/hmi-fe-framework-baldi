@@ -213,7 +213,7 @@ export default function Line({ chart }) {
             colors={
               queryHasColors
                 ? (i) => {
-                    return i.data.color;
+                    return chart?.chartInfo?.colors_results?.[i?.id];
                   }
                 : { scheme: "nivo" }
             }
