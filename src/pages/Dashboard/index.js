@@ -90,7 +90,7 @@ export default function Dashboard({ pageOptions }) {
     for (let i = 0; i < charts.length; i++) {
       try {
         let data = await API.get.queryData({
-          startTime: getQueryDateString(startDate),
+          startTime: getQueryDateString(startDate, 0, "between"),
           endTime: getQueryDateString(startDate, 0, "end"),
           queryName: charts[i].query_name,
           stationId,

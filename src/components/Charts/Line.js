@@ -140,6 +140,7 @@ export default function Line({ chart }) {
         el.id = t(el.id);
         return el;
       });
+      console.log({ newInfo });
       setInfo(newInfo);
       setQueryHasColors(
         Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0
