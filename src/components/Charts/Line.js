@@ -105,7 +105,7 @@ const responsiveLegends = [
     anchor: "bottom",
     direction: "column",
     justify: false,
-    translateY: 130,
+    translateY: 140,
     translateX: -200,
     itemsSpacing: 5,
     itemWidth: 10,
@@ -140,7 +140,6 @@ export default function Line({ chart }) {
         el.id = t(el.id);
         return el;
       });
-      console.log({ newInfo });
       setInfo(newInfo);
       setQueryHasColors(
         Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0
@@ -231,12 +230,14 @@ export default function Line({ chart }) {
             axisBottom={{
               tickSize: 10,
               tickPadding: 5,
-              tickRotation: 0,
+              tickRotation: 90,
+
               legend: chart?.chartInfo?.x_axis
                 ? t(chart?.chartInfo?.x_axis).toUpperCase()
                 : "",
-              legendOffset: 50,
+              legendOffset: 60,
               legendPosition: "middle",
+
               format: (value) => {
                 if (chart?.chartInfo?.format?.function) {
                   return runFunction(chart?.chartInfo?.format?.function, value);
