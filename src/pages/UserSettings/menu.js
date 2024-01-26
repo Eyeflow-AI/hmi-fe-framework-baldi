@@ -60,8 +60,6 @@ export default function Menu({ setSelectedDialog, selectedDialog }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log({ FUNCTIONS });
-
   return (
     <div>
       {loading ? (
@@ -69,7 +67,6 @@ export default function Menu({ setSelectedDialog, selectedDialog }) {
       ) : (
         <Stack direction="row" gap={1}>
           {Object.entries(FUNCTIONS).map(([functionName, functionValue]) => {
-            console.log({ functionName, functionValue });
             return (
               <Button
                 variant="contained"
