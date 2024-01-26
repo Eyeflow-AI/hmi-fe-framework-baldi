@@ -6,6 +6,8 @@ import updatePath from "./utils/functions/updatePath";
 
 const Menu = lazy(() => import("./pages/Menu"));
 const Login = lazy(() => import("./pages/Login"));
+const UserSettings = lazy(() => import("./pages/UserSettings"));
+
 const MonitorBatch = lazy(() => import("./pages/MonitorBatch"));
 const MonitorSerial = lazy(() => import("./pages/MonitorSerial"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -74,6 +76,10 @@ export default function Routes({
         path: "/app",
         element: authenticated ? <Outlet /> : <Navigate to="/login" />,
         children: appRoutes,
+      },
+      {
+        path: "/app/user-settings",
+        element: <UserSettings />,
       },
       {
         path: "/",
