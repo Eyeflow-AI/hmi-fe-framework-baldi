@@ -1,38 +1,34 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
+import axios from "axios";
 
-import axios from 'axios';
-
-import Clock from './Clock';
-
+import Clock from "./Clock";
 
 export default function GetEdgeEnvVar({ url, sleepTime = 30000 } = {}) {
-
   const { clock } = Clock({ sleepTime });
   const [envVar, setEnvVar] = useState(null);
 
   const updateData = () => {
     axios({
-      method: 'get',
+      method: "get",
       url,
-      responseType: 'json',
+      responseType: "json",
     })
-      .then(response => {
+      .then((response) => {
         const requestData = response.data;
-        if (!requestData.hasOwnProperty('env_var')) {
-          throw new Error('Invalid response data');
-        };
+        if (!requestData.hasOwnProperty("env_var")) {
+          throw new Error("Invalid response data");
+        }
 
         const newEnvVar = requestData.env_var;
         // check if obj is empty
         if (Object.keys(newEnvVar).length === 0) {
           setEnvVar(null);
-        }
-        else if (JSON.stringify(newEnvVar) !== JSON.stringify(envVar)) {
+        } else if (JSON.stringify(newEnvVar) !== JSON.stringify(envVar)) {
           setEnvVar(newEnvVar);
         }
       })
-      .catch(console.error)
+      .catch(console.error);
     //   .finally(el => {
     //   })
   };
@@ -40,12 +36,11 @@ export default function GetEdgeEnvVar({ url, sleepTime = 30000 } = {}) {
   useEffect(() => {
     if (url) {
       updateData();
-    }
-    else {
+    } else {
       setEnvVar(null);
-    };
+    }
     // eslint-disable-next-line
   }, [clock, url]);
 
   return { clock, updateData, envVar };
-};
+}
