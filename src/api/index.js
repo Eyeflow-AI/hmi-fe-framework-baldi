@@ -74,7 +74,8 @@ const API = {
   get: {
     batchList: ({ params, stationId }, setLoading) => request(instance.get(`batch/${stationId}/list`, { params }), setLoading),
     partsList: (_, setLoading) => request(instance.get(`parts/list`), setLoading),
-    serialList: ({ params, stationId }, setLoading) => request(instance.get(`serial/${stationId}/list`, { params }), setLoading),
+    maskMapList: (_, setLoading) => request(instance.get(`parts/mask-map/list`), setLoading),
+    serialList: ({ params, stationId }, setLoading) => request(instance.get(`serial/${stationId}/list`), setLoading),
     serial: ({ stationId, serialId, collection }, setLoading) => request(instance.get(`serial/${stationId}/${serialId}?collection=${collection}`), setLoading),
     runningBatch: ({ stationId }, setLoading) => request(instance.get(`batch/${stationId}/running`), setLoading),
     runningSerial: ({ stationId }, setLoading) => request(instance.get(`serial/${stationId}/running`), setLoading),
