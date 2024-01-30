@@ -9,7 +9,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Grid from '@mui/material/Grid';
 import DownloadIcon from '@mui/icons-material/Download';
-import { Button, TextField, Typography } from '@mui/material';
+import { Autocomplete, Button, TextField, Typography } from '@mui/material';
 import { getUser } from '../store/slices/auth';
 
 // Internal
@@ -35,26 +35,26 @@ const appBarSx = {
   boxShadow: 1,
 };
 
-
 export default function ImageDialog({ imagePath, title, open, setOpen }) {
   const { t } = useTranslation();
   const [noImage, setNoImage] = useState(false);
   const [selectedObj, setSelectedObj] = useState(null);
-  const [dataset, setDataset] = useState('');
+  const [dataset, setDataset] = useState(null);
+  const [datasetList, setDatasetList] = useState(
+    []
+  );
   const user = useSelector(getUser);
   const [base64Str, setBase64Str] = useState('');
-  const [errorInText, setErrorInText] = useState(false);
+  const [errorInText, setErrorInText] = useState(null);
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(false);
 
-
   const handleUpload = () => {
-    let data = JSON.parse(dataset);
-
     setLoading(true);
+
     API.post.uploadImageInfo({
       data: {
-        ...data,
+        ...dataset.dataset_id,
         img_height: imgHeight,
         img_width: imgWidth,
         date: new Date(),
@@ -62,39 +62,16 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
       },
       imageBase64: base64Str,
     })
-      .then((res) => {
-        setLoading(false);
-      });
+    .then((res) => {
+      setLoading(false);
+      setDataset(null);
+      handleClose();
+    });
   };
-
-
 
   const handleClose = () => {
     setOpen(false);
   };
-
-
-  const checkJson = (json) => {
-    try {
-      let jsonParsed = JSON.parse(json);
-      if (!jsonParsed.dataset_id || !jsonParsed.part_number) {
-        return false;
-      }
-    } catch (e) {
-      return false;
-    }
-    return true;
-  }
-
-  useEffect(() => {
-    if (dataset) {
-      let flag = checkJson(dataset);
-      setErrorInText(!flag);
-    } else {
-      setErrorInText(true);
-    }
-  }, [dataset]);
-
 
   useEffect(() => {
     if (!open) {
@@ -114,7 +91,8 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
     API.get
       .appParameterDocument({ parameterName: selectedParam })
       .then((res) => {
-        setDataset(JSON.stringify(res?.document.data ?? {}, undefined, 4));
+        setDatasetList(res.document.pages["Images Capturer"].options.datasetChoices)
+        console.log(res)
       })
       .finally(() => { });
   };
@@ -122,8 +100,51 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
   const [imgWidth, setImgWidth] = useState(0);
   const [imgHeight, setImgHeight] = useState(0);
 
+
   useEffect(() => {
-    getDocument('example');
+    let errInText  = {};
+    if ([null, ''].includes(dataset?.dataset_id ?? null)) {
+      errInText.dataset_id = true;
+    }
+    else {
+      errInText.dataset_id = false;
+    }
+
+    if ([null, ''].includes(dataset?.part_number ?? null) ||
+    dataset?.part_number < 0) {
+      errInText.part_number = true;
+    }
+    else {
+      errInText.part_number = false;
+    }
+
+    if ([null, ''].includes(dataset?.box_quant ?? null) ||
+    dataset?.box_quant < 0) {
+      errInText.box_quant = true;
+    } else {
+      errInText.box_quant = false;
+    }
+
+    setErrorInText(errInText)
+
+    if (![null, ''].includes(dataset?.dataset_id ?? null) &&
+      ![null, ''].includes(dataset?.part_number ?? null) &&
+      ![null, ''].includes(dataset?.box_quant ?? null) &&
+      dataset.part_number >= 0 &&
+      dataset.box_quant >= 0
+    ) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [dataset]);
+
+  const handleUpdate = (key, value) => {
+    setDataset((preValue)=>({...preValue, [key]:value}))
+  };
+
+  useEffect(() => {
+    getDocument('feConfig');
     let img = new Image();
     img.src = imagePath;
     img.crossOrigin = 'Anonymous';
@@ -141,7 +162,6 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
       setImgHeight(img.height);
     };
   }, [imagePath]);
-
 
   return (
     <Dialog fullScreen open={open} onClose={handleClose}>
@@ -194,6 +214,7 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
                     alignItems: 'center',
                     flexDirection: 'column',
                     gap: '1rem',
+                    margin: '1rem',
                   }}
                 >
                   <TransformComponent>
@@ -202,39 +223,87 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
                       alt={''}
                       onLoad={() => resetTransform()}
                       style={{
-                        objectFit: 'cover',
-                        width: "calc(2560px * 0.15)",
-                        height: "calc(1440px * 0.15)",
+                        objectFit: 'contain',
+                        //maxWidth: "calc(2560px * 0.3)",
+                        //maxHeight: "calc(1440px * 0.3)",
+                        width: '65%',
+                        height: 'auto',
+                        margin: 'auto',
                       }}
                     />
                   </TransformComponent>
 
-                  <TextField
-                    id="outlined-multiline-static"
-                    label="Image JSON"
-                    multiline
-                    rows={4}
+                  <Autocomplete
+                    id='dataset_id_autocomplete'
+                    autoComplete
                     variant="outlined"
                     color="secondary"
                     sx={{
-                      width: '60rem',
+                      //width: '60rem',
+                      //maxHeight: '5.5vw',
+                      //maxWidth: '100%',
+                      width: '60%',
+                      height: 'auto',
                     }}
-                    error={errorInText}
-                    value={dataset}
-                    onChange={(e) => setDataset(e.target.value)}
-                    helperText={errorInText ? `O formato tem que ser este: {
-                        "dataset_id": "",
-                        "part_number": ""
-                    }` : ''}
+                    value={dataset?.dataset_id}
+                    required
+                    onChange={(e, newValue) => handleUpdate('dataset_id', newValue)}
+                    options={datasetList}
+                    getOptionLabel={(option) => option.label ?? option}
+                    renderInput={(params) => <TextField {...params} label="Dataset *" />}
+                    error={errorInText?.dataset_id ?? false}
+                    helperText={errorInText?.dataset_id ?? false?'Campo obrigatório.':''}
                   />
+
+                  <TextField
+                    id='part_number_text_field'
+                    label="Part Number"
+                    variant="outlined"
+                    color="secondary"
+                    sx={{
+                      //width: '60rem',
+                      width: '60%',
+                      height: 'auto',
+                    }}
+                    value={dataset?.part_number}
+                    type="number"
+                    min="0"
+                    required
+                    onChange={(e) => handleUpdate('part_number', e.target.value.toString())}
+                    error={errorInText?.part_number ?? false}
+                    helperText={errorInText?.part_number ?? false?'Campo obrigatório - valor não pode ser negativo.':''}
+                  />
+
+                  <TextField
+                    id='box_quant_text_field'
+                    label="Box Quantity"
+                    variant="outlined"
+                    color="secondary"
+                    sx={{
+                      //width: '60rem',
+                      width: '60%',
+                      maxHeight: 'auto',
+                    }}
+                    value={dataset?.box_quant}
+                    type="number"
+                    min="0"
+                    required
+                    onChange={(e) => handleUpdate('box_quant', e.target.value.toString())}
+                    error={errorInText?.box_quant ?? false}
+                    helperText={errorInText?.box_quant ?? false?'Campo obrigatório - valor não pode ser negativo.':''}
+                  />
+
                   <Button
                     variant="contained"
                     color="primary"
                     onClick={handleUpload}
                     sx={{
-                      width: '20rem',
+                      //width: '20rem',
+                      width: '20%',
+                      height: 'auto',
+                      margin: 'auto',
                     }}
-                    disabled={disabled || errorInText || loading}
+                    disabled={disabled}
                   >
                     Save image info
                   </Button>

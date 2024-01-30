@@ -190,8 +190,9 @@ export default function ImagesCapturer({ pageOptions }) {
                       justifyContent: "center",
                       alignItems: "center",
                       boxShadow: 1,
-                      borderRadius: "1rem",
-                      cursor: "pointer",
+                      borderRadius: '1rem',
+                      padding: '1rem',
+                      cursor: 'pointer',
                     }}
                     onClick={onOpenDialog(item)}
                   >
@@ -199,19 +200,14 @@ export default function ImagesCapturer({ pageOptions }) {
                       component="img"
                       image={`${item?.full_url}?time=${clock}`}
                       style={{
-                        objectFit: "contain",
-                        width: `calc(${
-                          pageOptions?.options?.IMAGE_SIZES[
-                            String(imagesList.length)
-                          ]
-                        } - 10rem)`,
-                        height:
-                          pageOptions?.options?.IMAGE_SIZES[
-                            String(imagesList.length)
-                          ],
-                        display: "block",
-                        margin: "auto",
-                        paddingBottom: ".5rem",
+                        objectFit: 'contain',
+                        //maxWidth: `calc(${pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)]})`,
+                        minWidth: '2560px * 0.3',
+                        //maxHeight: pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)],
+                        minHeigth: '1440px * 0.3',
+                        display: 'block',
+                        margin: 'auto',
+                        paddingBottom: '.5rem',
                       }}
                     />
                   </Card>
