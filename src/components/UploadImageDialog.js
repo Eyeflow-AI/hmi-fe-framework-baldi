@@ -64,6 +64,7 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
     })
     .then((res) => {
       setLoading(false);
+      setDataset(null);
       handleClose();
     });
   };
@@ -90,7 +91,8 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
     API.get
       .appParameterDocument({ parameterName: selectedParam })
       .then((res) => {
-        setDatasetList(res.document.pages["Images Capturer"].options.datasets)
+        setDatasetList(res.document.pages["Images Capturer"].options.datasetChoices)
+        console.log(res)
       })
       .finally(() => { });
   };
@@ -212,6 +214,7 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
                     alignItems: 'center',
                     flexDirection: 'column',
                     gap: '1rem',
+                    margin: '1rem',
                   }}
                 >
                   <TransformComponent>
@@ -220,9 +223,12 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
                       alt={''}
                       onLoad={() => resetTransform()}
                       style={{
-                        objectFit: 'cover',
-                        maxWidth: "calc(2560px * 0.3)",
-                        maxHeight: "calc(1440px * 0.3)",
+                        objectFit: 'contain',
+                        //maxWidth: "calc(2560px * 0.3)",
+                        //maxHeight: "calc(1440px * 0.3)",
+                        width: '65%',
+                        height: 'auto',
+                        margin: 'auto',
                       }}
                     />
                   </TransformComponent>
@@ -233,7 +239,11 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
                     variant="outlined"
                     color="secondary"
                     sx={{
-                      width: '60rem',
+                      //width: '60rem',
+                      //maxHeight: '5.5vw',
+                      //maxWidth: '100%',
+                      width: '60%',
+                      height: 'auto',
                     }}
                     value={dataset?.dataset_id}
                     required
@@ -251,7 +261,9 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
                     variant="outlined"
                     color="secondary"
                     sx={{
-                      width: '60rem',
+                      //width: '60rem',
+                      width: '60%',
+                      height: 'auto',
                     }}
                     value={dataset?.part_number}
                     type="number"
@@ -268,7 +280,9 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
                     variant="outlined"
                     color="secondary"
                     sx={{
-                      width: '60rem',
+                      //width: '60rem',
+                      width: '60%',
+                      maxHeight: 'auto',
                     }}
                     value={dataset?.box_quant}
                     type="number"
@@ -284,7 +298,10 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
                     color="primary"
                     onClick={handleUpload}
                     sx={{
-                      width: '20rem',
+                      //width: '20rem',
+                      width: '20%',
+                      height: 'auto',
+                      margin: 'auto',
                     }}
                     disabled={disabled}
                   >
