@@ -96,7 +96,7 @@ export default function Report({ pageOptions }) {
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [builtChats, setBuiltChats] = useState([]);
   const [downloadLoading, setDownloadLoading] = useState(false);
-  const [selectedFilters, setSelectedFilters] = useState([]);
+  const [selectedFilters, setSelectedFilters] = useState({});
 
   const [filters, setFilters] = useState([])
 
