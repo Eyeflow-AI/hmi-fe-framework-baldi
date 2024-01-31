@@ -1,26 +1,31 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
+import API from "../../api";
+import Clock from "./Clock";
 
-import API from '../../api';
-import Clock from './Clock';
-
-export default function GetRunQuery({ data, stationId, sleepTime = 30000, run } = {}) {
-
+export default function GetRunQuery({
+  data,
+  stationId,
+  sleepTime = 30000,
+  run,
+} = {}) {
+  console.log({ data, stationId, sleepTime, run });
 
   const [queryResponse, setQueryResponse] = useState(null);
   const [loading, setLoading] = useState(null);
-  const {clock} = Clock({sleepTime});
+  const { clock } = Clock({ sleepTime });
 
   const loadQuery = () => {
-      if (run) {
-        let dataToSend = JSON.parse(data);
-        API.post.runQuery({ ...dataToSend }, setLoading)
+    if (run) {
+      let dataToSend = JSON.parse(data);
+      API.post
+        .runQuery({ ...dataToSend }, setLoading)
         .then((response) => {
           let data = response?.result;
-           setQueryResponse(data);
+          setQueryResponse(data);
         })
-        .catch(console.log)
-      }
+        .catch(console.log);
+    }
   };
 
   useEffect(() => {
@@ -29,4 +34,4 @@ export default function GetRunQuery({ data, stationId, sleepTime = 30000, run } 
   }, [clock, stationId]);
 
   return { queryResponse, loading, loadQuery };
-};
+}

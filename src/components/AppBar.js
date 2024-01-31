@@ -1,63 +1,76 @@
 // React
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from "react";
 
 // Design
-import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
-import CardMedia from '@mui/material/CardMedia';
-import Box from '@mui/material/Box';
-import ButtonBase from '@mui/material/ButtonBase';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Tooltip from '@mui/material/Tooltip';
-import { deepOrange } from '@mui/material/colors';
+import IconButton from "@mui/material/IconButton";
+import Badge from "@mui/material/Badge";
+import CardMedia from "@mui/material/CardMedia";
+import Box from "@mui/material/Box";
+import ButtonBase from "@mui/material/ButtonBase";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Tooltip from "@mui/material/Tooltip";
+import { deepOrange } from "@mui/material/colors";
+import HelpIcon from "@mui/icons-material/Help";
 
 // Internal
-import { getStation, getStationList, setStationId, getLanguageList, getAppBarButtonList, getAlerts } from '../store/slices/app';
-import authSlice, { getUserInitials } from '../store/slices/auth';
-import updatePath from '../utils/functions/updatePath';
-import getOriginalURLPath from '../utils/functions/getOriginalURLPath';
-import AlertsDialog from './AlertsDialog';
+import {
+  getStation,
+  getStationList,
+  setStationId,
+  getLanguageList,
+  getAppBarButtonList,
+  getAlerts,
+} from "../store/slices/app";
+import authSlice, { getUserInitials } from "../store/slices/auth";
+import updatePath from "../utils/functions/updatePath";
+import getOriginalURLPath from "../utils/functions/getOriginalURLPath";
+import AlertsDialog from "./AlertsDialog";
 
 // Third-party
 import { useLocation, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-
 
 const HOME_URL = "/app/:stationSlugLabel/home";
 
-
 const appBarBoxStyle = {
-  display: 'flex',
-  width: '100%',
+  display: "flex",
+  width: "100%",
   gap: 4,
-  flexDirection: 'column',
+  flexDirection: "column",
   flexGrow: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-}
+  justifyContent: "center",
+  alignItems: "center",
+};
 
 const style = {
   appBar: {
-    color: 'white',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    color: "white",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
     // padding: '8px 16px 8px 25px',
-    bgcolor: 'background.paper',
+    bgcolor: "background.paper",
     boxShadow: 2,
-    height: '100vh',
+    height: "100vh",
     // position: 'fixed',
     paddingTop: 1,
-    gap: 4
+    gap: 4,
   },
-  appBarFirstBox: Object.assign({}, appBarBoxStyle, {justifyContent: 'flex-start'}),
-  appBarSecondBox: Object.assign({}, appBarBoxStyle, {justifyContent: 'center'}),
-  appBarThirdBox: Object.assign({}, appBarBoxStyle, {justifyContent: 'flex-end', paddingBottom: 2}),
+  appBarFirstBox: Object.assign({}, appBarBoxStyle, {
+    justifyContent: "flex-start",
+  }),
+  appBarSecondBox: Object.assign({}, appBarBoxStyle, {
+    justifyContent: "center",
+  }),
+  appBarThirdBox: Object.assign({}, appBarBoxStyle, {
+    justifyContent: "flex-end",
+    paddingBottom: 2,
+  }),
   cardMedia: {
-    height: 'auto',
-    width: '50px'
+    height: "auto",
+    width: "50px",
   },
   buttonImage: {
     height: 30,
@@ -65,20 +78,20 @@ const style = {
     filter: "invert(1)",
   },
   avatar: {
-    cursor: 'pointer',
+    cursor: "pointer",
     color: (theme) => theme.palette.getContrastText(deepOrange[500]),
     backgroundColor: deepOrange[500],
     width: 46,
     height: 46,
     "&:hover, &.Mui-focusVisible": {
       backgroundColor: deepOrange[600],
-    }
-  }
-}
+    },
+  },
+};
 
-export default function CustomAppBar({extraButtons}) {
-
-  const hasExtraButtons = Array.isArray(extraButtons) && extraButtons.length > 0;
+export default function CustomAppBar({ extraButtons }) {
+  const hasExtraButtons =
+    Array.isArray(extraButtons) && extraButtons.length > 0;
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const location = useLocation();
@@ -115,11 +128,16 @@ export default function CustomAppBar({extraButtons}) {
   const handleClickStation = (event) => setStationAnchorEl(event.currentTarget);
   const handleCloseStationMenu = (event) => setStationAnchorEl(null);
 
-  const handleClickLanguageMenu = (event) => setLanguageAnchorEl(event.currentTarget);
+  const handleClickLanguageMenu = (event) =>
+    setLanguageAnchorEl(event.currentTarget);
   const handleCloseLanguageMenu = (event) => setLanguageAnchorEl(null);
 
-  const handleClickEyeflow = () => navigate(updatePath(HOME_URL, station), { state: { changeType: "click" } });
-  const handleClickUserSettings = () => navigate(updatePath('/app/user-settings', station), { state: { changeType: "click" } }); //TODO
+  const handleClickEyeflow = () =>
+    navigate(updatePath(HOME_URL, station), { state: { changeType: "click" } });
+  const handleClickUserSettings = () =>
+    navigate(updatePath("/app/user-settings", station), {
+      state: { changeType: "click" },
+    }); //TODO
 
   const handleClickLogout = () => {
     dispatch(authSlice.actions.logout());
@@ -134,9 +152,16 @@ export default function CustomAppBar({extraButtons}) {
     dispatch(setStationId(newStation._id));
     let originalURL = getOriginalURLPath(location.pathname);
     if (originalURL?.params?.hasOwnProperty("stationSlugLabel")) {
-      navigate(updatePath(originalURL.pattern.path, newStation), { state: { changeType: "click" } });
-    };
+      navigate(updatePath(originalURL.pattern.path, newStation), {
+        state: { changeType: "click" },
+      });
+    }
     handleCloseStationMenu();
+  };
+
+  // open userManual.pdf from public/assets
+  const openUserManual = () => {
+    window.open("/assets/userManual.pdf", "_blank");
   };
 
   useEffect(() => {
@@ -145,13 +170,11 @@ export default function CustomAppBar({extraButtons}) {
       let copyButtonData = { ...buttonData };
       if (copyButtonData.id === "alerts") {
         copyButtonData.onClick = handleClickAlerts;
-      }
-      else if (copyButtonData.id === "station") {
+      } else if (copyButtonData.id === "station") {
         copyButtonData.onClick = handleClickStation;
-      }
-      else if (copyButtonData.id === "language") {
+      } else if (copyButtonData.id === "language") {
         copyButtonData.onClick = handleClickLanguageMenu;
-      };
+      }
       return copyButtonData;
     });
 
@@ -176,58 +199,69 @@ export default function CustomAppBar({extraButtons}) {
           </ButtonBase>
         </Box>
 
-        {hasExtraButtons &&
-        <Box sx={style.appBarSecondBox}>
-        {
-          extraButtons.map((buttonProps, index) => (
-            <Tooltip key={index} title={t(buttonProps.label)}>
-              <IconButton onClick={buttonProps.onClick} size='small'>
-                <img alt="" src={buttonProps.icon} style={style.buttonImage} />
-              </IconButton>
-            </Tooltip>
-          ))
-        }
-        </Box>
-
-
-        }
-        <Box sx={style.appBarThirdBox}>
-
-          {buttonList.map((buttonProps, index) =>
-            <Tooltip key={index} title={t(buttonProps.label)}>
-              {buttonProps.type === "alerts"
-              ? (
-              <Badge showZero badgeContent={alertsLength} color={alertsLength === 0 ? "success" : "error"}>
-                <IconButton onClick={buttonProps.onClick} size='small'>
-                  <img alt="" src={buttonProps.icon} style={style.buttonImage} />
+        {hasExtraButtons && (
+          <Box sx={style.appBarSecondBox}>
+            {extraButtons.map((buttonProps, index) => (
+              <Tooltip key={index} title={t(buttonProps.label)}>
+                <IconButton onClick={buttonProps.onClick} size="small">
+                  <img
+                    alt=""
+                    src={buttonProps.icon}
+                    style={style.buttonImage}
+                  />
                 </IconButton>
-              </Badge>
-              )
-              : (
-              <IconButton onClick={buttonProps.onClick} size='small'>
-                <img alt="" src={buttonProps.icon} style={style.buttonImage} />
-              </IconButton>
-              )
-              }
-            </Tooltip>
-          )}
+              </Tooltip>
+            ))}
+          </Box>
+        )}
+        <Box sx={style.appBarThirdBox}>
+          <Tooltip title={t("user_manual")}>
+            <IconButton onClick={openUserManual} size="small">
+              <HelpIcon fontSize="large" />
+            </IconButton>
+          </Tooltip>
 
-          <IconButton
-            onClick={handleClickAvatar}
-            sx={style.avatar}
-          >
+          {buttonList.map((buttonProps, index) => (
+            <Tooltip key={index} title={t(buttonProps.label)}>
+              {buttonProps.type === "alerts" ? (
+                <Badge
+                  showZero
+                  badgeContent={alertsLength}
+                  color={alertsLength === 0 ? "success" : "error"}
+                >
+                  <IconButton onClick={buttonProps.onClick} size="small">
+                    <img
+                      alt=""
+                      src={buttonProps.icon}
+                      style={style.buttonImage}
+                    />
+                  </IconButton>
+                </Badge>
+              ) : (
+                <IconButton onClick={buttonProps.onClick} size="small">
+                  <img
+                    alt=""
+                    src={buttonProps.icon}
+                    style={style.buttonImage}
+                  />
+                </IconButton>
+              )}
+            </Tooltip>
+          ))}
+
+          <IconButton onClick={handleClickAvatar} sx={style.avatar}>
             {userInitials}
           </IconButton>
-
         </Box>
       </Box>
+
       <Menu
         anchorEl={stationAnchorEl}
         open={stationOpen}
         onClose={handleCloseStationMenu}
         id="station-menu"
       >
-        {stationList.map((stationData) =>
+        {stationList.map((stationData) => (
           <MenuItem
             key={stationData._id}
             value={stationData._id}
@@ -236,7 +270,7 @@ export default function CustomAppBar({extraButtons}) {
           >
             {stationData.label}
           </MenuItem>
-        )}
+        ))}
       </Menu>
 
       <Menu
@@ -245,7 +279,7 @@ export default function CustomAppBar({extraButtons}) {
         onClose={handleCloseLanguageMenu}
         id="language-menu-button"
       >
-        {languageList.map((languageData) =>
+        {languageList.map((languageData) => (
           <MenuItem
             key={languageData.id}
             value={languageData.id}
@@ -254,30 +288,28 @@ export default function CustomAppBar({extraButtons}) {
           >
             {languageData.label}
           </MenuItem>
-        )}
+        ))}
       </Menu>
 
       <Menu
         anchorEl={avatarAnchorEl}
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
+          vertical: "bottom",
+          horizontal: "right",
         }}
         keepMounted
         transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
+          vertical: "top",
+          horizontal: "right",
         }}
         open={avatarOpen}
         onClose={handleCloseAvatarMenu}
         id="avatar-button"
       >
         <MenuItem onClick={handleClickUserSettings}>
-          {t('User Settings')}
+          {t("User Settings")}
         </MenuItem>
-        <MenuItem onClick={handleClickLogout}>
-          {t('Logout')}
-        </MenuItem>
+        <MenuItem onClick={handleClickLogout}>{t("Logout")}</MenuItem>
       </Menu>
 
       <AlertsDialog
