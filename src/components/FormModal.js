@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useMemo} from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -13,7 +13,8 @@ import { useTranslation } from "react-i18next";
 
 import { getPartsObj, getPartsList } from '../store/slices/app';
 
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
+import API from '../api';
 
 const style = {
   mainBox: {
@@ -58,7 +59,7 @@ function PartIdAutoComplete (props) {
   const getOptionLabel = (option) => option.part_id ?? "";
 
   const _onChange = (event, value) => {
-    onChange({target: {value: value?.part_id ?? ""}});
+    onChange({ target: { value: value?.part_id ?? "" } });
   };
 
   return (
@@ -74,8 +75,8 @@ function PartIdAutoComplete (props) {
 }
 
 const inputComponents = {
-  "part_id": (props) => <PartIdAutoComplete {...props}/>,
-  "else": (props) => <TextField fullWidth {...props}/>
+  "else": (props) => <TextField fullWidth {...props} />,
+  "part_id": (props) => <PartIdAutoComplete {...props} />,
 };
 
 function getDefaultValue(fieldData) {
@@ -97,16 +98,36 @@ function getDefaultValue(fieldData) {
   };
 };
 
-export default function FormModal({config, open, handleClose, onClickSend, sendLoading}) {
+export default function FormModal({ config, open, handleClose, onClickSend, sendLoading }) {
 
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
-  const partsObj = useSelector(getPartsObj);
+  const _partsObj = useSelector(getPartsObj);
+  const [partsObj, setPartsObj] = useState(_partsObj);
   const [formData, setFormData] = useState({});
   const [partIdFields, setPartIdFields] = useState([]);
   const [formFields, setFormFields] = useState([]);
+  const [maskMapList, setMaskMapList] = useState([]);
 
-  const {sendDisabled} = useMemo(() => {
+  let _maskMapList = [];
+
+  const getMaskMapList = () => {
+    API.get.maskMapList().then((res) => {
+      res.data.forEach((example) => {
+        _maskMapList.push({ label: example.part_number, total_packs: example.total_packs });
+        setMaskMapList(_maskMapList);
+      })
+    }
+    ).catch((err) => {
+      console.log(err);
+    })
+  }
+
+  useEffect(() => {
+    getMaskMapList();
+  }, []);
+
+  const { sendDisabled } = useMemo(() => {
     let sendDisabled = false;
     if (config?.fields?.length > 0) {
       for (let fieldData of config.fields) {
@@ -117,9 +138,9 @@ export default function FormModal({config, open, handleClose, onClickSend, sendL
           }
           else if (fieldData.type === "number") {
             if (
-                (fieldData.hasOwnProperty('min') && formData[fieldData.field] < fieldData.min)
-                || (fieldData.hasOwnProperty('max') && formData[fieldData.field] > fieldData.max)
-              ) {
+              (fieldData.hasOwnProperty('min') && formData[fieldData.field] < fieldData.min)
+              || (fieldData.hasOwnProperty('max') && formData[fieldData.field] > fieldData.max)
+            ) {
               sendDisabled = true;
               break;
             }
@@ -127,7 +148,7 @@ export default function FormModal({config, open, handleClose, onClickSend, sendL
         }
       }
     };
-    return {sendDisabled};
+    return { sendDisabled };
   }, [config, formData]);
 
   useEffect(() => {
@@ -157,13 +178,25 @@ export default function FormModal({config, open, handleClose, onClickSend, sendL
     onClickSend(formData);
   };
 
+  useEffect(() => {
+    if (maskMapList.length > 0) {
+      let newPartsObj = {};
+      for (let key in _partsObj) {
+        let part = _partsObj[key];
+        let part_id = part.part_id;
+        let total_packs = maskMapList.find((el) => el.label === part_id)?.total_packs ?? 0;
+        newPartsObj[key] = { ...part, total_packs };
+      };
+      setPartsObj(newPartsObj);
+    };
+  }, [maskMapList, _partsObj]);
+
+
   const onChange = (fieldData) => (event) => {
 
     let newValue = event.target.value;
-
     if (fieldData.type === "part_id") {
-
-      let updateData = {"part_id": newValue};
+      let updateData = { "part_id": newValue };
       if (partsObj.hasOwnProperty(newValue)) {
         let part = partsObj[newValue];
         partIdFields.forEach((fieldData) => {
@@ -180,7 +213,7 @@ export default function FormModal({config, open, handleClose, onClickSend, sendL
     }
     else {
       let newValue = event.target.value;
-      setFormData((oldValue) => Object.assign({}, oldValue, {[fieldData.field]: newValue}));
+      setFormData((oldValue) => Object.assign({}, oldValue, { [fieldData.field]: newValue }));
     };
   };
 
@@ -195,9 +228,11 @@ export default function FormModal({config, open, handleClose, onClickSend, sendL
       <Fade in={open}>
         <Box width={config?.width ?? 800} sx={style.mainBox}>
           <Grid container spacing={1} sx={style.formBox}>
-            {formFields.map(({xs, ...fieldData}, index) => 
+            {formFields.map(({ xs, ...fieldData }, index) =>
               <Grid key={index} xs={xs} item>
-                {inputComponents[fieldData.type === "part_id" ? "part_id": "else"]({
+                {inputComponents[
+                  inputComponents[fieldData.type] ? fieldData.type : "else"
+                ]({
                   label: t(fieldData.label),
                   type: fieldData.type,
                   value: formData[fieldData.field],

@@ -93,8 +93,7 @@ export default function Dashboard({ pageOptions }) {
           startTime: getQueryDateString(startDate, 0, "between"),
           endTime: getQueryDateString(startDate, 0, "end"),
           queryName: charts[i].query_name,
-          stationId,
-          run: false,
+          stationId
         });
         if (!data?.chartInfo?.width) {
           data.chartInfo.width =

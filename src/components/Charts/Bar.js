@@ -140,7 +140,6 @@ export default function Bar({ chart }) {
           id: item,
           [item]: data[item],
         };
-
         if (
           Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0 &&
           chart?.chartInfo?.colors_results?.[item]
@@ -169,8 +168,8 @@ export default function Bar({ chart }) {
           [item._id]: item.value,
         };
         if (
-          chart?.chartInfo?.colors_results?.length > 0 &&
-          chart?.chartInfo?.colors_results?.[item._id]
+          Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 &&
+          chart?.chartInfo?.colors_results?.[item._id] !== undefined
         ) {
           _item.color = chart.chartInfo.colors_results[item._id];
         } else {
@@ -183,8 +182,6 @@ export default function Bar({ chart }) {
       setKeys(newKeys);
       setQueryHasColors(
         Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0
-          ? true
-          : false
       );
     }
   }, [chart]);

@@ -35,26 +35,25 @@ const responsivePieTheme = {
 
 const responsivePieLegends = [
   {
-    anchor: 'left',
-    direction: 'column',
-    justify: false,
-    // translateY: 56,
-    translateX: -100,
-    itemsSpacing: 5,
-    itemWidth: 10,
-    itemHeight: 18,
-    itemTextColor: 'white',
-    itemDirection: 'left-to-right',
-    itemOpacity: 1,
-    symbolSize: 12,
-    symbolShape: 'square',
+      anchor: 'bottom',
+      direction: 'row',
+      justify: false,
+      translateY: 56,
+      itemsSpacing: 5,
+      itemWidth: 100,
+      itemHeight: 18,
+      itemTextColor: 'white',
+      itemDirection: 'left-to-right',
+      itemOpacity: 1,
+      symbolSize: 12,
+      symbolShape: 'circle',
     // effects: [
-    //   {
-    //     on: 'hover',
-    //     style: {
-    //       itemTextColor: '#000'
+    //     {
+    //         on: 'hover',
+    //         style: {
+    //             itemTextColor: '#000'
+    //         }
     //     }
-    //   }
     // ]
   }
 ];
@@ -80,7 +79,8 @@ export default function Bar({ chart }) {
           [item._id]: item.value,
           value: item.value,
         }
-        if (Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0 && chart?.chartInfo?.colors_results?.[item._id]) {
+        if (Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 &&
+        chart?.chartInfo?.colors_results?.[item._id] !== undefined) {
           _item.color = chart.chartInfo.colors_results[item._id]
         }
         else {
