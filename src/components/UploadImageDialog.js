@@ -54,7 +54,9 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
 
     API.post.uploadImageInfo({
       data: {
-        ...dataset.dataset_id,
+        dataset_id: dataset.dataset_id.dataset_id,
+        part_number: dataset.part_number,
+        total_packs: dataset.box_quant,
         img_height: imgHeight,
         img_width: imgWidth,
         date: new Date(),
@@ -62,7 +64,7 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
       },
       imageBase64: base64Str,
     })
-    .then((res) => {
+    .then(() => {
       setLoading(false);
       setDataset(null);
       handleClose();
