@@ -74,7 +74,8 @@ const API = {
   get: {
     batchList: ({ params, stationId }, setLoading) => request(instance.get(`batch/${stationId}/list`, { params }), setLoading),
     partsList: (_, setLoading) => request(instance.get(`parts/list`), setLoading),
-    serialList: ({ params, stationId }, setLoading) => request(instance.get(`serial/${stationId}/list`, { params }), setLoading),
+    maskMapList: (_, setLoading) => request(instance.get(`parts/mask-map/list`), setLoading),
+    serialList: ({ params, stationId }, setLoading) => request(instance.get(`serial/${stationId}/list`), setLoading),
     serial: ({ stationId, serialId, collection }, setLoading) => request(instance.get(`serial/${stationId}/${serialId}?collection=${collection}`), setLoading),
     runningBatch: ({ stationId }, setLoading) => request(instance.get(`batch/${stationId}/running`), setLoading),
     runningSerial: ({ stationId }, setLoading) => request(instance.get(`serial/${stationId}/running`), setLoading),
@@ -92,7 +93,7 @@ const API = {
 
     fromToDocument: (setLoading) => request(instance.get(`internal/from-to-document/`), setLoading),
 
-    queryData: ({ stationId, queryName, startTime, endTime }, setLoading) => request(instance.get(`queries/${stationId}/data`, { params: { queryName, startTime, endTime } }), setLoading),
+    queryData: ({ stationId, queryName, startTime, endTime, filters }, setLoading) => request(instance.get(`queries/${stationId}/data`, { params: { queryName, startTime, endTime, filters } }), setLoading),
 
     query: (_, setLoading) => request(instance.get(`queries/`, setLoading)),
     accessControlData: (setLoading) => request(instance.get(`auth/access-control-data`), setLoading),
