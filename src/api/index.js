@@ -93,7 +93,7 @@ const API = {
 
     fromToDocument: (setLoading) => request(instance.get(`internal/from-to-document/`), setLoading),
 
-    queryData: ({ stationId, queryName, startTime, endTime }, setLoading) => request(instance.get(`queries/${stationId}/data`, { params: { queryName, startTime, endTime } }), setLoading),
+    queryData: ({ stationId, queryName, startTime, endTime, filters }, setLoading) => request(instance.get(`queries/${stationId}/data`, { params: { queryName, startTime, endTime, filters } }), setLoading),
 
     query: (_, setLoading) => request(instance.get(`queries/`, setLoading)),
     accessControlData: (setLoading) => request(instance.get(`auth/access-control-data`), setLoading),

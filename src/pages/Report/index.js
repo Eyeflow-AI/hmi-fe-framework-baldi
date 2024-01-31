@@ -96,6 +96,14 @@ export default function Report({ pageOptions }) {
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [builtChats, setBuiltChats] = useState([]);
   const [downloadLoading, setDownloadLoading] = useState(false);
+  const [selectedFilters, setSelectedFilters] = useState([]);
+
+  const [filters, setFilters] = useState([])
+
+  useEffect(() => {
+    const filters = pageOptions?.options?.filters ?? [];
+    setFilters(filters);
+  }, [pageOptions]);
 
   const downloadAll = () => {
     if (builtChats.length > 0) {
@@ -108,29 +116,38 @@ export default function Report({ pageOptions }) {
       setDownloadLoading(false);
     }
   };
-
+  
   const getData = async () => {
     const charts = pageOptions?.options?.charts ?? [];
     const chartsToBuild = [];
+    let _filters = [];
+
     if (charts.length !== 0) {
       setLoadingSearch(true);
       let flagError = false;
       for (let i = 0; i < charts.length; i++) {
-        // setLoadingSearch(true);
-        try {
-          let data = await API.get.queryData({
-            startTime: selectedStartDate,
-            endTime: selectedEndDate,
-            queryName: charts[i].query_name,
-            stationId,
+
+        if (selectedFilters !== null && Object.keys(selectedFilters).length > 0) {
+          let _selectedFilters = {}
+          Object.entries(selectedFilters).forEach(([key, value]) => {
+            if (value !== "") {
+              _selectedFilters[key] = value;
+            }
           });
-          // console.log(data);
+
+          _filters = { startTime: selectedStartDate, endTime: selectedEndDate, queryName: charts[i].query_name, stationId,
+            filters: _selectedFilters
+          }
+        } else {
+          _filters = { startTime: selectedStartDate, endTime: selectedEndDate, queryName:charts[i].query_name, stationId, filters: null}
+        }
+        try {
+          let data = await API.get.queryData(_filters);
           if (!data?.chartInfo?.width) {
             data.chartInfo.width =
               charts.length >= 4
                 ? `${(1 / (charts.length / 2)) * 100}%`
                 : `${100 / charts.length}%`;
-            console.log(data.chartInfo.width);
           }
           if (!data?.chartInfo?.height) {
             data.chartInfo.height = charts.length >= 4 ? "50%" : "100%";
@@ -140,12 +157,7 @@ export default function Report({ pageOptions }) {
             data.chartInfo.download = async (setLoading) => {
               try {
                 setLoading(true);
-                let data = await API.get.queryData({
-                  startTime: selectedStartDate,
-                  endTime: selectedEndDate,
-                  queryName: charts?.[i]?.download_query,
-                  stationId,
-                });
+                let data = await API.get.queryData(_filters);
                 if (data?.result) {
                   data = data.result;
                   let { uri, filename } = jsonToCSV({
@@ -213,7 +225,7 @@ export default function Report({ pageOptions }) {
                 <DateTimePicker
                   value={selectedStartDate}
                   onChange={setSelectedStartDate}
-                  label={t("start_date")}
+                  label={t('start_date')}
                   renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
@@ -223,30 +235,55 @@ export default function Report({ pageOptions }) {
                 <DateTimePicker
                   value={selectedEndDate}
                   onChange={setSelectedEndDate}
-                  label={t("end_date")}
+                  label={t('end_date')}
                   renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
             </Box>
+            {filters?.map((filter, index) => {
+              return (
+                <Box key={`filter-${index}`}>
+                  <TextField
+                    id="outlined-basic"
+                    label={filter.label}
+                    variant="outlined"
+                    value={selectedFilters[index]}
+                    onChange={(e) => {
+                      setSelectedFilters({
+                        ...selectedFilters,
+                        [filter.field]: e.target.value
+                      })
+                    }}
+                    type={filter.type}
+                    error={selectedFilters[index] < 0}
+                  />
+                </Box>
+              );
+            })}
 
             <Box
               sx={{
-                marginLeft: "auto",
-                marginRight: 1,
+                marginLeft: 'auto',
+                marginRight: 1
               }}
             >
-              {loadingSearch ? (
-                <CircularProgress />
-              ) : (
-                <Button
-                  variant="contained"
-                  startIcon={<SearchIcon />}
-                  onClick={startSearch}
-                  disabled={loadingSearch}
-                >
-                  {t("search")}
-                </Button>
-              )}
+              {
+                loadingSearch ?
+                  <CircularProgress />
+                  :
+                  <Button
+                    variant="contained"
+                    startIcon={<SearchIcon />}
+                    onClick={
+                      () => {
+                        startSearch();
+                      }
+                    }
+                    disabled={loadingSearch}
+                  >
+                    {t('search')}
+                  </Button>
+              }
               {builtChats.length > 0 &&
                 (downloadLoading ? (
                   <CircularProgress />
