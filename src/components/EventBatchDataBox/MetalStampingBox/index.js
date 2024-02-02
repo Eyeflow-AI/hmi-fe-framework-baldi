@@ -143,6 +143,7 @@ export default function MetalStampingBox({ data, config }) {
     run: config?.lastHour?.show,
   });
   const [lastHourDataPartsData, setLastHourDataPartsData] = useState([]);
+  const showLastAnomaly = config?.lastAnomaly?.show
 
   const { queryResponse: qrLastHourDataAnomalies } = GetRunQuery({
     data: config?.lastHour?.queryAnomalies,
@@ -920,7 +921,7 @@ export default function MetalStampingBox({ data, config }) {
           </Box>
         )}
 
-        {anomaliesBarData &&
+        {showLastAnomaly && anomaliesBarData &&
           anomaliesBarData.length > 0 &&
           anomalyImageData && (
             <Box sx={styleSx.cardBoxSx}>
