@@ -270,13 +270,12 @@ export default function MetalStampingBox({ data, config }) {
     let currentBox = 0;
     let totalParts = 0;
     if (data?.batch_data) {
-      let sumParts =
-        (!isNaN(data?.batch_data?.parts_ok) ? data?.batch_data?.parts_ok : 0) +
-        (!isNaN(data?.batch_data?.parts_ng) ? data?.batch_data?.parts_ng : 0);
+      let sumParts = (!isNaN(data?.batch_data?.parts_ok) ? data?.batch_data?.parts_ok : 0) + (!isNaN(data?.batch_data?.parts_ng) ? data?.batch_data?.parts_ng : 0);
       currentBox = Math.ceil(sumParts / data?.info?.parts_per_pack);
-      if (typeof currentBox !== "number") {
+      if (!(typeof currentBox === "number" && isFinite(currentBox) && currentBox >= 0)) {
         currentBox = 0;
       }
+      
       totalParts = sumParts;
     }
 
