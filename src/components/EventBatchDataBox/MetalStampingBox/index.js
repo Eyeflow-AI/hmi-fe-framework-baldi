@@ -21,49 +21,25 @@ const styleSx = {
   mainBoxSx: Object.assign({}, window.app_config.style.box, {
     bgcolor: "background.paper",
     display: "flex",
-    justifyContent: "space-evenly",
-    // paddingRight: 1,
-    position: "relative",
-  }),
-  graphBoxSx: {
-    display: "flex",
-    flexDirection: "column",
+    display: "block",
+    margin: "auto",
+    width: "100%",
     height: "100%",
-    width: `${ITEM_WIDTH - 80}px`,
-    justifyContent: "center",
-    padding: 1,
-    gap: 1,
-    alignItems: "center",
-    // justifyContent: 'space-evenly',
-    // width: '100%',
-    // flexGrow: 1,
-    // border: '1px solid #000000',
-    // position: 'relative',
-  },
-  pieBoxSx: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    height: ITEM_HEIGHT,
-    width: ITEM_WIDTH,
-  },
+    // border: "1px solid red",
+  }),
   imageBoxSx: {
     display: "block",
     margin: "auto",
     width: "100%",
     height: "100%",
+    // border: "1px solid red",
   },
   cardBoxSx: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    alignItems: "center",
-    // maxHeight: `min(${ITEM_HEIGHT}px, 50%)`,
-    // maxWidth: `min(${ITEM_WIDTH}px, 50%)`,
     width: "100%",
     height: "50%",
-    // border: "8px solid #000000",
   },
 };
 
@@ -159,55 +135,66 @@ export default function MetalStampingBox({ data, config }) {
       totalParts,
     };
   }, [selectedCamera, data]);
+  console.log({ imageData });
 
   return (
     <Box
-      width={config?.width ?? "calc(100%)"}
+      width={config?.width ?? "100%"}
       height={config?.height ?? "100%"}
       // height={'941px'}
       sx={styleSx.mainBoxSx}
     >
-      <Box
-        id="image-box"
-        sx={styleSx.imageBoxSx}
-        // height={`${height}px`}
-      >
-        {imageData && (
-          <Box sx={styleSx.cardBoxSx}>
-            <ImageCard
-              imageData={imageData}
-              eventTime={imageData.event_time}
-              title={t("last_inspection")}
-            />
-          </Box>
-        )}
+      {imageData ? (
+        <Box sx={styleSx.cardBoxSx}>
+          <ImageCard
+            imageData={imageData}
+            eventTime={imageData.event_time}
+            title={t("last_inspection")}
+            width={"100%"}
+            height={"50%"}
+          />
+        </Box>
+      ) : (
+        <Box sx={styleSx.cardBoxSx}>
+          <Typography
+            sx={{
+              color: "error.main",
+              fontSize: "4rem",
+              textAlign: "center",
+            }}
+          >
+            {t("no_image")}
+          </Typography>
+        </Box>
+      )}
 
-        {showLastAnomaly &&
-        anomaliesBarData &&
-        anomaliesBarData.length > 0 &&
-        anomalyImageData ? (
-          <Box sx={styleSx.cardBoxSx}>
-            <ImageCard
-              imageData={anomalyImageData}
-              title={t("last_anomaly")}
-              eventTime={anomalyImageData.event_time}
-              color="error.main"
-            />
-          </Box>
-        ) : (
-          <Box sx={styleSx.cardBoxSx}>
-            <Typography
-              sx={{
-                color: "success.main",
-                fontSize: "4rem",
-                textAlign: "center",
-              }}
-            >
-              {t("no_anomalies")}
-            </Typography>
-          </Box>
-        )}
-      </Box>
+      {showLastAnomaly &&
+      anomaliesBarData &&
+      anomaliesBarData.length > 0 &&
+      anomalyImageData ? (
+        <Box sx={styleSx.cardBoxSx}>
+          <ImageCard
+            imageData={anomalyImageData}
+            title={t("last_anomaly")}
+            eventTime={anomalyImageData.event_time}
+            color="error.main"
+            width={"100%"}
+            height={"50%"}
+          />
+        </Box>
+      ) : (
+        <Box sx={styleSx.cardBoxSx}>
+          <Typography
+            sx={{
+              color: "success.main",
+              fontSize: "4rem",
+              textAlign: "center",
+            }}
+          >
+            {t("no_anomalies")}
+          </Typography>
+        </Box>
+      )}
     </Box>
   );
 }

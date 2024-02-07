@@ -487,13 +487,6 @@ export default function ListView({
     imageInfo,
   }) => {
     const imageScale = imageInfo?.image?.image_scale ?? 1;
-    // let bboxes = [];
-    // region?.tests?.forEach((test) => {
-    //   // console.log({bboxes, region})
-    //   bboxes = [...bboxes, ...test?.detections?.filter(detection =>
-    //     (detection?.image?.image_file === region?.image?.image_file || detection?.image_file === region?.image_file) && ((Object.keys(detection)?.includes('inframe') && detection?.inframe) || Object.keys(detection)?.includes('in_frame')
-    //     )) ?? []];
-    // });
     let absolute_path = "";
     let _url = "";
     if (isSelectedSerialRunning) {
@@ -631,14 +624,6 @@ export default function ListView({
         annotated: imageURLS?.annotated ?? "",
         notAnnotated: imageURLS?.notAnnotated ?? "",
       };
-      // const _loadingFeedback = false;
-      // detections.forEach((inspection, index) => {
-      //   _imagesURLS.push({
-      //     annotated: imagesURLS?.[index]?.annotated ?? '',
-      //     notAnnotated: imagesURLS?.[index]?.notAnnotated ?? '',
-      //   });
-      //   _loadingFeedback.push(false);
-      // });
       setImageURLSRef(_imageURL);
       if (
         JSON.stringify(detections) !== JSON.stringify(dataToUse?.detections) ||
