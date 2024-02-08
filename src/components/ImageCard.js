@@ -15,7 +15,7 @@ const styleSx = {
     flexDirection: "column",
     width: "100%",
     height: "100%",
-    // border: "1px solid red",
+    // border: "5px solid red",
     position: "relative",
   },
   imageBoxSx: {
@@ -24,8 +24,8 @@ const styleSx = {
     width: "100%",
     height: "calc(100% - 40px)",
     marginTop: "40px",
-    // display: "inline-block",
-    // border: "1px solid green",
+    display: "inline-block",
+    border: "1px solid green",
   },
   headerBoxSx: {
     height: 40,
@@ -51,12 +51,13 @@ const styleSx = {
 
 const imageStyle = {
   maxWidth: "100%",
-  maxHeight: "calc(100%)",
+  maxHeight: "100%",
   // paddingTop: 80,
   objectFit: "contain",
   // opacity: "1",
   display: "block",
   // border: "1px solid blue",
+  left: "50%",
 };
 
 const loadingImageStyle = Object.assign({}, imageStyle, {
@@ -366,7 +367,7 @@ export default function ImageCard({
       // let url = imageDataURL.replace("192.168.0.201", "192.168.2.40");
       let url = imageDataURL;
 
-      fetchJson(`${imageDataURL}?time=${Date.now()}`);
+      // fetchJson(`${imageDataURL}?time=${Date.now()}`);
       fetchJson(`${url}?time=${Date.now()}`)
         .then((data) => {
           setEventData(data);
@@ -388,7 +389,6 @@ export default function ImageCard({
       //     setEventData(data);
       // let url = _imageURL.replace("192.168.0.201", "192.168.2.40");
       let url = _imageURL;
-      console.log({ url });
       getAnnotatedImg({
         // image: `${url}/${region?.image?.image_path ?? region?.image_path}/${region?.image?.image_file ?? region?.image_file}`
         image: url,
@@ -439,14 +439,6 @@ export default function ImageCard({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventData]);
 
-  console.log({
-    detections,
-    eventData,
-    loading,
-    imageLoading,
-    detectionsLoading,
-  });
-
   const onImageLoad = (event) => {
     setImageWidth(event.target.naturalWidth);
     setImageHeight(event.target.naturalHeight);
@@ -471,26 +463,24 @@ export default function ImageCard({
         <Typography sx={styleSx.textDate}>{eventTime}</Typography>
       </Box>
       <Box id="image-card" sx={styleSx.imageBoxSx}>
-        <img
-          alt=""
-          src={imageURL}
-          // src={"/assets/cat.webp"}
-          style={loading ? loadingImageStyle : imageStyle}
-          onLoad={onImageLoad}
-        />
+        <center
+          style={{
+            position: "relative",
+            display: "block",
+            width: "100%",
+            height: "100%",
+            // border: "1px solid red"
+          }}
+        >
+          <img
+            alt=""
+            src={imageURL}
+            // src={"/assets/cat.webp"}
+            style={loading ? loadingImageStyle : imageStyle}
+            onLoad={onImageLoad}
+          />
+        </center>
         {loading && <CircularProgress sx={styleSx.circularProgressSx} />}
-        {/* {!loading &&
-          eventData &&
-          detections.map((detection, index) => (
-            <DetectionBox
-              data={detection}
-              key={index}
-              imageWidth={imageWidth}
-              imageHeight={imageHeight}
-              showLabel={false}
-              showConfidence={false}
-            />
-          ))} */}
       </Box>
     </Box>
   );
