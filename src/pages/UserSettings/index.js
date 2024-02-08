@@ -9,8 +9,10 @@ import PageWrapper from "../../components/PageWrapper";
 import Menu from "./menu";
 import ChangePassword from "./dialog/ChangePassword";
 import API from "../../api";
+import authSlice from "../../store/slices/auth";
 
 // Third-party
+import { useDispatch } from "react-redux";
 
 const style = {
   mainBox: Object.assign({}, window.app_config.style.box, {
@@ -26,12 +28,17 @@ const style = {
 const UserSettings = () => {
   const [selectedDialog, setSelectedDialog] = useState(null);
 
+  const dispatch = useDispatch();
+
   const resetPassword = (username, newPassword) => {
     API.put
       .resetPassword({ username, newPassword })
       .then((result) => {})
       .catch(console.log)
-      .finally(() => setSelectedDialog(null));
+      .finally(() => {
+        setSelectedDialog(null);
+        // dispatch(authSlice.actions.logout());
+      });
   };
 
   return (

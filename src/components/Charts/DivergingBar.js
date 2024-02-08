@@ -16,27 +16,50 @@ import { useTranslation } from "react-i18next";
 import { ResponsiveBar } from "@nivo/bar";
 import { colors } from "sdk-fe-eyeflow";
 
-const CustomTooltip = ({ color, value, id }) => (
-  <Box
-    sx={{
-      background: colors.paper.blue.dark,
-      width: "100%",
-      height: "100%",
-      display: "flex",
-      // flexDirection: 'column',
-      alignItems: "center",
-      justifyContent: "center",
-      padding: 1,
-      textTransform: "uppercase",
-    }}
-  >
-    <div
-      style={{ width: "15px", height: "15px", backgroundColor: color }}
-    ></div>
-    &nbsp;&nbsp;
-    {id}: {value}%
-  </Box>
-);
+const CustomTooltip = ({ color, value, id, value_type, total }) => {
+  const [valueSymbol, setValueSymbol] = useState("");
+  const [currentValue, setCurrentValue] = useState(0);
+
+  useEffect(() => {
+    if (value_type === "percentage") {
+      let _currentValue = (Math.abs(value) / total) * 100;
+      _currentValue = _currentValue.toFixed(2);
+      setCurrentValue(_currentValue);
+      setValueSymbol("%");
+    } else if (value_type === "absolute") {
+      setCurrentValue(value);
+      setValueSymbol("");
+    } else {
+      let _currentValue = (Math.abs(value) / total) * 100;
+      _currentValue = _currentValue.toFixed(2);
+      setCurrentValue(_currentValue);
+      setValueSymbol("%");
+    }
+  }, [value_type]);
+
+  return (
+    <Box
+      sx={{
+        background: colors.paper.blue.dark,
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        // flexDirection: 'column',
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 1,
+        textTransform: "uppercase",
+      }}
+    >
+      <div
+        style={{ width: "15px", height: "15px", backgroundColor: color }}
+      ></div>
+      &nbsp;&nbsp;
+      {id}: {currentValue}
+      {valueSymbol}
+    </Box>
+  );
+};
 
 const responsiveTheme = {
   tooltip: {
@@ -172,8 +195,10 @@ export default function DivergingBar({ chart }) {
   const [keys, setKeys] = useState([]);
   const [queryHasColors, setQueryHasColors] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
+  const [maxValue, setMaxValue] = useState(0);
+  const [minValue, setMinValue] = useState(0);
 
-  console.log({ _colors });
+  console.log({ info });
 
   useEffect(() => {
     if (!chart?.result?.length) return;
@@ -188,17 +213,21 @@ export default function DivergingBar({ chart }) {
           : false;
 
       let data = chart.result[0];
-      console.log({ data });
       let newInfo = [];
+      let _maxValue = 0;
+      let _minValue = 0;
       Object.entries(data).forEach(([key, value]) => {
         let dontSave = false;
         let _item = {
           period: key,
+          total: 0,
         };
         Object.entries(value?.fields ?? {}).forEach(([field, fieldValue]) => {
           // if (Math.abs(fieldValue) <= 0.05) dontSave = true;
-          console.log({ fieldValue, dontSave });
           _item[`${t(field)}`] = fieldValue;
+          _item["total"] += Math.abs(fieldValue);
+          if (fieldValue > _maxValue) _maxValue = fieldValue;
+          if (fieldValue < _minValue) _minValue = fieldValue;
           // chart?.chartInfo?.colors_results?.[i.id];
           if (queryHasColors) {
             _item[`${t(field)}Color`] =
@@ -217,6 +246,19 @@ export default function DivergingBar({ chart }) {
         keys.push(`${t(key)}`);
       });
       setKeys(keys);
+
+      if (chart?.chartInfo?.value_type === "percentage") {
+        setMaxValue(100);
+        setMinValue(-100);
+      } else if (chart?.chartInfo?.value_type === "absolute") {
+        _maxValue *= 1.1;
+        _minValue *= 1.1;
+        setMaxValue(_maxValue);
+        setMinValue(_minValue);
+      } else {
+        setMaxValue(100);
+        setMinValue(-100);
+      }
     } else if (chart.result.length > 1) {
       // let newKeys = chart.result.map((item) => item._id);
       // let data = chart.result;
@@ -311,21 +353,46 @@ export default function DivergingBar({ chart }) {
             // colors={{ scheme: "nivo" }}
             tooltip={(info) => {
               let value = info.data[info.id];
+              console.log({ i: info });
+              let total = info?.data?.total ?? 0;
               let color = info.color;
               let id = info.id;
-              return <CustomTooltip color={color} value={value} id={id} />;
+              return (
+                <CustomTooltip
+                  color={color}
+                  value={value}
+                  total={total}
+                  id={id}
+                  value_type={
+                    chart?.chartInfo?.tooltip_value_type
+                      ? chart?.chartInfo?.tooltip_value_type
+                      : chart?.chartInfo?.value_type ?? "percentage"
+                  }
+                />
+              );
             }}
             indexScale={{ type: "band", round: true }}
             enableGridX={true}
             theme={responsiveTheme}
             legends={responsiveLegends}
-            valueFormat={(v) =>
-              Math.abs(v) >= chart?.chartInfo?.min_value_to_show ?? 5
-                ? `${v}%`
-                : ""
-            }
-            maxValue={100}
-            minValue={-100}
+            valueFormat={(v) => {
+              let valueType = chart?.chartInfo?.value_type ?? "percentage";
+              if (valueType === "percentage") {
+                if (Math.abs(v) >= chart?.chartInfo?.min_value_to_show ?? 5) {
+                  return `${v}%`;
+                } else {
+                  return "";
+                }
+              } else if (valueType === "absolute") {
+                // if (Math.abs(v) >= chart?.chartInfo?.min_value_to_show ?? 0) {
+                return `${v}`;
+                // } else {
+                // return "";
+                // }
+              }
+            }}
+            maxValue={maxValue}
+            minValue={minValue}
             yScale={{
               type: "linear",
               minInterval: 1,
@@ -340,7 +407,14 @@ export default function DivergingBar({ chart }) {
               legendPosition: "middle",
               // legendOffset: -40,
               // truncateTickAt: 0,
-              format: (value) => `${value}%`,
+              format: (value) => {
+                let valueType = chart?.chartInfo?.value_type ?? "percentage";
+                if (valueType === "percentage") {
+                  return `${value}%`;
+                } else if (valueType === "absolute") {
+                  return value;
+                }
+              },
             }}
             axisTop={{
               tickSize: 5,
@@ -360,7 +434,14 @@ export default function DivergingBar({ chart }) {
               legendPosition: "middle",
               legendOffset: 32,
               // truncateTickAt: 0,
-              format: (value) => `${value}%`,
+              format: (value) => {
+                let valueType = chart?.chartInfo?.value_type ?? "percentage";
+                if (valueType === "percentage") {
+                  return `${value}%`;
+                } else if (valueType === "absolute") {
+                  return value;
+                }
+              },
             }}
             // axisBottom={{
             //   tickSize: 5,
