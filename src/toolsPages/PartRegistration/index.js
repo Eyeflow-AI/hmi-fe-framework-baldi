@@ -8,7 +8,7 @@ import React, {
 } from "react";
 
 // Design
-import { Box, Typography, Card, CardMedia } from "@mui/material";
+import { Box, Typography, Card, CardMedia, Autocomplete, TextField } from "@mui/material";
 
 // Internal
 import PageWrapper from "../../components/PageWrapper";
@@ -66,6 +66,10 @@ export default function PartRegistration({ pageOptions }) {
     };
   }, []);
 
+  const handleImageChange = (item) => {
+    setImagePath(item?.full_url);
+  };
+
   useEffect(() => {
     if (!openImageDialog && !openImageInfoDialog) {
       setDialogTitle("");
@@ -82,7 +86,7 @@ export default function PartRegistration({ pageOptions }) {
     refImagesList.current = imagesList;
   }, [imagesList]);
 
-  const onClickCapture = useCallback(
+  const onClickRegister = useCallback(
     (item) => {
       setDialogTitle(
         item?.frame_time
@@ -100,7 +104,7 @@ export default function PartRegistration({ pageOptions }) {
       let icon = item.icon;
       let onClick;
       if (item.id === "register") {
-        onClick = () => onClickCapture(refImagesList.current[0]);
+        onClick = () => onClickRegister(refImagesList.current[0]);
       } else {
         onClick = () => console.log(`${item.label} not implemented yet!`);
       }
@@ -128,56 +132,65 @@ export default function PartRegistration({ pageOptions }) {
               overflow: "hidden",
             }}
           >
-            {(() => {
-              const item = imagesList.find(item => item.camera_name === "CENTER");
-              if (!item) return null;
-              else console.log("Image item:", item);
-              return (
-                <Box
-                  sx={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    display: "flex",
-                    height: `calc(100% / ${HEIGHT[imagesList.length - 1]})`,
-                    width: `calc(100% / ${WIDTH[imagesList.length - 1]})`,
-                    flexDirection: "column",
+            <Autocomplete
+              autoComplete
+              label="Camera"
+              variant="outlined"
+              color="secondary"
+              sx={{
+                width: '60%',
+                height: 'auto',
+              }}
+              value={imagePath}
+              onChange={(e, newValue) => handleImageChange(newValue)}
+              options={imagesList}
+              getOptionLabel={(option) => option.camera_name ?? option}
+              defaultValue={imagesList.find(option => option.camera_name === "CENTER")}
+              renderInput={(params) => <TextField {...params} />}
+            />
+            <Box
+              sx={{
+                justifyContent: "center",
+                alignItems: "center",
+                display: "flex",
+                height: `calc(100% / ${HEIGHT[imagesList.length - 1]})`,
+                width: `calc(100% / ${WIDTH[imagesList.length - 1]})`,
+                flexDirection: "column",
+              }}
+            >
+              <Card
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  boxShadow: 1,
+                  borderRadius: '1rem',
+                  padding: '1rem',
+                  cursor: 'pointer',
+                }}
+                onClick={onOpenDialog(item)}
+              >
+                <CardMedia
+                  component="img"
+                  image={`${item?.full_url}?time=${clock}`}
+                  style={{
+                    objectFit: 'contain',
+                    // maxWidth: `calc(${pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)]})`,
+                    minWidth: '2560px * 0.3',
+                    // maxHeight: pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)],
+                    minHeigth: '1440px * 0.3',
+                    display: 'block',
+                    margin: 'auto',
+                    paddingBottom: '.5rem',
                   }}
-                >
-                  <Card
-                    sx={{
-                      width: "100%",
-                      height: "100%",
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      boxShadow: 1,
-                      borderRadius: '1rem',
-                      padding: '1rem',
-                      cursor: 'pointer',
-                    }}
-                    onClick={onOpenDialog(item)}
-                  >
-                    <CardMedia
-                      component="img"
-                      image={`${item?.full_url}?time=${clock}`}
-                      style={{
-                        objectFit: 'contain',
-                        // maxWidth: `calc(${pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)]})`,
-                        minWidth: '2560px * 0.3',
-                        // maxHeight: pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)],
-                        minHeigth: '1440px * 0.3',
-                        display: 'block',
-                        margin: 'auto',
-                        paddingBottom: '.5rem',
-                      }}
-                    />
-                  </Card>
+                />
+              </Card>
 
-                  <Typography textAlign="center">{`${item.camera_name}`}</Typography>
-                </Box>
-              );
-            })}
+              <Typography textAlign="center">{`${item.camera_name}`}</Typography>
+            </Box>
           </Box>
           <ImageDialog
             open={openImageDialog}
