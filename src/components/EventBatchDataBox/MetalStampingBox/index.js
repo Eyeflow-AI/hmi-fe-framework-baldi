@@ -135,7 +135,6 @@ export default function MetalStampingBox({ data, config }) {
       totalParts,
     };
   }, [selectedCamera, data]);
-  console.log({ imageData });
 
   return (
     <Box

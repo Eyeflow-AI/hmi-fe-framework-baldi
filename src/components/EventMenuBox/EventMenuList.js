@@ -32,6 +32,8 @@ export default function EventMenuList({
   dateField,
   itemMenuHeight,
   conveyorIcon,
+  examplesList,
+  maskMapURL,
 }) {
   const { t } = useTranslation();
 
@@ -41,6 +43,15 @@ export default function EventMenuList({
     let eventData = events[index];
     let eventIndex = eventData?.index ?? 0;
     let selected = selectedEventId === eventData._id;
+    let part_id = eventData.part_id;
+    let image = examplesList.find(
+      (el) => el.part_id === part_id || el.part_number === part_id
+    );
+    // console.log({ part_id });
+    let url = `${maskMapURL}/${image?.example}`;
+    // url = url.replace("192.168.0.201", "192.168.2.40");
+    // console.log({ url, examplesList });
+    let currentIcon = image ? url : conveyorIcon;
     const customStyle = Object.assign(
       {
         display: "flex",
@@ -63,7 +74,7 @@ export default function EventMenuList({
           eventData={eventData}
           selected={selected}
           onClick={onEventClick}
-          conveyorIcon={conveyorIcon}
+          conveyorIcon={currentIcon}
         />
       </div>
     );

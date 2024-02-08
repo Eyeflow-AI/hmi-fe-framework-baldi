@@ -13,6 +13,7 @@ import FilterBox from "./FilterBox";
 //Third-party
 import { useTranslation } from "react-i18next";
 import { colors } from "sdk-fe-eyeflow";
+import fetchJson from "../../utils/functions/fetchJson";
 
 const styleSx = {
   mainBox: {
@@ -103,8 +104,40 @@ export default function EventMenuBox({
   const startSerialIcon = config?.startSerialIcon;
   const noEventIcon = config?.noEventIcon;
   const conveyorIcon = config?.conveyorIcon;
+  const [runningMaskIcon, setRunningMaskIcon] = useState("");
+  const [examplesList, setExamplesList] = useState([]);
 
   const [menuBoxHeight, setMenuBoxHeight] = useState(height);
+
+  useEffect(() => {
+    if (config?.maskMapURL && runningEvent && examplesList.length > 0) {
+      let image = examplesList.find(
+        (el) =>
+          el.part_id === runningEvent.part_id ||
+          el.part_number === runningEvent.part_id
+      );
+      let url = `${config.maskMapURL}/${image?.example}`;
+      // url = url.replace("192.168.0.201", "192.168.2.40");
+      setRunningMaskIcon(url);
+    } else {
+      setRunningMaskIcon("");
+    }
+  }, [config?.maskMapURL, runningEvent, examplesList]);
+
+  useEffect(() => {
+    if (config?.maskMapListURL) {
+      let url = config.maskMapListURL;
+      // url = url.replace("192.168.0.201", "192.168.2.40");
+
+      fetchJson(url)
+        .then((data) => {
+          setExamplesList(data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }, [config?.maskMapListURL]);
 
   useEffect(() => {
     if (hasMainButton) {
@@ -127,7 +160,7 @@ export default function EventMenuBox({
                   eventData={runningEvent}
                   selected={runningEvent._id === selectedEventId}
                   onClick={() => onChangeEventByClick(runningEvent._id)}
-                  conveyorIcon={conveyorIcon}
+                  conveyorIcon={runningMaskIcon ?? conveyorIcon}
                 />
               ) : (
                 <ButtonBase>
@@ -209,6 +242,8 @@ export default function EventMenuBox({
           dateField={dateField}
           itemMenuHeight={itemMenuHeight}
           conveyorIcon={conveyorIcon}
+          examplesList={examplesList}
+          maskMapURL={config?.maskMapURL}
         />
       </Box>
     </Box>

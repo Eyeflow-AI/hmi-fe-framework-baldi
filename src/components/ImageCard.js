@@ -5,7 +5,6 @@ import Typography from "@mui/material/Box";
 import Box from "@mui/material/Box";
 
 import fetchJson from "../utils/functions/fetchJson";
-import DetectionBox from "./DetectionBox";
 
 import { colors } from "sdk-fe-eyeflow";
 
@@ -25,7 +24,7 @@ const styleSx = {
     height: "calc(100% - 40px)",
     marginTop: "40px",
     display: "inline-block",
-    border: "1px solid green",
+    // border: "1px solid green",
   },
   headerBoxSx: {
     height: 40,
@@ -367,7 +366,6 @@ export default function ImageCard({
       // let url = imageDataURL.replace("192.168.0.201", "192.168.2.40");
       let url = imageDataURL;
 
-      // fetchJson(`${imageDataURL}?time=${Date.now()}`);
       fetchJson(`${url}?time=${Date.now()}`)
         .then((data) => {
           setEventData(data);
@@ -383,17 +381,11 @@ export default function ImageCard({
 
   useEffect(() => {
     if (_imageURL) {
-      // setDetectionsLoading(true);
-      // fetchJson(`${imageDataURL}?time=${Date.now()}`)
-      //   .then((data) => {
-      //     setEventData(data);
       // let url = _imageURL.replace("192.168.0.201", "192.168.2.40");
       let url = _imageURL;
       getAnnotatedImg({
-        // image: `${url}/${region?.image?.image_path ?? region?.image_path}/${region?.image?.image_file ?? region?.image_file}`
         image: url,
         regions: detections,
-        // , bbox: bboxes
         scale: 1,
         setAnnotatedImage,
         options: {
@@ -401,11 +393,6 @@ export default function ImageCard({
           returnCanvasURL: false,
         },
       });
-      // })
-      // .catch((err) => {
-      //   setEventData(null);
-      //   setDetectionsLoading(false);
-      // });
     } else {
       setEventData(null);
     }
@@ -423,15 +410,9 @@ export default function ImageCard({
       eventData.type === "checklist" &&
       Array.isArray(eventData?.detections)
     ) {
-      // for (let [key, detections] of (eventData.detections ?? [])) {
-      // console.log({eventData, x: Object.entries(eventData.detections ?? {}), imageDataURL})
-      // console.log({detections, eventData})
-
       for (let detection of eventData?.detections ?? []) {
-        // console.log({detection, imageDataURL})
         newDetectionList.push({ ...detection });
       }
-      // }
     }
 
     setDetections(newDetectionList);
