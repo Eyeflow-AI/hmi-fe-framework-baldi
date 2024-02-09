@@ -317,7 +317,6 @@ export default function Monitor({ pageOptions }) {
         open={openCreateModal}
         handleClose={handleCloseCreateModal}
         sendLoading={newBatchLoading}
-        useMaskList={useMaskList}
       />
       <PrintingDialog
         open={openPrintDialog}
