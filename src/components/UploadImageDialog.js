@@ -258,7 +258,7 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
                     error={errorInText?.dataset_id ?? false}
                     helperText={errorInText?.dataset_id ?? false ? 'Campo obrigatório.' : ''}
                   />
-                  {parms.parts_fields.map((part, index) => (
+                  {parms.parts_fields?.map((part, index) => (
                     <TextField
                       key={index}
                       id={part.id}
