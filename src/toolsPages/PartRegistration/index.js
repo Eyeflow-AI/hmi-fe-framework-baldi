@@ -17,7 +17,6 @@ import ImageDialog from "../../components/ImageDialog";
 import GetImagesList from "../utils/Hooks/GetImagesList";
 import GetEdgeEnvVar from "../../utils/Hooks/GetEdgeEnvVar";
 
-import axios from "axios";
 // Third-party
 
 const style = {
@@ -54,6 +53,10 @@ export default function PartRegistration({ pageOptions }) {
     sleepTime: pageOptions?.options?.sleepTime,
   });
 
+  const [cameraName, setCameraNane] = useState("CENTER");
+
+  const item = imagesList.find(item => item?.camera_name === cameraName);
+
   const onOpenDialog = useCallback((item) => {
     return () => {
       setOpenImageDialog(true);
@@ -67,7 +70,14 @@ export default function PartRegistration({ pageOptions }) {
   }, []);
 
   const handleImageChange = (item) => {
+    if (!item) return;
+    setCameraNane(item?.camera_name);
     setImagePath(item?.full_url);
+    setDialogTitle(
+      item?.frame_time
+        ? `${item?.camera_name} - ${item?.frame_time}`
+        : `${item?.camera_name}`
+    );
   };
 
   useEffect(() => {
@@ -132,65 +142,61 @@ export default function PartRegistration({ pageOptions }) {
               overflow: "hidden",
             }}
           >
-            <Autocomplete
-              autoComplete
-              label="Camera"
-              variant="outlined"
-              color="secondary"
-              sx={{
-                width: '60%',
-                height: 'auto',
-              }}
-              value={imagePath}
-              onChange={(e, newValue) => handleImageChange(newValue)}
-              options={imagesList}
-              getOptionLabel={(option) => option.camera_name ?? option}
-              defaultValue={imagesList.find(option => option.camera_name === "CENTER")}
-              renderInput={(params) => <TextField {...params} />}
-            />
-            <Box
-              sx={{
-                justifyContent: "center",
-                alignItems: "center",
-                display: "flex",
-                height: `calc(100% / ${HEIGHT[imagesList.length - 1]})`,
-                width: `calc(100% / ${WIDTH[imagesList.length - 1]})`,
-                flexDirection: "column",
-              }}
-            >
-              <Card
-                sx={{
-                  width: "100%",
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  boxShadow: 1,
-                  borderRadius: '1rem',
-                  padding: '1rem',
-                  cursor: 'pointer',
-                }}
-                onClick={onOpenDialog(item)}
-              >
-                <CardMedia
-                  component="img"
-                  image={`${item?.full_url}?time=${clock}`}
-                  style={{
-                    objectFit: 'contain',
-                    // maxWidth: `calc(${pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)]})`,
-                    minWidth: '2560px * 0.3',
-                    // maxHeight: pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)],
-                    minHeigth: '1440px * 0.3',
-                    display: 'block',
-                    margin: 'auto',
-                    paddingBottom: '.5rem',
+                <Box
+                  sx={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    display: "flex",
+                    flexDirection: "column",
                   }}
-                />
-              </Card>
+                >
+                  <Card
+                    sx={{
+                      width: "100%",
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      boxShadow: 1,
+                      borderRadius: '1rem',
+                      padding: '1rem',
+                      cursor: 'pointer',
+                    }}
+                    onClick={onOpenDialog(item)}
+                  >
+                    <CardMedia
+                      component="img"
+                      image={`${item?.full_url}?time=${clock}`}
+                      style={{
+                        objectFit: 'contain',
+                        minWidth: '2560px * 0.3',
+                        minHeigth: '1440px * 0.3',
+                        display: 'block',
+                        margin: 'auto',
+                        paddingBottom: '.5rem',
+                      }}
+                    />
+                  </Card>
 
-              <Typography textAlign="center">{`${item.camera_name}`}</Typography>
-            </Box>
+                  <Typography textAlign="center">{`${item?.camera_name}`}</Typography>
+                </Box>
+                <Autocomplete
+                  autoComplete
+                  label="Camera"
+                  variant="outlined"
+                  color="secondary"
+                  sx={{
+                    width: '60%',
+                    height: 'auto',
+                  }}
+                  value={item}
+                  onChange={(e, newValue) => handleImageChange(newValue)}
+                  options={imagesList}
+                  getOptionLabel={(option) => option?.camera_name}
+                  defaultValue={imagesList[0].camera_name}
+                  renderInput={(params) => <TextField {...params} />}
+                />
           </Box>
           <ImageDialog
             open={openImageDialog}

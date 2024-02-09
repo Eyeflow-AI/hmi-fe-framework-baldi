@@ -1,4 +1,3 @@
-// React
 import React, { useEffect, useState } from 'react';
 
 // Design
@@ -11,7 +10,7 @@ import Grid from '@mui/material/Grid';
 import DownloadIcon from '@mui/icons-material/Download';
 import { Autocomplete, Button, TextField, Typography } from '@mui/material';
 import { getUser } from '../store/slices/auth';
-
+import parms from './parms.json'
 // Internal
 import API from '../api';
 
@@ -54,9 +53,8 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
 
     API.post.uploadImageInfo({
       data: {
-        dataset_id: dataset.dataset_id.dataset_id,
-        part_number: dataset.part_number,
-        total_packs: dataset.box_quant,
+        dataset_id: dataset.dataset_id,
+
         img_height: imgHeight,
         img_width: imgWidth,
         date: new Date(),
@@ -64,11 +62,11 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
       },
       imageBase64: base64Str,
     })
-    .then(() => {
-      setLoading(false);
-      setDataset(null);
-      handleClose();
-    });
+      .then((res) => {
+        setLoading(false);
+        setDataset(null);
+        handleClose();
+      });
   };
 
   const handleClose = () => {
@@ -104,7 +102,7 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
 
 
   useEffect(() => {
-    let errInText  = {};
+    let errInText = {};
     if ([null, ''].includes(dataset?.dataset_id ?? null)) {
       errInText.dataset_id = true;
     }
@@ -112,37 +110,26 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
       errInText.dataset_id = false;
     }
 
-    if ([null, ''].includes(dataset?.part_number ?? null) ||
-    dataset?.part_number < 0) {
-      errInText.part_number = true;
-    }
-    else {
-      errInText.part_number = false;
-    }
-
-    if ([null, ''].includes(dataset?.box_quant ?? null) ||
-    dataset?.box_quant < 0) {
-      errInText.box_quant = true;
-    } else {
-      errInText.box_quant = false;
+    if (dataset) {
+      Object.keys(dataset).forEach((part) => {
+        let type = parms.parts_fields.filter((p) => p.id === part)[0]?.type
+        if (type === 'number' && isNaN(dataset[part]) || dataset[part] <= 0) {
+          errInText[part] = true;
+        } else if (type === 'text' && !isNaN(dataset[part])) {
+          errInText[part] = true;
+        }
+        if (!dataset?.dataset_id?.maskMap && [null, ''].includes(dataset[part])) {
+          errInText[part] = false
+        }
+      })
     }
 
     setErrorInText(errInText)
-
-    if (![null, ''].includes(dataset?.dataset_id ?? null) &&
-      ![null, ''].includes(dataset?.part_number ?? null) &&
-      ![null, ''].includes(dataset?.box_quant ?? null) &&
-      dataset.part_number >= 0 &&
-      dataset.box_quant >= 0
-    ) {
-      setDisabled(false);
-    } else {
-      setDisabled(true);
-    }
+    setDisabled(Object.values(errInText).includes(true))
   }, [dataset]);
 
   const handleUpdate = (key, value) => {
-    setDataset((preValue)=>({...preValue, [key]:value}))
+    setDataset((preValue) => ({ ...preValue, [key]: value }))
   };
 
   useEffect(() => {
@@ -245,9 +232,6 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
                     variant="outlined"
                     color="secondary"
                     sx={{
-                      //width: '60rem',
-                      //maxHeight: '5.5vw',
-                      //maxWidth: '100%',
                       width: '60%',
                       height: 'auto',
                     }}
@@ -258,46 +242,26 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
                     getOptionLabel={(option) => option.label ?? option}
                     renderInput={(params) => <TextField {...params} label="Dataset *" />}
                     error={errorInText?.dataset_id ?? false}
-                    helperText={errorInText?.dataset_id ?? false?'Campo obrigatório.':''}
+                    helperText={errorInText?.dataset_id ?? false ? 'Campo obrigatório.' : ''}
                   />
-
-                  <TextField
-                    id='part_number_text_field'
-                    label="Part Number"
-                    variant="outlined"
-                    color="secondary"
-                    sx={{
-                      //width: '60rem',
-                      width: '60%',
-                      height: 'auto',
-                    }}
-                    value={dataset?.part_number}
-                    type="number"
-                    min="0"
-                    required
-                    onChange={(e) => handleUpdate('part_number', e.target.value.toString())}
-                    error={errorInText?.part_number ?? false}
-                    helperText={errorInText?.part_number ?? false?'Campo obrigatório - valor não pode ser negativo.':''}
-                  />
-
-                  <TextField
-                    id='box_quant_text_field'
-                    label="Box Quantity"
-                    variant="outlined"
-                    color="secondary"
-                    sx={{
-                      //width: '60rem',
-                      width: '60%',
-                      maxHeight: 'auto',
-                    }}
-                    value={dataset?.box_quant}
-                    type="number"
-                    min="0"
-                    required
-                    onChange={(e) => handleUpdate('box_quant', e.target.value.toString())}
-                    error={errorInText?.box_quant ?? false}
-                    helperText={errorInText?.box_quant ?? false?'Campo obrigatório - valor não pode ser negativo.':''}
-                  />
+                  {parms.parts_fields.map((part, index) => (
+                    <TextField
+                      key={index}
+                      id={part.id}
+                      variant="outlined"
+                      color="secondary"
+                      sx={{
+                        width: '60%',
+                        height: 'auto',
+                      }}
+                      value={dataset?.[part.id]}
+                      required={dataset?.dataset_id?.maskMap ? true : false}
+                      onChange={(e) => handleUpdate(part.id, e.target.value)}
+                      label={part.label}
+                      error={errorInText?.[part.id] ?? false}
+                      helperText={errorInText?.[part.id] ?? false ? 'Campo obrigatório.' : ''}
+                    />
+                  ))}
 
                   <Button
                     variant="contained"
