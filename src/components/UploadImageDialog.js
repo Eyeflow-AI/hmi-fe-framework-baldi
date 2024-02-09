@@ -126,7 +126,7 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
 
     if (dataset) {
       Object.keys(dataset).forEach((part) => {
-        let type = parms.parts_fields.filter((p) => p.id === part)[0]?.type
+        let type = parms?.parts_fields.filter((p) => p.id === part)[0]?.type
         if (type === 'number' && isNaN(dataset[part]) || dataset[part] <= 0) {
           errInText[part] = true;
         } else if (type === 'text' && !isNaN(dataset[part])) {
@@ -258,7 +258,7 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
                     error={errorInText?.dataset_id ?? false}
                     helperText={errorInText?.dataset_id ?? false ? 'Campo obrigatório.' : ''}
                   />
-                  {parms.parts_fields?.map((part, index) => (
+                  {parms?.parts_fields?.map((part, index) => (
                     <TextField
                       key={index}
                       id={part.id}
