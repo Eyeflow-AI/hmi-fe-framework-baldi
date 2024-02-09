@@ -54,6 +54,8 @@ function PartIdAutoComplete(props) {
     label,
     onChange,
     disabled,
+    useMaskList,
+    filterMaskMapList
   } = props;
   const partsList = useSelector(getPartsList);
 
@@ -67,7 +69,7 @@ function PartIdAutoComplete(props) {
     <Autocomplete
       disablePortal
       getOptionLabel={getOptionLabel}
-      options={partsList}
+      options={useMaskList ? filterMaskMapList : partsList}
       onChange={_onChange}
       disabled={disabled}
       renderInput={(params) => <TextField {...params} label={label} />}
@@ -101,29 +103,35 @@ export default function FormModal({
   handleClose,
   onClickSend,
   sendLoading,
+  useMaskList,
 }) {
   const { t } = useTranslation();
 
-  const _partsObj = useSelector(getPartsObj);
-  const [partsObj, setPartsObj] = useState(_partsObj);
+  const partsObj = useSelector(getPartsObj);
   const [formData, setFormData] = useState({});
   const [partIdFields, setPartIdFields] = useState([]);
   const [formFields, setFormFields] = useState([]);
   const [maskMapList, setMaskMapList] = useState([]);
-
-  let _maskMapList = [];
+  const [partFields, setPartFields] = useState([]);
+  const [filterMaskMapList, setFilterMaskMapList] = useState([]);
 
   const getMaskMapList = () => {
-    API.get
-      .maskMapList()
+    let _maskMapList = [];
+    API.get.maskMapList()
       .then((res) => {
-        res.data.forEach((example) => {
-          _maskMapList.push({
-            label: example.part_number,
-            total_packs: example.total_packs,
-          });
-          setMaskMapList(_maskMapList);
+        setPartFields(res.data.maskMapInfo.parms.parts_fields);
+        res.data.maskList.forEach((example) => {
+          let part = {};
+          for (let key in example) {
+            let partId = partFields?.find((el) => el.id === key)?.id; 
+            if (partId) {
+              part[partId] = example[key]; 
+            }
+          }
+          _maskMapList.push(part); 
         });
+        setMaskMapList(_maskMapList); 
+
       })
       .catch((err) => {
         console.log(err);
@@ -132,7 +140,7 @@ export default function FormModal({
 
   useEffect(() => {
     getMaskMapList();
-  }, []);
+  }, [partFields]);
 
   const { sendDisabled } = useMemo(() => {
     let sendDisabled = false;
@@ -186,25 +194,30 @@ export default function FormModal({
   };
 
   useEffect(() => {
-    if (maskMapList.length > 0) {
-      let newPartsObj = {};
-      for (let key in _partsObj) {
-        let part = _partsObj[key];
-        let part_id = part.part_id;
-        let total_packs =
-          maskMapList.find((el) => el.label === part_id)?.total_packs ?? 0;
-        newPartsObj[key] = { ...part, total_packs };
+    const updatedMaskMapList = maskMapList.map((maskMap) => {
+      const part_id = maskMap.part_id;
+      if (partsObj.hasOwnProperty(part_id)) {
+        const part = partsObj[part_id];
+        return { ...maskMap, ...part };
       }
-      setPartsObj(newPartsObj);
-    }
-  }, [maskMapList, _partsObj]);
+      return maskMap;
+    });
+    updatedMaskMapList?.sort((a, b) => {
+      return a?.part_id?.localeCompare(b.part_id);
+    });
+    setFilterMaskMapList(updatedMaskMapList);
+  }, [
+    partsObj,
+    maskMapList,
+  ]);
 
   const onChange = (fieldData) => (event) => {
     let newValue = event.target.value;
+    let usedList = useMaskList ? filterMaskMapList : partsObj;
     if (fieldData.type === "part_id") {
       let updateData = { part_id: newValue };
-      if (partsObj.hasOwnProperty(newValue)) {
-        let part = partsObj[newValue];
+      if (usedList.find((el) => el.part_id === newValue)) {
+        let part = usedList.find((el) => el.part_id === newValue);
         partIdFields.forEach((fieldData) => {
           updateData[fieldData.field] = part[fieldData.field];
         });
@@ -244,6 +257,8 @@ export default function FormModal({
                   value: formData[fieldData.field],
                   onChange: onChange(fieldData),
                   disabled: fieldData.disabled,
+                  useMaskList,
+                  filterMaskMapList,
                 })}
               </Grid>
             ))}
