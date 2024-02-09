@@ -8,10 +8,11 @@ import React, {
 } from "react";
 
 // Design
-import { Box, Typography, Card, CardMedia } from "@mui/material";
+import { Box, Typography, Card, CardMedia, Autocomplete, TextField } from "@mui/material";
 
 // Internal
 import PageWrapper from "../../components/PageWrapper";
+import UploadImageDialog from "../../components/UploadImageDialog";
 import ImageDialog from "../../components/ImageDialog";
 import GetImagesList from "../utils/Hooks/GetImagesList";
 import GetEdgeEnvVar from "../../utils/Hooks/GetEdgeEnvVar";
@@ -30,13 +31,11 @@ const style = {
   }),
 };
 
-export default function ImagesCapturer({ pageOptions }) {
+export default function PartRegistration({ pageOptions }) {
   const [openImageDialog, setOpenImageDialog] = useState(false);
   const [openImageInfoDialog, setOpenImageInfoDialog] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
-  const [takeOneFrame, setTakeOneFrame] = useState(false);
   const [imagePath, setImagePath] = useState("");
-  const [recording, setRecording] = useState(false);
   const { imageBaseURL, infoURL, envVarURL, appbarButtonList } = useMemo(() => {
     return {
       imageBaseURL: pageOptions?.options?.imageURL ?? "",
@@ -67,21 +66,9 @@ export default function ImagesCapturer({ pageOptions }) {
     };
   }, []);
 
-  // const { recording } = useMemo(() => {
-  //   return {
-  //     recording: envVar?.video_save === 'start',
-  //   };
-  // }, [envVar]);
-
-  console.log({ envVar, envVarURL, recording });
-
-  useEffect(() => {
-    if (envVar?.video_save === "start") {
-      setRecording(true);
-    } else if (envVar?.video_save === "stop") {
-      setRecording(false);
-    }
-  }, [envVar]);
+  const handleImageChange = (item) => {
+    setImagePath(item?.full_url);
+  };
 
   useEffect(() => {
     if (!openImageDialog && !openImageInfoDialog) {
@@ -93,32 +80,13 @@ export default function ImagesCapturer({ pageOptions }) {
   const HEIGHT = [1, 1, 1, 2, 2, 2];
   const WIDTH = [1, 2, 3, 3, 3, 3];
 
-  const onClickRecord = useCallback(() => {
-    if (envVarURL) {
-      axios({
-        method: "put",
-        url: envVarURL,
-        responseType: "json",
-        data: {
-          env_var: {
-            video_save: recording ? "stop" : "start",
-          },
-        },
-      })
-        .then(() => {
-          updateEnvVarData();
-        })
-        .catch(console.error);
-    }
-  }, [recording, envVarURL]);
-
   const refImagesList = useRef(imagesList);
 
   useEffect(() => {
     refImagesList.current = imagesList;
   }, [imagesList]);
 
-  const onClickCapture = useCallback(
+  const onClickRegister = useCallback(
     (item) => {
       setDialogTitle(
         item?.frame_time
@@ -135,11 +103,8 @@ export default function ImagesCapturer({ pageOptions }) {
     return appbarButtonList.map((item, index) => {
       let icon = item.icon;
       let onClick;
-      if (item.id === "start") {
-        icon = recording ? item.stopIcon : item.recordIcon;
-        onClick = onClickRecord;
-      } else if (item.id === "capture") {
-        onClick = () => onClickCapture(refImagesList.current[0]);
+      if (item.id === "register") {
+        onClick = () => onClickRegister(refImagesList.current[0]);
       } else {
         onClick = () => console.log(`${item.label} not implemented yet!`);
       }
@@ -149,7 +114,7 @@ export default function ImagesCapturer({ pageOptions }) {
         onClick,
       };
     });
-  }, [appbarButtonList, recording]);
+  }, [appbarButtonList]);
 
   return (
     <PageWrapper extraButtons={appButtons}>
@@ -167,58 +132,75 @@ export default function ImagesCapturer({ pageOptions }) {
               overflow: "hidden",
             }}
           >
-            {imagesList.map((item, index) => {
-              return (
-                <Box
-                  key={index}
-                  sx={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    display: "flex",
-                    height: `calc(100% / ${HEIGHT[imagesList.length - 1]})`,
-                    width: `calc(100% / ${WIDTH[imagesList.length - 1]})`,
-                    flexDirection: "column",
+            <Autocomplete
+              autoComplete
+              label="Camera"
+              variant="outlined"
+              color="secondary"
+              sx={{
+                width: '60%',
+                height: 'auto',
+              }}
+              value={imagePath}
+              onChange={(e, newValue) => handleImageChange(newValue)}
+              options={imagesList}
+              getOptionLabel={(option) => option.camera_name ?? option}
+              defaultValue={imagesList.find(option => option.camera_name === "CENTER")}
+              renderInput={(params) => <TextField {...params} />}
+            />
+            <Box
+              sx={{
+                justifyContent: "center",
+                alignItems: "center",
+                display: "flex",
+                height: `calc(100% / ${HEIGHT[imagesList.length - 1]})`,
+                width: `calc(100% / ${WIDTH[imagesList.length - 1]})`,
+                flexDirection: "column",
+              }}
+            >
+              <Card
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  boxShadow: 1,
+                  borderRadius: '1rem',
+                  padding: '1rem',
+                  cursor: 'pointer',
+                }}
+                onClick={onOpenDialog(item)}
+              >
+                <CardMedia
+                  component="img"
+                  image={`${item?.full_url}?time=${clock}`}
+                  style={{
+                    objectFit: 'contain',
+                    // maxWidth: `calc(${pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)]})`,
+                    minWidth: '2560px * 0.3',
+                    // maxHeight: pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)],
+                    minHeigth: '1440px * 0.3',
+                    display: 'block',
+                    margin: 'auto',
+                    paddingBottom: '.5rem',
                   }}
-                >
-                  <Card
-                    sx={{
-                      width: "100%",
-                      height: "100%",
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      boxShadow: 1,
-                      borderRadius: '1rem',
-                      padding: '1rem',
-                      cursor: 'pointer',
-                    }}
-                    onClick={onOpenDialog(item)}
-                  >
-                    <CardMedia
-                      component="img"
-                      image={`${item?.full_url}?time=${clock}`}
-                      style={{
-                        objectFit: 'contain',
-                        //maxWidth: `calc(${pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)]})`,
-                        minWidth: '2560px * 0.3',
-                        //maxHeight: pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)],
-                        minHeigth: '1440px * 0.3',
-                        display: 'block',
-                        margin: 'auto',
-                        paddingBottom: '.5rem',
-                      }}
-                    />
-                  </Card>
+                />
+              </Card>
 
-                  <Typography textAlign="center">{`${item.camera_name}`}</Typography>
-                </Box>
-              );
-            })}
+              <Typography textAlign="center">{`${item.camera_name}`}</Typography>
+            </Box>
           </Box>
           <ImageDialog
             open={openImageDialog}
             setOpen={setOpenImageDialog}
+            imagePath={imagePath}
+            title={dialogTitle}
+          />
+          <UploadImageDialog
+            open={openImageInfoDialog}
+            setOpen={setOpenImageInfoDialog}
             imagePath={imagePath}
             title={dialogTitle}
           />

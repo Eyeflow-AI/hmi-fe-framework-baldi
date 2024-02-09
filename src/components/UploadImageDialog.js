@@ -94,7 +94,7 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
       .appParameterDocument({ parameterName: selectedParam })
       .then((res) => {
         setDatasetList(res.document.pages["Images Capturer"].options.datasetChoices)
-        console.log(res)
+        // console.log(res)
       })
       .finally(() => { });
   };
@@ -192,7 +192,11 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
           </Grid>
         </Toolbar>
       </Box>
-      <Box>
+      <Box
+        sx={{
+          margin: '1vw 0 1vw 0',
+        }}
+      >
         {!noImage ? (
           <Box
             sx={{
