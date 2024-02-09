@@ -53,7 +53,7 @@ export default function PartRegistration({ pageOptions }) {
     sleepTime: pageOptions?.options?.sleepTime,
   });
 
-  const [cameraName, setCameraNane] = useState("CENTER");
+  const [cameraName, setCameraNane] = useState(imagesList[0]?.camera_name);
 
   const item = imagesList.find(item => item?.camera_name === cameraName);
 
