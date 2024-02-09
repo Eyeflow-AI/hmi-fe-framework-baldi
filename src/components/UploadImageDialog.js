@@ -2,23 +2,22 @@ import React, { useEffect, useState } from 'react';
 
 // Design
 import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 import Dialog from '@mui/material/Dialog';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import Grid from '@mui/material/Grid';
-import DownloadIcon from '@mui/icons-material/Download';
 import { Autocomplete, Button, TextField, Typography } from '@mui/material';
-import { getUser } from '../store/slices/auth';
-import parms from './parms.json'
+
 // Internal
 import API from '../api';
+import { getUser } from '../store/slices/auth';
 
 // Third-party
-import { TransformWrapper, TransformComponent } from '@pronestor/react-zoom-pan-pinch';
-import { downloadImage, colors, getAnnotatedImage } from 'sdk-fe-eyeflow';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
+import { TransformWrapper, TransformComponent } from '@pronestor/react-zoom-pan-pinch';
+import fetchJson from '../utils/functions/fetchJson';
 
 const gridToolbarSx = {
   width: '100%',
@@ -34,19 +33,20 @@ const appBarSx = {
   boxShadow: 1,
 };
 
-export default function ImageDialog({ imagePath, title, open, setOpen }) {
+export default function UploadImageDialog({ imagePath, title, open, setOpen, maskMapListURL }) {
   const { t } = useTranslation();
   const [noImage, setNoImage] = useState(false);
   const [selectedObj, setSelectedObj] = useState(null);
   const [dataset, setDataset] = useState(null);
-  const [datasetList, setDatasetList] = useState(
-    []
-  );
+  const [datasetList, setDatasetList] = useState([]);
   const user = useSelector(getUser);
   const [base64Str, setBase64Str] = useState('');
   const [errorInText, setErrorInText] = useState(null);
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(false);
+
+  const [parms, setParms] = useState([]);
+  let urlParms = `${maskMapListURL}/parms.json`;
 
   const handleUpload = () => {
     setLoading(true);
@@ -89,6 +89,17 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
       });
     }
   }, [open]);
+
+
+  useEffect(() => {
+    fetchJson(urlParms)
+      .then((res) => {
+        setParms(res?.parts_fields);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const getDocument = (selectedParam) => {
     API.get
