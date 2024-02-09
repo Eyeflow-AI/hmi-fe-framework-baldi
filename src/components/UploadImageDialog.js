@@ -54,7 +54,10 @@ export default function ImageDialog({ imagePath, title, open, setOpen }) {
     API.post.uploadImageInfo({
       data: {
         dataset_id: dataset.dataset_id,
-
+        ...Object.keys(dataset).filter((part) => part !== 'dataset_id').reduce((obj, key) => {
+          obj[key] = dataset[key];
+          return obj;
+        }, {}),
         img_height: imgHeight,
         img_width: imgWidth,
         date: new Date(),

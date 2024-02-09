@@ -194,7 +194,7 @@ export default function PartRegistration({ pageOptions }) {
                   onChange={(e, newValue) => handleImageChange(newValue)}
                   options={imagesList}
                   getOptionLabel={(option) => option?.camera_name}
-                  defaultValue={imagesList[0].camera_name}
+                  defaultValue={imagesList[0]?.camera_name}
                   renderInput={(params) => <TextField {...params} />}
                 />
           </Box>
