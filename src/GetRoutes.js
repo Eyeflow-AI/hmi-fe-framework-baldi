@@ -19,6 +19,7 @@ const homeURL = "/app/:stationSlugLabel/home";
 const Query = lazy(() => import("./toolsPages/Query"));
 const Monitor = lazy(() => import("./toolsPages/Monitor"));
 const ImagesCapturer = lazy(() => import("./toolsPages/ImagesCapturer"));
+const PartRegistration = lazy(() => import("./toolsPages/PartRegistration"));
 const ImagesAnalyser = lazy(() => import("./toolsPages/ImagesAnalyser"));
 const ChecklistConnector = lazy(() =>
   import("./toolsPages/ChecklistConnector")
@@ -40,6 +41,7 @@ const components = {
   Query: (pageOptions) => <Query pageOptions={pageOptions} />,
   Monitor: (pageOptions) => <Monitor pageOptions={pageOptions} />,
   ImagesCapturer: (pageOptions) => <ImagesCapturer pageOptions={pageOptions} />,
+  PartRegistration: (pageOptions) => <PartRegistration pageOptions={pageOptions} />,
   ImagesAnalyser: (pageOptions) => <ImagesAnalyser pageOptions={pageOptions} />,
   ChecklistConnector: (pageOptions) => (
     <ChecklistConnector pageOptions={pageOptions} />
@@ -62,7 +64,8 @@ export default function Routes({
       let aclCondition = true; //TODO
       if (value.active && aclCondition && value.path.startsWith("/app")) {
         // console.log(`Loading page: ${key}. Station: ${station?.label}. Path: ${value.path}`);
-        // console.log({ value })
+        // console.log({ value });
+        // console.log(components[value.component]);
         appRoutes.push({
           path: value.path,
           element: components[value.component](value),

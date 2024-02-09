@@ -38,6 +38,7 @@ const style = {
 };
 
 export default function Monitor({ pageOptions }) {
+
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
@@ -73,7 +74,7 @@ export default function Monitor({ pageOptions }) {
 
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openPrintDialog, setOpenPrintDialog] = useState(false);
-
+  const useMaskList = pageOptions.options.useMaskList ?? false;
   const handleOpenCreateModal = () => setOpenCreateModal(true);
   const handleCloseCreateModal = () => {
     setOpenCreateModal(false);
@@ -316,7 +317,6 @@ export default function Monitor({ pageOptions }) {
         open={openCreateModal}
         handleClose={handleCloseCreateModal}
         sendLoading={newBatchLoading}
-        onClickSend={onClickSendBatchData}
       />
       <PrintingDialog
         open={openPrintDialog}

@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 import { getPartsObj, getPartsList } from "../store/slices/app";
 
 import { useSelector } from "react-redux";
-import API from "../api";
+import fetchJson from "../utils/functions/fetchJson";
 
 const style = {
   mainBox: {
@@ -54,6 +54,8 @@ function PartIdAutoComplete(props) {
     label,
     onChange,
     disabled,
+    usemasklist,
+    filtermaskmaplist,
   } = props;
   const partsList = useSelector(getPartsList);
 
@@ -67,7 +69,7 @@ function PartIdAutoComplete(props) {
     <Autocomplete
       disablePortal
       getOptionLabel={getOptionLabel}
-      options={partsList}
+      options={Boolean(usemasklist) ? filtermaskmaplist : partsList}
       onChange={_onChange}
       disabled={disabled}
       renderInput={(params) => <TextField {...params} label={label} />}
@@ -104,35 +106,50 @@ export default function FormModal({
 }) {
   const { t } = useTranslation();
 
-  const _partsObj = useSelector(getPartsObj);
-  const [partsObj, setPartsObj] = useState(_partsObj);
+  const partsObj = useSelector(getPartsObj);
   const [formData, setFormData] = useState({});
   const [partIdFields, setPartIdFields] = useState([]);
   const [formFields, setFormFields] = useState([]);
   const [maskMapList, setMaskMapList] = useState([]);
+  const [partFields, setPartFields] = useState([]);
+  const [filterMaskMapList, setFilterMaskMapList] = useState([]);
 
-  let _maskMapList = [];
+  const useMaskList = config.useMaskList ?? false;
 
   const getMaskMapList = () => {
-    API.get
-      .maskMapList()
+    let _maskMapList = [];
+    let urlExamples = `${config.maskMapListURL}/examples.json`;
+    let urlParms = `${config.maskMapListURL}/parms.json`;
+
+    fetchJson(urlExamples)
       .then((res) => {
-        res.data.forEach((example) => {
-          _maskMapList.push({
-            label: example.part_number,
-            total_packs: example.total_packs,
-          });
-          setMaskMapList(_maskMapList);
+        res.forEach((example) => {
+          let part = {};
+          for (let key in example) {
+            let partId = partFields?.find((el) => el.id === key)?.id;
+            if (partId) {
+              part[partId] = example[key];
+            }
+          }
+          _maskMapList.push(part);
         });
+        setMaskMapList(_maskMapList);
+        console.log(_maskMapList);
       })
       .catch((err) => {
         console.log(err);
       });
+
+      fetchJson(urlParms)
+      .then((res) => {
+        console.log(res);
+        setPartFields(res?.parts_fields);
+      })
   };
 
   useEffect(() => {
     getMaskMapList();
-  }, []);
+  }, [partFields]);
 
   const { sendDisabled } = useMemo(() => {
     let sendDisabled = false;
@@ -186,23 +203,36 @@ export default function FormModal({
   };
 
   useEffect(() => {
-    if (maskMapList.length > 0) {
-      let newPartsObj = {};
-      for (let key in _partsObj) {
-        let part = _partsObj[key];
-        let part_id = part.part_id;
-        let total_packs =
-          maskMapList.find((el) => el.label === part_id)?.total_packs ?? 0;
-        newPartsObj[key] = { ...part, total_packs };
+    const updatedMaskMapList = maskMapList.map((maskMap) => {
+      const part_id = maskMap.part_id;
+      if (partsObj.hasOwnProperty(part_id)) {
+        const part = partsObj[part_id];
+        return { ...maskMap, ...part };
       }
-      setPartsObj(newPartsObj);
-    }
-  }, [maskMapList, _partsObj]);
+      return maskMap;
+    });
+    updatedMaskMapList?.sort((a, b) => {
+      return a?.part_id?.localeCompare(b.part_id);
+    });
+    setFilterMaskMapList(updatedMaskMapList);
+  }, [
+    partsObj,
+    maskMapList,
+  ]);
 
   const onChange = (fieldData) => (event) => {
     let newValue = event.target.value;
+    let usedList = useMaskList ? filterMaskMapList : partsObj;
     if (fieldData.type === "part_id") {
       let updateData = { part_id: newValue };
+      if (useMaskList) {
+        if (usedList?.find((el) => el.part_id === newValue)) {
+          let part = usedList?.find((el) => el.part_id === newValue);
+          partIdFields.forEach((fieldData) => {
+            updateData[fieldData.field] = part[fieldData.field];
+          });
+        }
+      }
       if (partsObj.hasOwnProperty(newValue)) {
         let part = partsObj[newValue];
         partIdFields.forEach((fieldData) => {
@@ -244,6 +274,8 @@ export default function FormModal({
                   value: formData[fieldData.field],
                   onChange: onChange(fieldData),
                   disabled: fieldData.disabled,
+                  usemasklist: useMaskList.toString(),
+                  filtermaskmaplist: filterMaskMapList,
                 })}
               </Grid>
             ))}
