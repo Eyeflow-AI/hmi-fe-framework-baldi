@@ -118,8 +118,8 @@ export default function FormModal({
 
   const getMaskMapList = () => {
     let _maskMapList = [];
-    let urlExamples = `${config.maskMapListURLTest}/examples.json`;
-    let urlParms = `${config.maskMapListURLTest}/parms.json`;
+    let urlExamples = `${config.maskMapListURL}/examples.json`;
+    let urlParms = `${config.maskMapListURL}/parms.json`;
 
     fetchJson(urlExamples)
       .then((res) => {
