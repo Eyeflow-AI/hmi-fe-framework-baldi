@@ -317,6 +317,7 @@ export default function Monitor({ pageOptions }) {
         open={openCreateModal}
         handleClose={handleCloseCreateModal}
         sendLoading={newBatchLoading}
+        onClickSend={onClickSendBatchData}
       />
       <PrintingDialog
         open={openPrintDialog}
