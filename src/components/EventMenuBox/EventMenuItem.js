@@ -42,7 +42,7 @@ const style = {
   },
   itemImage: {
     height: 70,
-    width: "100%",
+    maxWidth: "calc(100% - 10px)",
     filter: "invert(1)",
   },
   itemFooter: {
@@ -101,7 +101,9 @@ export default function EventMenuItem({
 
       {thumbURL && (
         <Box sx={style.itemImageBox}>
-          <img alt="" src={thumbURL} style={thumbStyle} />
+          <center>
+            <img alt="" src={thumbURL} style={thumbStyle} />
+          </center>
         </Box>
       )}
 

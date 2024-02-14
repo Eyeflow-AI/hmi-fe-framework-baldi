@@ -1,47 +1,44 @@
 // React
-import React, {useMemo} from 'react';
+import React, { useMemo } from "react";
 
-
-import Box from '@mui/material/Box';
-import Tooltip from '@mui/material/Tooltip';
-import IconButton from '@mui/material/IconButton';
-import CircularProgress from '@mui/material/CircularProgress';
+import Box from "@mui/material/Box";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import { useTranslation } from "react-i18next";
 
-const mainBoxSx = Object.assign(
-  {},
-  window.app_config.style.box,
-  {
-    bgcolor: 'background.paper',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 1,
-    flexDirection: 'column',
-    paddingTop: 2,
-    marginRight: 1,
-  }
-);
+const mainBoxSx = Object.assign({}, window.app_config.style.box, {
+  bgcolor: "background.paper",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  flexDirection: "row",
+  gap: 1,
+  // paddingTop: 2,
+  marginRight: 1,
+  // marginBottom: 1,
+  // width: "100%",
+});
 
 const style = {
   mainBox: mainBoxSx,
-  mainBoxDisabled: Object.assign({}, mainBoxSx, {opacity: 0.8}),
+  mainBoxDisabled: Object.assign({}, mainBoxSx, { opacity: 0.8 }),
   buttonImage: {
     height: 30,
     width: 30,
-    filter: "invert(1)"
+    filter: "invert(1)",
   },
   buttonBox: {
-    position: 'relative',
+    position: "relative",
     // border: "1px solid #ccc",
   },
   circularProgress: {
-    position: 'absolute',
+    position: "absolute",
     top: "8px",
     left: "8px",
     zIndex: 1,
-  }
+  },
 };
 
 export default function EventAppBar({
@@ -53,69 +50,116 @@ export default function EventAppBar({
   onClickResume,
   onClickStop,
   onClickPrint,
-  resumeLoading, 
+  resumeLoading,
   pauseLoading,
   stopLoading,
 }) {
-
   const { t } = useTranslation();
 
-  const {buttonList, hasAppBar} = useMemo(() => {
+  const { buttonList, hasAppBar } = useMemo(() => {
     let buttonList = [];
     if (data) {
-      for (let buttonData of (config?.button_list ?? [])) {
+      for (let buttonData of config?.button_list ?? []) {
         if (buttonData.id === "pause_or_resume") {
           if (data.status === "running") {
-            buttonList.push({label: "pause", icon: buttonData.pause_icon, onClick: onClickPause, disabled: pauseLoading, loading: pauseLoading});
-            buttonList.push({label: "stop", icon: buttonData.stop_icon, onClick: onClickStop, disabled: stopLoading, loading: stopLoading});
-          }
-          else if (data.status === "paused") {
-            buttonList.push({label: "resume", icon: buttonData.resume_icon, onClick: onClickResume, disabled: isBatchRunning || resumeLoading, loading: resumeLoading});
+            buttonList.push({
+              label: "pause",
+              icon: buttonData.pause_icon,
+              onClick: onClickPause,
+              disabled: pauseLoading,
+              loading: pauseLoading,
+            });
+            buttonList.push({
+              label: "stop",
+              icon: buttonData.stop_icon,
+              onClick: onClickStop,
+              disabled: stopLoading,
+              loading: stopLoading,
+            });
+          } else if (data.status === "paused") {
+            buttonList.push({
+              label: "resume",
+              icon: buttonData.resume_icon,
+              onClick: onClickResume,
+              disabled: isBatchRunning || resumeLoading,
+              loading: resumeLoading,
+            });
           }
         }
-        if (buttonData.id === 'print') {
+        if (buttonData.id === "print") {
           buttonList.push({
-            label: "print", 
-            icon: buttonData.icon, 
-            onClick: onClickPrint, 
+            label: "print",
+            icon: buttonData.icon,
+            onClick: onClickPrint,
             // disabled: isBatchRunning
           });
         }
-        if (buttonData.id === 'stop' && ['running', 'paused'].includes(data.status)) {
+        if (
+          buttonData.id === "stop" &&
+          ["running", "paused"].includes(data.status)
+        ) {
           buttonList.push({
-            label: "stop", 
-            icon: buttonData.icon, 
-            onClick: onClickStop, 
+            label: "stop",
+            icon: buttonData.icon,
+            onClick: onClickStop,
             disabled: stopLoading,
-            loading: stopLoading
+            loading: stopLoading,
           });
         }
-      };
-    };
-
+      }
+    }
     return {
       buttonList,
-      hasAppBar: buttonList.length > 0
+      hasAppBar: buttonList.length > 0,
     };
-  }, [isBatchRunning, data, config, onClickPause, onClickResume, onClickPrint, pauseLoading, resumeLoading]);
+  }, [
+    isBatchRunning,
+    data,
+    config,
+    onClickPause,
+    onClickResume,
+    onClickPrint,
+    pauseLoading,
+    resumeLoading,
+  ]);
+  console.log({ config, buttonList });
 
   if (hasAppBar) {
     return (
-      <Box width={config.width} height={config.height} sx={disabled ? style.mainBoxDisabled : style.mainBox}>
-        {buttonList.map((buttonProps, index) => 
-        <Box sx={style.buttonBox} key={`${index}-button-app-bar`}>
-          <Tooltip key={index} title={t(buttonProps.label)}>
-            <IconButton onClick={buttonProps.onClick} disabled={buttonProps.disabled}>
-              <img alt="" src={buttonProps.icon} style={Object.assign({}, style.buttonImage, {opacity: buttonProps.disabled ? 0.3 : 1})} />
-            </IconButton>
-          </Tooltip>
-          {buttonProps.loading && <CircularProgress style={style.circularProgress} size={30} thickness={5} color="inherit" disableShrink={true}/>}
-        </Box>
-        )}
+      <Box
+        width={`${buttonList.length * 70}px`}
+        sx={disabled ? style.mainBoxDisabled : style.mainBox}
+      >
+        {buttonList.map((buttonProps, index) => (
+          <Box sx={style.buttonBox} key={`${index}-button-app-bar`}>
+            <Tooltip key={index} title={t(buttonProps.label)}>
+              <IconButton
+                onClick={buttonProps.onClick}
+                disabled={buttonProps.disabled}
+              >
+                <img
+                  alt=""
+                  src={buttonProps.icon}
+                  style={Object.assign({}, style.buttonImage, {
+                    opacity: buttonProps.disabled ? 0.3 : 1,
+                  })}
+                />
+              </IconButton>
+            </Tooltip>
+            {buttonProps.loading && (
+              <CircularProgress
+                style={style.circularProgress}
+                size={30}
+                thickness={5}
+                color="inherit"
+                disableShrink={true}
+              />
+            )}
+          </Box>
+        ))}
       </Box>
-    )
-  }
-  else {
+    );
+  } else {
     return null;
-  };
-};
+  }
+}
