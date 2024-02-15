@@ -12,12 +12,12 @@ import { Autocomplete, Button, TextField, Typography } from '@mui/material';
 // Internal
 import API from '../api';
 import { getUser } from '../store/slices/auth';
+import fetchJson from '../utils/functions/fetchJson';
 
 // Third-party
-import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { TransformWrapper, TransformComponent } from '@pronestor/react-zoom-pan-pinch';
-import fetchJson from '../utils/functions/fetchJson';
 
 const gridToolbarSx = {
   width: '100%',
@@ -126,10 +126,9 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
 
     if (dataset) {
       Object.keys(dataset).forEach((part) => {
-        let type = parms?.parts_fields.filter((p) => p.id === part)[0]?.type
-        if (type === 'number' && isNaN(dataset[part]) || dataset[part] <= 0) {
+        if (part === 'part_id' && isNaN(dataset[part]) || dataset[part] <= 0) {
           errInText[part] = true;
-        } else if (type === 'text' && !isNaN(dataset[part])) {
+        } else if (part !== 'part_id' && [null, ''].includes(dataset[part])) {
           errInText[part] = true;
         }
         if (!dataset?.dataset_id?.maskMap && [null, ''].includes(dataset[part])) {
@@ -258,7 +257,7 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
                     error={errorInText?.dataset_id ?? false}
                     helperText={errorInText?.dataset_id ?? false ? 'Campo obrigatório.' : ''}
                   />
-                  {parms?.parts_fields?.map((part, index) => (
+                  {parms?.map((part, index) => (
                     <TextField
                       key={index}
                       id={part.id}

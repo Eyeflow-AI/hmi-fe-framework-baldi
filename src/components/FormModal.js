@@ -1,20 +1,23 @@
 import React, { useState, useEffect, useMemo } from "react";
-import Backdrop from "@mui/material/Backdrop";
+
+// Design
 import Box from "@mui/material/Box";
-import LoadingButton from "@mui/lab/LoadingButton";
 import Grid from "@mui/material/Grid";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
+import Backdrop from "@mui/material/Backdrop";
 import TextField from "@mui/material/TextField";
+import LoadingButton from "@mui/lab/LoadingButton";
 import Autocomplete from "@mui/material/Autocomplete";
 
-import { useTranslation } from "react-i18next";
-
+// Internal
+import fetchJson from "../utils/functions/fetchJson";
 import { getPartsObj, getPartsList } from "../store/slices/app";
 
+// Third-party
 import { useSelector } from "react-redux";
-import fetchJson from "../utils/functions/fetchJson";
+import { useTranslation } from "react-i18next";
 
 const style = {
   mainBox: {
@@ -23,7 +26,6 @@ const style = {
     left: "50%",
     transform: "translate(-50%, -50%)",
     bgcolor: "background.paper",
-    // border: '2px solid #000',
     color: "white",
     boxShadow: 24,
     p: 4,
@@ -69,7 +71,7 @@ function PartIdAutoComplete(props) {
     <Autocomplete
       disablePortal
       getOptionLabel={getOptionLabel}
-      options={Boolean(usemasklist) ? filtermaskmaplist : partsList}
+      options={usemasklist && Boolean(usemasklist) ? filtermaskmaplist : partsList}
       onChange={_onChange}
       disabled={disabled}
       renderInput={(params) => <TextField {...params} label={label} />}
@@ -114,37 +116,30 @@ export default function FormModal({
   const [partFields, setPartFields] = useState([]);
   const [filterMaskMapList, setFilterMaskMapList] = useState([]);
 
-  const useMaskList = config.useMaskList ?? false;
+  const useMaskList = config?.useMaskList ?? false;
 
   const getMaskMapList = () => {
     let _maskMapList = [];
-    let urlExamples = `${config.maskMapListURL}/examples.json`;
-    let urlParms = `${config.maskMapListURL}/parms.json`;
+    let urlExamples = `${config?.maskMapListURL}/examples.json`;
+    let urlParms = `${config?.maskMapListURL}/parms.json`;
 
     fetchJson(urlExamples)
-      .then((res) => {
-        res.forEach((example) => {
-          let part = {};
-          for (let key in example) {
-            let partId = partFields?.find((el) => el.id === key)?.id;
-            if (partId) {
-              part[partId] = example[key];
-            }
-          }
-          _maskMapList.push(part);
-        });
-        setMaskMapList(_maskMapList);
-        console.log(_maskMapList);
-      })
-      .catch((err) => {
-        console.log(err);
+    .then((res) => {
+      res.forEach((example) => {
+        let part_data = example?.annotations?.part_data;
+        _maskMapList.push(part_data);
       });
+      setMaskMapList(_maskMapList);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 
-      fetchJson(urlParms)
-      .then((res) => {
-        console.log(res);
-        setPartFields(res?.parts_fields);
-      })
+    fetchJson(urlParms)
+    .then((res) => {
+      console.log(res);
+      setPartFields(res?.parts_fields);
+    })
   };
 
   useEffect(() => {
@@ -222,28 +217,28 @@ export default function FormModal({
 
   const onChange = (fieldData) => (event) => {
     let newValue = event.target.value;
-    let usedList = useMaskList ? filterMaskMapList : partsObj;
     if (fieldData.type === "part_id") {
       let updateData = { part_id: newValue };
       if (useMaskList) {
-        if (usedList?.find((el) => el.part_id === newValue)) {
-          let part = usedList?.find((el) => el.part_id === newValue);
+        if (filterMaskMapList?.find((el) => el.part_id === newValue)) {
+          let part = filterMaskMapList?.find((el) => el.part_id === newValue);
           partIdFields.forEach((fieldData) => {
             updateData[fieldData.field] = part[fieldData.field];
           });
         }
-      }
-      if (partsObj.hasOwnProperty(newValue)) {
-        let part = partsObj[newValue];
-        partIdFields.forEach((fieldData) => {
-          updateData[fieldData.field] = part[fieldData.field];
-        });
       } else {
-        partIdFields.forEach((fieldData) => {
-          updateData[fieldData.field] = getDefaultValue(fieldData);
-        });
+        if (partsObj.hasOwnProperty(newValue)) {
+          let part = partsObj[newValue];
+          partIdFields.forEach((fieldData) => {
+            updateData[fieldData.field] = part[fieldData.field];
+          });
+        } else {
+          partIdFields.forEach((fieldData) => {
+            updateData[fieldData.field] = getDefaultValue(fieldData);
+          });
+        }
       }
-
+ 
       setFormData((oldValue) => Object.assign({}, oldValue, updateData));
     } else {
       let newValue = event.target.value;
