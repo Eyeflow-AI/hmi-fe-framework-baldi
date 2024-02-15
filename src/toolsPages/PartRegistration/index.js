@@ -53,7 +53,7 @@ export default function PartRegistration({ pageOptions }) {
     sleepTime: pageOptions?.options?.sleepTime,
   });
 
-  const [cameraName, setCameraNane] = useState(imagesList[0]?.camera_name);
+  const [cameraName, setCameraName] = useState(imagesList[0]?.camera_name);
 
   const [item, setItem] = useState(imagesList[0]);
 
@@ -69,6 +69,18 @@ export default function PartRegistration({ pageOptions }) {
     };
   }, []);
 
+  const handleImageChange = (item) => {
+    if (!item) return;
+    setItem(item);
+    setCameraName(item?.camera_name);
+    setImagePath(item?.full_url);
+    setDialogTitle(
+      item?.frame_time
+        ? `${item?.camera_name} - ${item?.frame_time}`
+        : `${item?.camera_name}`
+    );
+  };
+
   useEffect(() => {
     if (!openImageDialog && !openImageInfoDialog) {
       setDialogTitle("");
@@ -80,18 +92,15 @@ export default function PartRegistration({ pageOptions }) {
 
   useEffect(() => {
     refImagesList.current = imagesList;
+    setCameraName(imagesList[0]?.camera_name);
     setItem(imagesList[0]);
-  }, [imagesList]);
-
-  const onClickRegister = () => {
+    setImagePath(imagesList[0]?.full_url);
     setDialogTitle(
-      item?.frame_time
-        ? `${item?.camera_name} - ${item?.frame_time} `
-        : `${item?.camera_name} `
+      imagesList[0]?.frame_time
+        ? `${imagesList[0]?.camera_name} - ${imagesList[0]?.frame_time}`
+        : `${imagesList[0]?.camera_name}`
     );
-    setImagePath(item?.full_url);
-    setOpenImageInfoDialog(true);
-  }
+  }, [imagesList]);
 
 
   const appButtons = useMemo(() => {
@@ -99,7 +108,7 @@ export default function PartRegistration({ pageOptions }) {
       let icon = item.icon;
       let onClick;
       if (item.id === "register") {
-        onClick = () => onClickRegister(refImagesList.current[0]);
+        onClick = () => setOpenImageInfoDialog(true);
       } else {
         onClick = () => console.log(`${item.label} not implemented yet!`);
       }
@@ -166,7 +175,7 @@ export default function PartRegistration({ pageOptions }) {
                 />
               </Card>
 
-              <Typography textAlign="center">{`${item?.camera_name}`}</Typography>
+              <Typography textAlign="center">{`${cameraName}`}</Typography>
               <Autocomplete
                 autoComplete
                 label="Camera"
@@ -177,12 +186,10 @@ export default function PartRegistration({ pageOptions }) {
                   height: 'auto',
                 }}
                 value={item}
-                onChange={(_, newValue) => {
-                  setItem(newValue);
-                }}
+                onChange={(_, newValue) => handleImageChange(newValue)}
                 options={imagesList}
                 getOptionLabel={(option) => option?.camera_name}
-                defaultValue={imagesList[0]?.camera_name}
+                defaultValue={imagesList[0]}
                 renderInput={(params) => <TextField {...params} />}
               />
             </Box>
