@@ -6,14 +6,14 @@ import Box from "@mui/material/Box";
 import ButtonBase from "@mui/material/ButtonBase";
 
 //Internal
+import FilterBox from "./FilterBox";
 import EventMenuItem from "./EventMenuItem";
 import EventMenuList from "./EventMenuList";
-import FilterBox from "./FilterBox";
+import fetchJson from "../../utils/functions/fetchJson";
 
 //Third-party
 import { useTranslation } from "react-i18next";
 import { colors } from "sdk-fe-eyeflow";
-import fetchJson from "../../utils/functions/fetchJson";
 
 const styleSx = {
   mainBox: {
@@ -112,12 +112,15 @@ export default function EventMenuBox({
   useEffect(() => {
     if (config?.maskMapURL && runningEvent && examplesList.length > 0) {
       let image = examplesList.find(
-        (el) =>
-          el.part_id === runningEvent.part_id ||
-          el.part_number === runningEvent.part_id
+        (el) => {
+          let partId = el?.annotations?.part_data?.part_id;
+          return (
+            Number(partId) === Number(runningEvent.part_id)
+          )
+        }
       );
       let url = `${config.maskMapURL}/${image?.example}`;
-      // url = url.replace("192.168.0.201", "192.168.2.40");
+
       setRunningMaskIcon(url);
     } else {
       setRunningMaskIcon("");

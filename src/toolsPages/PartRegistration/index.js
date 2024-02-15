@@ -55,7 +55,7 @@ export default function PartRegistration({ pageOptions }) {
 
   const [cameraName, setCameraNane] = useState(imagesList[0]?.camera_name);
 
-  const item = imagesList.find(item => item?.camera_name === cameraName);
+  const [item, setItem] = useState(imagesList[0]);
 
   const onOpenDialog = useCallback((item) => {
     return () => {
@@ -69,17 +69,6 @@ export default function PartRegistration({ pageOptions }) {
     };
   }, []);
 
-  const handleImageChange = (item) => {
-    if (!item) return;
-    setCameraNane(item?.camera_name);
-    setImagePath(item?.full_url);
-    setDialogTitle(
-      item?.frame_time
-        ? `${item?.camera_name} - ${item?.frame_time}`
-        : `${item?.camera_name}`
-    );
-  };
-
   useEffect(() => {
     if (!openImageDialog && !openImageInfoDialog) {
       setDialogTitle("");
@@ -87,27 +76,23 @@ export default function PartRegistration({ pageOptions }) {
     }
   }, [openImageDialog, openImageInfoDialog]);
 
-  const HEIGHT = [1, 1, 1, 2, 2, 2];
-  const WIDTH = [1, 2, 3, 3, 3, 3];
-
   const refImagesList = useRef(imagesList);
 
   useEffect(() => {
     refImagesList.current = imagesList;
+    setItem(imagesList[0]);
   }, [imagesList]);
 
-  const onClickRegister = useCallback(
-    (item) => {
-      setDialogTitle(
-        item?.frame_time
-          ? `${item?.camera_name} - ${item?.frame_time} `
-          : `${item?.camera_name} `
-      );
-      setImagePath(item?.full_url);
-      setOpenImageInfoDialog(true);
-    },
-    [imagesList]
-  );
+  const onClickRegister = () => {
+    setDialogTitle(
+      item?.frame_time
+        ? `${item?.camera_name} - ${item?.frame_time} `
+        : `${item?.camera_name} `
+    );
+    setImagePath(item?.full_url);
+    setOpenImageInfoDialog(true);
+  }
+
 
   const appButtons = useMemo(() => {
     return appbarButtonList.map((item, index) => {
@@ -142,61 +127,66 @@ export default function PartRegistration({ pageOptions }) {
               overflow: "hidden",
             }}
           >
-                <Box
-                  sx={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    display: "flex",
-                    flexDirection: "column",
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateRows: "1fr 20px 80px",
+                gap: 1,
+                width: "100%",
+                height: "100%",
+                padding: "1rem",
+                overflow: "auto",
+                justifyItems: "center",
+              }}
+            >
+              <Card
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                  overflow: "hidden",
+                }}
+                onClick={onOpenDialog(item)}
+              >
+                <CardMedia
+                  component="img"
+                  image={`${item?.full_url}?time=${clock}`}
+                  style={{
+                    objectFit: 'contain',
+                    minWidth: '2560px * 0.3',
+                    minHeigth: '1440px * 0.3',
+                    display: 'block',
+                    margin: 'auto',
+                    paddingBottom: '.5rem',
                   }}
-                >
-                  <Card
-                    sx={{
-                      width: "100%",
-                      height: "100%",
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      boxShadow: 1,
-                      borderRadius: '1rem',
-                      padding: '1rem',
-                      cursor: 'pointer',
-                    }}
-                    onClick={onOpenDialog(item)}
-                  >
-                    <CardMedia
-                      component="img"
-                      image={`${item?.full_url}?time=${clock}`}
-                      style={{
-                        objectFit: 'contain',
-                        minWidth: '2560px * 0.3',
-                        minHeigth: '1440px * 0.3',
-                        display: 'block',
-                        margin: 'auto',
-                        paddingBottom: '.5rem',
-                      }}
-                    />
-                  </Card>
-
-                  <Typography textAlign="center">{`${item?.camera_name}`}</Typography>
-                </Box>
-                <Autocomplete
-                  autoComplete
-                  label="Camera"
-                  variant="outlined"
-                  color="secondary"
-                  sx={{
-                    width: '60%',
-                    height: 'auto',
-                  }}
-                  value={item}
-                  onChange={(e, newValue) => handleImageChange(newValue)}
-                  options={imagesList}
-                  getOptionLabel={(option) => option?.camera_name}
-                  defaultValue={imagesList[0]?.camera_name}
-                  renderInput={(params) => <TextField {...params} />}
                 />
+              </Card>
+
+              <Typography textAlign="center">{`${item?.camera_name}`}</Typography>
+              <Autocomplete
+                autoComplete
+                label="Camera"
+                variant="outlined"
+                color="secondary"
+                sx={{
+                  width: '60%',
+                  height: 'auto',
+                }}
+                value={item}
+                onChange={(_, newValue) => {
+                  setItem(newValue);
+                }}
+                options={imagesList}
+                getOptionLabel={(option) => option?.camera_name}
+                defaultValue={imagesList[0]?.camera_name}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </Box>
+
           </Box>
           <ImageDialog
             open={openImageDialog}

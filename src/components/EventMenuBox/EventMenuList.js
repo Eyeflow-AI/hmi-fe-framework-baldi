@@ -45,9 +45,11 @@ export default function EventMenuList({
     let selected = selectedEventId === eventData._id;
     let part_id = eventData.part_id;
     let image = examplesList.find(
-      (el) => el.part_id === part_id || el.part_number === part_id
+      (el) => {
+        let partId = el?.annotations?.part_data?.part_id;
+        return(Number(partId) === Number(part_id))
+      }
     );
-    // console.log({ part_id });
     let url = `${maskMapURL}/${image?.example}`;
     // url = url.replace("192.168.0.201", "192.168.2.40");
     // console.log({ url, examplesList });
