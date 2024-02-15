@@ -33,7 +33,7 @@ const appBarSx = {
   boxShadow: 1,
 };
 
-export default function UploadImageDialog({ imagePath, title, open, setOpen, maskMapListURL }) {
+export default function UploadImageDialog({ imagePath, title, open, setOpen, maskMapParmsURL }) {
   const { t } = useTranslation();
   const [noImage, setNoImage] = useState(false);
   const [selectedObj, setSelectedObj] = useState(null);
@@ -46,7 +46,7 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
   const [disabled, setDisabled] = useState(false);
 
   const [parms, setParms] = useState([]);
-  let urlParms = `${maskMapListURL}/parms.json`;
+  let urlParms = maskMapParmsURL;
 
   const handleUpload = () => {
     setLoading(true);
