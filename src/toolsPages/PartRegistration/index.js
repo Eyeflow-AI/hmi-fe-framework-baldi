@@ -199,7 +199,7 @@ export default function PartRegistration({ pageOptions }) {
             setOpen={setOpenImageInfoDialog}
             imagePath={imagePath}
             title={dialogTitle}
-            maskMapListURL={pageOptions?.options?.maskMapListURL}
+            maskMapParmsURL={pageOptions?.options?.maskMapParmsURL}
           />
         </Box>
       )}

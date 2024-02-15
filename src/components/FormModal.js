@@ -113,38 +113,32 @@ export default function FormModal({
   const [partIdFields, setPartIdFields] = useState([]);
   const [formFields, setFormFields] = useState([]);
   const [maskMapList, setMaskMapList] = useState([]);
-  const [partFields, setPartFields] = useState([]);
   const [filterMaskMapList, setFilterMaskMapList] = useState([]);
 
   const useMaskList = config?.useMaskList ?? false;
 
   const getMaskMapList = () => {
     let _maskMapList = [];
-    let urlExamples = `${config?.maskMapListURL}/examples.json`;
-    let urlParms = `${config?.maskMapListURL}/parms.json`;
+    let urlExamples = config?.maskMapListURL;
 
     fetchJson(urlExamples)
-    .then((res) => {
-      res.forEach((example) => {
-        let part_data = example?.annotations?.part_data;
-        _maskMapList.push(part_data);
+      .then((res) => {
+        res.forEach((example) => {
+          let part_data = example?.annotations?.part_data;
+          _maskMapList.push(part_data);
+        });
+        setMaskMapList(_maskMapList);
+      })
+      .catch((err) => {
+        console.log(err);
       });
-      setMaskMapList(_maskMapList);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-
-    fetchJson(urlParms)
-    .then((res) => {
-      console.log(res);
-      setPartFields(res?.parts_fields);
-    })
   };
 
   useEffect(() => {
     getMaskMapList();
-  }, [partFields]);
+  }, [
+    config?.maskMapListURL,
+  ]);
 
   const { sendDisabled } = useMemo(() => {
     let sendDisabled = false;
@@ -238,7 +232,6 @@ export default function FormModal({
           });
         }
       }
- 
       setFormData((oldValue) => Object.assign({}, oldValue, updateData));
     } else {
       let newValue = event.target.value;
