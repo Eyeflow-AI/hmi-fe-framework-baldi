@@ -99,7 +99,7 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [ urlParms ]);
 
   const getDocument = (selectedParam) => {
     API.get
@@ -126,9 +126,7 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
 
     if (dataset) {
       Object.keys(dataset).forEach((part) => {
-        if (part === 'part_id' && isNaN(dataset[part]) || dataset[part] <= 0) {
-          errInText[part] = true;
-        } else if (part !== 'part_id' && [null, ''].includes(dataset[part])) {
+        if ([null, ''].includes(dataset[part])) {
           errInText[part] = true;
         }
         if (!dataset?.dataset_id?.maskMap && [null, ''].includes(dataset[part])) {
@@ -142,7 +140,11 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
   }, [dataset]);
 
   const handleUpdate = (key, value) => {
-    setDataset((preValue) => ({ ...preValue, [key]: value }))
+    if (key === 'dataset_id') {
+      setDataset((preValue) => ({ ...preValue, [key]: value.dataset_id, maskMap: datasetList.find((el) => el.value === value)?.maskMap ?? false }))
+    } else {
+      setDataset((preValue) => ({ ...preValue, [key]: value }))
+    }
   };
 
   useEffect(() => {
@@ -268,7 +270,7 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
                         height: 'auto',
                       }}
                       value={dataset?.[part.id]}
-                      required={dataset?.dataset_id?.maskMap ? true : false}
+                      required={dataset?.maskMap ? true : false}
                       onChange={(e) => handleUpdate(part.id, e.target.value)}
                       label={part.label}
                       error={errorInText?.[part.id] ?? false}
