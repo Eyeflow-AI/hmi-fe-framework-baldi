@@ -54,16 +54,21 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
     API.post.uploadImageInfo({
       data: {
         dataset_id: dataset.dataset_id,
-        ...Object.keys(dataset).filter((part) => part !== 'dataset_id').reduce((obj, key) => {
-          obj[key] = dataset[key];
-          return obj;
-        }, {}),
         img_height: imgHeight,
         img_width: imgWidth,
         date: new Date(),
         user_name: user.tokenPayload.payload.username ?? '',
-      },
+        annotations: {
+          part_data: {
+            ...Object.keys(dataset).filter((part) => part !== 'dataset_id' && part !== "maskMap").reduce((obj, key) => {
+              obj[key] = dataset[key];
+              return obj;
+            }, {}),
+          }
+        }
+        },
       imageBase64: base64Str,
+      maskMap: dataset?.maskMap,
     })
       .then((res) => {
         setLoading(false);
@@ -126,11 +131,8 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
 
     if (dataset) {
       Object.keys(dataset).forEach((part) => {
-        if ([null, ''].includes(dataset[part])) {
+        if ([null, ''].includes(dataset[part]) || dataset[part] === 0 || dataset[part] <= 0) {
           errInText[part] = true;
-        }
-        if (!dataset?.dataset_id?.maskMap && [null, ''].includes(dataset[part])) {
-          errInText[part] = false
         }
       })
     }
@@ -141,7 +143,7 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
 
   const handleUpdate = (key, value) => {
     if (key === 'dataset_id') {
-      setDataset((preValue) => ({ ...preValue, [key]: value.dataset_id, maskMap: datasetList.find((el) => el.value === value)?.maskMap ?? false }))
+      setDataset((preValue) => ({ ...preValue, [key]: value.dataset_id, maskMap: datasetList.find((el) => el.dataset_id === value.dataset_id)?.maskMap ?? false }))
     } else {
       setDataset((preValue) => ({ ...preValue, [key]: value }))
     }
