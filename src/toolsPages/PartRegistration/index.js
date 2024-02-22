@@ -56,6 +56,9 @@ export default function PartRegistration({ pageOptions }) {
   const [cameraName, setCameraName] = useState(imagesList[0]?.camera_name);
 
   const [item, setItem] = useState(imagesList[0]);
+  const [base64Str, setBase64Str] = useState("");
+  const [imgWidth, setImgWidth] = useState(0);
+  const [imgHeight, setImgHeight] = useState(0);
 
   const onOpenDialog = useCallback((item) => {
     return () => {
@@ -73,7 +76,6 @@ export default function PartRegistration({ pageOptions }) {
     if (!item) return;
     setItem(item);
     setCameraName(item?.camera_name);
-    setImagePath(item?.full_url);
     setDialogTitle(
       item?.frame_time
         ? `${item?.camera_name} - ${item?.frame_time}`
@@ -81,10 +83,41 @@ export default function PartRegistration({ pageOptions }) {
     );
   };
 
+
+  const URLtoBase64 = (url) => {
+    let img = new Image();
+    img.src = url;
+    img.crossOrigin = 'Anonymous';
+
+    img.onload = function () {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+
+      const dataUrl = canvas.toDataURL('image/png')
+      setBase64Str(dataUrl)
+      setImgWidth(img.width);
+      setImgHeight(img.height);
+    };
+  }
+
   useEffect(() => {
     if (!openImageDialog && !openImageInfoDialog) {
       setDialogTitle("");
       setImagePath("");
+    }
+
+    if (openImageInfoDialog) {
+      setImagePath(`${item?.full_url}?time=${clock}`)
+      console.log(`${item?.full_url}?time=${clock}`);
+      URLtoBase64(`${item?.full_url}?time=${clock}`);
+      setDialogTitle(
+        item?.frame_time
+          ? `${item?.camera_name} - ${item?.frame_time}`
+          : `${item?.camera_name}`
+      );
     }
   }, [openImageDialog, openImageInfoDialog]);
 
@@ -94,7 +127,6 @@ export default function PartRegistration({ pageOptions }) {
     refImagesList.current = imagesList;
     setCameraName(imagesList[0]?.camera_name);
     setItem(imagesList[0]);
-    setImagePath(imagesList[0]?.full_url);
     setDialogTitle(
       imagesList[0]?.frame_time
         ? `${imagesList[0]?.camera_name} - ${imagesList[0]?.frame_time}`
@@ -205,6 +237,9 @@ export default function PartRegistration({ pageOptions }) {
             open={openImageInfoDialog}
             setOpen={setOpenImageInfoDialog}
             imagePath={imagePath}
+            base64Str={base64Str}
+            imgWidth={imgWidth}
+            imgHeight={imgHeight}
             title={dialogTitle}
             maskMapParmsURL={pageOptions?.options?.maskMapParmsURL}
           />

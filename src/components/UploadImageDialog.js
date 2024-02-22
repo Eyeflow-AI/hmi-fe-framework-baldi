@@ -33,14 +33,18 @@ const appBarSx = {
   boxShadow: 1,
 };
 
-export default function UploadImageDialog({ imagePath, title, open, setOpen, maskMapParmsURL }) {
+export default function UploadImageDialog({ 
+  imagePath,            
+  base64Str,
+  imgWidth,
+  imgHeight, 
+  title, open, setOpen, maskMapParmsURL }) {
   const { t } = useTranslation();
   const [noImage, setNoImage] = useState(false);
   const [selectedObj, setSelectedObj] = useState(null);
   const [dataset, setDataset] = useState(null);
   const [datasetList, setDatasetList] = useState([]);
   const user = useSelector(getUser);
-  const [base64Str, setBase64Str] = useState('');
   const [errorInText, setErrorInText] = useState(null);
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(true);
@@ -82,29 +86,17 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
   };
 
   useEffect(() => {
-    if (!open) {
-      setNoImage(false);
-      if (selectedObj?.originalUrl !== imagePath) {
-        URL.revokeObjectURL(selectedObj?.url);
-      }
-    } else {
-      setSelectedObj({
-        url: imagePath,
-        originalUrl: imagePath,
-      });
-    }
-  }, [open]);
-
-
-  useEffect(() => {
     fetchJson(urlParms)
       .then((res) => {
         setParms(res?.parts_fields);
+        console.log(res?.parts_fields);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [ urlParms ]);
+  }, [
+    urlParms,
+  ]);
 
   const getDocument = (selectedParam) => {
     API.get
@@ -115,9 +107,9 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
       .finally(() => { });
   };
 
-  const [imgWidth, setImgWidth] = useState(0);
-  const [imgHeight, setImgHeight] = useState(0);
-
+  useEffect(() => {
+    getDocument('feConfig');
+  }, []);
 
   useEffect(() => {
     let errInText = {};
@@ -144,7 +136,7 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
 
     setErrorInText(errInText);
     setDisabled(Object.values(errInText).includes(true));
-  }, [ dataset, parms ]);
+  }, [dataset, parms]);
 
   const handleUpdate = (key, value) => {
     if (key === 'dataset_id') {
@@ -153,26 +145,6 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
       setDataset((preValue) => ({ ...preValue, [key]: value }))
     }
   };
-
-  useEffect(() => {
-    getDocument('feConfig');
-    let img = new Image();
-    img.src = imagePath;
-    img.crossOrigin = 'Anonymous';
-
-    img.onload = function () {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0);
-
-      const dataUrl = canvas.toDataURL('image/png')
-      setBase64Str(dataUrl)
-      setImgWidth(img.width);
-      setImgHeight(img.height);
-    };
-  }, [imagePath]);
 
   return (
     <Dialog fullScreen open={open} onClose={handleClose}>
@@ -234,13 +206,11 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
                 >
                   <TransformComponent>
                     <img
-                      src={selectedObj?.url}
+                      src={imagePath}
                       alt={''}
                       onLoad={() => resetTransform()}
                       style={{
                         objectFit: 'contain',
-                        //maxWidth: "calc(2560px * 0.3)",
-                        //maxHeight: "calc(1440px * 0.3)",
                         width: '65%',
                         height: 'auto',
                         margin: 'auto',
