@@ -43,7 +43,7 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
   const [base64Str, setBase64Str] = useState('');
   const [errorInText, setErrorInText] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [disabled, setDisabled] = useState(false);
+  const [disabled, setDisabled] = useState(true);
 
   const [parms, setParms] = useState([]);
   let urlParms = maskMapParmsURL;
@@ -53,7 +53,7 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
 
     API.post.uploadImageInfo({
       data: {
-        dataset_id: dataset.dataset_id,
+        dataset_id: dataset?.dataset_id,
         img_height: imgHeight,
         img_width: imgWidth,
         date: new Date(),
@@ -66,11 +66,11 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
             }, {}),
           }
         }
-        },
+      },
       imageBase64: base64Str,
       maskMap: dataset?.maskMap,
     })
-      .then((res) => {
+      .then(() => {
         setLoading(false);
         setDataset(null);
         handleClose();
@@ -111,7 +111,6 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
       .appParameterDocument({ parameterName: selectedParam })
       .then((res) => {
         setDatasetList(res.document.pages["Images Capturer"].options.datasetChoices)
-        // console.log(res)
       })
       .finally(() => { });
   };
@@ -122,28 +121,34 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
 
   useEffect(() => {
     let errInText = {};
-    if ([null, ''].includes(dataset?.dataset_id ?? null)) {
+    if ([null, '', undefined].includes(dataset?.dataset_id)) {
       errInText.dataset_id = true;
-    }
-    else {
+    } else {
       errInText.dataset_id = false;
     }
 
-    if (dataset) {
-      Object.keys(dataset).forEach((part) => {
-        if ([null, ''].includes(dataset[part]) || dataset[part] === 0 || dataset[part] <= 0) {
-          errInText[part] = true;
+    parms?.forEach((part) => {
+      if (dataset && dataset[part.id] <= 0) {
+        errInText[part.id] = true;
+      } else {
+        errInText[part.id] = false;
+      }
+      if (dataset?.maskMap) {
+        if ([null, '', undefined].includes(dataset?.[part.id] ?? null) || (dataset && dataset[part.id] <= 0)) {
+          errInText[part.id] = true;
+        } else {
+          errInText[part.id] = false;
         }
-      })
-    }
+      }
+    });
 
-    setErrorInText(errInText)
-    setDisabled(Object.values(errInText).includes(true))
-  }, [dataset]);
+    setErrorInText(errInText);
+    setDisabled(Object.values(errInText).includes(true));
+  }, [ dataset, parms ]);
 
   const handleUpdate = (key, value) => {
     if (key === 'dataset_id') {
-      setDataset((preValue) => ({ ...preValue, [key]: value.dataset_id, maskMap: datasetList.find((el) => el.dataset_id === value.dataset_id)?.maskMap ?? false }))
+      setDataset((preValue) => ({ ...preValue, [key]: value?.dataset_id, maskMap: datasetList.find((el) => el?.dataset_id === value?.dataset_id)?.maskMap ?? false }))
     } else {
       setDataset((preValue) => ({ ...preValue, [key]: value }))
     }
@@ -252,15 +257,21 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
                       width: '60%',
                       height: 'auto',
                     }}
-                    value={dataset?.dataset_id}
+                    value={datasetList.find((el) => el?.dataset_id === dataset?.dataset_id) ?? null}
                     required
                     onChange={(e, newValue) => handleUpdate('dataset_id', newValue)}
                     options={datasetList}
                     getOptionLabel={(option) => option.label ?? option}
-                    renderInput={(params) => <TextField {...params} label="Dataset *" />}
-                    error={errorInText?.dataset_id ?? false}
-                    helperText={errorInText?.dataset_id ?? false ? 'Campo obrigatório.' : ''}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Dataset"
+                        error={errorInText?.dataset_id ?? false}
+                        helperText={errorInText?.dataset_id ?? false ? 'Campo obrigatório.' : ''}
+                      />
+                    )}
                   />
+
                   {parms?.map((part, index) => (
                     <TextField
                       key={index}
@@ -272,7 +283,7 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
                         height: 'auto',
                       }}
                       value={dataset?.[part.id]}
-                      required={dataset?.maskMap ? true : false}
+                      required={dataset?.maskMap}
                       onChange={(e) => handleUpdate(part.id, e.target.value)}
                       label={part.label}
                       error={errorInText?.[part.id] ?? false}
@@ -290,7 +301,7 @@ export default function UploadImageDialog({ imagePath, title, open, setOpen, mas
                       height: 'auto',
                       margin: 'auto',
                     }}
-                    disabled={disabled}
+                    disabled={disabled || loading}
                   >
                     Save image info
                   </Button>
