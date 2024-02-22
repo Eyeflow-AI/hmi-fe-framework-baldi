@@ -71,7 +71,9 @@ function PartIdAutoComplete(props) {
     <Autocomplete
       disablePortal
       getOptionLabel={getOptionLabel}
-      options={usemasklist && Boolean(usemasklist) ? filtermaskmaplist : partsList}
+      options={
+        usemasklist && Boolean(usemasklist) ? filtermaskmaplist : partsList
+      }
       onChange={_onChange}
       disabled={disabled}
       renderInput={(params) => <TextField {...params} label={label} />}
@@ -114,31 +116,30 @@ export default function FormModal({
   const [formFields, setFormFields] = useState([]);
   const [maskMapList, setMaskMapList] = useState([]);
   const [filterMaskMapList, setFilterMaskMapList] = useState([]);
+  const [useMaskList, setUseMaskList] = useState([]);
 
-  const useMaskList = config?.useMaskList ?? false;
+  // const useMaskList = config?.useMaskList ?? false;
 
-  const getMaskMapList = () => {
+  const getMaskMapList = async ({ urlExamples }) => {
     let _maskMapList = [];
-    let urlExamples = config?.maskMapListURL;
 
-    fetchJson(urlExamples)
+    return fetchJson(urlExamples)
       .then((res) => {
         res.forEach((example) => {
           let part_data = example?.annotations?.part_data;
           _maskMapList.push(part_data);
         });
-        setMaskMapList(_maskMapList);
+        // setMaskMapList(_maskMapList);
+        return _maskMapList;
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  useEffect(() => {
-    getMaskMapList();
-  }, [
-    config?.maskMapListURL,
-  ]);
+  // useEffect(() => {
+  //   getMaskMapList();
+  // }, [config?.maskMapListURL]);
 
   const { sendDisabled } = useMemo(() => {
     let sendDisabled = false;
@@ -164,21 +165,38 @@ export default function FormModal({
     }
     return { sendDisabled };
   }, [config, formData]);
+  console.log({ maskMapList });
 
   useEffect(() => {
-    if (open && config?.fields?.length > 0) {
+    if (open && config?.inspections?.length > 0) {
       let newFormData = {};
       let newPartIdFields = [];
-      config.fields.forEach((fieldData) => {
-        let inputField = fieldData.input_field ?? null;
-        newFormData[fieldData.field] = getDefaultValue(fieldData);
-
-        if (inputField && inputField.startsWith("part")) {
-          newPartIdFields.push(fieldData);
-        }
+      let _maskMapList = [];
+      config?.inspections?.forEach(async (inspection) => {
+        inspection.fields.forEach((fieldData) => {
+          let inputField = fieldData.input_field ?? null;
+          newFormData[fieldData.field] = getDefaultValue(fieldData);
+          if (inputField && inputField.startsWith("part")) {
+            newPartIdFields.push(fieldData);
+          }
+        });
+        _maskMapList.push(
+          await getMaskMapList({ urlExamples: inspection.maskMapListURL })
+        );
       });
+      // console.log({ _maskMapList });
+
+      // config.fields.forEach((fieldData) => {
+      //   let inputField = fieldData.input_field ?? null;
+      //   newFormData[fieldData.field] = getDefaultValue(fieldData);
+
+      //   if (inputField && inputField.startsWith("part")) {
+      //     newPartIdFields.push(fieldData);
+      //   }
+      // });
+      setMaskMapList(_maskMapList);
       setFormData(newFormData);
-      setFormFields(config.fields);
+      setFormFields(config.inspections);
       setPartIdFields(newPartIdFields);
     } else {
       setFormData({});
@@ -188,7 +206,11 @@ export default function FormModal({
   }, [config, open]);
 
   const _onClickSend = () => {
-    onClickSend(formData);
+    let _formData = { ...formData };
+    _formData["useMaskList"] = useMaskList;
+    _formData["maskMapListURL"] = config?.maskMapListURL ?? "";
+    _formData["maskMapId"] = config?.maskMapId ?? "";
+    onClickSend(_formData);
   };
 
   useEffect(() => {
@@ -204,10 +226,7 @@ export default function FormModal({
       return a?.part_id?.localeCompare(b.part_id);
     });
     setFilterMaskMapList(updatedMaskMapList);
-  }, [
-    partsObj,
-    maskMapList,
-  ]);
+  }, [partsObj, maskMapList]);
 
   const onChange = (fieldData) => (event) => {
     let newValue = event.target.value;
@@ -252,21 +271,42 @@ export default function FormModal({
       <Fade in={open}>
         <Box width={config?.width ?? 800} sx={style.mainBox}>
           <Grid container spacing={1} sx={style.formBox}>
-            {formFields.map(({ xs, ...fieldData }, index) => (
-              <Grid key={index} xs={xs} item>
-                {inputComponents[
-                  inputComponents[fieldData.type] ? fieldData.type : "else"
-                ]({
-                  label: t(fieldData.label),
-                  type: fieldData.type,
-                  value: formData[fieldData.field],
-                  onChange: onChange(fieldData),
-                  disabled: fieldData.disabled,
-                  usemasklist: useMaskList.toString(),
-                  filtermaskmaplist: filterMaskMapList,
-                })}
-              </Grid>
-            ))}
+            {formFields?.map(({ ..._form }, index) => {
+              console.log({ _form });
+              return (
+                <Box
+                  key={index}
+                  sx={{
+                    width: "100%",
+                    display: "flex",
+                    gap: 1,
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    marginBottom: 2,
+                    border: 1,
+                    padding: 2,
+                  }}
+                >
+                  {_form.fields.map(({ xs, ...fieldData }, index) => (
+                    <Grid key={index} xs={xs} item>
+                      {inputComponents[
+                        inputComponents[fieldData.type]
+                          ? fieldData.type
+                          : "else"
+                      ]({
+                        label: t(fieldData.label),
+                        type: fieldData.type,
+                        value: formData[fieldData.field],
+                        onChange: onChange(fieldData),
+                        disabled: fieldData.disabled,
+                        usemasklist: useMaskList.toString(),
+                        filtermaskmaplist: filterMaskMapList,
+                      })}
+                    </Grid>
+                  ))}
+                </Box>
+              );
+            })}
           </Grid>
 
           <Box sx={style.footerBox}>
