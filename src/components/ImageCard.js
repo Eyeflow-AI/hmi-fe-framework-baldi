@@ -178,11 +178,10 @@ const getAnnotatedImg = ({
           });
 
           ctx.strokeStyle = bboxRegion?.color ?? colors.eyeflow.green.dark;
-          console.log({ region, c: bboxRegion?.color });
 
           if (bboxRegion?.color === "#FF0000") {
             okRegions += 1;
-          } else {
+          } else if (bboxRegion?.color === "#00FF00") {
             ngRegions += 1;
           }
 
@@ -258,13 +257,17 @@ const getAnnotatedImg = ({
           });
         }
       );
-      ctx.fillStyle = "#FF0000";
-      if (ngRegions > 0) ctx.fillStyle = "#FF0000";
-      ctx.fillText(
-        `${okRegions}/${totalRegions}`,
-        parseInt(1 * scale + 20),
-        parseInt(1 * scale + 40)
-      );
+
+      if (okRegions || ngRegions) {
+        ctx.fillStyle = "#FF0000";
+        ctx.font = "50px Arial";
+        if (ngRegions > 0) ctx.fillStyle = "#FF0000";
+        ctx.fillText(
+          `${okRegions}/${totalRegions}`,
+          parseInt(1 * scale + 20),
+          parseInt(1 * scale + 50)
+        );
+      }
       if (options?.returnCanvasURL) {
         let canvasURL = canvas.toDataURL("image/jpeg");
         return canvasURL;
