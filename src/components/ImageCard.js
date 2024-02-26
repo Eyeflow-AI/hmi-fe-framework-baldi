@@ -373,8 +373,8 @@ export default function ImageCard({
   useEffect(() => {
     if (imageDataURL) {
       setDetectionsLoading(true);
-      let url = imageDataURL.replace("192.168.0.201", "192.168.2.40");
-      // let url = imageDataURL;
+      // let url = imageDataURL.replace("192.168.0.201", "192.168.2.40");
+      let url = imageDataURL;
       console.log({ url });
       let detections = [];
 
@@ -395,10 +395,10 @@ export default function ImageCard({
         })
         .finally(() => {
           if (_imageURL) {
-            let url = _imageURL.replace("192.168.0.201", "192.168.2.40");
-            console.log({ url });
-            // let url = _imageURL;
+            // let url = _imageURL.replace("192.168.0.201", "192.168.2.40");
+            let url = _imageURL;
             url = `${url}?time=${Date.now()}`;
+            console.log({ url });
             getAnnotatedImg({
               image: url,
               regions: detections,
