@@ -56,7 +56,7 @@ export default function MetalStampingBox({ data, config }) {
     return { selectedCamera };
   }, [config]);
 
-  let { imageData, anomalyImageData, anomaliesBarData } = useMemo(() => {
+  let { imageData, anomalyImageData } = useMemo(() => {
     let partsOk = data?.batch_data?.parts_ok ?? 0;
     let partsNg = data?.batch_data?.parts_ng ?? 0;
     let partsPieData = [];
@@ -136,6 +136,8 @@ export default function MetalStampingBox({ data, config }) {
     };
   }, [selectedCamera, data]);
 
+  console.log({ anomalyImageData });
+
   return (
     <Box
       width={config?.width ?? "100%"}
@@ -167,10 +169,7 @@ export default function MetalStampingBox({ data, config }) {
         </Box>
       )}
 
-      {showLastAnomaly &&
-      anomaliesBarData &&
-      anomaliesBarData.length > 0 &&
-      anomalyImageData ? (
+      {showLastAnomaly && anomalyImageData ? (
         <Box sx={styleSx.cardBoxSx}>
           <ImageCard
             imageData={anomalyImageData}

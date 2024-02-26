@@ -161,10 +161,11 @@ const getAnnotatedImg = ({
 
     // }
     if (options.severalAnnotations) {
+      let totalRegions = Array.isArray(regions) && regions.length;
+      let okRegions = 0;
+      let ngRegions = 0;
       (Array.isArray(regions) && regions.length > 0 ? regions : []).forEach(
         (region, i) => {
-          // if (bboxRegion) {
-          // console.log({ bboxRegion })
           let bboxRegion = region;
           let [x_min, x_max, y_min, y_max] = expandCoordinates({
             imgWidth: img.width / scale,
@@ -177,18 +178,17 @@ const getAnnotatedImg = ({
           });
 
           ctx.strokeStyle = bboxRegion?.color ?? colors.eyeflow.green.dark;
+
+          if (bboxRegion?.color === "#FF0000") {
+            okRegions += 1;
+          } else if (bboxRegion?.color === "#00FF00") {
+            ngRegions += 1;
+          }
+
           ctx.lineWidth = 3;
           ctx.strokeRect(
             parseInt(x_min * scale - 1),
             parseInt(y_min * scale + 1),
-            parseInt((x_max - x_min) * scale),
-            parseInt((y_max - y_min) * scale)
-          );
-
-          ctx.lineWidth = 3;
-          ctx.strokeRect(
-            parseInt(x_min * scale),
-            parseInt(y_min * scale),
             parseInt((x_max - x_min) * scale),
             parseInt((y_max - y_min) * scale)
           );
@@ -208,7 +208,6 @@ const getAnnotatedImg = ({
           );
 
           // }
-          // console.log({ region });
           (region?.detections ?? [])?.forEach((detection) => {
             let bb = detection?.[0];
             // console.log({bb});
@@ -258,6 +257,17 @@ const getAnnotatedImg = ({
           });
         }
       );
+
+      if (okRegions || ngRegions) {
+        ctx.fillStyle = "#FF0000";
+        ctx.font = "50px Arial";
+        if (ngRegions > 0) ctx.fillStyle = "#FF0000";
+        ctx.fillText(
+          `${okRegions}/${totalRegions}`,
+          parseInt(1 * scale + 20),
+          parseInt(1 * scale + 50)
+        );
+      }
       if (options?.returnCanvasURL) {
         let canvasURL = canvas.toDataURL("image/jpeg");
         return canvasURL;
@@ -363,62 +373,50 @@ export default function ImageCard({
   useEffect(() => {
     if (imageDataURL) {
       setDetectionsLoading(true);
-      // let url = imageDataURL.replace("192.168.0.201", "192.168.2.40");
-      let url = imageDataURL;
+      let url = imageDataURL.replace("192.168.0.201", "192.168.2.40");
+      // let url = imageDataURL;
+      console.log({ url });
+      let detections = [];
 
       fetchJson(`${url}?time=${Date.now()}`)
         .then((data) => {
           setEventData(data);
+          if (data.type === "checklist" && Array.isArray(data?.detections)) {
+            for (let detection of data?.detections ?? []) {
+              detections.push({ ...detection });
+            }
+          }
+          setDetections(detections);
+          setDetectionsLoading(false);
         })
         .catch((err) => {
           setEventData(null);
           setDetectionsLoading(false);
+        })
+        .finally(() => {
+          if (_imageURL) {
+            let url = _imageURL.replace("192.168.0.201", "192.168.2.40");
+            console.log({ url });
+            // let url = _imageURL;
+            url = `${url}?time=${Date.now()}`;
+            getAnnotatedImg({
+              image: url,
+              regions: detections,
+              scale: 1,
+              setAnnotatedImage,
+              options: {
+                severalAnnotations: true,
+                returnCanvasURL: false,
+              },
+            });
+          } else {
+            setEventData(null);
+          }
         });
     } else {
       setEventData(null);
     }
   }, [imageDataURL]);
-
-  useEffect(() => {
-    if (_imageURL) {
-      // let url = _imageURL.replace("192.168.0.201", "192.168.2.40");
-      let url = _imageURL;
-      getAnnotatedImg({
-        image: url,
-        regions: detections,
-        scale: 1,
-        setAnnotatedImage,
-        options: {
-          severalAnnotations: true,
-          returnCanvasURL: false,
-        },
-      });
-    } else {
-      setEventData(null);
-    }
-  }, [_imageURL, detections]);
-
-  useEffect(() => {
-    if (!eventData) {
-      setDetections([]);
-      setDetectionsLoading(false);
-      return;
-    }
-
-    let newDetectionList = [];
-    if (
-      eventData.type === "checklist" &&
-      Array.isArray(eventData?.detections)
-    ) {
-      for (let detection of eventData?.detections ?? []) {
-        newDetectionList.push({ ...detection });
-      }
-    }
-
-    setDetections(newDetectionList);
-    setDetectionsLoading(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [eventData]);
 
   const onImageLoad = (event) => {
     setImageWidth(event.target.naturalWidth);
