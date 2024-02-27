@@ -18,6 +18,7 @@ import GetSelectedStation from "../../utils/Hooks/GetSelectedStation";
 import API from "../../api";
 import ERRORS from "../../errors";
 import { setNotificationBar } from "../../store/slices/app";
+import fetchJson from "../../utils/functions/fetchJson";
 
 // Third-party
 import { useDispatch } from "react-redux";
@@ -38,7 +39,6 @@ const style = {
 };
 
 export default function Monitor({ pageOptions }) {
-
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
@@ -74,7 +74,6 @@ export default function Monitor({ pageOptions }) {
 
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openPrintDialog, setOpenPrintDialog] = useState(false);
-  const useMaskList = pageOptions.options.useMaskList ?? false;
   const handleOpenCreateModal = () => setOpenCreateModal(true);
   const handleCloseCreateModal = () => {
     setOpenCreateModal(false);
@@ -245,6 +244,46 @@ export default function Monitor({ pageOptions }) {
   };
   // console.log({selectedBatch})
 
+  const [runningMaskIcon, setRunningMaskIcon] = useState("");
+  const [examplesList, setExamplesList] = useState([]);
+
+  useEffect(() => {
+    if (
+      pageOptions?.components?.EventMenuBox?.maskMapListURL &&
+      runningBatch &&
+      examplesList.length > 0
+    ) {
+      let image = examplesList.find((el) => {
+        let partId = el?.annotations?.part_data?.part_id;
+        return partId === runningBatch.part_id;
+      });
+      let url = `${pageOptions?.components?.EventMenuBox?.maskMapListURL}/${image?.example}`;
+
+      setRunningMaskIcon(url);
+    } else {
+      setRunningMaskIcon("");
+    }
+  }, [
+    pageOptions?.components?.EventMenuBox?.maskMapListURL,
+    runningBatch,
+    examplesList,
+  ]);
+
+  useEffect(() => {
+    if (pageOptions?.components?.EventMenuBox?.maskMapListURL) {
+      let url = pageOptions?.components?.EventMenuBox?.maskMapListURL;
+      // url = url.replace("192.168.0.201", "192.168.2.40");
+
+      fetchJson(url)
+        .then((data) => {
+          setExamplesList(data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }, [pageOptions?.components?.EventMenuBox?.maskMapListURL]);
+
   return (
     <Fragment>
       <PageWrapper>
@@ -271,6 +310,8 @@ export default function Monitor({ pageOptions }) {
                 onChangeParams={onChangeParams}
                 config={pageOptions.components.EventMenuBox}
                 height={height}
+                runningMaskIcon={runningMaskIcon}
+                examplesList={examplesList}
               />
             </Box>
             <Box id="monitor-data-box" sx={style.dataBox}>
@@ -306,6 +347,7 @@ export default function Monitor({ pageOptions }) {
                   data={selectedBatch}
                   disabled={!selectedBatch}
                   config={pageOptions.components.EventBatchDataBox}
+                  examplesList={examplesList}
                 />
               </Box>
             </Box>
