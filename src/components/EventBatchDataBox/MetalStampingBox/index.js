@@ -5,7 +5,6 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
 // Third party
-import { ResponsivePie } from "@nivo/pie";
 import { colors, dateFormat } from "sdk-fe-eyeflow";
 import { useTranslation } from "react-i18next";
 import { cloneDeep } from "lodash";
@@ -43,7 +42,7 @@ const styleSx = {
   },
 };
 
-export default function MetalStampingBox({ data, config }) {
+export default function MetalStampingBox({ data, config, examplesList }) {
   const { t } = useTranslation();
 
   const showLastAnomaly = config?.lastAnomaly?.show;
@@ -98,6 +97,17 @@ export default function MetalStampingBox({ data, config }) {
     let anomalyImageData = cloneDeep(
       data?.batch_data?.last_anomaly?.images?.[0]
     );
+
+    if (examplesList?.length) {
+      let image = examplesList.find((el) => {
+        let partId = el?.annotations?.part_data?.part_id;
+        return partId === data?.info?.part_id;
+      });
+      if (image && anomalyImageData?.image_url) {
+        anomalyImageData.image_url = `${config?.maskMapURL}/${image?.example}`;
+      }
+      // let url = `${pageOptions?.components?.EventMenuBox?.maskMapListURL}/${image?.example}`;
+    }
     if (data?.batch_data?.last_anomaly?.event_time) {
       anomalyImageData.event_time = dateFormat(
         data.batch_data.last_anomaly.event_time
@@ -136,13 +146,10 @@ export default function MetalStampingBox({ data, config }) {
     };
   }, [selectedCamera, data]);
 
-  console.log({ anomalyImageData });
-
   return (
     <Box
       width={config?.width ?? "100%"}
       height={config?.height ?? "100%"}
-      // height={'941px'}
       sx={styleSx.mainBoxSx}
     >
       {imageData ? (
@@ -178,6 +185,7 @@ export default function MetalStampingBox({ data, config }) {
             color="error.main"
             width={"100%"}
             height={"50%"}
+            useMask={config?.maskMapURL}
           />
         </Box>
       ) : (

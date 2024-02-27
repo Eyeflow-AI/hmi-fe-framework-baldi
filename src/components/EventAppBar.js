@@ -122,7 +122,6 @@ export default function EventAppBar({
     pauseLoading,
     resumeLoading,
   ]);
-  console.log({ config, buttonList });
 
   if (hasAppBar) {
     return (
