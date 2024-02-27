@@ -46,20 +46,20 @@ export default function GetRunningBatch({
       //   .catch((error) => {
       //     console.error("Error fetching resource:", error);
       //   });
-      axios.get("http://localhost:3000").then((response) => {
-        if (response.status === 304) {
-          // Resource not modified, use cached version
-          console.log("Resource not modified, using cached version");
-          // return getCachedResource();
-        } else {
-          // Resource modified, update cache
-          console.log("Resource modified, updating cache");
-          // return response.json().then((data) => {
-          //   // updateCachedResource(data);
-          //   return data;
-          // });
-        }
-      });
+      // axios.get("http://localhost:3000").then((response) => {
+      //   if (response.status === 304) {
+      //     // Resource not modified, use cached version
+      //     console.log("Resource not modified, using cached version");
+      //     // return getCachedResource();
+      //   } else {
+      //     // Resource modified, update cache
+      //     console.log("Resource modified, updating cache");
+      //     // return response.json().then((data) => {
+      //     //   // updateCachedResource(data);
+      //     //   return data;
+      //     // });
+      //   }
+      // });
     }
   };
 
