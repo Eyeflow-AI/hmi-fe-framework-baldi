@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import checkForReloadThunk from '../../store/thunks/checkForReload';
 import Clock from './Clock';
 import fetchJson from '../../utils/functions/fetchJson';
+import { useLocation } from "react-router-dom";
 
-export default function CheckVersion({ sleepTime = 30000 } = {}) {
+export default function CheckVersion({ sleepTime = 60000 }) {
   const { clock } = Clock({ sleepTime });
   const dispatch = useDispatch();
-  
+  const location = useLocation();
+
   const [JSVersion, setJSVersion] = useState('');
   const [reload, setReload] = useState(false);
 
@@ -32,20 +34,22 @@ export default function CheckVersion({ sleepTime = 30000 } = {}) {
   }, []);
 
   useEffect(() => {
-    if (JSVersion && !reload) {
-      dispatch(checkForReloadThunk({ JSVersion }))
-      .then(res => {
-        if (res.reload) {
-          console.log(res, JSVersion);
-          setReload(true);
-        }
-      })
-      .catch(console.log);
+    if (location.pathname === '/login') {
+      return;
     }
+    if (JSVersion) {
+      dispatch(checkForReloadThunk({ JSVersion }))
+        .then(data => {
+          if (data.payload.reload) {
+            window.location.reload();
+          }
+        })
+        .catch(console.log);
+    }
+    return () => {
+      setJSVersion('');
+      setReload(false);
+    };
   }, [clock, JSVersion]);
-
-  useEffect(() => {
-    window.location.reload(true);
-  }, [reload]);
 
 };
