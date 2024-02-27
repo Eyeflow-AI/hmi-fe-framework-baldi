@@ -80,6 +80,8 @@ export default function EventMenuBox({
   onChangeEventByClick,
   config,
   keepRunningEvent,
+  runningMaskIcon = "",
+  examplesList = [],
 }) {
   const { t } = useTranslation();
 
@@ -104,43 +106,8 @@ export default function EventMenuBox({
   const startSerialIcon = config?.startSerialIcon;
   const noEventIcon = config?.noEventIcon;
   const conveyorIcon = config?.conveyorIcon;
-  const [runningMaskIcon, setRunningMaskIcon] = useState("");
-  const [examplesList, setExamplesList] = useState([]);
 
   const [menuBoxHeight, setMenuBoxHeight] = useState(height);
-
-  useEffect(() => {
-    if (config?.maskMapURL && runningEvent && examplesList.length > 0) {
-      let image = examplesList.find(
-        (el) => {
-          let partId = el?.annotations?.part_data?.part_id;
-          return (
-            Number(partId) === Number(runningEvent.part_id)
-          )
-        }
-      );
-      let url = `${config.maskMapURL}/${image?.example}`;
-
-      setRunningMaskIcon(url);
-    } else {
-      setRunningMaskIcon("");
-    }
-  }, [config?.maskMapURL, runningEvent, examplesList]);
-
-  useEffect(() => {
-    if (config?.maskMapListURL) {
-      let url = config.maskMapListURL;
-      // url = url.replace("192.168.0.201", "192.168.2.40");
-
-      fetchJson(url)
-        .then((data) => {
-          setExamplesList(data);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    }
-  }, [config?.maskMapListURL]);
 
   useEffect(() => {
     if (hasMainButton) {
