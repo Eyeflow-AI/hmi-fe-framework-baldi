@@ -12,7 +12,6 @@ import getPartsListThunk from './store/thunks/partsList';
 import addInterceptors from './api/addInterceptors';
 import getOriginalURLPath from './utils/functions/getOriginalURLPath';
 import AlertUpdater from './utils/Hooks/AlertUpdater';
-import CheckVersion from './utils/Hooks/CheckVersion';
 
 // Thirdy-party
 import { useDispatch, useSelector } from 'react-redux';
