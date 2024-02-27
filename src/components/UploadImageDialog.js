@@ -72,6 +72,7 @@ export default function UploadImageDialog({
           img_width: imgWidth,
           date: new Date(),
           user_name: user.tokenPayload.payload.username ?? "",
+          signalize: true,
           annotations: {
             part_data: {
               ...Object.keys(dataset)

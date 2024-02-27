@@ -86,6 +86,7 @@ const API = {
     stations: (_, setLoading) => request(instance.get(`station/list`), setLoading),
     configForFE: (setLoading) => request(instance.get(`config/fe`), setLoading),
     configForFeStation: ({ stationId }, setLoading) => request(instance.get(`config/fe/${stationId}`), setLoading),
+    checkForReload: ({ params } , setLoading) => request(instance.get('config/fe/version', { params }), setLoading),
 
     packageData: (setLoading) => request(instance.get(`internal/package-data`), setLoading),
     languagesData: (setLoading) => request(instance.get(`internal/languages-data`), setLoading),
