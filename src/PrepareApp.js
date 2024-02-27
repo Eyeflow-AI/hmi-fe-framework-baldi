@@ -74,7 +74,6 @@ function PrepareApp({ children }) {
   return (
     <Fragment>
       <AlertUpdater />
-      <CheckVersion />
       {stationId
         ? children
         : "Missing station list"
