@@ -11,7 +11,6 @@ export default function CheckVersion({ sleepTime = 60000 }) {
   const location = useLocation();
 
   const [JSVersion, setJSVersion] = useState('');
-  const [reload, setReload] = useState(false);
 
   const fetchAssetManifest = async () => {
     let url = `${window.location.origin}/asset-manifest.json`
@@ -29,9 +28,10 @@ export default function CheckVersion({ sleepTime = 60000 }) {
 
     return () => {
       setJSVersion('');
-      setReload(false);
     };
   }, []);
+
+  const [hasReloaded, setHasReloaded] = useState(false);
 
   useEffect(() => {
     if (location.pathname === '/login') {
@@ -40,16 +40,17 @@ export default function CheckVersion({ sleepTime = 60000 }) {
     if (JSVersion) {
       dispatch(checkForReloadThunk({ JSVersion }))
         .then(data => {
-          if (data.payload.reload) {
+          if (data.payload.reload && !hasReloaded) {
+            setHasReloaded(true);
+            setJSVersion('');
             window.location.reload();
           }
         })
         .catch(console.log);
     }
     return () => {
-      setJSVersion('');
-      setReload(false);
+      setHasReloaded(false); 
     };
-  }, [clock, JSVersion]);
+  }, [clock]);
 
 };
