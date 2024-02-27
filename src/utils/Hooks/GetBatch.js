@@ -38,5 +38,11 @@ export default function GetBatch({ stationId, sleepTime = 30000 } = {}) {
     // eslint-disable-next-line
   }, [clock, stationId, batchId]);
 
-  return { batchId, onChangeBatchId, batch: data.batch, loading, loadBatch };
+  return {
+    batchId,
+    onChangeBatchId,
+    batch: data.batch,
+    loading,
+    loadBatch,
+  };
 }
