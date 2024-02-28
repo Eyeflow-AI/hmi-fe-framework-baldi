@@ -10,7 +10,7 @@ import checkVersion from '../../store/thunks/checkVersion.js';
 import { useDispatch } from 'react-redux';
 import { useLocation } from "react-router-dom";
 
-export default function CheckVersion({ sleepTime = 1000 }) {
+export default function CheckVersion({ sleepTime = 3600000 }) {
   const { clock } = Clock({ sleepTime });
   const dispatch = useDispatch();
   const location = useLocation();
@@ -53,8 +53,8 @@ export default function CheckVersion({ sleepTime = 1000 }) {
             window.location.reload();
           }
         })
-        .catch(() => {
-          console.log('Error checking version');
+        .catch((err) => {
+          console.log(err.message);
           dispatch(setNotificationBar({
             show: true, message: 'New version available. Reloading...', severity: 'info'
           }))
