@@ -94,16 +94,18 @@ export default function MetalStampingBox({ data, config, examplesList }) {
         // imageData.event_time = lastInspectionData?.event_time;
       }
     }
-    let anomalyImageData = cloneDeep(
-      data?.batch_data?.last_anomaly?.images?.[0]
-    );
+    // let anomalyImageData = cloneDeep(
+    //   data?.batch_data?.last_anomaly?.images?.[0]
+    // );
+    let anomalyImageData = cloneDeep(imageData);
 
     if (examplesList?.length) {
       let image = examplesList.find((el) => {
         let partId = el?.annotations?.part_data?.part_id;
         return partId === data?.info?.part_id;
       });
-      if (image && anomalyImageData?.image_url) {
+      if (image && anomalyImageData) {
+        // if (image && anomalyImageData?.image_url) {
         anomalyImageData.image_url = `${config?.maskMapURL}/${image?.example}`;
       }
       // let url = `${pageOptions?.components?.EventMenuBox?.maskMapListURL}/${image?.example}`;
@@ -146,6 +148,8 @@ export default function MetalStampingBox({ data, config, examplesList }) {
     };
   }, [selectedCamera, data]);
 
+  console.log({ anomalyImageData, examplesList, imageData });
+
   return (
     <Box
       width={config?.width ?? "100%"}
@@ -180,7 +184,7 @@ export default function MetalStampingBox({ data, config, examplesList }) {
         <Box sx={styleSx.cardBoxSx}>
           <ImageCard
             imageData={anomalyImageData}
-            title={t("last_anomaly")}
+            title={""}
             eventTime={anomalyImageData.event_time}
             color="error.main"
             width={"100%"}

@@ -105,7 +105,9 @@ const getAnnotatedImg = ({
   index,
   scale,
   setAnnotatedImage,
+  setExternalText,
   regions,
+  setColor,
   options = {
     severalAnnotations: false,
     returnCanvasURL: false,
@@ -236,14 +238,20 @@ const getAnnotatedImg = ({
       );
 
       if (okRegions || ngRegions) {
-        ctx.fillStyle = "#FF0000";
-        ctx.font = "50px Arial";
-        if (ngRegions > 0) ctx.fillStyle = "#FF0000";
-        ctx.fillText(
-          `${okRegions}/${totalRegions}`,
-          parseInt(1 * scale + 20),
-          parseInt(1 * scale + 50)
-        );
+        // ctx.fillStyle = colors.eyeflow.green.dark;
+        // ctx.font = "50px Arial";
+        // if (ngRegions > 0) ctx.fillStyle = colors.eyeflow.red.dark;
+        // ctx.fillText(
+        //   `${okRegions}/${totalRegions}`,
+        //   parseInt(1 * scale + 20),
+        //   parseInt(1 * scale + 50)
+        // );
+        if (ngRegions > 0) {
+          setColor("error.main");
+        } else {
+          setColor("success.main");
+        }
+        setExternalText(`${okRegions}/${totalRegions}`);
       }
       if (options?.returnCanvasURL) {
         let canvasURL = canvas.toDataURL("image/jpeg");
@@ -280,6 +288,8 @@ export default function ImageCard({
   const [detections, setDetections] = useState([]);
   const [imageWidth, setImageWidth] = useState(0);
   const [imageHeight, setImageHeight] = useState(0);
+  const [adjacentText, setAdjacentText] = useState("");
+  const [newColor, setNewColor] = useState("");
 
   const imageDataURL = imageData?.image_data_url;
   const _imageURL = imageData?.image_url;
@@ -315,10 +325,12 @@ export default function ImageCard({
       let url = imageDataURL;
       let detections = [];
 
+      console.log({ imageDataURL });
       fetchJson(`${url}?time=${Date.now()}`)
         .then((data) => {
           setEventData(data);
           let _detections = useMask ? data?.mask_result : data?.detections;
+          console.log({ _detections });
           if (data.type === "checklist" && Array.isArray(_detections)) {
             for (let detection of _detections ?? []) {
               detections.push({ ...detection });
@@ -341,6 +353,8 @@ export default function ImageCard({
               regions: detections,
               scale: 1,
               setAnnotatedImage,
+              setExternalText: setAdjacentText,
+              setColor: setNewColor,
               options: {
                 severalAnnotations: true,
                 returnCanvasURL: false,
@@ -366,16 +380,21 @@ export default function ImageCard({
     setDetectionsLoading(false);
     setImageLoading(true);
     setEventData(null);
+    setAdjacentText("");
+    setNewColor("");
   }, []);
+
+  console.log({ useMask, imageDataURL });
 
   return (
     <Box sx={styleSx.mainBoxSx} width={width} height={height}>
       <Box
         id="header-box"
         sx={styleSx.headerBoxSx}
-        bgcolor={color ?? "primary.main"}
+        bgcolor={color === "error.main" && newColor ? newColor : "primary.main"}
       >
-        <Typography>{title}</Typography>
+        {title && <Typography>{title}</Typography>}
+        <Typography>{adjacentText}</Typography>
         <Typography sx={styleSx.textDate}>{eventTime}</Typography>
       </Box>
       <Box id="image-card" sx={styleSx.imageBoxSx}>
