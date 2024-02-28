@@ -315,10 +315,12 @@ export default function ImageCard({
       let url = imageDataURL;
       let detections = [];
 
+      console.log({ imageDataURL });
       fetchJson(`${url}?time=${Date.now()}`)
         .then((data) => {
           setEventData(data);
           let _detections = useMask ? data?.mask_result : data?.detections;
+          console.log({ _detections });
           if (data.type === "checklist" && Array.isArray(_detections)) {
             for (let detection of _detections ?? []) {
               detections.push({ ...detection });
@@ -367,6 +369,8 @@ export default function ImageCard({
     setImageLoading(true);
     setEventData(null);
   }, []);
+
+  console.log({ useMask });
 
   return (
     <Box sx={styleSx.mainBoxSx} width={width} height={height}>
