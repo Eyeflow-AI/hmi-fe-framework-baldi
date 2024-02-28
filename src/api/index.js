@@ -86,6 +86,7 @@ const API = {
     stations: (_, setLoading) => request(instance.get(`station/list`), setLoading),
     configForFE: (setLoading) => request(instance.get(`config/fe`), setLoading),
     configForFeStation: ({ stationId }, setLoading) => request(instance.get(`config/fe/${stationId}`), setLoading),
+    checkVersion: (_, setLoading) => request(instance.get('config/fe/version'), setLoading),
 
     packageData: (setLoading) => request(instance.get(`internal/package-data`), setLoading),
     languagesData: (setLoading) => request(instance.get(`internal/languages-data`), setLoading),
@@ -111,6 +112,7 @@ const API = {
     filesListNgnix: ({ params }, setLoading) => request(instance.get(`files/list-nginx`, { params }), setLoading),
     filesListMongo: ({ params }, setLoading) => request(instance.get(`files/list-mongo`, { params }), setLoading),
     folderListMongo: ({ params }, setLoading) => request(instance.get(`files/folder-list-mongo`, { params }), setLoading),
+    folderListImages: ({ params }, setLoading) => request(instance.get(`files/list-images`, { params }), setLoading),
     tasks: ({ queryOBJ, stationId, status }, setLoading) => request(instance.get(`tasks/${stationId}?status=${status}&query=${queryOBJ}`), setLoading),
   },
   put: {
