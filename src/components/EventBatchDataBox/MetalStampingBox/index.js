@@ -148,8 +148,6 @@ export default function MetalStampingBox({ data, config, examplesList }) {
     };
   }, [selectedCamera, data]);
 
-  console.log({ anomalyImageData, examplesList, imageData });
-
   return (
     <Box
       width={config?.width ?? "100%"}

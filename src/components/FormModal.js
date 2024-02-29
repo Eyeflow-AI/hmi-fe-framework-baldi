@@ -18,6 +18,7 @@ import { getPartsObj, getPartsList } from "../store/slices/app";
 // Third-party
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
+import { set } from "lodash";
 
 const style = {
   mainBox: {
@@ -71,7 +72,9 @@ function PartIdAutoComplete(props) {
     <Autocomplete
       disablePortal
       getOptionLabel={getOptionLabel}
-      options={usemasklist && Boolean(usemasklist) ? filtermaskmaplist : partsList}
+      options={
+        usemasklist && Boolean(usemasklist) ? filtermaskmaplist : partsList
+      }
       onChange={_onChange}
       disabled={disabled}
       renderInput={(params) => <TextField {...params} label={label} />}
@@ -114,8 +117,10 @@ export default function FormModal({
   const [formFields, setFormFields] = useState([]);
   const [maskMapList, setMaskMapList] = useState([]);
   const [filterMaskMapList, setFilterMaskMapList] = useState([]);
+  const [part, setPart] = useState({});
 
   const useMaskList = config?.useMaskList ?? false;
+  const maskMapURL = config?.maskMapURL ?? "";
 
   const getMaskMapList = () => {
     let _maskMapList = [];
@@ -125,6 +130,7 @@ export default function FormModal({
       .then((res) => {
         res.forEach((example) => {
           let part_data = example?.annotations?.part_data;
+          part_data.example_id = example?._id;
           _maskMapList.push(part_data);
         });
         setMaskMapList(_maskMapList);
@@ -136,9 +142,7 @@ export default function FormModal({
 
   useEffect(() => {
     getMaskMapList();
-  }, [
-    config?.maskMapListURL,
-  ]);
+  }, [config?.maskMapListURL]);
 
   const { sendDisabled } = useMemo(() => {
     let sendDisabled = false;
@@ -204,10 +208,7 @@ export default function FormModal({
       return a?.part_id?.localeCompare(b.part_id);
     });
     setFilterMaskMapList(updatedMaskMapList);
-  }, [
-    partsObj,
-    maskMapList,
-  ]);
+  }, [partsObj, maskMapList]);
 
   const onChange = (fieldData) => (event) => {
     let newValue = event.target.value;
@@ -216,6 +217,8 @@ export default function FormModal({
       if (useMaskList) {
         if (filterMaskMapList?.find((el) => el.part_id === newValue)) {
           let part = filterMaskMapList?.find((el) => el.part_id === newValue);
+          setPart(part);
+
           partIdFields.forEach((fieldData) => {
             updateData[fieldData.field] = part[fieldData.field];
           });
@@ -226,6 +229,7 @@ export default function FormModal({
           partIdFields.forEach((fieldData) => {
             updateData[fieldData.field] = part[fieldData.field];
           });
+          setPart(part);
         } else {
           partIdFields.forEach((fieldData) => {
             updateData[fieldData.field] = getDefaultValue(fieldData);
@@ -240,6 +244,7 @@ export default function FormModal({
       );
     }
   };
+  console.log();
 
   return (
     <Modal
@@ -251,23 +256,54 @@ export default function FormModal({
     >
       <Fade in={open}>
         <Box width={config?.width ?? 800} sx={style.mainBox}>
-          <Grid container spacing={1} sx={style.formBox}>
-            {formFields.map(({ xs, ...fieldData }, index) => (
-              <Grid key={index} xs={xs} item>
-                {inputComponents[
-                  inputComponents[fieldData.type] ? fieldData.type : "else"
-                ]({
-                  label: t(fieldData.label),
-                  type: fieldData.type,
-                  value: formData[fieldData.field],
-                  onChange: onChange(fieldData),
-                  disabled: fieldData.disabled,
-                  usemasklist: useMaskList.toString(),
-                  filtermaskmaplist: filterMaskMapList,
-                })}
+          <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Box>
+              <Grid container spacing={1} sx={style.formBox}>
+                {formFields.map(({ xs, ...fieldData }, index) => (
+                  <Grid key={index} xs={xs} item>
+                    {inputComponents[
+                      inputComponents[fieldData.type] ? fieldData.type : "else"
+                    ]({
+                      label: t(fieldData.label),
+                      type: fieldData.type,
+                      value: formData[fieldData.field],
+                      onChange: onChange(fieldData),
+                      disabled: fieldData.disabled,
+                      usemasklist: useMaskList.toString(),
+                      filtermaskmaplist: filterMaskMapList,
+                    })}
+                  </Grid>
+                ))}
               </Grid>
-            ))}
-          </Grid>
+            </Box>
+            {config?.showImage && useMaskList && maskMapURL && (
+              <Box
+                sx={{
+                  display: "block",
+                  margin: "auto",
+                  width: "100%",
+                  height: "100%",
+                  border: "2px solid #00000040",
+                  boxShadow: 24,
+                  borderRadius: 1,
+                }}
+              >
+                <img
+                  src={`${maskMapURL}/${part.example_id}.jpg`}
+                  alt="Mask Map"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                  }}
+                />
+              </Box>
+            )}
+          </Box>
 
           <Box sx={style.footerBox}>
             <Button color="inherit" variant="outlined" onClick={handleClose}>
