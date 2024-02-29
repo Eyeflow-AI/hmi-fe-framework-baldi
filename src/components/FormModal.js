@@ -223,6 +223,8 @@ export default function FormModal({
           partIdFields.forEach((fieldData) => {
             updateData[fieldData.field] = part[fieldData.field];
           });
+        } else {
+          setPart({});
         }
       } else {
         if (partsObj.hasOwnProperty(newValue)) {
@@ -230,8 +232,8 @@ export default function FormModal({
           partIdFields.forEach((fieldData) => {
             updateData[fieldData.field] = part[fieldData.field];
           });
-          setPart(part);
         } else {
+          setPart({});
           partIdFields.forEach((fieldData) => {
             updateData[fieldData.field] = getDefaultValue(fieldData);
           });
@@ -245,7 +247,7 @@ export default function FormModal({
       );
     }
   };
-  console.log();
+  console.log({ part });
 
   return (
     <Modal
