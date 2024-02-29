@@ -285,7 +285,7 @@ export default function FormModal({
             {config?.showImage &&
               useMaskList &&
               maskMapURL &&
-              Object.keys(part).length && (
+              Object.keys(part).length > 0 && (
                 <Box
                   sx={{
                     display: "block",
