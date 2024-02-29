@@ -257,7 +257,7 @@ export default function Monitor({ pageOptions }) {
         let partId = el?.annotations?.part_data?.part_id;
         return partId === runningBatch.part_id;
       });
-      let url = `${pageOptions?.components?.EventMenuBox?.maskMapListURL}/${image?.example}`;
+      let url = `${pageOptions?.components?.EventMenuBox?.maskMapURL}/${image?.example}`;
 
       setRunningMaskIcon(url);
     } else {
