@@ -2,14 +2,15 @@ import { useState, useEffect } from "react";
 
 import API from "../../api";
 import Clock from "./Clock";
-
-import axios from "axios";
+import authSlice from "../../store/slices/auth";
+import { useDispatch } from "react-redux";
 
 export default function GetRunningBatch({
   stationId,
   sleepTime = 3000,
   automaticUpdate = true,
 } = {}) {
+  const dispatch = useDispatch();
   const [data, setData] = useState({ batch: null });
   const [loading, setLoading] = useState(null);
   const { clock } = Clock({ sleepTime, automaticUpdate });
@@ -46,20 +47,29 @@ export default function GetRunningBatch({
       //   .catch((error) => {
       //     console.error("Error fetching resource:", error);
       //   });
-      // axios.get("http://localhost:3000").then((response) => {
-      //   if (response.status === 304) {
-      //     // Resource not modified, use cached version
-      //     console.log("Resource not modified, using cached version");
-      //     // return getCachedResource();
-      //   } else {
-      //     // Resource modified, update cache
-      //     console.log("Resource modified, updating cache");
-      //     // return response.json().then((data) => {
-      //     //   // updateCachedResource(data);
-      //     //   return data;
-      //     // });
-      //   }
-      // });
+
+      // axios
+      //   .get("http://localhost:3000/version")
+      //   .then((response) => {
+      //     console.log({ response });
+      //   })
+      //   .catch(console.log);
+
+      // fetch("/meta.json")
+      //   .then((response) => response.json())
+      //   .then((meta) => {
+      //     if (meta.version !== global.appVersion) {
+      //       console.log("New version available");
+      //       // setTimeout(() => {
+      //       setTimeout(() => {
+      //         window.location.reload();
+      //         dispatch(authSlice.actions.logout());
+      //         window.location.reload();
+      //       }, 30000);
+      //       // }, 5000);
+      //     }
+      //     // console.log({ meta, g: global.appVersion });
+      //   });
     }
   };
 
