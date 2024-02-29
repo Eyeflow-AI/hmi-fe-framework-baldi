@@ -1,6 +1,6 @@
 {
   "name": "hmi-fe-framework",
-  "version": "0.121.4",
+  "version": "0.121.11",
   "description": "Frontend framework for HMI",
   "private": true,
   "dependencies": {
@@ -42,6 +42,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "generate-version": "node ./scripts/generateBuildVersion.js",
+    "deploy": "npm run generate-version && npm run build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
