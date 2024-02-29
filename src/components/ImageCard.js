@@ -171,21 +171,21 @@ const getAnnotatedImg = ({
             parseInt((x_max - x_min) * scale),
             parseInt((y_max - y_min) * scale)
           );
-
-          ctx.font = "30px Arial";
-          ctx.fillStyle = "white";
-          ctx.fillText(
-            `${bboxRegion?.label}`,
-            parseInt(x_min * scale - 3),
-            parseInt(y_min * scale - 12)
-          );
-          ctx.fillStyle = strokeStyle;
-          ctx.fillText(
-            `${bboxRegion?.label}`,
-            parseInt(x_min * scale - 2),
-            parseInt(y_min * scale - 10)
-          );
-
+          if (options?.showLabels) {
+            ctx.font = "30px Arial";
+            ctx.fillStyle = "white";
+            ctx.fillText(
+              `${bboxRegion?.label}`,
+              parseInt(x_min * scale - 3),
+              parseInt(y_min * scale - 12)
+            );
+            ctx.fillStyle = strokeStyle;
+            ctx.fillText(
+              `${bboxRegion?.label}`,
+              parseInt(x_min * scale - 2),
+              parseInt(y_min * scale - 10)
+            );
+          }
           // }
           (region?.detections ?? [])?.forEach((detection) => {
             let bb = detection?.[0];
@@ -219,20 +219,22 @@ const getAnnotatedImg = ({
               parseInt((y_max - y_min) * scale)
             );
 
-            ctx.font = "30px Arial";
+            if (options?.showLabels) {
+              ctx.font = "30px Arial";
 
-            ctx.fillStyle = "white";
-            ctx.fillText(
-              `${bb?.label}`,
-              parseInt(x_min * scale - 3),
-              parseInt(y_min * scale - 12)
-            );
-            ctx.fillStyle = strokeStyle;
-            ctx.fillText(
-              `${bb?.label}`,
-              parseInt(x_min * scale - 2),
-              parseInt(y_min * scale - 10)
-            );
+              ctx.fillStyle = "white";
+              ctx.fillText(
+                `${bb?.label}`,
+                parseInt(x_min * scale - 3),
+                parseInt(y_min * scale - 12)
+              );
+              ctx.fillStyle = strokeStyle;
+              ctx.fillText(
+                `${bb?.label}`,
+                parseInt(x_min * scale - 2),
+                parseInt(y_min * scale - 10)
+              );
+            }
           });
         }
       );
@@ -280,6 +282,7 @@ export default function ImageCard({
   height,
   width,
   useMask,
+  showLabels,
 }) {
   const [imageLoading, setImageLoading] = useState(true);
   const [detectionsLoading, setDetectionsLoading] = useState(false);
@@ -325,12 +328,10 @@ export default function ImageCard({
       let url = imageDataURL;
       let detections = [];
 
-      console.log({ imageDataURL });
       fetchJson(`${url}?time=${Date.now()}`)
         .then((data) => {
           setEventData(data);
           let _detections = useMask ? data?.mask_result : data?.detections;
-          console.log({ _detections });
           if (data.type === "checklist" && Array.isArray(_detections)) {
             for (let detection of _detections ?? []) {
               detections.push({ ...detection });
@@ -358,6 +359,7 @@ export default function ImageCard({
               options: {
                 severalAnnotations: true,
                 returnCanvasURL: false,
+                showLabels,
               },
             });
           } else {
@@ -383,8 +385,6 @@ export default function ImageCard({
     setAdjacentText("");
     setNewColor("");
   }, []);
-
-  console.log({ useMask, imageDataURL });
 
   return (
     <Box sx={styleSx.mainBoxSx} width={width} height={height}>
