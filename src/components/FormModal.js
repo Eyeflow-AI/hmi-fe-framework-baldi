@@ -188,6 +188,7 @@ export default function FormModal({
       setFormData({});
       setFormFields([]);
       setPartIdFields([]);
+      setPart({});
     }
   }, [config, open]);
 
@@ -281,28 +282,31 @@ export default function FormModal({
                 ))}
               </Grid>
             </Box>
-            {config?.showImage && useMaskList && maskMapURL && (
-              <Box
-                sx={{
-                  display: "block",
-                  margin: "auto",
-                  width: "100%",
-                  height: "100%",
-                  border: "2px solid #00000040",
-                  boxShadow: 24,
-                  borderRadius: 1,
-                }}
-              >
-                <img
-                  src={`${maskMapURL}/${part.example_id}.jpg`}
-                  alt="Mask Map"
-                  style={{
+            {config?.showImage &&
+              useMaskList &&
+              maskMapURL &&
+              Object.keys(part).length && (
+                <Box
+                  sx={{
+                    display: "block",
+                    margin: "auto",
                     width: "100%",
                     height: "100%",
+                    border: "2px solid #00000040",
+                    boxShadow: 24,
+                    borderRadius: 1,
                   }}
-                />
-              </Box>
-            )}
+                >
+                  <img
+                    src={`${maskMapURL}/${part.example_id}.jpg`}
+                    alt="Mask Map"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                    }}
+                  />
+                </Box>
+              )}
           </Box>
 
           <Box sx={style.footerBox}>
