@@ -72,9 +72,9 @@ export default function UploadImageDialog({
           img_width: imgWidth,
           date: new Date(),
           user_name: user.tokenPayload.payload.username ?? "",
-          signalize: true,
           annotations: {
             part_data: {
+              signalize: true,
               ...Object.keys(dataset)
                 .filter((part) => part !== "dataset_id" && part !== "maskMap")
                 .reduce((obj, key) => {
