@@ -164,6 +164,7 @@ export default function MetalStampingBox({ data, config, examplesList }) {
             title={t("last_inspection")}
             width={"100%"}
             height={"50%"}
+            showLabels={config?.showLabels ?? true}
           />
         </Box>
       ) : (
@@ -190,6 +191,7 @@ export default function MetalStampingBox({ data, config, examplesList }) {
             width={"100%"}
             height={"50%"}
             useMask={config?.maskMapURL}
+            showLabels={config?.showAnomalyLabels ?? true}
           />
         </Box>
       ) : (
