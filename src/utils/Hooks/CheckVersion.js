@@ -1,66 +1,33 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 // Internal
 import Clock from './Clock';
-import fetchJson from '../../utils/functions/fetchJson';
-import { setNotificationBar } from "../../store/slices/app";
-import checkVersion from '../../store/thunks/checkVersion.js';
+import { authSlice } from '../../store/slices/auth';
 
 // Third-party
 import { useDispatch } from 'react-redux';
-import { useLocation } from "react-router-dom";
 
-export default function CheckVersion({ sleepTime = 3600000 }) {
+export default function CheckVersion({ sleepTime = 300000 }) {
   const { clock } = Clock({ sleepTime });
   const dispatch = useDispatch();
-  const location = useLocation();
 
-  const [JSVersion, setJSVersion] = useState('');
-
-  const fetchAssetManifest = async () => {
-    let url = `${window.location.origin}/asset-manifest.json`
-    fetchJson(url)
-      .then((response) => {
-        let manifest = response
-        let manifestEntry = manifest.entrypoints
-        let index = manifestEntry.findIndex(entry => entry.includes('static/js'));
-        setJSVersion(manifestEntry[index].replace('static/js/', '').replace('.js', ''))
-      })
-  };
-
-  useEffect(() => {
-    fetchAssetManifest();
-
-    return () => {
-      setJSVersion('');
-    };
-  }, []);
-
-
-  useEffect(() => {
-    if (location.pathname === '/login') {
-      return;
-    }
-    if (JSVersion) {
-
-      dispatch(checkVersion())
-        .then(data => {
-          if (data.payload.reload) {
-            dispatch(setNotificationBar({
-              show: true, message: 'New version available. Reloading...', severity: 'info'
-            }))
-            setJSVersion('');
+  const checkMetaVersion = () => {
+    fetch("/meta.json")
+      .then((response) => response.json())
+      .then((meta) => {
+        if (meta.version !== global.appVersion) {
+          console.log(`Version is outdated, reloading in 30 seconds...`);
+          setTimeout(() => {
             window.location.reload();
-          }
-        })
-        .catch((err) => {
-          console.log(err.message);
-          dispatch(setNotificationBar({
-            show: true, message: 'New version available. Reloading...', severity: 'info'
-          }))
-          window.location.reload();
-        });
-    }
-  }, [clock]);
+            dispatch(authSlice.actions.logout());
+            window.location.reload();
+          }, 30000);
+        }
+      })
+      .catch(console.log);
+  }
 
+  useEffect(() => {
+    checkMetaVersion();
+    }, [clock]);
 };
