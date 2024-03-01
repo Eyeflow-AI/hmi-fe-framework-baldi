@@ -289,7 +289,9 @@ export default function Report({ pageOptions }) {
                   <CircularProgress />
                 ) : (
                   <Tooltip title={t("download_all")}>
-                    <IconButton onClick={downloadAll}>
+                    <IconButton sx={{
+                      display:"none"
+                    }} onClick={downloadAll}>
                       <DownloadIcon />
                     </IconButton>
                   </Tooltip>
