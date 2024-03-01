@@ -16,7 +16,7 @@ export default function CheckVersion({ sleepTime = 300000 }) {
       .then((response) => response.json())
       .then((meta) => {
         if (meta.version !== global.appVersion) {
-          console.log("Version is outdated, reloading in 30 seconds",{m: meta.version, g: global.appVersion});
+          console.log(`Version is outdated, reloading in 30 seconds...`);
           setTimeout(() => {
             window.location.reload();
             dispatch(authSlice.actions.logout());
