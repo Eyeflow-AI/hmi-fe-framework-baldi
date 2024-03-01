@@ -54,22 +54,6 @@ export default function GetRunningBatch({
       //     console.log({ response });
       //   })
       //   .catch(console.log);
-
-      // fetch("/meta.json")
-      //   .then((response) => response.json())
-      //   .then((meta) => {
-      //     if (meta.version !== global.appVersion) {
-      //       console.log("New version available");
-      //       // setTimeout(() => {
-      //       setTimeout(() => {
-      //         window.location.reload();
-      //         dispatch(authSlice.actions.logout());
-      //         window.location.reload();
-      //       }, 30000);
-      //       // }, 5000);
-      //     }
-      //     // console.log({ meta, g: global.appVersion });
-      //   });
     }
   };
 
