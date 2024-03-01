@@ -273,6 +273,9 @@ export default function Bar({ chart }) {
               legendOffset: 32,
               truncateTickAt: 0,
             }}
+            valueFormat={function (e) {
+              return e + "%";
+            }}
           />
         </Box>
       ) : (
