@@ -88,7 +88,7 @@ export default function Bar({ chart }) {
         }
         newInfo.push(_item);
       })
-
+      newInfo.sort((a, b) => a.id?.localeCompare(b.id));
       setInfo(newInfo);
       setKeys(newKeys);
       setQueryHasColors(Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 ? true : false);
@@ -153,6 +153,9 @@ export default function Bar({ chart }) {
               theme={responsivePieTheme}
               legends={responsivePieLegends}
               colors={info.every(item => item.color) ? info.map((item) => item.color) : { scheme: "nivo" }}
+              valueFormat={function (e) {
+                return e + '%'
+              }}
             />
           </Box>
 
