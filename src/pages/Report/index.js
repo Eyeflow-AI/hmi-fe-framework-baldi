@@ -97,7 +97,7 @@ export default function Report({ pageOptions }) {
   const [builtChats, setBuiltChats] = useState([]);
   const [downloadLoading, setDownloadLoading] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState({});
-
+  const [downloadOption, setDownloadOption] = useState(false);
   const [filters, setFilters] = useState([])
 
   useEffect(() => {
@@ -153,6 +153,9 @@ export default function Report({ pageOptions }) {
             data.chartInfo.height = charts.length >= 4 ? "50%" : "100%";
           }
           data.chartInfo.downloadable = Boolean(charts?.[i]?.download_query);
+          if (data?.chartInfo?.downloadable) {
+            setDownloadOption(true)
+          }
           if (data.chartInfo.downloadable) {
             data.chartInfo.download = async (setLoading) => {
               try {
@@ -284,14 +287,12 @@ export default function Report({ pageOptions }) {
                     {t('search')}
                   </Button>
               }
-              {builtChats.length > 0 &&
+              {builtChats.length > 0 && downloadOption &&
                 (downloadLoading ? (
                   <CircularProgress />
                 ) : (
                   <Tooltip title={t("download_all")}>
-                    <IconButton sx={{
-                      display:"none"
-                    }} onClick={downloadAll}>
+                    <IconButton onClick={downloadAll}>
                       <DownloadIcon />
                     </IconButton>
                   </Tooltip>
