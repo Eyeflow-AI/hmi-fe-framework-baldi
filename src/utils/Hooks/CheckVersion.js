@@ -1,33 +1,44 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
 // Internal
-import Clock from './Clock';
-import { authSlice } from '../../store/slices/auth';
+import Clock from "./Clock";
+import { authSlice } from "../../store/slices/auth";
 
 // Third-party
-import { useDispatch } from 'react-redux';
+import { useDispatch } from "react-redux";
 
-export default function CheckVersion({ sleepTime = 300000 }) {
+export default function CheckVersion({ sleepTime = 10000 }) {
   const { clock } = Clock({ sleepTime });
   const dispatch = useDispatch();
 
   const checkMetaVersion = () => {
-    fetch("/meta.json")
+    if (global.updating) return;
+
+    console.log("Checking meta version...");
+    const origin = window.location.origin;
+    let url = `${origin}/meta.json?time=${new Date()}`;
+    // console.log({ url });
+    // no cache
+    fetch(url, {
+      cache: "no-store",
+    })
       .then((response) => response.json())
       .then((meta) => {
-        if (meta.version !== global.appVersion) {
-          console.log(`Version is outdated, reloading in 30 seconds...`);
+        let timeForReloading = 60000;
+        if (meta && meta.version !== global.appVersion && !global.updating) {
+          console.log(`Version is outdated, reloading in 1 minute...`);
           setTimeout(() => {
             window.location.reload();
             dispatch(authSlice.actions.logout());
             window.location.reload();
-          }, 30000);
+          }, timeForReloading);
+          global.updating = true;
         }
       })
       .catch(console.log);
-  }
+  };
 
   useEffect(() => {
     checkMetaVersion();
-    }, [clock]);
-};
+  }, [clock]);
+}

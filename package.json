@@ -1,6 +1,6 @@
 {
   "name": "hmi-fe-framework",
-  "version": "0.121.13",
+  "version": "0.121.34",
   "description": "Frontend framework for HMI",
   "private": true,
   "dependencies": {
