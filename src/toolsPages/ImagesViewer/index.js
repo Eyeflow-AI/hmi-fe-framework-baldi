@@ -1,7 +1,9 @@
 import React, { useEffect, useState, Fragment } from "react";
 
 //Design
-import {Box, Select, Autocomplete} from "@mui/material";
+import { Box, Grid, Card, CardMedia, Tooltip, Select, Autocomplete} from "@mui/material";
+import DownloadIcon from "@mui/icons-material/Download";
+import IconButton from "@mui/material/IconButton";
 
 //Internal
 import PageWrapper from "../../components/PageWrapper";
@@ -19,6 +21,7 @@ import { setNotificationBar } from "../../store/slices/app";
 // Third-party
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
+import {downloadImage} from "sdk-fe-eyeflow";
 
 const style = {
   mainBox: {
@@ -187,15 +190,29 @@ export default function ImagesViewer({ pageOptions }) {
   const [filesList, setFilesList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [day, setDay] = useState("");
+  const [imagePath, setImagePath] = useState("");
+  const [imageName, setImageName] = useState("");
 
-  const dirPath = `/opt/eyeflow/images/${day}`;
+  const dirPath = `/opt/eyeflow/data/images/${day}`;
   const getFolderList = () => {
-    API.get.folderListImages({ params: {dirPath, fileURL: true } }, setLoading)
+    API.get.folderListImages({ params: { dirPath, fileURL: true } }, setLoading)
       .then((data) => {
         setFilesList(data.files);
         console.log(data.files);
       })
   }
+
+  const onClickImage = (imgPath, imgName) => {
+    setImagePath(imgPath);
+    setImageName(imgName);
+    console.log("imgPath: ", imgPath, ", imgName: ", imageName);
+  }
+
+  useEffect(() => {
+    if (!day) return;
+    getFolderList();
+    console.log(filesList);
+  }, [dirPath, day]);
 
   return (
     <Fragment>
@@ -233,7 +250,7 @@ export default function ImagesViewer({ pageOptions }) {
                 </Autocomplete>*/}
                 <Select
                   native
-                  value={""}
+                  value={day}
                   onChange={(e) => { setDay(e.target.value); }}
                   inputProps={{
                     name: "date",
@@ -242,7 +259,33 @@ export default function ImagesViewer({ pageOptions }) {
                 >
                   <option aria-label="None" value="" />
                   <option value={20240228}>20240228</option>
+                  <option value={20240229}>20240229</option>
                 </Select>
+                {filesList &&
+                filesList.map((item, index) => (
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                    <Card
+                      sx={{
+                        width: "100%",
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        flexWrap: "wrap",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <CardMedia
+                        component="img"
+                        sx={{ width: "100%", height: "100%" }}
+                        onClick={() => onClickImage(item.fileURL, item.name)}
+                        image={`${item.fileURL}`}
+                        alt={item.name}
+                      />
+                    </Card>
+                  </Grid>
+                ))}
               </Box>
             </Box>
             <Box id="monitor-data-box" sx={style.dataBox}>
@@ -252,6 +295,21 @@ export default function ImagesViewer({ pageOptions }) {
                 }}
               >
               </Box>
+              <CardMedia
+                component="img"
+                sx={{ width: "100%", height: "100%" }}
+                image={`${imagePath}`}
+              />
+              <Tooltip title={t("download")}>
+                <IconButton
+                  edge="start"
+                  color="inherit"
+                  onClick={() => downloadImage(imagePath, imageName)}
+                >
+                  <DownloadIcon />
+                  
+                </IconButton>
+              </Tooltip>
               <Box
                 display="flex"
                 height={height}
