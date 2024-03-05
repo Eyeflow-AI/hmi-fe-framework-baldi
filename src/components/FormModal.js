@@ -131,6 +131,7 @@ export default function FormModal({
         res.forEach((example) => {
           let part_data = example?.annotations?.part_data;
           part_data.example_id = example?._id;
+          part_data.image = example?.example;
           _maskMapList.push(part_data);
         });
         setMaskMapList(_maskMapList);
@@ -193,7 +194,12 @@ export default function FormModal({
   }, [config, open]);
 
   const _onClickSend = () => {
-    onClickSend(formData);
+    let _formData = { ...formData };
+    _formData["useMaskList"] = useMaskList;
+    _formData["maskMapListURL"] = config?.maskMapListURL ?? "";
+    _formData["maskMapId"] = config?.maskMapId ?? "";
+    console.log({ _formData });
+    onClickSend(_formData);
   };
 
   useEffect(() => {
@@ -247,7 +253,6 @@ export default function FormModal({
       );
     }
   };
-  console.log({ part });
 
   return (
     <Modal
@@ -300,7 +305,7 @@ export default function FormModal({
                   }}
                 >
                   <img
-                    src={`${maskMapURL}/${part.example_id}.jpg`}
+                    src={`${maskMapURL}/${part.image}`}
                     alt="Mask Map"
                     style={{
                       width: "100%",
