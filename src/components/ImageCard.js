@@ -105,7 +105,9 @@ const getAnnotatedImg = ({
   index,
   scale,
   setAnnotatedImage,
+  setExternalText,
   regions,
+  setColor,
   options = {
     severalAnnotations: false,
     returnCanvasURL: false,
@@ -130,36 +132,6 @@ const getAnnotatedImg = ({
     notAnnotatedCanvas.height = img.height;
     const notAnnotatedCtx = notAnnotatedCanvas.getContext("2d");
     notAnnotatedCtx.drawImage(img, 0, 0, img.width, img.height);
-
-    // if (bboxRegion) {
-    //   // console.log({ bboxRegion })
-    //   let [x_min, x_max, y_min, y_max] = expandCoordinates({
-    //     imgWidth: img.width / scale,
-    //     imgHeight: img.height / scale,
-    //     x_min: bboxRegion?.x_min ?? bboxRegion?.bbox?.x_min,
-    //     x_max: bboxRegion?.x_max ?? bboxRegion?.bbox?.x_max,
-    //     y_min: bboxRegion?.y_min ?? bboxRegion?.bbox?.y_min,
-    //     y_max: bboxRegion?.y_max ?? bboxRegion?.bbox?.y_max,
-    //     expandBox
-    //   });
-    //   ctx.strokeStyle = bboxRegion?.color ?? colors.eyeflow.green.dark;
-    //   ctx.lineWidth = 3;
-    //   ctx.strokeRect(
-    //     parseInt(x_min * scale - 1),
-    //     parseInt(y_min * scale + 1),
-    //     parseInt((x_max - x_min) * scale),
-    //     parseInt((y_max - y_min) * scale)
-    //   );
-
-    //   ctx.lineWidth = 3;
-    //   ctx.strokeRect(
-    //     parseInt(x_min * scale),
-    //     parseInt(y_min * scale),
-    //     parseInt((x_max - x_min) * scale),
-    //     parseInt((y_max - y_min) * scale)
-    //   );
-
-    // }
     if (options.severalAnnotations) {
       let totalRegions = Array.isArray(regions) && regions.length;
       let okRegions = 0;
@@ -177,12 +149,19 @@ const getAnnotatedImg = ({
             expandBox,
           });
 
-          ctx.strokeStyle = bboxRegion?.color ?? colors.eyeflow.green.dark;
+          // ctx.strokeStyle = bboxRegion?.color ?? colors.eyeflow.green.dark;
+          ctx.strokeStyle = Object.keys(bboxRegion).includes("found")
+            ? bboxRegion?.found
+              ? colors.eyeflow.green.dark
+              : colors.eyeflow.red.dark
+            : bboxRegion?.color ?? colors.eyeflow.green.dark;
 
-          if (bboxRegion?.color === "#FF0000") {
-            okRegions += 1;
-          } else if (bboxRegion?.color === "#00FF00") {
-            ngRegions += 1;
+          if (Object.keys(bboxRegion).includes("found")) {
+            if (bboxRegion?.found) {
+              okRegions += 1;
+            } else {
+              ngRegions += 1;
+            }
           }
 
           ctx.lineWidth = 3;
@@ -192,21 +171,21 @@ const getAnnotatedImg = ({
             parseInt((x_max - x_min) * scale),
             parseInt((y_max - y_min) * scale)
           );
-
-          ctx.font = "30px Arial";
-          ctx.fillStyle = "white";
-          ctx.fillText(
-            `${bboxRegion?.label}`,
-            parseInt(x_min * scale - 3),
-            parseInt(y_min * scale - 12)
-          );
-          ctx.fillStyle = strokeStyle;
-          ctx.fillText(
-            `${bboxRegion?.label}`,
-            parseInt(x_min * scale - 2),
-            parseInt(y_min * scale - 10)
-          );
-
+          if (options?.showLabels) {
+            ctx.font = "30px Arial";
+            ctx.fillStyle = "white";
+            ctx.fillText(
+              `${bboxRegion?.label}`,
+              parseInt(x_min * scale - 3),
+              parseInt(y_min * scale - 12)
+            );
+            ctx.fillStyle = strokeStyle;
+            ctx.fillText(
+              `${bboxRegion?.label}`,
+              parseInt(x_min * scale - 2),
+              parseInt(y_min * scale - 10)
+            );
+          }
           // }
           (region?.detections ?? [])?.forEach((detection) => {
             let bb = detection?.[0];
@@ -240,33 +219,41 @@ const getAnnotatedImg = ({
               parseInt((y_max - y_min) * scale)
             );
 
-            ctx.font = "30px Arial";
+            if (options?.showLabels) {
+              ctx.font = "30px Arial";
 
-            ctx.fillStyle = "white";
-            ctx.fillText(
-              `${bb?.label}`,
-              parseInt(x_min * scale - 3),
-              parseInt(y_min * scale - 12)
-            );
-            ctx.fillStyle = strokeStyle;
-            ctx.fillText(
-              `${bb?.label}`,
-              parseInt(x_min * scale - 2),
-              parseInt(y_min * scale - 10)
-            );
+              ctx.fillStyle = "white";
+              ctx.fillText(
+                `${bb?.label}`,
+                parseInt(x_min * scale - 3),
+                parseInt(y_min * scale - 12)
+              );
+              ctx.fillStyle = strokeStyle;
+              ctx.fillText(
+                `${bb?.label}`,
+                parseInt(x_min * scale - 2),
+                parseInt(y_min * scale - 10)
+              );
+            }
           });
         }
       );
 
       if (okRegions || ngRegions) {
-        ctx.fillStyle = "#FF0000";
-        ctx.font = "50px Arial";
-        if (ngRegions > 0) ctx.fillStyle = "#FF0000";
-        ctx.fillText(
-          `${okRegions}/${totalRegions}`,
-          parseInt(1 * scale + 20),
-          parseInt(1 * scale + 50)
-        );
+        // ctx.fillStyle = colors.eyeflow.green.dark;
+        // ctx.font = "50px Arial";
+        // if (ngRegions > 0) ctx.fillStyle = colors.eyeflow.red.dark;
+        // ctx.fillText(
+        //   `${okRegions}/${totalRegions}`,
+        //   parseInt(1 * scale + 20),
+        //   parseInt(1 * scale + 50)
+        // );
+        if (ngRegions > 0) {
+          setColor("error.main");
+        } else {
+          setColor("success.main");
+        }
+        setExternalText(`${okRegions}/${totalRegions}`);
       }
       if (options?.returnCanvasURL) {
         let canvasURL = canvas.toDataURL("image/jpeg");
@@ -283,45 +270,6 @@ const getAnnotatedImg = ({
         }
       }
     } else {
-      // let [x_min, x_max, y_min, y_max] = expandCoordinates(
-      //   img.width / scale,
-      //   img.height / scale,
-      //   bbox.x_min,
-      //   bbox.x_max,
-      //   bbox.y_min,
-      //   bbox.y_max,
-      //   expandBox
-      // );
-      // strokeStyle = bbox?.color ?? colors.eyeflow.green.dark;
-      // ctx.strokeStyle = strokeStyle;
-      // ctx.lineWidth = 3;
-      // ctx.strokeRect(
-      //   parseInt(x_min * scale - 1),
-      //   parseInt(y_min * scale + 1),
-      //   parseInt((x_max - x_min) * scale),
-      //   parseInt((y_max - y_min) * scale)
-      // );
-      // ctx.strokeStyle = strokeStyle;
-      // ctx.lineWidth = 3;
-      // ctx.strokeRect(
-      //   parseInt(x_min * scale),
-      //   parseInt(y_min * scale),
-      //   parseInt((x_max - x_min) * scale),
-      //   parseInt((y_max - y_min) * scale)
-      // );
-      // if (options?.returnCanvasURL) {
-      //   let canvasURL = canvas.toDataURL("image/jpeg");
-      //   return canvasURL;
-      // }
-      // else {
-      //   if (options?.camera) {
-      //     setAnnotatedImage(options.camera, canvas.toDataURL("image/jpeg"));
-      //   }
-      //   else {
-      //     // setAnnotatedImage(canvas.toDataURL("image/jpeg"));
-      //     setAnnotatedImage({ index, url: canvas.toDataURL("image/jpeg"), notAnnotatedURL: notAnnotatedCanvas.toDataURL("image/jpeg") });
-      //   }
-      // }
     }
   };
 };
@@ -333,6 +281,8 @@ export default function ImageCard({
   color,
   height,
   width,
+  useMask,
+  showLabels,
 }) {
   const [imageLoading, setImageLoading] = useState(true);
   const [detectionsLoading, setDetectionsLoading] = useState(false);
@@ -341,7 +291,8 @@ export default function ImageCard({
   const [detections, setDetections] = useState([]);
   const [imageWidth, setImageWidth] = useState(0);
   const [imageHeight, setImageHeight] = useState(0);
-  console.log({ imageData });
+  const [adjacentText, setAdjacentText] = useState("");
+  const [newColor, setNewColor] = useState("");
 
   const imageDataURL = imageData?.image_data_url;
   const _imageURL = imageData?.image_url;
@@ -375,14 +326,14 @@ export default function ImageCard({
       setDetectionsLoading(true);
       // let url = imageDataURL.replace("192.168.0.201", "192.168.2.40");
       let url = imageDataURL;
-      console.log({ url });
       let detections = [];
 
       fetchJson(`${url}?time=${Date.now()}`)
         .then((data) => {
           setEventData(data);
-          if (data.type === "checklist" && Array.isArray(data?.detections)) {
-            for (let detection of data?.detections ?? []) {
+          let _detections = useMask ? data?.mask_result : data?.detections;
+          if (data.type === "checklist" && Array.isArray(_detections)) {
+            for (let detection of _detections ?? []) {
               detections.push({ ...detection });
             }
           }
@@ -398,15 +349,17 @@ export default function ImageCard({
             // let url = _imageURL.replace("192.168.0.201", "192.168.2.40");
             let url = _imageURL;
             url = `${url}?time=${Date.now()}`;
-            console.log({ url });
             getAnnotatedImg({
               image: url,
               regions: detections,
               scale: 1,
               setAnnotatedImage,
+              setExternalText: setAdjacentText,
+              setColor: setNewColor,
               options: {
                 severalAnnotations: true,
                 returnCanvasURL: false,
+                showLabels,
               },
             });
           } else {
@@ -429,6 +382,8 @@ export default function ImageCard({
     setDetectionsLoading(false);
     setImageLoading(true);
     setEventData(null);
+    setAdjacentText("");
+    setNewColor("");
   }, []);
 
   return (
@@ -436,9 +391,10 @@ export default function ImageCard({
       <Box
         id="header-box"
         sx={styleSx.headerBoxSx}
-        bgcolor={color ?? "primary.main"}
+        bgcolor={color === "error.main" && newColor ? newColor : "primary.main"}
       >
-        <Typography>{title}</Typography>
+        {title && <Typography>{title}</Typography>}
+        <Typography>{adjacentText}</Typography>
         <Typography sx={styleSx.textDate}>{eventTime}</Typography>
       </Box>
       <Box id="image-card" sx={styleSx.imageBoxSx}>

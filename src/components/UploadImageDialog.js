@@ -74,6 +74,7 @@ export default function UploadImageDialog({
           user_name: user.tokenPayload.payload.username ?? "",
           annotations: {
             part_data: {
+              signalize: true,
               ...Object.keys(dataset)
                 .filter((part) => part !== "dataset_id" && part !== "maskMap")
                 .reduce((obj, key) => {

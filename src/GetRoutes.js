@@ -3,6 +3,7 @@ import React, { useMemo, lazy } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 
 import updatePath from "./utils/functions/updatePath";
+import packageJson from "../package.json";
 
 const Menu = lazy(() => import("./pages/Menu"));
 const Login = lazy(() => import("./pages/Login"));
@@ -27,6 +28,10 @@ const AppParameters = lazy(() => import("./toolsPages/AppParameters"));
 
 function NotFound() {
   return <>404: Not Found</>;
+}
+
+function Version() {
+  return <div>{packageJson.version}</div>;
 }
 
 const components = {
@@ -55,6 +60,7 @@ export default function Routes({
 }) {
   return useMemo(() => {
     let appRoutes = [];
+
     let updatedHomeURL = updatePath(homeURL, station);
 
     // eslint-disable-next-line
@@ -70,9 +76,15 @@ export default function Routes({
         });
       }
     }
+
     appRoutes.push({ path: "/app", element: <Navigate to={updatedHomeURL} /> });
+    // create a route for check the version
 
     return [
+      {
+        path: "/version",
+        element: <Version />,
+      },
       {
         path: "/app",
         element: authenticated ? <Outlet /> : <Navigate to="/login" />,
@@ -86,6 +98,7 @@ export default function Routes({
         path: "/",
         element: !authenticated ? <Outlet /> : <Navigate to={updatedHomeURL} />,
         children: [
+          // { path: "/version", element: <div>{window.app_config.version}</div> },
           { path: "/login", element: <Login /> },
           { path: "/", element: <Navigate to="/login" /> },
         ],
