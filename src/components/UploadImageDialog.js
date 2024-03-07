@@ -5,9 +5,12 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Dialog from "@mui/material/Dialog";
 import Toolbar from "@mui/material/Toolbar";
+import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
-import { Autocomplete, Button, TextField, Typography } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+import Autocomplete from "@mui/material/Autocomplete";
 
 // Internal
 import API from "../api";
@@ -56,8 +59,6 @@ export default function UploadImageDialog({
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(true);
 
-  console.log({ base64Str });
-
   const [parms, setParms] = useState([]);
   let urlParms = maskMapParmsURL;
 
@@ -91,6 +92,10 @@ export default function UploadImageDialog({
         setLoading(false);
         setDataset(null);
         handleClose();
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
       });
   };
 
@@ -101,8 +106,8 @@ export default function UploadImageDialog({
   useEffect(() => {
     fetchJson(urlParms)
       .then((res) => {
-        setParms(res?.parts_fields);
-        console.log(res?.parts_fields);
+        let _parms = res?.parts_fields.filter((part) => part.show);
+        setParms(_parms);
       })
       .catch((err) => {
         console.log(err);
@@ -117,7 +122,7 @@ export default function UploadImageDialog({
           res.document.pages["Images Capturer"].options.datasetChoices
         );
       })
-      .finally(() => {});
+      .finally(() => { });
   };
 
   useEffect(() => {
@@ -280,7 +285,7 @@ export default function UploadImageDialog({
                     )}
                   />
 
-                  {parms?.map((part, index) => (
+                  {parms.length > 0 && parms.map((part, index) => (
                     <TextField
                       key={index}
                       id={part.id}
@@ -291,7 +296,7 @@ export default function UploadImageDialog({
                         height: "auto",
                       }}
                       value={dataset?.[part.id]}
-                      required={dataset?.maskMap}
+                      required={true}
                       onChange={(e) => handleUpdate(part.id, e.target.value)}
                       label={part.label}
                       error={errorInText?.[part.id] ?? false}
@@ -303,20 +308,19 @@ export default function UploadImageDialog({
                     />
                   ))}
 
-                  <Button
+                  <LoadingButton
                     variant="contained"
                     color="primary"
                     onClick={handleUpload}
                     sx={{
-                      //width: '20rem',
                       width: "20%",
                       height: "auto",
-                      margin: "auto",
                     }}
                     disabled={disabled || loading}
+                    loading={loading}
                   >
                     Save image info
-                  </Button>
+                  </LoadingButton>
                 </Box>
               )}
             </TransformWrapper>

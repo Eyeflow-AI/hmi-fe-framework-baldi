@@ -8,28 +8,24 @@ import React, {
 } from "react";
 
 // Design
-import {
-  Box,
-  Typography,
-  Card,
-  CardMedia,
-  Autocomplete,
-  TextField,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardMedia from "@mui/material/CardMedia";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Autocomplete from "@mui/material/Autocomplete";
 
 // Internal
 import PageWrapper from "../../components/PageWrapper";
 import UploadImageDialog from "../../components/UploadImageDialog";
 import ImageDialog from "../../components/ImageDialog";
 import GetImagesList from "../utils/Hooks/GetImagesList";
-import GetEdgeEnvVar from "../../utils/Hooks/GetEdgeEnvVar";
 
 // Third-party
 
 const style = {
   mainBox: Object.assign({}, window.app_config.style.box, {
     bgcolor: "background.paper",
-    // bgcolor: 'red',
     display: "flex",
     flexGrow: 1,
     justifyContent: "center",
@@ -42,21 +38,17 @@ export default function PartRegistration({ pageOptions }) {
   const [openImageInfoDialog, setOpenImageInfoDialog] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
   const [imagePath, setImagePath] = useState("");
-  const { imageBaseURL, infoURL, envVarURL, appbarButtonList } = useMemo(() => {
+  const { imageBaseURL, infoURL, appbarButtonList } = useMemo(() => {
     return {
       imageBaseURL: pageOptions?.options?.imageURL ?? "",
       infoURL: pageOptions?.options?.infoURL ?? "",
-      envVarURL: pageOptions?.options?.envVarURL ?? "",
       appbarButtonList: pageOptions?.options?.appbarButtonList ?? [],
     };
   }, [pageOptions]);
+
   const { clock, imagesList } = GetImagesList({
     url: infoURL,
     imageBaseURL,
-    sleepTime: pageOptions?.options?.sleepTime,
-  });
-  const { envVar, updateData: updateEnvVarData } = GetEdgeEnvVar({
-    url: envVarURL,
     sleepTime: pageOptions?.options?.sleepTime,
   });
 
