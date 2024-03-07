@@ -141,7 +141,16 @@ export default function Monitor({ pageOptions }) {
               message: "edge_station_is_not_reachable",
             })
           );
-        } else {
+        } else if (err.message.includes('not found in')) {
+          dispatch(
+            setNotificationBar({
+              show: true,
+              type: "error",
+              message: "part_not_found",
+            })
+          );
+        }
+        else {
           dispatch(
             setNotificationBar({
               show: true,
