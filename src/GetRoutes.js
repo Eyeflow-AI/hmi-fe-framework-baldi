@@ -76,7 +76,7 @@ export default function Routes({
         // console.log(components[value.component]);
         appRoutes.push({
           path: value.path,
-          element: components[value.component](value),
+          element: components[value.component] ? components[value.component](value) : <NotFound />,
         });
       }
     }
