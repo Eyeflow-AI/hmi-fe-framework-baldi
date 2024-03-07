@@ -133,7 +133,6 @@ export default function FormModal({
           _maskMapList.push(part_data);
         });
         setMaskMapList(_maskMapList);
-        console.log({ _maskMapList });
       })
       .catch((err) => {
         console.log(err);
@@ -283,7 +282,7 @@ export default function FormModal({
                       onChange: onChange(fieldData),
                       disabled: fieldData.disabled,
                       usemasklist: useMaskList.toString(),
-                      maskaplist: maskMapList,
+                      maskmaplist: maskMapList,
                     })}
                   </Grid>
                 ))}
