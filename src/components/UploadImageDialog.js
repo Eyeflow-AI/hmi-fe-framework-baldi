@@ -16,14 +16,15 @@ import Autocomplete from "@mui/material/Autocomplete";
 import API from "../api";
 import { getUser } from "../store/slices/auth";
 import fetchJson from "../utils/functions/fetchJson";
+import { setNotificationBar } from "../store/slices/app";
 
 // Third-party
-import { useSelector } from "react-redux";
-import { useTranslation } from "react-i18next";
 import {
   TransformWrapper,
   TransformComponent,
 } from "@pronestor/react-zoom-pan-pinch";
+import { useTranslation } from "react-i18next";
+import { useSelector, useDispatch } from "react-redux";
 
 const gridToolbarSx = {
   width: "100%",
@@ -49,15 +50,18 @@ export default function UploadImageDialog({
   setOpen,
   maskMapParmsURL,
 }) {
-  const { t } = useTranslation();
-  const [noImage, setNoImage] = useState(false);
-  const [selectedObj, setSelectedObj] = useState(null);
-  const [dataset, setDataset] = useState(null);
-  const [datasetList, setDatasetList] = useState([]);
   const user = useSelector(getUser);
-  const [errorInText, setErrorInText] = useState(null);
+  const dispatch = useDispatch();
+
+  const { t } = useTranslation();
+
+  const [dataset, setDataset] = useState(null);
+  const [noImage, setNoImage] = useState(false);
+  const [datasetList, setDatasetList] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(true);
+  const [errorInText, setErrorInText] = useState(null);
 
   const [parms, setParms] = useState([]);
   let urlParms = maskMapParmsURL;
@@ -89,6 +93,7 @@ export default function UploadImageDialog({
         maskMap: dataset?.maskMap,
       })
       .then(() => {
+        dispatch(setNotificationBar({ show: true, type: 'success', message: "upload_sucessful" }));
         setLoading(false);
         setDataset(null);
         handleClose();
@@ -113,6 +118,12 @@ export default function UploadImageDialog({
         console.log(err);
       });
   }, [urlParms]);
+
+  useEffect(() => {
+    if (base64Str === null) {
+      setNoImage(true);
+    }
+  }, [base64Str]);
 
   const getDocument = (selectedParam) => {
     API.get
@@ -319,7 +330,7 @@ export default function UploadImageDialog({
                     disabled={disabled || loading}
                     loading={loading}
                   >
-                    Save image info
+                    {t('upload_image')}
                   </LoadingButton>
                 </Box>
               )}
