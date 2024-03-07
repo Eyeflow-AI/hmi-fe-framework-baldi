@@ -283,7 +283,7 @@ export default function FormModal({
                       onChange: onChange(fieldData),
                       disabled: fieldData.disabled,
                       usemasklist: useMaskList.toString(),
-                      maskaplist: maskaplist,
+                      maskaplist: maskMapList,
                     })}
                   </Grid>
                 ))}
