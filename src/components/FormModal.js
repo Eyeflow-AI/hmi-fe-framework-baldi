@@ -58,7 +58,7 @@ function PartIdAutoComplete(props) {
     onChange,
     disabled,
     usemasklist,
-    filtermaskmaplist,
+    maskmaplist,
   } = props;
   const partsList = useSelector(getPartsList);
 
@@ -73,7 +73,7 @@ function PartIdAutoComplete(props) {
       disablePortal
       getOptionLabel={getOptionLabel}
       options={
-        usemasklist && Boolean(usemasklist) ? filtermaskmaplist : partsList
+        Boolean(usemasklist) ? maskmaplist : partsList
       }
       onChange={_onChange}
       disabled={disabled}
@@ -116,11 +116,9 @@ export default function FormModal({
   const [partIdFields, setPartIdFields] = useState([]);
   const [formFields, setFormFields] = useState([]);
   const [maskMapList, setMaskMapList] = useState([]);
-  const [filterMaskMapList, setFilterMaskMapList] = useState([]);
   const [part, setPart] = useState({});
-
-  const useMaskList = config?.useMaskList ?? false;
-  const maskMapURL = config?.maskMapURL ?? "";
+  const [useMaskList, setUseMaskList] = useState(false);
+  const [maskMapURL, setMaskMapURL] = useState("");
 
   const getMaskMapList = () => {
     let _maskMapList = [];
@@ -142,8 +140,17 @@ export default function FormModal({
   };
 
   useEffect(() => {
-    getMaskMapList();
-  }, [config?.maskMapListURL]);
+    if (open) {
+      setUseMaskList(config?.useMaskList ?? false);
+      setMaskMapURL(config?.maskMapURL ?? "");
+      getMaskMapList();
+    }
+  }, [
+    config?.maskMapListURL,
+    config?.useMaskList,
+    config?.maskMapURL,
+    open
+  ]);
 
   const { sendDisabled } = useMemo(() => {
     let sendDisabled = false;
@@ -203,27 +210,19 @@ export default function FormModal({
   };
 
   useEffect(() => {
-    const updatedMaskMapList = maskMapList.map((maskMap) => {
-      const part_id = maskMap.part_id;
-      if (partsObj.hasOwnProperty(part_id)) {
-        const part = partsObj[part_id];
-        return { ...maskMap, ...part };
-      }
-      return maskMap;
-    });
-    updatedMaskMapList?.sort((a, b) => {
+    let _maskMapList = maskMapList?.sort((a, b) => {
       return a?.part_id?.localeCompare(b.part_id);
     });
-    setFilterMaskMapList(updatedMaskMapList);
-  }, [partsObj, maskMapList]);
+    setMaskMapList(_maskMapList);
+  }, [maskMapList]);
 
   const onChange = (fieldData) => (event) => {
     let newValue = event.target.value;
     if (fieldData.type === "part_id") {
       let updateData = { part_id: newValue };
       if (useMaskList) {
-        if (filterMaskMapList?.find((el) => el.part_id === newValue)) {
-          let part = filterMaskMapList?.find((el) => el.part_id === newValue);
+        if (maskMapList?.find((el) => el.part_id === newValue)) {
+          let part = maskMapList?.find((el) => el.part_id === newValue);
           setPart(part);
 
           partIdFields.forEach((fieldData) => {
@@ -283,7 +282,7 @@ export default function FormModal({
                       onChange: onChange(fieldData),
                       disabled: fieldData.disabled,
                       usemasklist: useMaskList.toString(),
-                      filtermaskmaplist: filterMaskMapList,
+                      maskmaplist: maskMapList,
                     })}
                   </Grid>
                 ))}

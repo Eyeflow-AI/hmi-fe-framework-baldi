@@ -9,25 +9,24 @@ import React, {
 
 // Design
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
-import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Autocomplete from "@mui/material/Autocomplete";
+>>>>>>> 9c50f46d8d7df6fa4930f4d43836add2b5d67db2
 
 // Internal
 import PageWrapper from "../../components/PageWrapper";
 import UploadImageDialog from "../../components/UploadImageDialog";
 import ImageDialog from "../../components/ImageDialog";
 import GetImagesList from "../utils/Hooks/GetImagesList";
-import GetEdgeEnvVar from "../../utils/Hooks/GetEdgeEnvVar";
 
 // Third-party
 
 const style = {
   mainBox: Object.assign({}, window.app_config.style.box, {
     bgcolor: "background.paper",
-    // bgcolor: 'red',
     display: "flex",
     flexGrow: 1,
     justifyContent: "center",
@@ -40,21 +39,17 @@ export default function PartRegistration({ pageOptions }) {
   const [openImageInfoDialog, setOpenImageInfoDialog] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
   const [imagePath, setImagePath] = useState("");
-  const { imageBaseURL, infoURL, envVarURL, appbarButtonList } = useMemo(() => {
+  const { imageBaseURL, infoURL, appbarButtonList } = useMemo(() => {
     return {
       imageBaseURL: pageOptions?.options?.imageURL ?? "",
       infoURL: pageOptions?.options?.infoURL ?? "",
-      envVarURL: pageOptions?.options?.envVarURL ?? "",
       appbarButtonList: pageOptions?.options?.appbarButtonList ?? [],
     };
   }, [pageOptions]);
+
   const { clock, imagesList } = GetImagesList({
     url: infoURL,
     imageBaseURL,
-    sleepTime: pageOptions?.options?.sleepTime,
-  });
-  const { envVar, updateData: updateEnvVarData } = GetEdgeEnvVar({
-    url: envVarURL,
     sleepTime: pageOptions?.options?.sleepTime,
   });
 
@@ -263,6 +258,7 @@ export default function PartRegistration({ pageOptions }) {
             imgHeight={imgHeight}
             title={dialogTitle}
             maskMapParmsURL={pageOptions?.options?.maskMapParmsURL}
+            datasets={pageOptions?.options?.datasetChoices}
           />
         </Box>
       )}

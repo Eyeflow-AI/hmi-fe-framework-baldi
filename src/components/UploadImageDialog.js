@@ -5,22 +5,26 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Dialog from "@mui/material/Dialog";
 import Toolbar from "@mui/material/Toolbar";
+import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
-import { Autocomplete, Button, TextField, Typography } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+import Autocomplete from "@mui/material/Autocomplete";
 
 // Internal
 import API from "../api";
 import { getUser } from "../store/slices/auth";
 import fetchJson from "../utils/functions/fetchJson";
+import { setNotificationBar } from "../store/slices/app";
 
 // Third-party
-import { useSelector } from "react-redux";
-import { useTranslation } from "react-i18next";
 import {
   TransformWrapper,
   TransformComponent,
 } from "@pronestor/react-zoom-pan-pinch";
+import { useTranslation } from "react-i18next";
+import { useSelector, useDispatch } from "react-redux";
 
 const gridToolbarSx = {
   width: "100%",
@@ -37,7 +41,6 @@ const appBarSx = {
 };
 
 export default function UploadImageDialog({
-  // imagePath,
   base64Str,
   imgWidth,
   imgHeight,
@@ -45,18 +48,20 @@ export default function UploadImageDialog({
   open,
   setOpen,
   maskMapParmsURL,
+  datasets
 }) {
-  const { t } = useTranslation();
-  const [noImage, setNoImage] = useState(false);
-  const [selectedObj, setSelectedObj] = useState(null);
-  const [dataset, setDataset] = useState(null);
-  const [datasetList, setDatasetList] = useState([]);
   const user = useSelector(getUser);
-  const [errorInText, setErrorInText] = useState(null);
+  const dispatch = useDispatch();
+
+  const { t } = useTranslation();
+
+  const [dataset, setDataset] = useState(null);
+  const [noImage, setNoImage] = useState(false);
+  const [datasetList, setDatasetList] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(true);
-
-  console.log({ base64Str });
+  const [errorInText, setErrorInText] = useState(null);
 
   const [parms, setParms] = useState([]);
   let urlParms = maskMapParmsURL;
@@ -88,9 +93,14 @@ export default function UploadImageDialog({
         maskMap: dataset?.maskMap,
       })
       .then(() => {
+        dispatch(setNotificationBar({ show: true, type: 'success', message: "upload_sucessful" }));
         setLoading(false);
         setDataset(null);
         handleClose();
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
       });
   };
 
@@ -101,27 +111,22 @@ export default function UploadImageDialog({
   useEffect(() => {
     fetchJson(urlParms)
       .then((res) => {
-        setParms(res?.parts_fields);
-        console.log(res?.parts_fields);
+        let _parms = res?.parts_fields.filter((part) => part.show);
+        setParms(_parms);
       })
       .catch((err) => {
         console.log(err);
       });
   }, [urlParms]);
 
-  const getDocument = (selectedParam) => {
-    API.get
-      .appParameterDocument({ parameterName: selectedParam })
-      .then((res) => {
-        setDatasetList(
-          res.document.pages["Images Capturer"].options.datasetChoices
-        );
-      })
-      .finally(() => {});
-  };
+  useEffect(() => {
+    if (base64Str === null) {
+      setNoImage(true);
+    }
+  }, [base64Str]);
 
   useEffect(() => {
-    getDocument("feConfig");
+    setDatasetList(datasets)
   }, []);
 
   useEffect(() => {
@@ -280,7 +285,7 @@ export default function UploadImageDialog({
                     )}
                   />
 
-                  {parms?.map((part, index) => (
+                  {parms?.length > 0 && parms?.map((part, index) => (
                     <TextField
                       key={index}
                       id={part.id}
@@ -291,7 +296,7 @@ export default function UploadImageDialog({
                         height: "auto",
                       }}
                       value={dataset?.[part.id]}
-                      required={dataset?.maskMap}
+                      required={true}
                       onChange={(e) => handleUpdate(part.id, e.target.value)}
                       label={part.label}
                       error={errorInText?.[part.id] ?? false}
@@ -303,20 +308,19 @@ export default function UploadImageDialog({
                     />
                   ))}
 
-                  <Button
+                  <LoadingButton
                     variant="contained"
                     color="primary"
                     onClick={handleUpload}
                     sx={{
-                      //width: '20rem',
                       width: "20%",
                       height: "auto",
-                      margin: "auto",
                     }}
                     disabled={disabled || loading}
+                    loading={loading}
                   >
-                    Save image info
-                  </Button>
+                    {t('upload_image')}
+                  </LoadingButton>
                 </Box>
               )}
             </TransformWrapper>
