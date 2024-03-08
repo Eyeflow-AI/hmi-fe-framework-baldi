@@ -257,6 +257,7 @@ export default function PartRegistration({ pageOptions }) {
             imgHeight={imgHeight}
             title={dialogTitle}
             maskMapParmsURL={pageOptions?.options?.maskMapParmsURL}
+            datasets={pageOptions?.options?.datasetChoices}
           />
         </Box>
       )}

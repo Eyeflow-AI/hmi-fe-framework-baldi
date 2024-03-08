@@ -41,7 +41,6 @@ const appBarSx = {
 };
 
 export default function UploadImageDialog({
-  // imagePath,
   base64Str,
   imgWidth,
   imgHeight,
@@ -49,6 +48,7 @@ export default function UploadImageDialog({
   open,
   setOpen,
   maskMapParmsURL,
+  datasets
 }) {
   const user = useSelector(getUser);
   const dispatch = useDispatch();
@@ -125,19 +125,8 @@ export default function UploadImageDialog({
     }
   }, [base64Str]);
 
-  const getDocument = (selectedParam) => {
-    API.get
-      .appParameterDocument({ parameterName: selectedParam })
-      .then((res) => {
-        setDatasetList(
-          res.document.pages["Images Capturer"].options.datasetChoices
-        );
-      })
-      .finally(() => { });
-  };
-
   useEffect(() => {
-    getDocument("feConfig");
+    setDatasetList(datasets)
   }, []);
 
   useEffect(() => {
@@ -296,7 +285,7 @@ export default function UploadImageDialog({
                     )}
                   />
 
-                  {parms.length > 0 && parms.map((part, index) => (
+                  {parms?.length > 0 && parms?.map((part, index) => (
                     <TextField
                       key={index}
                       id={part.id}
