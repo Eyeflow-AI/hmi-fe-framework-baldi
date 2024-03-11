@@ -87,6 +87,7 @@ export default function UploadImageDialog({
     setCroppedWidth(cropInfo.getCroppedCanvas().width);
     setCroppedHeight(cropInfo.getCroppedCanvas().height);
     setCropping(false);
+    dispatch(setNotificationBar({ show: true, type: 'success', message: "image_crop_sucessful" }));
   };
 
   const handleUpload = () => {
@@ -210,6 +211,14 @@ export default function UploadImageDialog({
     }
   };
 
+  const handleResetCrop = () => {
+    setCroppedBase64Str(null);
+    setCroppedWidth(0);
+    setCroppedHeight(0);
+    setCropping(false);
+    dispatch(setNotificationBar({ show: true, type: 'success', message: "original_image_restored" }));  
+  }
+
   return (
     <Dialog fullScreen open={open} onClose={handleClose}>
       <Box sx={appBarSx}>
@@ -311,16 +320,16 @@ export default function UploadImageDialog({
                           onClick={() => setCropping(true)}
                         >
                           {t('crop_image')}
-                          Crop Image
                         </Button>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => setCroppedBase64Str(null)}
-                        >
-                          {t('reset_crop_image')}
-                          Reset image to original
-                        </Button>
+                        {croppedBase64Str && (
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => handleResetCrop()}
+                          >
+                            {t('reset_crop_image')}
+                          </Button>
+                        )}
                       </Box>
                     </Fragment>
                   ) : (
@@ -364,8 +373,7 @@ export default function UploadImageDialog({
                           mt: "2rem",
                         }}
                       >
-                        {t('crop_image')}
-                        Save cropped image
+                        {t('saved_cropped_image')}
                       </Button>
                     </Box>
                   )}
