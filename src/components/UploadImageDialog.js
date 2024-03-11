@@ -38,7 +38,7 @@ const gridToolbarSx = {
 
 const appBarSx = {
   width: "100%",
-  height: 70,
+  height: 200,
   bgcolor: "primary.main",
   color: "white",
   boxShadow: 1,
@@ -215,7 +215,7 @@ export default function UploadImageDialog({
     setCroppedWidth(0);
     setCroppedHeight(0);
     setCropping(false);
-    dispatch(setNotificationBar({ show: true, type: 'success', message: "original_image_restored" }));  
+    dispatch(setNotificationBar({ show: true, type: 'success', message: "original_image_restored" }));
   }
 
   return (
@@ -470,10 +470,14 @@ export default function UploadImageDialog({
               fontSize: "100px",
             }}
           >
-            <CircularProgress sx={{
-              display: "block",
-              margin: "auto",
-            }} />
+            <Typography
+              sx={{
+                display: "block",
+                margin: "auto",
+              }}
+            >
+              {t('no_image_error')}
+            </Typography>
           </Box>
         )}
       </Box>
