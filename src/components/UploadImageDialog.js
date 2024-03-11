@@ -72,7 +72,6 @@ export default function UploadImageDialog({
   const [croppedWidth, setCroppedWidth] = useState(0);
   const [croppedHeight, setCroppedHeight] = useState(0);
   const [cropInfo, setCropInfo] = useState(null);
-  const [endCrop, setEndCrop] = useState(false);
   let urlParms = maskMapParmsURL;
 
   const cropperRef = useRef(null);
