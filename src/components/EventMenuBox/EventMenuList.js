@@ -75,7 +75,8 @@ export default function EventMenuList({
           eventData={eventData}
           selected={selected}
           onClick={onEventClick}
-          conveyorIcon={currentIcon}
+          // conveyorIcon={currentIcon}
+          conveyorIcon={"/assets/frente_carro.png"}
         />
       </div>
     );

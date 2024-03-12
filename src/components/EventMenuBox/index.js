@@ -130,7 +130,9 @@ export default function EventMenuBox({
                   eventData={runningEvent}
                   selected={runningEvent._id === selectedEventId}
                   onClick={() => onChangeEventByClick(runningEvent._id)}
-                  conveyorIcon={runningMaskIcon ?? conveyorIcon}
+                  conveyorIcon={
+                    "/assets/carro.png" ?? runningMaskIcon ?? conveyorIcon
+                  }
                 />
               ) : (
                 <ButtonBase>

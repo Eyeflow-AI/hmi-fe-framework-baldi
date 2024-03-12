@@ -13,11 +13,12 @@
     "@mui/x-data-grid": "^6.2.1",
     "@mui/x-date-pickers": "^5.0.16",
     "@nivo/bar": "^0.83.0",
+    "@nivo/bullet": "^0.85.1",
     "@nivo/core": "^0.83.0",
     "@nivo/funnel": "^0.84.0",
+    "@nivo/line": "^0.83.0",
     "@nivo/pie": "^0.83.0",
     "@pronestor/react-zoom-pan-pinch": "^2.4.5",
-    "@nivo/line": "^0.83.0",
     "@reduxjs/toolkit": "^1.9.1",
     "axios": "^1.2.3",
     "date-fns": "^2.29.3",
@@ -40,7 +41,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "npm run generate-version && react-scripts start",
     "build": "react-scripts build",
     "generate-version": "node ./scripts/generateBuildVersion.js",
     "deploy": "npm run generate-version && npm run build",

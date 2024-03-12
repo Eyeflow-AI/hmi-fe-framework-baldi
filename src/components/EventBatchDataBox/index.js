@@ -6,6 +6,7 @@ import Box from "@mui/material/Box";
 import DataBox from "./DataBox";
 import GraphBox from "./GraphBox";
 import MetalStampingBox from "./MetalStampingBox";
+import CarrouselBox from "./CarrouselBox";
 
 const mainBoxSx = Object.assign({}, window.app_config.style.box, {
   bgcolor: "background.paper",
@@ -35,13 +36,15 @@ export default function EventBatchDataBox({
       height={config.height}
       sx={disabled ? styleSx.mainBoxDisabled : styleSx.mainBox}
     >
-      {data && (config.components.GraphBox?.active ?? true) && (
+      {/* {data && (config.components.GraphBox?.active ?? true) && (
         <GraphBox data={data} config={config?.components?.GraphBox} />
       )}
 
       {data && (config.components.DataBox?.active ?? true) && (
         <DataBox data={data} config={config?.components?.DataBox} />
-      )}
+      )} */}
+
+      <CarrouselBox data={data} config={config?.components?.DataBox} />
 
       {data && config.components.MetalStampingBox?.active && (
         <MetalStampingBox
