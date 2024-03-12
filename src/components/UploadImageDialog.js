@@ -72,6 +72,8 @@ export default function UploadImageDialog({
   const [croppedWidth, setCroppedWidth] = useState(0);
   const [croppedHeight, setCroppedHeight] = useState(0);
   const [cropInfo, setCropInfo] = useState(null);
+  const [_base64Str, _setBase64Str] = useState(null);
+
   let urlParms = maskMapParmsURL;
 
   const cropperRef = useRef(null);
@@ -112,28 +114,19 @@ export default function UploadImageDialog({
             },
           },
         },
-        imageBase64: croppedBase64Str ?? base64Str,
+        imageBase64: croppedBase64Str ?? _base64Str,
         maskMap: dataset?.maskMap,
       })
       .then(() => {
         dispatch(setNotificationBar({ show: true, type: 'success', message: "upload_sucessful" }));
         setLoading(false);
         setDataset(null);
-        handleClose();
+        setOpen(false);
       })
       .catch((err) => {
         console.log(err);
         setLoading(false);
       });
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setNoImage(false);
-    setCroppedBase64Str(null);
-    setCroppedWidth(0);
-    setCroppedHeight(0);
-    setDataset(null);
   };
 
   useEffect(() => {
@@ -148,9 +141,8 @@ export default function UploadImageDialog({
   }, [urlParms]);
 
   useEffect(() => {
-    if (base64Str === null) {
-      setNoImage(true);
-    }
+    if (!base64Str) return
+    _setBase64Str(base64Str);
   }, [base64Str]);
 
   useEffect(() => {
@@ -159,6 +151,9 @@ export default function UploadImageDialog({
       setCroppedWidth(0);
       setCroppedHeight(0);
       setCroppedBase64Str(null);
+      setCropping(false);
+      _setBase64Str(null);
+      setNoImage(false);
     }
   }, [open]);
 
@@ -219,7 +214,7 @@ export default function UploadImageDialog({
   }
 
   return (
-    <Dialog fullScreen open={open} onClose={handleClose}>
+    <Dialog fullScreen open={open} onClose={() => setOpen(false)}>
       <Box sx={appBarSx}>
         <Toolbar style={{ textShadow: "1px 1px #00000080" }}>
           <Grid container sx={gridToolbarSx}>
@@ -243,7 +238,7 @@ export default function UploadImageDialog({
             </Grid>
             <Grid xs={2} item>
               <Box display="flex" justifyContent="flex-end">
-                <IconButton edge="start" color="inherit" onClick={handleClose}>
+                <IconButton edge="start" color="inherit" onClick={() => setOpen(false)}>
                   <CloseIcon />
                 </IconButton>
               </Box>
@@ -256,7 +251,7 @@ export default function UploadImageDialog({
           margin: "1vw 0 1vw 0",
         }}
       >
-        {base64Str && !noImage ? (
+        {_base64Str || croppedBase64Str && !noImage ? (
           <Box
             sx={{
               display: "flex",
@@ -283,26 +278,20 @@ export default function UploadImageDialog({
                   }}
                 >
 
-                  {!cropping && (base64Str || croppedBase64Str) ? (
+                  {!cropping ? (
                     <Fragment>
                       <TransformComponent>
-                        <Tooltip
-                          title="Drag image to see more"
-                          placement='right'
-                          arrow
-                        >
-                          <img
-                            src={croppedBase64Str ?? base64Str}
-                            alt={""}
-                            onLoad={() => resetTransform()}
-                            style={{
-                              objectFit: "contain",
-                              width: 800,
-                              height: 600,
-                              margin: "auto",
-                            }}
-                          />
-                        </Tooltip>
+                        <img
+                          src={croppedBase64Str ?? _base64Str}
+                          alt={""}
+                          onLoad={() => resetTransform()}
+                          style={{
+                            objectFit: "contain",
+                            width: 800,
+                            height: 600,
+                            margin: "auto",
+                          }}
+                        />
                       </TransformComponent>
                       <Box
                         sx={{
@@ -347,7 +336,7 @@ export default function UploadImageDialog({
                       <Cropper
                         guides={false}
                         crop={onCrop}
-                        src={base64Str}
+                        src={_base64Str}
                         ref={cropperRef}
                         initialAspectRatio={16 / 9}
                         style={{
@@ -364,6 +353,19 @@ export default function UploadImageDialog({
                         zoomOnTouch={false}
                         zoomOnWheel={false}
                       />
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                          setCropping(false);
+                          setCroppedBase64Str(null);
+                        }}
+                        sx={{
+                          mt: "2rem",
+                        }}
+                      >
+                        {t('cancel_cropping')}
+                      </Button>
                       <Button
                         variant="contained"
                         color="primary"
