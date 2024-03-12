@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 
 // Design
 import Box from "@mui/material/Box";
@@ -25,6 +25,10 @@ import {
 } from "@pronestor/react-zoom-pan-pinch";
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
+import Cropper from "react-cropper";
+import "cropperjs/dist/cropper.css";
+import { Button, CircularProgress, Tooltip } from "@mui/material";
+
 
 const gridToolbarSx = {
   width: "100%",
@@ -62,9 +66,28 @@ export default function UploadImageDialog({
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const [errorInText, setErrorInText] = useState(null);
-
+  const [cropping, setCropping] = useState(false);
   const [parms, setParms] = useState([]);
+  const [croppedBase64Str, setCroppedBase64Str] = useState(null);
+  const [croppedWidth, setCroppedWidth] = useState(0);
+  const [croppedHeight, setCroppedHeight] = useState(0);
+  const [cropInfo, setCropInfo] = useState(null);
   let urlParms = maskMapParmsURL;
+
+  const cropperRef = useRef(null);
+
+  const onCrop = () => {
+    const cropper = cropperRef.current?.cropper;
+    setCropInfo(cropper);
+  };
+
+  const handleSaveCrop = () => {
+    setCroppedBase64Str(cropInfo.getCroppedCanvas().toDataURL());
+    setCroppedWidth(cropInfo.getCroppedCanvas().width);
+    setCroppedHeight(cropInfo.getCroppedCanvas().height);
+    setCropping(false);
+    dispatch(setNotificationBar({ show: true, type: 'success', message: "image_crop_sucessful" }));
+  };
 
   const handleUpload = () => {
     setLoading(true);
@@ -73,8 +96,8 @@ export default function UploadImageDialog({
       .uploadImageInfo({
         data: {
           dataset_id: dataset?.dataset_id,
-          img_height: imgHeight,
-          img_width: imgWidth,
+          img_height: croppedHeight !== 0 ? croppedHeight : imgHeight,
+          img_width: croppedWidth !== 0 ? croppedWidth : imgWidth,
           date: new Date(),
           user_name: user.tokenPayload.payload.username ?? "",
           annotations: {
@@ -89,7 +112,7 @@ export default function UploadImageDialog({
             },
           },
         },
-        imageBase64: base64Str,
+        imageBase64: croppedBase64Str ?? base64Str,
         maskMap: dataset?.maskMap,
       })
       .then(() => {
@@ -106,6 +129,11 @@ export default function UploadImageDialog({
 
   const handleClose = () => {
     setOpen(false);
+    setNoImage(false);
+    setCroppedBase64Str(null);
+    setCroppedWidth(0);
+    setCroppedHeight(0);
+    setDataset(null);
   };
 
   useEffect(() => {
@@ -124,6 +152,15 @@ export default function UploadImageDialog({
       setNoImage(true);
     }
   }, [base64Str]);
+
+  useEffect(() => {
+    if (!open) {
+      setDataset(null);
+      setCroppedWidth(0);
+      setCroppedHeight(0);
+      setCroppedBase64Str(null);
+    }
+  }, [open]);
 
   useEffect(() => {
     setDatasetList(datasets)
@@ -173,6 +210,14 @@ export default function UploadImageDialog({
     }
   };
 
+  const handleResetCrop = () => {
+    setCroppedBase64Str(null);
+    setCroppedWidth(0);
+    setCroppedHeight(0);
+    setCropping(false);
+    dispatch(setNotificationBar({ show: true, type: 'success', message: "original_image_restored" }));
+  }
+
   return (
     <Dialog fullScreen open={open} onClose={handleClose}>
       <Box sx={appBarSx}>
@@ -211,7 +256,7 @@ export default function UploadImageDialog({
           margin: "1vw 0 1vw 0",
         }}
       >
-        {!noImage ? (
+        {base64Str && !noImage ? (
           <Box
             sx={{
               display: "flex",
@@ -237,90 +282,179 @@ export default function UploadImageDialog({
                     margin: "1rem",
                   }}
                 >
-                  <TransformComponent>
-                    <img
-                      src={base64Str}
-                      alt={""}
-                      onLoad={() => resetTransform()}
-                      style={{
-                        objectFit: "contain",
-                        width: "65%",
-                        height: "auto",
-                        margin: "auto",
-                      }}
-                    />
-                  </TransformComponent>
 
-                  <Autocomplete
-                    id="dataset_id_autocomplete"
-                    autoComplete
-                    variant="outlined"
-                    color="secondary"
-                    sx={{
-                      width: "60%",
-                      height: "auto",
-                    }}
-                    value={
-                      datasetList.find(
-                        (el) => el?.dataset_id === dataset?.dataset_id
-                      ) ?? null
-                    }
-                    required
-                    onChange={(e, newValue) =>
-                      handleUpdate("dataset_id", newValue)
-                    }
-                    options={datasetList}
-                    getOptionLabel={(option) => option.label ?? option}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Dataset"
-                        error={errorInText?.dataset_id ?? false}
-                        helperText={
-                          errorInText?.dataset_id ?? false
-                            ? "Campo obrigatório."
-                            : ""
-                        }
-                      />
-                    )}
-                  />
-
-                  {parms?.length > 0 && parms?.map((part, index) => (
-                    <TextField
-                      key={index}
-                      id={part.id}
-                      variant="outlined"
-                      color="secondary"
+                  {!cropping && (base64Str || croppedBase64Str) ? (
+                    <Fragment>
+                      <TransformComponent>
+                        <Tooltip
+                          title="Drag image to see more"
+                          placement='right'
+                          arrow
+                        >
+                          <img
+                            src={croppedBase64Str ?? base64Str}
+                            alt={""}
+                            onLoad={() => resetTransform()}
+                            style={{
+                              objectFit: "contain",
+                              width: 800,
+                              height: 600,
+                              margin: "auto",
+                            }}
+                          />
+                        </Tooltip>
+                      </TransformComponent>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          gap: 2
+                        }}
+                      >
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => setCropping(true)}
+                        >
+                          {t('crop_image')}
+                        </Button>
+                        {croppedBase64Str && (
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => handleResetCrop()}
+                          >
+                            {t('reset_crop_image')}
+                          </Button>
+                        )}
+                      </Box>
+                    </Fragment>
+                  ) : (
+                    <Box
                       sx={{
-                        width: "60%",
-                        height: "auto",
+                        width: "100%",
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        flexWrap: "wrap",
+                        overflow: "hidden",
                       }}
-                      value={dataset?.[part.id]}
-                      required={true}
-                      onChange={(e) => handleUpdate(part.id, e.target.value)}
-                      label={part.label}
-                      error={errorInText?.[part.id] ?? false}
-                      helperText={
-                        errorInText?.[part.id] ?? false
-                          ? "Campo obrigatório."
-                          : ""
-                      }
-                    />
-                  ))}
+                    >
+                      <Cropper
+                        guides={false}
+                        crop={onCrop}
+                        src={base64Str}
+                        ref={cropperRef}
+                        initialAspectRatio={16 / 9}
+                        style={{
+                          width: 800,
+                          height: 600,
+                          objectFit: "contain",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexDirection: "column",
+                          objectFit: "contain",
+                        }}
+                        onWheel={(e) => e.preventDefault()}
+                        zoomOnTouch={false}
+                        zoomOnWheel={false}
+                      />
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleSaveCrop()}
+                        sx={{
+                          mt: "2rem",
+                        }}
+                      >
+                        {t('saved_cropped_image')}
+                      </Button>
+                    </Box>
+                  )}
+                  {!cropping && (
+                    <Fragment>
+                      <Grid container spacing={1} sx={{
+                        maxWidth: "50%",
+                        marginBlock: 1,
+                      }}>
+                        <Grid item xs={6}>
+                          <Autocomplete
+                            fullWidth
+                            id="dataset_id_autocomplete"
+                            autoComplete
+                            variant="outlined"
+                            color="secondary"
+                            value={
+                              datasetList.find(
+                                (el) => el?.dataset_id === dataset?.dataset_id
+                              ) ?? null
+                            }
+                            required
+                            onChange={(e, newValue) =>
+                              handleUpdate("dataset_id", newValue)
+                            }
+                            options={datasetList}
+                            getOptionLabel={(option) => option.label ?? option}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Dataset"
+                                error={errorInText?.dataset_id ?? false}
+                                helperText={
+                                  errorInText?.dataset_id ?? false
+                                    ? "Campo obrigatório."
+                                    : ""
+                                }
+                              />
+                            )}
+                          />
+                        </Grid>
+                        {parms?.length > 0 && parms?.map((part, index) => (
+                          <Grid item xs={
+                            parms.length % 2 === 0 && index === parms.length - 1 ? 12 : 6
+                          }>
+                            <TextField
+                              fullWidth
+                              key={index}
+                              id={part.id}
+                              variant="outlined"
+                              color="secondary"
+                              value={dataset?.[part.id]}
+                              required={true}
+                              onChange={(e) => handleUpdate(part.id, e.target.value)}
+                              label={part.label}
+                              error={errorInText?.[part.id] ?? false}
+                              helperText={
+                                errorInText?.[part.id] ?? false
+                                  ? "Campo obrigatório."
+                                  : ""
+                              }
+                            />
+                          </Grid>
+                        ))}
 
-                  <LoadingButton
-                    variant="contained"
-                    color="primary"
-                    onClick={handleUpload}
-                    sx={{
-                      width: "20%",
-                      height: "auto",
-                    }}
-                    disabled={disabled || loading}
-                    loading={loading}
-                  >
-                    {t('upload_image')}
-                  </LoadingButton>
+                      </Grid>
+
+                      <LoadingButton
+                        variant="contained"
+                        color="primary"
+                        onClick={handleUpload}
+                        sx={{
+                          width: "20%",
+                          height: "auto",
+                        }}
+                        disabled={disabled || loading}
+                        loading={loading}
+                      >
+                        {t('upload_image')}
+                      </LoadingButton>
+                    </Fragment>
+                  )}
                 </Box>
               )}
             </TransformWrapper>
@@ -336,7 +470,14 @@ export default function UploadImageDialog({
               fontSize: "100px",
             }}
           >
-            No image
+            <Typography
+              sx={{
+                display: "block",
+                margin: "auto",
+              }}
+            >
+              {t('no_image_error')}
+            </Typography>
           </Box>
         )}
       </Box>
