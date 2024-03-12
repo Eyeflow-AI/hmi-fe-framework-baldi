@@ -4,7 +4,6 @@ import React, {
   useState,
   Fragment,
   useMemo,
-  useRef
 } from "react";
 
 //Design
@@ -30,6 +29,7 @@ import { useTranslation } from "react-i18next";
 import { downloadImage } from "sdk-fe-eyeflow";
 import { CardActions } from "@mui/material";
 import { FixedSizeList } from "react-window";
+import { VariableSizeList } from "react-window";
 
 const style = {
   mainBox: {
@@ -56,12 +56,9 @@ export default function ImagesViewer({ pageOptions }) {
   const [imagePath, setImagePath] = useState("");
   const [imageName, setImageName] = useState("");
 
-  const listRef = useRef();
-
-  const { itemHeight, itemWidth, menuWidth } = useMemo(() => {
+  const { itemHeight, menuWidth } = useMemo(() => {
     return {
       itemHeight: 150,
-      itemWidth: 290,
       menuWidth: 310,
     };
   }, []);
@@ -87,7 +84,7 @@ export default function ImagesViewer({ pageOptions }) {
       .catch((err) => {
         console.log(err);
       }
-      );
+    );
   }, [dirPath]);
 
   useEffect(() => {
@@ -111,25 +108,37 @@ export default function ImagesViewer({ pageOptions }) {
     dirPath,
   ]);
 
-  const renderItem = ({ index }) => {
-    let item = filesList[index];
+  const onClickImage = (imgPath, imgName) => {
+    setImagePath(imgPath);
+    setImageName(imgName);
+  }
+
+  const itemRenderer = ({ index, style }) => {
+    let currentImage = filesList[index];
+
+    const customStyle = Object.assign(
+      {
+        display: 'flex',
+        flexDirection: "column",
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: "100%",
+        height: "100px",
+        borderRadius: 1,
+        // overflow: 'visible',
+      },
+      style
+    );
 
     return (
       <Grid
         item
         key={index}
-        sx={{
-          width: "100%",
-          height: "100px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          borderRadius: 1,
-          // overflow: 'visible',
-        }}
+        id="item-grid"
+        style={customStyle}
       >
         <Card
+          id="item-card"
           sx={{
             width: "100%",
             height: "auto",
@@ -141,11 +150,12 @@ export default function ImagesViewer({ pageOptions }) {
           }}
         >
           <CardMedia
+            id="item-cardmedia"
             component="img"
             sx={{ width: "100%", height: "100%", cursor: "pointer" }}
-            // onClick={() => onClickImage(`${dirPath}${day}/${item}`, item)}
-            image={`${dirPath}/${day}/${item}`}
-            alt={item}
+            onClick={() => onClickImage(`${dirPath}${day}/${currentImage}`, currentImage)}
+            image={`${dirPath}/${day}/${currentImage}`}
+            alt={currentImage}
           />
           <CardActions
             sx={{
@@ -156,12 +166,12 @@ export default function ImagesViewer({ pageOptions }) {
               gap: 1,
             }}
           >
-            <Typography textAlign="center" variant="caption" >{`${item}`}</Typography>
+            <Typography textAlign="center" variant="caption" >{`${currentImage}`}</Typography>
             <Tooltip title={t("download")}>
               <IconButton
                 edge="start"
                 color="inherit"
-                onClick={() => downloadImage(`${dirPath}${day}/${item}`, item.replace('.jpg', ''))}
+                onClick={() => downloadImage(`${dirPath}${day}/${currentImage}`, currentImage.replace('.jpg', ''))}
               >
                 <DownloadIcon />
               </IconButton>
@@ -170,11 +180,6 @@ export default function ImagesViewer({ pageOptions }) {
         </Card>
       </Grid>
     )
-  }
-
-  const onClickImage = (imgPath, imgName) => {
-    setImagePath(imgPath);
-    setImageName(imgName);
   }
 
   return (
@@ -227,7 +232,7 @@ export default function ImagesViewer({ pageOptions }) {
                   isOptionEqualToValue={(option, value) => option?.date === value?.date}
                 />
                 <Grid
-                  id={'grid'}
+                  id='grid'
                   container
                   direction="column"
                   justifyContent="center"
@@ -235,7 +240,7 @@ export default function ImagesViewer({ pageOptions }) {
                   sx={{ width: "100%", }}
                 >
                   {loadingFilesList ?
-                    <Grid id={'circular progress'}>
+                    <Grid id='circular-progress'>
                       <CircularProgress />
                     </Grid>
                     : filesList.length === 0 && day ? (
@@ -244,7 +249,7 @@ export default function ImagesViewer({ pageOptions }) {
                       </Grid>
                     ) : filesList.length > 0 && !loadingFilesList && (
                       <Box
-                        id={'BOX'}
+                        id='box'
                         width={menuWidth}
                         sx={{
                           bgcolor: 'background.paper',
@@ -257,16 +262,17 @@ export default function ImagesViewer({ pageOptions }) {
                           flexGrow: 1
                         }}
                       >
-                        <AutoSizer id={'autosizer'}>
+                        <AutoSizer id='autosizer'>
                           {({ height, width }) => (
                             <FixedSizeList
-                              ref={listRef}
+                              id={'fixed size list'}
                               height={height}
                               width={width}
+                              //itemSize={getItemSize}
                               itemSize={itemHeight}
                               itemCount={filesList.length}
                             >
-                              {renderItem}
+                              {itemRenderer}
                             </FixedSizeList>
                           )}
                         </AutoSizer>
