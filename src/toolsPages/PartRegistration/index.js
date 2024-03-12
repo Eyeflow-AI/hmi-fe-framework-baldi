@@ -14,7 +14,6 @@ import CardMedia from "@mui/material/CardMedia";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Autocomplete from "@mui/material/Autocomplete";
->>>>>>> 9c50f46d8d7df6fa4930f4d43836add2b5d67db2
 
 // Internal
 import PageWrapper from "../../components/PageWrapper";
@@ -23,7 +22,6 @@ import ImageDialog from "../../components/ImageDialog";
 import GetImagesList from "../utils/Hooks/GetImagesList";
 
 // Third-party
-
 const style = {
   mainBox: Object.assign({}, window.app_config.style.box, {
     bgcolor: "background.paper",
