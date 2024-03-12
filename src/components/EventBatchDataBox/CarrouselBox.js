@@ -45,7 +45,6 @@ const CustomTooltip = ({ color, value, id }) => {
 };
 
 export default function CarrouselBox({ data, config }) {
-  console.log({ config });
   return (
     <Box
       width={config?.width ?? "calc(100vw - 502px)"}

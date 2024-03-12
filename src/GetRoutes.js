@@ -26,6 +26,7 @@ const ChecklistConnector = lazy(() =>
   import("./toolsPages/ChecklistConnector")
 );
 const AppParameters = lazy(() => import("./toolsPages/AppParameters"));
+const Lab = lazy(() => import("./toolsPages/Lab"));
 
 function NotFound() {
   return <>404: Not Found</>;
@@ -54,6 +55,7 @@ const components = {
     <ChecklistConnector pageOptions={pageOptions} />
   ),
   AppParameters: (pageOptions) => <AppParameters pageOptions={pageOptions} />,
+  Lab: (pageOptions) => <Lab pageOptions={pageOptions} />,
 };
 
 export default function Routes({
