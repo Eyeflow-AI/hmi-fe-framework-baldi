@@ -116,31 +116,35 @@ export default function Report({ pageOptions }) {
       setDownloadLoading(false);
     }
   };
-  
+
+  const getFilters  = (query_name) => {
+    let _filters = [];
+    let _selectedFilters = {}
+    if (selectedFilters !== null && Object.keys(selectedFilters).length > 0) {
+      Object.entries(selectedFilters).forEach(([key, value]) => {
+        if (value !== "") {
+          _selectedFilters[key] = value;
+        }
+      });
+      _filters = {
+        startTime: selectedStartDate, endTime: selectedEndDate, queryName: query_name, stationId,
+        filters: _selectedFilters
+      }
+    } else {
+      _filters = { startTime: selectedStartDate, endTime: selectedEndDate, queryName: query_name, stationId, filters: null }
+    }
+    return _filters;
+  }
+
   const getData = async () => {
     const charts = pageOptions?.options?.charts ?? [];
     const chartsToBuild = [];
-    let _filters = [];
 
     if (charts.length !== 0) {
       setLoadingSearch(true);
       let flagError = false;
       for (let i = 0; i < charts.length; i++) {
-
-        if (selectedFilters !== null && Object.keys(selectedFilters).length > 0) {
-          let _selectedFilters = {}
-          Object.entries(selectedFilters).forEach(([key, value]) => {
-            if (value !== "") {
-              _selectedFilters[key] = value;
-            }
-          });
-
-          _filters = { startTime: selectedStartDate, endTime: selectedEndDate, queryName: charts[i].query_name, stationId,
-            filters: _selectedFilters
-          }
-        } else {
-          _filters = { startTime: selectedStartDate, endTime: selectedEndDate, queryName:charts[i].query_name, stationId, filters: null}
-        }
+        let _filters = getFilters(charts[i].query_name);
         try {
           let data = await API.get.queryData(_filters);
           if (!data?.chartInfo?.width) {
@@ -152,7 +156,8 @@ export default function Report({ pageOptions }) {
           if (!data?.chartInfo?.height) {
             data.chartInfo.height = charts.length >= 4 ? "50%" : "100%";
           }
-          data.chartInfo.downloadable = Boolean(charts?.[i]?.download_query);
+          
+          data.chartInfo.downloadable = Boolean(charts?.[i]?.download_query) && data?.result.length > 0;
           if (data?.chartInfo?.downloadable) {
             setDownloadOption(true)
           }
@@ -160,8 +165,9 @@ export default function Report({ pageOptions }) {
             data.chartInfo.download = async (setLoading) => {
               try {
                 setLoading(true);
+                _filters = getFilters(charts[i].download_query);
                 let data = await API.get.queryData(_filters);
-                if (data?.result) {
+                if (data?.result.length > 0) {
                   data = data.result;
                   let { uri, filename } = jsonToCSV({
                     file: data,
@@ -204,7 +210,7 @@ export default function Report({ pageOptions }) {
     getData();
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   useEffect(() => {
     startSearch();
