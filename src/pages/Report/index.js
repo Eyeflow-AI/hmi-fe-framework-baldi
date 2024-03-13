@@ -273,7 +273,10 @@ export default function Report({ pageOptions }) {
             <Box
               sx={{
                 marginLeft: 'auto',
-                marginRight: 1
+                marginRight: 1,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
               {
