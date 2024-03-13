@@ -167,7 +167,7 @@ export default function Report({ pageOptions }) {
                 setLoading(true);
                 _filters = getFilters(charts[i].download_query);
                 let data = await API.get.queryData(_filters);
-                if (data?.result.length > 0 && data?.result[0]) {
+                if (data?.result.length > 0) {
                   data = data.result;
                   let { uri, filename } = jsonToCSV({
                     file: data,
