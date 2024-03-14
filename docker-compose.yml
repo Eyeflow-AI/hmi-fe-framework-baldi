@@ -4,9 +4,11 @@ services: # containers. same as docker run
   hmi-fe-framework:
     image: siliconlife/hmi-fe-framework
     container_name: hmi-fe-framework
+    # network_mode: host
     build: .
     restart: unless-stopped
     ports:
-      - "6029:80"
+      - "80:80"
     volumes:
       - ./fe_config.js:/usr/share/nginx/html/config.js
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
