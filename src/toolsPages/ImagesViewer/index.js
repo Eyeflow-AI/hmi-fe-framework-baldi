@@ -29,7 +29,6 @@ import { useTranslation } from "react-i18next";
 import { downloadImage } from "sdk-fe-eyeflow";
 import { CardActions } from "@mui/material";
 import { FixedSizeList } from "react-window";
-import { VariableSizeList } from "react-window";
 
 const style = {
   mainBox: {
@@ -49,7 +48,9 @@ export default function ImagesViewer({ pageOptions }) {
 
   const { t } = useTranslation();
 
-  const [filesList, setFilesList] = useState([]);
+  const [imagesList, setImagesList] = useState([]);
+  const [imageDatesList, setImageDatesList] = useState([]);
+  const [loadingImage, setLoadingImage] = useState(false);
   const [loadingFilesList, setLoadingFilesList] = useState(false);
   const [day, setDay] = useState("");
   const [days, setDays] = useState([]);
@@ -65,19 +66,23 @@ export default function ImagesViewer({ pageOptions }) {
 
   const dirPath = `${pageOptions.options.imagesDirPath}`;
 
+  const onClickImage = (imgPath, imgName) => {
+    setLoadingImage(true);
+    setImagePath(imgPath);
+    setImageName(imgName);
+    setLoadingImage(false);
+  }
+
   useEffect(() => {
     fetchJson(dirPath)
       .then((res) => {
         let _days = res.filter(item => item.type === "directory").map((item) => {
-          let date = item.name;
-          let year = date.substring(0, 4);
-          let month = date.substring(4, 6);
-          let day = date.substring(6, 8);
           return {
             date: item.name,
-            formattedDate: day + "/" + month + "/" + year,
+            formattedDate: item.name.substring(6, 8) + "/" + item.name.substring(4, 6) + "/" + item.name.substring(0, 4),
           };
         });
+
         _days.reverse();
         setDays(_days);
       })
@@ -90,13 +95,37 @@ export default function ImagesViewer({ pageOptions }) {
   useEffect(() => {
     if (!day) return;
     setLoadingFilesList(true);
+
     const fetchFiles = async () => {
       try {
         const res = await fetchJson(`${dirPath}/${day}/`);
-        const _filesList = res.filter(item => item.name.includes('.jpg')).map((item) => {
-          return item.name;
+        const filesList = res.filter(item => item.name.includes('.jpg')).map(item => ({
+          name: item.name,
+          mtime: item.mtime,
+        }));
+
+        const imagesList = filesList.map(item => item.name);
+        const imageDatesList = filesList.map(item => {
+          const mtimeString = item.mtime;
+
+          const date = new Date(mtimeString);
+          const formattedDate = date.toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+          });
+          const formattedTime = date.toLocaleTimeString('pt-BR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+          });
+
+          return `${formattedDate} - ${formattedTime}`;
         });
-        setFilesList(_filesList);
+
+        setImagesList(imagesList);
+        setImageDatesList(imageDatesList);
+
         setLoadingFilesList(false);
       } catch (err) {
         console.log(err);
@@ -108,13 +137,9 @@ export default function ImagesViewer({ pageOptions }) {
     dirPath,
   ]);
 
-  const onClickImage = (imgPath, imgName) => {
-    setImagePath(imgPath);
-    setImageName(imgName);
-  }
-
   const itemRenderer = ({ index, style }) => {
-    let currentImage = filesList[index];
+    let currentImage = imagesList[index];
+    let currentImageDate = imageDatesList[index];
 
     const customStyle = Object.assign(
       {
@@ -123,7 +148,8 @@ export default function ImagesViewer({ pageOptions }) {
         justifyContent: 'center',
         alignItems: 'center',
         width: "100%",
-        height: "100px",
+        height: "150px",
+        //marginBottom: 5,
         borderRadius: 1,
         // overflow: 'visible',
       },
@@ -134,11 +160,10 @@ export default function ImagesViewer({ pageOptions }) {
       <Grid
         item
         key={index}
-        id="item-grid"
         style={customStyle}
+        //sx={{gap: 1}}
       >
         <Card
-          id="item-card"
           sx={{
             width: "100%",
             height: "auto",
@@ -146,16 +171,21 @@ export default function ImagesViewer({ pageOptions }) {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            gap: 1,
+            //gap: 1,
           }}
         >
           <CardMedia
-            id="item-cardmedia"
             component="img"
-            sx={{ width: "100%", height: "100%", cursor: "pointer" }}
-            onClick={() => onClickImage(`${dirPath}${day}/${currentImage}`, currentImage)}
+            sx={{
+              width: "200px",
+              height: "100px",
+              objectFit: "contain",
+              cursor: "pointer",
+              marginTop: 1,
+            }}
+            onClick={() => onClickImage(`${dirPath}${day}/${currentImage}`, `${currentImage.replace('.jpg', '')} - ${currentImageDate}`)}
             image={`${dirPath}/${day}/${currentImage}`}
-            alt={currentImage}
+            alt={currentImageDate}
           />
           <CardActions
             sx={{
@@ -163,15 +193,15 @@ export default function ImagesViewer({ pageOptions }) {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              gap: 1,
+              //gap: 1,
             }}
           >
-            <Typography textAlign="center" variant="caption" >{`${currentImage}`}</Typography>
+            <Typography textAlign="center" variant="body2" sx={{ marginRight: 1 }}>{`${currentImageDate}`}</Typography>
             <Tooltip title={t("download")}>
               <IconButton
                 edge="start"
                 color="inherit"
-                onClick={() => downloadImage(`${dirPath}${day}/${currentImage}`, currentImage.replace('.jpg', ''))}
+                onClick={() => downloadImage(`${dirPath}${day}/${currentImage}`, currentImageDate)}
               >
                 <DownloadIcon />
               </IconButton>
@@ -213,47 +243,56 @@ export default function ImagesViewer({ pageOptions }) {
                   // overflowY: "auto",
                 }}
               >
-                <Autocomplete
-                  fullWidth
-                  autoComplete
-                  label="Date"
-                  variant="outlined"
-                  color="secondary"
+                <Box
                   sx={{
                     width: "100%",
-                    height: "auto",
-                  }}
-                  value={day[0]}
-                  options={days}
-                  defaultValue={days[0]}
-                  onChange={(_, newValue) => setDay(newValue?.date)}
-                  renderInput={(params) => <TextField {...params} />}
-                  getOptionLabel={(option) => option?.formattedDate ?? ""}
-                  isOptionEqualToValue={(option, value) => option?.date === value?.date}
-                />
+                    height: "55px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                  }}>
+                  <Autocomplete
+                    fullWidth
+                    autoComplete
+                    label="Date"
+                    variant="outlined"
+                    color="secondary"
+                    sx={{ width: "100%", }}
+                    value={day[0]}
+                    options={days}
+                    defaultValue={days[0]}
+                    onChange={(_, newValue) => setDay(newValue?.date)}
+                    renderInput={(params) => <TextField {...params} />}
+                    getOptionLabel={(option) => option?.formattedDate ?? ""}
+                    isOptionEqualToValue={(option, value) => option?.date === value?.date}
+                  />
+                </Box>
                 <Grid
-                  id='grid'
+                  id="content"
                   container
                   direction="column"
                   justifyContent="center"
                   alignItems="center"
-                  sx={{ width: "100%", }}
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                  }}
                 >
                   {loadingFilesList ?
-                    <Grid id='circular-progress'>
+                    <Grid>
                       <CircularProgress />
                     </Grid>
-                    : filesList.length === 0 && day ? (
-                      <Grid id={'empty-list-text'}>
+                    : imagesList.length === 0 && day ? (
+                      <Grid>
                         <Typography variant="h6" textAlign="center">{t("Empty List")}</Typography>
                       </Grid>
-                    ) : filesList.length > 0 && !loadingFilesList && (
+                    ) : imagesList.length > 0 && !loadingFilesList && (
                       <Box
-                        id='box'
                         width={menuWidth}
                         sx={{
                           bgcolor: 'background.paper',
-                          height: '1000px', // Valor truncado provisório
+                          height: `calc(${height}px - 55px)`,
                           width: '100%',
                           gap: 1,
                           display: 'flex',
@@ -262,15 +301,13 @@ export default function ImagesViewer({ pageOptions }) {
                           flexGrow: 1
                         }}
                       >
-                        <AutoSizer id='autosizer'>
+                        <AutoSizer>
                           {({ height, width }) => (
                             <FixedSizeList
-                              id={'fixed size list'}
                               height={height}
                               width={width}
-                              //itemSize={getItemSize}
+                              itemCount={imagesList.length}
                               itemSize={itemHeight}
-                              itemCount={filesList.length}
                             >
                               {itemRenderer}
                             </FixedSizeList>
@@ -297,7 +334,7 @@ export default function ImagesViewer({ pageOptions }) {
                 //width: "90%"
               }}
             >
-              {filesList.length > 0 && !imagePath ? (
+              {imagesList.length > 0 && !imagePath ? (
                 <Box>
                   <Typography variant="h6" textAlign="center">{t("select_an_image_for_download")}</Typography>
                 </Box>
@@ -314,37 +351,45 @@ export default function ImagesViewer({ pageOptions }) {
                         alignItems: "center",
                       }}
                     >
-                      <CardMedia
-                        component="img"
-                        image={`${imagePath}`}
-                        sx={{
-                          width: "100%",
-                          objectFit: "contain",
-                          minHeight: "95%",
-                        }}
-                      />
-                      <CardActions
-                        sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          gap: 5,
-                          width: "100%",
-                          bgcolor: "background.paper",
-                          minHeight: "5%"
-                        }}
-                      >
-                        <Tooltip title={t("download")}>
-                          <IconButton
-                            edge="start"
-                            color="inherit"
-                            onClick={() => downloadImage(imagePath, imageName.replace('.jpg', ''))}
+                      {loadingImage ? (
+                        <Grid>
+                          <CircularProgress />
+                        </Grid>
+                      ) : (
+                        <>
+                          <CardMedia
+                            component="img"
+                            image={`${imagePath}`}
+                            sx={{
+                              width: "100%",
+                              objectFit: "contain",
+                              minHeight: "95%",
+                            }}
+                          />
+                          <CardActions
+                            sx={{
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              gap: 5,
+                              width: "100%",
+                              bgcolor: "background.paper",
+                              minHeight: "5%"
+                            }}
                           >
-                            <Typography textAlign="center" sx={{ mr: "1rem" }}>{`${imageName}`}</Typography>
-                            <DownloadIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </CardActions>
+                            <Typography textAlign="center">{`${imageName}`}</Typography>
+                            <Tooltip title={t("download")}>
+                              <IconButton
+                                edge="start"
+                                color="inherit"
+                                onClick={() => downloadImage(imagePath, imageName)}
+                              >
+                                <DownloadIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </CardActions>
+                        </>
+                      )}
                     </Card>
                   </Fragment>
                 ))}
