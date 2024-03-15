@@ -18,7 +18,7 @@ const Report = lazy(() => import("./pages/Report"));
 const homeURL = "/app/:stationSlugLabel/home";
 
 const Query = lazy(() => import("./toolsPages/Query"));
-const Monitor = lazy(() => import("./toolsPages/Monitor"));
+const Cameras = lazy(() => import("./toolsPages/Cameras"));
 const ImagesCapturer = lazy(() => import("./toolsPages/ImagesCapturer"));
 const PartRegistration = lazy(() => import("./toolsPages/PartRegistration"));
 const ImagesAnalyser = lazy(() => import("./toolsPages/ImagesAnalyser"));
@@ -44,7 +44,7 @@ const components = {
   Report: (pageOptions) => <Report pageOptions={pageOptions} />,
 
   Query: (pageOptions) => <Query pageOptions={pageOptions} />,
-  Monitor: (pageOptions) => <Monitor pageOptions={pageOptions} />,
+  Cameras: (pageOptions) => <Cameras pageOptions={pageOptions} />,
   ImagesCapturer: (pageOptions) => <ImagesCapturer pageOptions={pageOptions} />,
   PartRegistration: (pageOptions) => (
     <PartRegistration pageOptions={pageOptions} />
@@ -76,7 +76,11 @@ export default function Routes({
         // console.log(components[value.component]);
         appRoutes.push({
           path: value.path,
-          element: components[value.component] ? components[value.component](value) : <NotFound />,
+          element: components[value.component] ? (
+            components[value.component](value)
+          ) : (
+            <NotFound />
+          ),
         });
       }
     }

@@ -22,7 +22,7 @@ const style = {
   }),
 };
 
-export default function Monitor({ pageOptions }) {
+export default function Cameras({ pageOptions }) {
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
   const [imagePath, setImagePath] = useState("");
