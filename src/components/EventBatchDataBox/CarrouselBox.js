@@ -57,7 +57,7 @@ export default function CarrouselBox({ data, config }) {
           display: "flex",
           // gap: 0.25,
           width: "100%",
-          height: "calc(100% - 400px)",
+          height: "calc(100% - 500px)",
           // padding: 1,
         }}
       >
@@ -65,7 +65,7 @@ export default function CarrouselBox({ data, config }) {
           sx={{
             display: "flex",
             flexGrow: 1,
-            width: 1 / 3,
+            width: 1 / 4,
             position: "relative",
             flexDirection: "column",
           }}
@@ -163,7 +163,7 @@ export default function CarrouselBox({ data, config }) {
           sx={{
             display: "flex",
             flexGrow: 1,
-            width: 1 / 3,
+            width: 1 / 4,
             position: "relative",
             flexDirection: "column",
             display: "flex",
@@ -266,8 +266,117 @@ export default function CarrouselBox({ data, config }) {
           sx={{
             display: "flex",
             flexGrow: 1,
+            width: 1 / 4,
+            position: "relative",
             flexDirection: "column",
-            width: 1 / 3,
+            display: "flex",
+          }}
+        >
+          <Box
+            sx={{
+              width: "100%",
+              height: "30px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography variant="h6" textAlign={"center"}>
+              Qualidade
+            </Typography>
+          </Box>
+          <ResponsivePie
+            data={[
+              {
+                id: "falha b1",
+                label: "falha b1",
+                value: 50,
+                color: "hsl(211, 12%, 48%)",
+              },
+              {
+                id: "falha b",
+                label: "falha b",
+                value: 30,
+                color: "hsl(14, 49%, 40%)",
+              },
+              {
+                id: "falha c",
+                label: "falha c",
+                value: 20,
+                color: "hsl(15, 35%, 10%)",
+              },
+              {
+                id: "falha c1",
+                label: "falha c1",
+                value: 20,
+                color: "hsl(14, 83%, 40%)",
+              },
+            ]}
+            margin={{ top: 50, right: 0, bottom: 100, left: 0 }}
+            innerRadius={0.5}
+            padAngle={0.7}
+            cornerRadius={3}
+            colors={(item) => item.data.color}
+            borderWidth={1}
+            borderColor={{ from: "color", modifiers: [["darker", 0.2]] }}
+            tooltip={(i) => {
+              let value = i?.datum?.data?.value;
+              let color = i?.datum?.data?.color;
+              let id = i?.datum?.data?.id;
+              return <CustomTooltip color={color} value={value} id={id} />;
+            }}
+            motionDamping={15}
+            valueFormat={function (e) {
+              return e + "%";
+            }}
+            theme={{
+              labels: {
+                text: {
+                  fontSize: 15,
+                  fill: "#ffffff",
+                  textShadow: "1px 1px 2px #353535",
+                },
+              },
+            }}
+            legends={[
+              {
+                anchor: "bottom",
+                direction: "row",
+                translateY: 56,
+                translateX: 30,
+                itemWidth: 100,
+                itemHeight: 18,
+                itemTextColor: "#999",
+                symbolSize: 18,
+                symbolShape: "circle",
+                effects: [
+                  {
+                    on: "hover",
+                    style: {
+                      itemTextColor: "#000",
+                    },
+                  },
+                ],
+              },
+            ]}
+          />
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+          >
+            <Typography variant="h3">1000</Typography>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexGrow: 1,
+            flexDirection: "column",
+            width: 1 / 4,
           }}
         >
           <Box
@@ -280,7 +389,7 @@ export default function CarrouselBox({ data, config }) {
             }}
           >
             <img
-              src="/assets/carro_com_defeito.png"
+              src="/assets/carro_pontos.png"
               style={{
                 width: "100%",
                 height: "100%",
@@ -362,7 +471,7 @@ export default function CarrouselBox({ data, config }) {
           // flexDirection: "column",
           gap: 0.25,
           width: "100%",
-          height: "400px",
+          height: "500px",
           padding: 2,
           // border: "1px solid red",
         }}
@@ -378,8 +487,11 @@ export default function CarrouselBox({ data, config }) {
         >
           <ArrowBackIosIcon />
         </Box>
-        {Array.from({ length: 3 }).map((_, i) => {
-          let reverseIndex = 3 - i;
+        {Array.from({ length: 5 }).map((_, i) => {
+          let reverseIndex = 5 - i;
+          let color = Math.random() > 0.5 ? "red" : "green";
+          let image =
+            color === "red" ? "/assets/carro_pontos.png" : "/assets/carro.png";
           return (
             <Card
               key={i}
@@ -390,14 +502,17 @@ export default function CarrouselBox({ data, config }) {
                 flexDirection: "column",
                 gap: 0.25,
                 padding: 1,
-                backgroundColor: colors.eyeflow.red.dark,
+                backgroundColor:
+                  Math.random() > 0.5
+                    ? colors.eyeflow.red.dark
+                    : colors.eyeflow.green.dark,
                 // margin: "1 1 10 1",
               }}
             >
               <CardMedia
                 component="img"
                 height="140"
-                image={"/assets/carro_com_defeito.png"}
+                image={image}
                 alt="green iguana"
                 style={{
                   width: "100%",
