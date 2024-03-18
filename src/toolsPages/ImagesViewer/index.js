@@ -285,7 +285,7 @@ export default function ImagesViewer({ pageOptions }) {
                     </Grid>
                     : imagesList.length === 0 && day ? (
                       <Grid>
-                        <Typography variant="h6" textAlign="center">{t("Empty List")}</Typography>
+                        <Typography variant="h6" textAlign="center">{t("empty_list")}</Typography>
                       </Grid>
                     ) : imagesList.length > 0 && !loadingFilesList && (
                       <Box
