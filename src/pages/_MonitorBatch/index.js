@@ -4,7 +4,7 @@ import React, { useEffect, useState, Fragment } from "react";
 import Box from "@mui/material/Box";
 
 //Internal
-import PageWrapper from "../../components/PageWrapper";
+import PageWrapper from "../../structure/PageWrapper";
 import EventHeader from "../../components/EventHeader";
 import EventAppBar from "../../components/EventAppBar";
 import EventMenuBox from "../../components/EventMenuBox";
@@ -141,7 +141,7 @@ export default function Monitor({ pageOptions }) {
               message: "edge_station_is_not_reachable",
             })
           );
-        } else if (err.message.includes('not found in')) {
+        } else if (err.message.includes("not found in")) {
           dispatch(
             setNotificationBar({
               show: true,
@@ -149,8 +149,7 @@ export default function Monitor({ pageOptions }) {
               message: "part_not_found",
             })
           );
-        }
-        else {
+        } else {
           dispatch(
             setNotificationBar({
               show: true,

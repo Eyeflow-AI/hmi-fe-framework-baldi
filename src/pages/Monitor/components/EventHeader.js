@@ -3,8 +3,8 @@ import React, { useMemo } from "react";
 
 import Box from "@mui/material/Box";
 
-import LabelBox from "./LabelBox";
-import accessObjValueWithMongoNotation from "../utils/functions/accessObjValueWithMongoNotation";
+import LabelBox from "../../../componentsStore/Box/LabelBox";
+import accessObjValueWithMongoNotation from "../../../utils/functions/accessObjValueWithMongoNotation";
 
 import { useTranslation } from "react-i18next";
 import { dateFormat } from "sdk-fe-eyeflow";

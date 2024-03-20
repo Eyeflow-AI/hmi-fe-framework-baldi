@@ -54,7 +54,7 @@ style.selectedItemSx = Object.assign({}, style.itemSx, {
   boxShadow: (theme) => `${theme.shadows[2]}, inset 0 0 0 2px black`,
 });
 
-export default function EventMenuItem({
+export default function CarouselItem({
   index,
   dateField,
   eventData,

@@ -1,67 +1,61 @@
 // React
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 // Design
 import {
-  Box
-  , List
-  , ListItemButton
-  , Typography
-  , Button
-  , Stack,
-  TextField
-} from '@mui/material';
-import SaveIcon from '@mui/icons-material/Save';
-
+  Box,
+  List,
+  ListItemButton,
+  Typography,
+  Button,
+  Stack,
+  TextField,
+} from "@mui/material";
+import SaveIcon from "@mui/icons-material/Save";
 
 // Internal
-import PageWrapper from '../../components/PageWrapper';
-import API from '../../api';
+import PageWrapper from "../../structure/PageWrapper";
+import API from "../../api";
 
 // Third-party
 import { useTranslation } from "react-i18next";
 
-
 const style = {
   mainBox: Object.assign({}, window.app_config.style.box, {
-    bgcolor: 'background.paper',
+    bgcolor: "background.paper",
     // bgcolor: 'red',
-    display: 'flex',
+    display: "flex",
     flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   }),
 };
 
-
-
-export default function ChecklistConnector({ pageOptions }) {
-
+export default function AppParameters({ pageOptions }) {
   const { t } = useTranslation();
   const [parametersData, setParametersData] = useState([]);
   const [currentText, setCurrentText] = useState({});
   const [errorInText, setErrorInText] = useState(false);
   const [waitForChange, setWaitForChange] = useState(false);
-  const [selectedParam, setSelectedParam] = useState('');
-
+  const [selectedParam, setSelectedParam] = useState("");
 
   const getData = () => {
-    API.get.appParameters()
-      .then(res => {
-        setParametersData(res?.documents ?? [])
+    API.get
+      .appParameters()
+      .then((res) => {
+        setParametersData(res?.documents ?? []);
       })
-      .finally(() => {
-      });
+      .finally(() => {});
   };
 
   const getDocument = (selectedParam) => {
-    API.get.appParameterDocument({ parameterName: selectedParam })
-      .then(res => {
+    API.get
+      .appParameterDocument({ parameterName: selectedParam })
+      .then((res) => {
         setCurrentText(JSON.stringify(res?.document ?? {}, undefined, 4));
       })
-      .finally(() => {
-      });
-  }
+      .finally(() => {});
+  };
 
   // const handleTextChange = (event) => {
   //   setCurrentText(event.jsObject);
@@ -71,23 +65,23 @@ export default function ChecklistConnector({ pageOptions }) {
   const saveParam = () => {
     let _currentText = JSON.parse(currentText);
     _currentText.name = selectedParam;
-    API.put.appParameterDocument({
-      document: JSON.parse(currentText),
-    })
-      .then(res => {
+    API.put
+      .appParameterDocument({
+        document: JSON.parse(currentText),
+      })
+      .then((res) => {
         getData();
         getDocument(selectedParam);
       })
-      .finally(() => {
-      });
-  }
+      .finally(() => {});
+  };
 
   const waitChange = () => {
     // setWaitForChange(true);
     setTimeout(() => {
       setWaitForChange(false);
     }, 3100);
-  }
+  };
 
   useEffect(() => {
     getData();
@@ -96,12 +90,10 @@ export default function ChecklistConnector({ pageOptions }) {
   useEffect(() => {
     if (selectedParam) {
       getDocument(selectedParam);
-    }
-    else {
+    } else {
       setCurrentText(JSON.stringify({}, undefined, 4));
     }
   }, [selectedParam]);
-
 
   useEffect(() => {
     if (currentText) {
@@ -116,74 +108,68 @@ export default function ChecklistConnector({ pageOptions }) {
 
   return (
     <PageWrapper>
-      {({ width, height }) =>
-        <Box
-          width={width}
-          height={height}
-          sx={style.mainBox}
-        >
+      {({ width, height }) => (
+        <Box width={width} height={height} sx={style.mainBox}>
           <Box
             sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: '250px',
-              height: '100%',
+              display: "flex",
+              flexDirection: "column",
+              width: "250px",
+              height: "100%",
             }}
           >
             <Box
               sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                width: '100%',
-                height: '30px',
-                overflow: 'hidden',
-                justifyContent: 'center',
-                alignItems: 'center',
+                display: "flex",
+                flexDirection: "row",
+                width: "100%",
+                height: "30px",
+                overflow: "hidden",
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              <Typography textTransform={'uppercase'}>
-                {t('documents')}
+              <Typography textTransform={"uppercase"}>
+                {t("documents")}
               </Typography>
             </Box>
             <Box
               sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                width: '100%',
-                height: 'calc(100% - 30px - 60px)',
-                overflowX: 'hidden',
-                overflowY: 'auto',
+                display: "flex",
+                flexDirection: "row",
+                width: "100%",
+                height: "calc(100% - 30px - 60px)",
+                overflowX: "hidden",
+                overflowY: "auto",
               }}
             >
               {/* {JSON.stringify(Object.keys(queryData ?? {}))} */}
               <List
                 sx={{
-                  width: '100%',
+                  width: "100%",
                 }}
               >
-                {
-                  (parametersData ?? {}).map((parameter, index) => {
-                    return (
-                      <ListItemButton
-                        key={index}
-                        onClick={() => setSelectedParam(parameter.name)}
-                        selected={selectedParam.name === parameter.name}
-                      >
-                        {parameter.name}
-                      </ListItemButton>
-                    )
-                  })
-                }
+                {(parametersData ?? {}).map((parameter, index) => {
+                  return (
+                    <ListItemButton
+                      key={index}
+                      onClick={() => setSelectedParam(parameter.name)}
+                      selected={selectedParam.name === parameter.name}
+                    >
+                      {parameter.name}
+                    </ListItemButton>
+                  );
+                })}
               </List>
             </Box>
           </Box>
           <Box
             sx={{
-              display: 'flex',
-              flexDirection: 'column',
+              display: "flex",
+              flexDirection: "column",
               flexGrow: 1,
-              height: '100%',
-              width: 'calc(50% - 250px)',
+              height: "100%",
+              width: "calc(50% - 250px)",
             }}
           >
             <Box>
@@ -196,9 +182,9 @@ export default function ChecklistConnector({ pageOptions }) {
                 rows={35}
                 fullWidth
                 error={errorInText}
-                helperText={errorInText && t('parms_must_be_json')}
+                helperText={errorInText && t("parms_must_be_json")}
                 sx={{
-                  backgroundColor: 'black',
+                  backgroundColor: "black",
                 }}
               />
             </Box>
@@ -208,22 +194,20 @@ export default function ChecklistConnector({ pageOptions }) {
                 flexGrow: 1,
               }}
             >
-              <Stack direction='row' justifyContent='flex-start' gap={1}>
+              <Stack direction="row" justifyContent="flex-start" gap={1}>
                 <Button
                   onClick={saveParam}
-                  variant='contained'
+                  variant="contained"
                   startIcon={<SaveIcon />}
                   disabled={errorInText || waitForChange}
                 >
-                  {t('save')}
+                  {t("save")}
                 </Button>
               </Stack>
             </Box>
           </Box>
         </Box>
-      }
+      )}
     </PageWrapper>
-  )
+  );
 }
-
-

@@ -8,10 +8,13 @@ import React, {
 } from "react";
 
 // Design
-import { Box, Typography, Card, CardMedia } from "@mui/material";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardMedia from "@mui/material/CardMedia";
+import Typography from "@mui/material/Typography";
 
 // Internal
-import PageWrapper from "../../components/PageWrapper";
+import PageWrapper from "../../structure/PageWrapper";
 import ImageDialog from "../../components/ImageDialog";
 import GetImagesList from "../utils/Hooks/GetImagesList";
 import GetEdgeEnvVar from "../../utils/Hooks/GetEdgeEnvVar";
@@ -189,9 +192,9 @@ export default function ImagesCapturer({ pageOptions }) {
                       justifyContent: "center",
                       alignItems: "center",
                       boxShadow: 1,
-                      borderRadius: '1rem',
-                      padding: '1rem',
-                      cursor: 'pointer',
+                      borderRadius: "1rem",
+                      padding: "1rem",
+                      cursor: "pointer",
                     }}
                     onClick={onOpenDialog(item)}
                   >
@@ -199,14 +202,14 @@ export default function ImagesCapturer({ pageOptions }) {
                       component="img"
                       image={`${item?.full_url}?time=${clock}`}
                       style={{
-                        objectFit: 'contain',
+                        objectFit: "contain",
                         //maxWidth: `calc(${pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)]})`,
-                        minWidth: '2560px * 0.3',
+                        minWidth: "2560px * 0.3",
                         //maxHeight: pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)],
-                        minHeigth: '1440px * 0.3',
-                        display: 'block',
-                        margin: 'auto',
-                        paddingBottom: '.5rem',
+                        minHeigth: "1440px * 0.3",
+                        display: "block",
+                        margin: "auto",
+                        paddingBottom: ".5rem",
                       }}
                     />
                   </Card>

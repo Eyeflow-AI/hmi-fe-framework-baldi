@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Box from "@mui/material/Box";
 
 //Internal
-import PageWrapper from "../../components/PageWrapper";
+import PageWrapper from "../../structure/PageWrapper";
 import EventHeader from "../../components/EventHeader";
 import EventAppBar from "../../components/EventAppBar";
 import EventMenuBox from "../../components/EventMenuBox";

@@ -9,11 +9,13 @@ const Menu = lazy(() => import("./pages/Menu"));
 const Login = lazy(() => import("./pages/Login"));
 const UserSettings = lazy(() => import("./pages/UserSettings"));
 
-const MonitorBatch = lazy(() => import("./pages/MonitorBatch"));
-const MonitorSerial = lazy(() => import("./pages/MonitorSerial"));
+// const MonitorBatch = lazy(() => import("./pages/MonitorBatch"));
+// const MonitorSerial = lazy(() => import("./pages/MonitorSerial"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Management = lazy(() => import("./pages/Management"));
 const Report = lazy(() => import("./pages/Report"));
+const Monitor = lazy(() => import("./pages/Monitor"));
+const Scripts = lazy(() => import("./toolsPages/Scripts"));
 
 const homeURL = "/app/:stationSlugLabel/home";
 
@@ -37,8 +39,8 @@ function Version() {
 
 const components = {
   Menu: (pageOptions) => <Menu pageOptions={pageOptions} />,
-  MonitorBatch: (pageOptions) => <MonitorBatch pageOptions={pageOptions} />,
-  MonitorSerial: (pageOptions) => <MonitorSerial pageOptions={pageOptions} />,
+  // MonitorBatch: (pageOptions) => <MonitorBatch pageOptions={pageOptions} />,
+  // MonitorSerial: (pageOptions) => <MonitorSerial pageOptions={pageOptions} />,
   Dashboard: (pageOptions) => <Dashboard pageOptions={pageOptions} />,
   Management: (pageOptions) => <Management pageOptions={pageOptions} />,
   Report: (pageOptions) => <Report pageOptions={pageOptions} />,
@@ -54,6 +56,8 @@ const components = {
     <ChecklistConnector pageOptions={pageOptions} />
   ),
   AppParameters: (pageOptions) => <AppParameters pageOptions={pageOptions} />,
+  Monitor: (pageOptions) => <Monitor pageOptions={pageOptions} />,
+  Scripts: (pageOptions) => <Scripts pageOptions={pageOptions} />,
 };
 
 export default function Routes({

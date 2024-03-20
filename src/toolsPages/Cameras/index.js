@@ -5,7 +5,7 @@ import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { Box, Typography, Card, CardMedia } from "@mui/material";
 
 // Internal
-import PageWrapper from "../../components/PageWrapper";
+import PageWrapper from "../../structure/PageWrapper";
 import ImageDialog from "../../components/ImageDialog";
 import GetImagesList from "../utils/Hooks/GetImagesList";
 

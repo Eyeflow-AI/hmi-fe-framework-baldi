@@ -14,10 +14,16 @@ import Tooltip from "@mui/material/Tooltip";
 import CircularProgress from "@mui/material/CircularProgress";
 
 // Internal
-import PageWrapper from "../../components/PageWrapper";
+import PageWrapper from "../../structure/PageWrapper";
 import API from "../../api";
 import GetSelectedStation from "../../utils/Hooks/GetSelectedStation";
-import { Bar, Line, Funnel, Pie, DivergingBar } from "../../components/Charts";
+import {
+  Bar,
+  Pie,
+  Funnel,
+  Line,
+  DivergingBar,
+} from "../../componentsStore/Chart";
 import downloadURI from "../../utils/functions/downloadURI";
 import jsonToCSV from "../../utils/functions/jsonToCSV";
 import { setNotificationBar } from "../../store/slices/app";
@@ -98,7 +104,7 @@ export default function Report({ pageOptions }) {
   const [downloadLoading, setDownloadLoading] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState({});
   const [downloadOption, setDownloadOption] = useState(false);
-  const [filters, setFilters] = useState([])
+  const [filters, setFilters] = useState([]);
 
   useEffect(() => {
     const filters = pageOptions?.options?.filters ?? [];
@@ -117,9 +123,9 @@ export default function Report({ pageOptions }) {
     }
   };
 
-  const getFilters  = (query_name) => {
+  const getFilters = (query_name) => {
     let _filters = [];
-    let _selectedFilters = {}
+    let _selectedFilters = {};
     if (selectedFilters !== null && Object.keys(selectedFilters).length > 0) {
       Object.entries(selectedFilters).forEach(([key, value]) => {
         if (value !== "") {
@@ -127,14 +133,23 @@ export default function Report({ pageOptions }) {
         }
       });
       _filters = {
-        startTime: selectedStartDate, endTime: selectedEndDate, queryName: query_name, stationId,
-        filters: _selectedFilters
-      }
+        startTime: selectedStartDate,
+        endTime: selectedEndDate,
+        queryName: query_name,
+        stationId,
+        filters: _selectedFilters,
+      };
     } else {
-      _filters = { startTime: selectedStartDate, endTime: selectedEndDate, queryName: query_name, stationId, filters: null }
+      _filters = {
+        startTime: selectedStartDate,
+        endTime: selectedEndDate,
+        queryName: query_name,
+        stationId,
+        filters: null,
+      };
     }
     return _filters;
-  }
+  };
 
   const getData = async () => {
     const charts = pageOptions?.options?.charts ?? [];
@@ -156,10 +171,11 @@ export default function Report({ pageOptions }) {
           if (!data?.chartInfo?.height) {
             data.chartInfo.height = charts.length >= 4 ? "50%" : "100%";
           }
-          
-          data.chartInfo.downloadable = Boolean(charts?.[i]?.download_query) && data?.result.length > 0;
+
+          data.chartInfo.downloadable =
+            Boolean(charts?.[i]?.download_query) && data?.result.length > 0;
           if (data?.chartInfo?.downloadable) {
-            setDownloadOption(true)
+            setDownloadOption(true);
           }
           if (data.chartInfo.downloadable) {
             data.chartInfo.download = async (setLoading) => {
@@ -210,7 +226,7 @@ export default function Report({ pageOptions }) {
     getData();
   };
 
-  useEffect(() => { }, []);
+  useEffect(() => {}, []);
 
   useEffect(() => {
     startSearch();
@@ -234,7 +250,7 @@ export default function Report({ pageOptions }) {
                 <DateTimePicker
                   value={selectedStartDate}
                   onChange={setSelectedStartDate}
-                  label={t('start_date')}
+                  label={t("start_date")}
                   renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
@@ -244,7 +260,7 @@ export default function Report({ pageOptions }) {
                 <DateTimePicker
                   value={selectedEndDate}
                   onChange={setSelectedEndDate}
-                  label={t('end_date')}
+                  label={t("end_date")}
                   renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
@@ -260,8 +276,8 @@ export default function Report({ pageOptions }) {
                     onChange={(e) => {
                       setSelectedFilters({
                         ...selectedFilters,
-                        [filter.field]: e.target.value
-                      })
+                        [filter.field]: e.target.value,
+                      });
                     }}
                     type={filter.type}
                     error={selectedFilters[index] < 0}
@@ -272,31 +288,29 @@ export default function Report({ pageOptions }) {
 
             <Box
               sx={{
-                marginLeft: 'auto',
+                marginLeft: "auto",
                 marginRight: 1,
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
               }}
             >
-              {
-                loadingSearch ?
-                  <CircularProgress />
-                  :
-                  <Button
-                    variant="contained"
-                    startIcon={<SearchIcon />}
-                    onClick={
-                      () => {
-                        startSearch();
-                      }
-                    }
-                    disabled={loadingSearch}
-                  >
-                    {t('search')}
-                  </Button>
-              }
-              {builtChats.length > 0 && downloadOption &&
+              {loadingSearch ? (
+                <CircularProgress />
+              ) : (
+                <Button
+                  variant="contained"
+                  startIcon={<SearchIcon />}
+                  onClick={() => {
+                    startSearch();
+                  }}
+                  disabled={loadingSearch}
+                >
+                  {t("search")}
+                </Button>
+              )}
+              {builtChats.length > 0 &&
+                downloadOption &&
                 (downloadLoading ? (
                   <CircularProgress />
                 ) : (

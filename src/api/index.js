@@ -115,6 +115,8 @@ const API = {
           maskMap,
         })
       ),
+    script: ({ name }, setLoading) =>
+      request(instance.post(`internal/script`, { name }), setLoading),
   },
   get: {
     batchList: ({ params, stationId }, setLoading) =>
@@ -181,6 +183,8 @@ const API = {
 
     appParameters: (setLoading) =>
       request(instance.get(`internal/parameters`), setLoading),
+    scripts: (setLoading) =>
+      request(instance.get(`internal/scripts`), setLoading),
     appParameterDocument: ({ parameterName }, setLoading) =>
       request(
         instance.get(`internal/parameter-document?name=${parameterName}`),
@@ -209,6 +213,8 @@ const API = {
         instance.get(`tasks/${stationId}?status=${status}&query=${queryOBJ}`),
         setLoading
       ),
+    scriptDocument: ({ name }, setLoading) =>
+      request(instance.get(`internal/script-document/${name}`), setLoading),
   },
   put: {
     batchPause: ({ stationId, batchId }, setLoading) =>
@@ -315,6 +321,11 @@ const API = {
         }),
         setLoading
       ),
+
+    script: ({ document }, setLoading) =>
+      request(instance.put(`internal/script`, { document }), setLoading),
+    scriptName: ({ name, oldName }, setLoading) =>
+      request(instance.put(`internal/script/${oldName}`, { name }), setLoading),
   },
   delete: {
     user: ({ username }, setLoading) =>
@@ -330,6 +341,9 @@ const API = {
         instance.delete(`queries/remove-query`, { data: { queryName } }),
         setLoading
       ),
+
+    script: ({ name }, setLoading) =>
+      request(instance.delete(`internal/script/${name}`), setLoading),
   },
 };
 

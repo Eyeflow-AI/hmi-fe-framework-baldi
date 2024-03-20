@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 
 // Internal
-import PageWrapper from "../../components/PageWrapper";
+import PageWrapper from "../../structure/PageWrapper";
 import Menu from "./menu";
 import ChangePassword from "./dialog/ChangePassword";
 import API from "../../api";
