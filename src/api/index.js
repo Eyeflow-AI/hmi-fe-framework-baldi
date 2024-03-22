@@ -117,6 +117,8 @@ const API = {
       ),
     script: ({ name }, setLoading) =>
       request(instance.post(`internal/script`, { name }), setLoading),
+    component: ({ name }, setLoading) =>
+      request(instance.post(`internal/component`, { name }), setLoading),
   },
   get: {
     batchList: ({ params, stationId }, setLoading) =>
@@ -185,6 +187,8 @@ const API = {
       request(instance.get(`internal/parameters`), setLoading),
     scripts: (setLoading) =>
       request(instance.get(`internal/scripts`), setLoading),
+    components: (setLoading) =>
+      request(instance.get(`internal/components`), setLoading),
     appParameterDocument: ({ parameterName }, setLoading) =>
       request(
         instance.get(`internal/parameter-document?name=${parameterName}`),
@@ -215,6 +219,14 @@ const API = {
       ),
     scriptDocument: ({ name }, setLoading) =>
       request(instance.get(`internal/script-document/${name}`), setLoading),
+    componentDocument: ({ name }, setLoading) =>
+      request(instance.get(`internal/component-document/${name}`), setLoading),
+    componentData: ({ component, query, stationId }, setLoading) =>
+      request(
+        instance.get(`components/${stationId}/${component}?data=${query}`),
+
+        setLoading
+      ),
   },
   put: {
     batchPause: ({ stationId, batchId }, setLoading) =>
@@ -326,6 +338,14 @@ const API = {
       request(instance.put(`internal/script`, { document }), setLoading),
     scriptName: ({ name, oldName }, setLoading) =>
       request(instance.put(`internal/script/${oldName}`, { name }), setLoading),
+
+    component: ({ document }, setLoading) =>
+      request(instance.put(`internal/component`, { document }), setLoading),
+    componentName: ({ name, oldName }, setLoading) =>
+      request(
+        instance.put(`internal/component/${oldName}`, { name }),
+        setLoading
+      ),
   },
   delete: {
     user: ({ username }, setLoading) =>
@@ -344,6 +364,8 @@ const API = {
 
     script: ({ name }, setLoading) =>
       request(instance.delete(`internal/script/${name}`), setLoading),
+    component: ({ name }, setLoading) =>
+      request(instance.delete(`internal/component/${name}`), setLoading),
   },
 };
 

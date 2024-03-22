@@ -51,7 +51,7 @@ const components = {
     />
   ),
 };
-export default function DateFilterBox({ queryFields, onChangeParams }) {
+export default function QueryFilterBox({ queryFields, onChangeParams }) {
   const { t } = useTranslation();
 
   const [inputList, setInputList] = useState([]);

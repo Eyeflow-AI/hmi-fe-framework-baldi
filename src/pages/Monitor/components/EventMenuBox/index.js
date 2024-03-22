@@ -11,12 +11,14 @@ import EventMenuItem from "./EventMenuItem";
 import EventMenuList from "./EventMenuList";
 import fetchJson from "../../../../utils/functions/fetchJson";
 import { monitorSlice } from "../../../../store/slices/monitor";
+import GetSelectedStation from "../../../../utils/Hooks/GetSelectedStation";
+import CarouselWithQuery from "../../../../componentsStore/Caroussel/CarouselWithQuery";
+import GetComponentData from "../../../../utils/Hooks/GetComponentData";
 
 //Third-party
 import { useTranslation } from "react-i18next";
 import { colors } from "sdk-fe-eyeflow";
 import { useDispatch, useSelector } from "react-redux";
-import CarouselWithDate from "../../../../componentsStore/Caroussel/CarouselWithDate";
 
 const styleSx = {
   mainBox: {
@@ -57,6 +59,10 @@ const styleSx = {
 };
 
 export default function EventMenuBox({ height, width, config }) {
+  const { _id: stationId } = GetSelectedStation();
+
+  const [queryParams, setQueryParams] = useState(null);
+
   const dispatch = useDispatch();
   const state = useSelector((state) => state.monitor);
   const { t } = useTranslation();
@@ -67,6 +73,8 @@ export default function EventMenuBox({ height, width, config }) {
     hasMainButton,
     queryFields,
     dateField,
+    component,
+    conveyorComponent,
   } = useMemo(() => {
     const itemMenuHeight = config?.itemHeight ?? 200;
     return {
@@ -75,12 +83,20 @@ export default function EventMenuBox({ height, width, config }) {
       hasMainButton: config?.hasMainButton ?? true,
       queryFields: config?.queryFields ?? [],
       dateField: config?.dateField ?? "event_time",
+      component: config?.component ?? "eventMenuBox",
+      conveyorComponent: config?.conveyorComponent ?? "eventMenuList",
     };
   }, [config]);
 
   const startIcon = config?.startIcon;
-  const noEventIcon = config?.noEventIcon;
   const conveyorIcon = config?.conveyorIcon;
+
+  const { response, loading, loadResponse } = GetComponentData({
+    component: component,
+    query: { limit: 10, test: new Date() },
+    stationId,
+    run: true,
+  });
 
   const [menuBoxHeight, setMenuBoxHeight] = useState(height);
 
@@ -91,6 +107,26 @@ export default function EventMenuBox({ height, width, config }) {
       setMenuBoxHeight(height);
     }
   }, [height, hasMainButton, buttonBoxHeight]);
+
+  const onChangeParams = (newValue, deleteKeys = []) => {
+    setQueryParams((params) => {
+      let newParams = Boolean(params) ? { ...params } : {};
+      Object.assign(newParams, newValue);
+      if (!newParams.hasOwnProperty("station")) {
+        newParams["station"] = stationId;
+      }
+      for (let key of deleteKeys) {
+        delete newParams[key];
+      }
+      return newParams;
+    });
+  };
+
+  useEffect(() => {
+    if (queryParams && queryParams.station !== stationId) {
+      setQueryParams((params) => Object.assign({}, params));
+    }
+  }, [stationId, queryParams]);
 
   return (
     <Box id="event-menu-box" width={width} sx={styleSx.mainBox}>
@@ -103,7 +139,6 @@ export default function EventMenuBox({ height, width, config }) {
               eventData={state?.runningEvent}
               selected={state?.runningEvent._id === state?.id}
               // onClick={() => onChangeEventByClick(state?.runningEvent._id)}
-              // conveyorIcon={runningMaskIcon ?? conveyorIcon}
               conveyorIcon={conveyorIcon}
             />
           ) : (
@@ -123,11 +158,15 @@ export default function EventMenuBox({ height, width, config }) {
       )}
 
       <Box id="menu-box" height={menuBoxHeight} sx={styleSx.menuBox}>
-        <CarouselWithDate
+        <CarouselWithQuery
           height={menuBoxHeight}
           width={width}
           config={config}
           queryFields={queryFields}
+          defaultIcon={conveyorIcon}
+          onChangeParams={onChangeParams}
+          data={response?.find((item) => item.name === conveyorComponent) ?? []}
+          name={conveyorComponent}
         />
       </Box>
     </Box>

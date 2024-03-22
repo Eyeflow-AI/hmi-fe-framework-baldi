@@ -25,34 +25,21 @@ const styleSx = {
 };
 
 export default function EventMenuList({
-  events,
+  data,
   selectedEventId,
   loadingData,
   onClick,
   dateField,
   itemMenuHeight,
   conveyorIcon,
-  examplesList,
-  maskMapURL,
 }) {
   const { t } = useTranslation();
 
-  const eventsLength = events?.length ?? 0;
+  const dataLength = data?.output?.length ?? 0;
 
   function ItemRenderer({ index, style }) {
-    let eventData = events[index];
-    let eventIndex = eventData?.index ?? 0;
-    let selected = selectedEventId === eventData._id;
-    let part_id = eventData.part_id;
-    let image = examplesList.find((el) => {
-      let partId = el?.annotations?.part_data?.part_id;
-      return partId === part_id;
-    });
-    let url = `${maskMapURL}/${image?.example}`;
-
-    // url = url.replace("192.168.0.201", "192.168.2.40");
-    // console.log({ url, examplesList });
-    let currentIcon = image ? url : conveyorIcon;
+    let event = data?.output?.[index];
+    let selected = selectedEventId === event?._id;
     const customStyle = Object.assign(
       {
         display: "flex",
@@ -65,17 +52,15 @@ export default function EventMenuList({
       style
     );
 
-    const onEventClick = () => onClick(eventData._id);
+    const onEventClick = () => onClick(event._id);
 
     return (
       <div key={`item-${index}`} style={customStyle}>
         <CarouselItem
-          index={eventIndex}
-          dateField={dateField}
-          eventData={eventData}
+          data={event}
           selected={selected}
           onClick={onEventClick}
-          conveyorIcon={currentIcon}
+          conveyorIcon={conveyorIcon}
         />
       </div>
     );
@@ -83,7 +68,7 @@ export default function EventMenuList({
 
   return (
     <Box id="list-box" sx={styleSx.listBox}>
-      {eventsLength === 0 && loadingData ? (
+      {dataLength === 0 && loadingData ? (
         <Box
           height="100%"
           display="flex"
@@ -96,7 +81,7 @@ export default function EventMenuList({
         </Box>
       ) : (
         <Fragment>
-          {eventsLength === 0 ? (
+          {dataLength === 0 ? (
             <Box
               height="100%"
               display="flex"
@@ -112,7 +97,7 @@ export default function EventMenuList({
                   height={height}
                   width={width}
                   itemSize={itemMenuHeight}
-                  itemCount={eventsLength}
+                  itemCount={dataLength}
                 >
                   {ItemRenderer}
                 </List>

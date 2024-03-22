@@ -7,13 +7,10 @@ import ButtonBase from "@mui/material/ButtonBase";
 
 //Internal
 import FilterBox from "../Box/FilterBox";
-import fetchJson from "../../utils/functions/fetchJson";
 import Carousel from "./Carousel";
 
 //Third-party
-import { useTranslation } from "react-i18next";
 import { colors } from "sdk-fe-eyeflow";
-import { useDispatch, useSelector } from "react-redux";
 
 const styleSx = {
   mainBox: {
@@ -67,15 +64,16 @@ const styleSx = {
   }),
 };
 
-export default function CarouselWithDate({
+export default function CarouselWithQuery({
   height,
   width,
   config,
   queryFields,
+  defaultIcon,
+  onChangeParams,
+  name,
+  data,
 }) {
-  const dispatch = useDispatch();
-  const { t } = useTranslation();
-
   const { itemMenuHeight, buttonBoxHeight, hasMainButton, dateField } =
     useMemo(() => {
       const itemMenuHeight = config?.itemHeight ?? 200;
@@ -92,11 +90,18 @@ export default function CarouselWithDate({
   return (
     <Box id="menu-box" height={menuBoxHeight} sx={styleSx.menuBox}>
       <FilterBox
-        // onChangeParams={onChangeParams}
+        onChangeParams={onChangeParams}
         queryFields={queryFields}
         // keepRunningEvent={keepRunningEvent}
       />
-      <Carousel />
+      <Carousel
+        height={height - buttonBoxHeight}
+        width={width}
+        defaultIcon={defaultIcon}
+        name={name}
+        data={data}
+        itemMenuHeight={itemMenuHeight}
+      />
     </Box>
   );
 }

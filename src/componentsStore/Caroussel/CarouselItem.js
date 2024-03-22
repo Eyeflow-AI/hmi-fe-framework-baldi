@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 
 //Internal
 import "../../css/animateFlicker.css";
+import Tooltip from "../Wrappers/Tooltip";
 
 //Third-party
 import { useTranslation } from "react-i18next";
@@ -55,24 +56,24 @@ style.selectedItemSx = Object.assign({}, style.itemSx, {
 });
 
 export default function CarouselItem({
-  index,
-  dateField,
-  eventData,
+  data,
   selected,
   onClick,
   conveyorIcon,
 }) {
   const { t } = useTranslation();
 
-  let thumbURL = eventData?.thumbURL ?? conveyorIcon;
-  let thumbStyle = Boolean(eventData.thumbStyle)
-    ? eventData.thumbStyle
+  let index = data?.index ?? "";
+  let imageURL = data?.imageURL ?? conveyorIcon;
+  let imageCaption = data?.imageCaption ?? "";
+  let imageStyle = Boolean(data?.thumbStyle)
+    ? data.thumbStyle
     : style.itemImage;
-  let status = eventData.status ?? "";
-  let eventTimeString = Boolean(eventData[dateField])
-    ? dateFormat(eventData[dateField])
-    : "";
-  let label = eventData.label ?? "";
+  let status = data?.status ?? "";
+  let timestamp = Boolean(data?.timestamp) ? dateFormat(data?.timestamp) : "";
+  let label = data.label ?? "";
+  let tooltip = data?.tooltip ?? null;
+  let code = data?.code ?? "";
 
   let boxStyle = Object.assign(
     {
@@ -84,32 +85,36 @@ export default function CarouselItem({
   );
 
   return (
-    <Box sx={boxStyle} onClick={onClick}>
-      <Box sx={style.itemHeader}>
-        <Box>
-          <Typography variant="h6">{index}</Typography>
+    <Tooltip tooltip={tooltip}>
+      <Box sx={boxStyle} onClick={onClick}>
+        <Box sx={style.itemHeader}>
+          <Box>
+            <Typography variant="h6">{index}</Typography>
+          </Box>
+          <Box display="flex" flexDirection="column" alignItems="end">
+            <Box marginBottom={-1}>
+              <Typography variant="subtitle1">{code}</Typography>
+            </Box>
+            <Box
+              className={status === "running" ? "animate-flicker" : undefined}
+            >
+              <Typography variant="subtitle2">{t(status)}</Typography>
+            </Box>
+          </Box>
         </Box>
-        <Box display="flex" flexDirection="column" alignItems="end">
-          <Box marginBottom={-1}>
-            <Typography variant="subtitle1">{label}</Typography>
+
+        {imageURL && (
+          <Box sx={style.itemImageBox}>
+            <center>
+              <img alt={imageCaption} src={imageURL} style={imageStyle} />
+            </center>
           </Box>
-          <Box className={status === "running" ? "animate-flicker" : undefined}>
-            <Typography variant="subtitle2">{t(status)}</Typography>
-          </Box>
+        )}
+
+        <Box sx={style.itemFooter}>
+          <Typography variant="subtitle2">{timestamp}</Typography>
         </Box>
       </Box>
-
-      {thumbURL && (
-        <Box sx={style.itemImageBox}>
-          <center>
-            <img alt="" src={thumbURL} style={thumbStyle} />
-          </center>
-        </Box>
-      )}
-
-      <Box sx={style.itemFooter}>
-        <Typography variant="subtitle2">{eventTimeString}</Typography>
-      </Box>
-    </Box>
+    </Tooltip>
   );
 }
