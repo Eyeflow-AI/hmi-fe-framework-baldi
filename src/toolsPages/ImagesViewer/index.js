@@ -54,6 +54,7 @@ export default function ImagesViewer({ pageOptions }) {
   const [loadingFilesList, setLoadingFilesList] = useState(false);
   const [day, setDay] = useState("");
   const [days, setDays] = useState([]);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(-1);
   const [imagePath, setImagePath] = useState("");
   const [imageName, setImageName] = useState("");
 
@@ -66,8 +67,9 @@ export default function ImagesViewer({ pageOptions }) {
 
   const dirPath = `${pageOptions.options.imagesDirPath}`;
 
-  const onClickImage = (imgPath, imgName) => {
+  const onClickImage = (imgPath, imgName, index) => {
     setLoadingImage(true);
+    setSelectedImageIndex(index);
     setImagePath(imgPath);
     setImageName(imgName);
     setLoadingImage(false);
@@ -95,6 +97,8 @@ export default function ImagesViewer({ pageOptions }) {
   useEffect(() => {
     if (!day) return;
     setLoadingFilesList(true);
+    setSelectedImageIndex(-1);
+    setImagePath("");
 
     const fetchFiles = async () => {
       try {
@@ -172,6 +176,7 @@ export default function ImagesViewer({ pageOptions }) {
             justifyContent: "center",
             alignItems: "center",
             //gap: 1,
+            bgcolor: index === selectedImageIndex ? "lightblue" : "background.paper",
           }}
         >
           <CardMedia
@@ -183,7 +188,7 @@ export default function ImagesViewer({ pageOptions }) {
               cursor: "pointer",
               marginTop: 1,
             }}
-            onClick={() => onClickImage(`${dirPath}${day}/${currentImage}`, `${currentImage.replace('.jpg', '')} - ${currentImageDate}`)}
+            onClick={() => onClickImage(`${dirPath}${day}/${currentImage}`, `${currentImage.replace('.jpg', '')} - ${currentImageDate}`, index)}
             image={`${dirPath}/${day}/${currentImage}`}
             alt={currentImageDate}
           />
