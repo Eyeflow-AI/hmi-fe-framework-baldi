@@ -3,6 +3,8 @@ import React from "react";
 
 import Box from "@mui/material/Box";
 
+import LayoutConstructor from "../../../componentsStore/layoutConstructor";
+
 const mainBoxSx = Object.assign({}, window.app_config.style.box, {
   bgcolor: "background.paper",
   display: "flex",
@@ -11,6 +13,7 @@ const mainBoxSx = Object.assign({}, window.app_config.style.box, {
   overflowX: "auto",
   overflowY: "hidden",
   width: "100%",
+  height: "100%",
   whiteSpace: "pre-wrap", //TODO: Remove this line. Debug only
 });
 
@@ -20,5 +23,9 @@ const styleSx = {
 };
 
 export default function EventDataBox({ config }) {
-  return <Box sx={styleSx.mainBox}>data box</Box>;
+  return (
+    <Box sx={styleSx.mainBox}>
+      <LayoutConstructor config={config} />
+    </Box>
+  );
 }

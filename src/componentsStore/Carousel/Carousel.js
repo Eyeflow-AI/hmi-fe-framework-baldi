@@ -24,9 +24,9 @@ const styleSx = {
   },
 };
 
-export default function EventMenuList({
+export default function Carousel({
   data,
-  selectedEventId,
+  selectedItemId,
   loadingData,
   onClick,
   dateField,
@@ -38,8 +38,8 @@ export default function EventMenuList({
   const dataLength = data?.output?.length ?? 0;
 
   function ItemRenderer({ index, style }) {
-    let event = data?.output?.[index];
-    let selected = selectedEventId === event?._id;
+    let item = data?.output?.[index];
+    let selected = selectedItemId === item?._id;
     const customStyle = Object.assign(
       {
         display: "flex",
@@ -52,14 +52,20 @@ export default function EventMenuList({
       style
     );
 
-    const onEventClick = () => onClick(event._id);
+    let onItemClick = () => {};
+
+    if (onClick) {
+      onItemClick = () => onClick(item._id);
+    } else {
+      onItemClick = () => {}; // a fazer
+    }
 
     return (
       <div key={`item-${index}`} style={customStyle}>
         <CarouselItem
-          data={event}
+          data={item}
           selected={selected}
-          onClick={onEventClick}
+          onClick={onItemClick}
           conveyorIcon={conveyorIcon}
         />
       </div>

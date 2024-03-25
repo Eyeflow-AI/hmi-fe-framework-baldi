@@ -3,7 +3,6 @@ import React, { useEffect, useState, useMemo } from "react";
 
 //Design
 import Box from "@mui/material/Box";
-import ButtonBase from "@mui/material/ButtonBase";
 
 //Internal
 import FilterBox from "../Box/FilterBox";
@@ -73,6 +72,8 @@ export default function CarouselWithQuery({
   onChangeParams,
   name,
   data,
+  onClick,
+  selectedItemId,
 }) {
   const { itemMenuHeight, buttonBoxHeight, hasMainButton, dateField } =
     useMemo(() => {
@@ -101,6 +102,8 @@ export default function CarouselWithQuery({
         name={name}
         data={data}
         itemMenuHeight={itemMenuHeight}
+        onClick={onClick}
+        selectedItemId={selectedItemId}
       />
     </Box>
   );

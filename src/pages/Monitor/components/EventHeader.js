@@ -39,14 +39,11 @@ const styleSx = {
 export default function EventHeader({ data, config, disabled }) {
   const { t } = useTranslation();
 
-  console.log({ config });
-
   const { fields } = useMemo(() => {
     return {
       fields: config.fields.map(({ label, field, type, defaultValue }) => {
         let thisData = defaultValue ?? "";
         let value = accessObjValueWithMongoNotation(data, field);
-        console.log({ label, value, data });
         if (value) {
           if (type === "date") {
             thisData = dateFormat(new Date(value));

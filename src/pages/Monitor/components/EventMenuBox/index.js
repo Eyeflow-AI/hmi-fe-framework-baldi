@@ -8,11 +8,10 @@ import ButtonBase from "@mui/material/ButtonBase";
 //Internal
 import FilterBox from "../../../../componentsStore/Box/FilterBox";
 import EventMenuItem from "./EventMenuItem";
-import EventMenuList from "./EventMenuList";
 import fetchJson from "../../../../utils/functions/fetchJson";
 import { monitorSlice } from "../../../../store/slices/monitor";
 import GetSelectedStation from "../../../../utils/Hooks/GetSelectedStation";
-import CarouselWithQuery from "../../../../componentsStore/Caroussel/CarouselWithQuery";
+import CarouselWithQuery from "../../../../componentsStore/Carousel/CarouselWithQuery";
 import GetComponentData from "../../../../utils/Hooks/GetComponentData";
 
 //Third-party
@@ -59,6 +58,8 @@ const styleSx = {
 };
 
 export default function EventMenuBox({ height, width, config }) {
+  const [selectedItemId, setSelectedItemId] = useState(null);
+
   const { _id: stationId } = GetSelectedStation();
 
   const [queryParams, setQueryParams] = useState(null);
@@ -96,6 +97,7 @@ export default function EventMenuBox({ height, width, config }) {
     query: { limit: 10, test: new Date() },
     stationId,
     run: true,
+    sleepTime: 5000,
   });
 
   const [menuBoxHeight, setMenuBoxHeight] = useState(height);
@@ -120,6 +122,10 @@ export default function EventMenuBox({ height, width, config }) {
       }
       return newParams;
     });
+  };
+
+  const handleSelectItem = (itemId) => {
+    setSelectedItemId(itemId);
   };
 
   useEffect(() => {
@@ -167,6 +173,8 @@ export default function EventMenuBox({ height, width, config }) {
           onChangeParams={onChangeParams}
           data={response?.find((item) => item.name === conveyorComponent) ?? []}
           name={conveyorComponent}
+          onClick={handleSelectItem}
+          selectedItemId={selectedItemId}
         />
       </Box>
     </Box>

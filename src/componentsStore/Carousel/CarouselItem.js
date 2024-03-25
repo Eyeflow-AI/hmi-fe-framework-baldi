@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 
 //Internal
 import "../../css/animateFlicker.css";
-import Tooltip from "../Wrappers/Tooltip";
+import Tooltip from "../Wrapper/Tooltip";
 
 //Third-party
 import { useTranslation } from "react-i18next";
@@ -71,15 +71,16 @@ export default function CarouselItem({
     : style.itemImage;
   let status = data?.status ?? "";
   let timestamp = Boolean(data?.timestamp) ? dateFormat(data?.timestamp) : "";
-  let label = data.label ?? "";
   let tooltip = data?.tooltip ?? null;
-  let code = data?.code ?? "";
+  let label = data?.label ?? "";
+  let backgroundColor =
+    data?.backgroundColor && data?.backgroundColor !== ""
+      ? data?.backgroundColor
+      : colors.statuses[status];
 
   let boxStyle = Object.assign(
     {
-      backgroundColor: selected
-        ? colors.statuses[status]
-        : `${colors.statuses[status]}90`,
+      backgroundColor: selected ? backgroundColor : `${backgroundColor}90`,
     },
     selected ? style.selectedItemSx : style.itemSx
   );
@@ -93,7 +94,7 @@ export default function CarouselItem({
           </Box>
           <Box display="flex" flexDirection="column" alignItems="end">
             <Box marginBottom={-1}>
-              <Typography variant="subtitle1">{code}</Typography>
+              <Typography variant="subtitle1">{label}</Typography>
             </Box>
             <Box
               className={status === "running" ? "animate-flicker" : undefined}
