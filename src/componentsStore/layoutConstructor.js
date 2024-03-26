@@ -28,14 +28,15 @@ const store = {
   Tooltip: (props) => <Tooltip {...props} />,
 };
 
-export default function LayoutConstructor({ config }) {
+export default function LayoutConstructor({ config, componentsInfo }) {
   const [toBeShown, setToBeShown] = useState(null);
 
   useEffect(() => {
     let component = null;
     component = config?.components?.map((item, index) => {
+      console.log({ map: item });
       try {
-        return store[item.tag]({ ...item });
+        return store[item.tag]({ ...item, componentsInfo });
       } catch (err) {
         return (
           <Box
@@ -54,6 +55,6 @@ export default function LayoutConstructor({ config }) {
       }
     });
     setToBeShown(component);
-  }, [config]);
+  }, [config, componentsInfo]);
   return toBeShown;
 }

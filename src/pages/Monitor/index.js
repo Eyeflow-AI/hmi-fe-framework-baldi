@@ -38,6 +38,8 @@ const style = {
 export default function Monitor({ pageOptions }) {
   const dispatch = useDispatch();
   const state = useSelector((state) => state.monitor);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [itemInfo, setItemInfo] = useState(null);
 
   useEffect(() => {
     return () => {
@@ -60,6 +62,10 @@ export default function Monitor({ pageOptions }) {
               width={pageOptions.options.eventMenuWidth}
               config={pageOptions.components.EventMenuBox}
               height={height}
+              selectedItem={selectedItem}
+              setSelectedItem={setSelectedItem}
+              setItemInfo={setItemInfo}
+              itemInfo={itemInfo}
             />
           </Box>
           <Box id="monitor-data-box" sx={style.dataBox}>
@@ -69,13 +75,19 @@ export default function Monitor({ pageOptions }) {
               }}
             >
               <EventAppBar config={pageOptions.components.EventAppBar} />
-              <EventHeader config={pageOptions.components.EventHeader} />
+              <EventHeader
+                config={pageOptions.components.EventHeader}
+                itemInfo={itemInfo}
+              />
             </Box>
             <Box
               display="flex"
               height={height - pageOptions.components.EventHeader.height}
             >
-              <EventDataBox config={pageOptions.components.EventDataBox} />
+              <EventDataBox
+                config={pageOptions.components.EventDataBox}
+                itemInfo={itemInfo}
+              />
             </Box>
           </Box>
         </Box>

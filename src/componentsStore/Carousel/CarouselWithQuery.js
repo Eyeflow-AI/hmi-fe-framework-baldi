@@ -73,7 +73,7 @@ export default function CarouselWithQuery({
   name,
   data,
   onClick,
-  selectedItemId,
+  selectedItem,
 }) {
   const { itemMenuHeight, buttonBoxHeight, hasMainButton, dateField } =
     useMemo(() => {
@@ -103,7 +103,7 @@ export default function CarouselWithQuery({
         data={data}
         itemMenuHeight={itemMenuHeight}
         onClick={onClick}
-        selectedItemId={selectedItemId}
+        selectedItem={selectedItem}
       />
     </Box>
   );

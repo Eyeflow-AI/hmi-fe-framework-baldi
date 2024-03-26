@@ -63,8 +63,8 @@ const loadingImageStyle = Object.assign({}, styleSx.imageStyle, {
   opacity: "0.7",
 });
 
-export default function ImageCard({ data, componentsInfo }) {
-  console.log({ ImageCard: data });
+export default function ImageCard({ name, tag, componentsInfo }) {
+  console.log({ ImageCard: name, tag, componentsInfo });
   const [onImageLoading, setOnImageLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
@@ -73,19 +73,32 @@ export default function ImageCard({ data, componentsInfo }) {
   const [imageURL, setImageURL] = useState("");
   const [imageCaption, setImageCaption] = useState("");
   const [color, setColor] = useState("");
-  const [newColor, setNewColor] = useState("");
   const [tooltip, setTooltip] = useState({});
+  const [_name, _setName] = useState("");
+  const [backgroundColor, setBackgroundColor] = useState("");
 
   useEffect(() => {
     if (componentsInfo) {
-      setTitle(componentsInfo?.title);
-      setAdjacentText(componentsInfo?.adjacentText);
-      setTimestamp(componentsInfo?.timestamp);
-      setImageURL(componentsInfo?.imageURL);
-      setColor(componentsInfo?.color);
-      setImageCaption(componentsInfo?.imageCaption);
-      setTooltip(componentsInfo?.tooltip);
+      console.log({ name });
+      const component =
+        componentsInfo.find((item) => item.tag === tag && item.name === name)
+          ?.output ?? {};
+      // console.log({ component });
+      setTitle(component?.title);
+      setAdjacentText(component?.adjacentText);
+      setTimestamp(component?.timestamp);
+      setImageURL(component?.imageURL);
+      setColor(component?.color);
+      setImageCaption(component?.imageCaption);
+      setTooltip(component?.tooltip);
       setOnImageLoading(true);
+
+      let status = component?.status ?? "";
+      let backgroundColor =
+        component?.backgroundColor && component?.backgroundColor !== ""
+          ? component?.backgroundColor
+          : colors.statuses[status];
+      setBackgroundColor(backgroundColor);
     }
   }, [componentsInfo]);
 
@@ -98,15 +111,19 @@ export default function ImageCard({ data, componentsInfo }) {
     }
   }, [onImageLoading]);
 
+  useEffect(() => {
+    if (name) {
+      _setName(name);
+    }
+  }, [name]);
+
   return (
     <Tooltip tooltip={tooltip}>
       <Box sx={styleSx.mainBoxSx}>
         <Box
           id="header-box"
           sx={styleSx.headerBoxSx}
-          bgcolor={
-            color === "error.main" && newColor ? newColor : "primary.main"
-          }
+          bgcolor={backgroundColor ?? "primary.main"}
         >
           {title && <Typography>{title}</Typography>}
           <Typography>{adjacentText}</Typography>

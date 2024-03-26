@@ -36,14 +36,19 @@ const styleSx = {
   },
 };
 
-export default function EventHeader({ data, config, disabled }) {
+export default function EventHeader({ config, disabled, itemInfo }) {
+  console.log({ config, disabled, itemInfo });
   const { t } = useTranslation();
 
   const { fields } = useMemo(() => {
+    console.log({ itemInfo });
+    let newData =
+      itemInfo?.find((item) => item.name === config.name)?.output ?? {};
     return {
       fields: config.fields.map(({ label, field, type, defaultValue }) => {
         let thisData = defaultValue ?? "";
-        let value = accessObjValueWithMongoNotation(data, field);
+        console.log({ newData, field });
+        let value = accessObjValueWithMongoNotation(newData, field);
         if (value) {
           if (type === "date") {
             thisData = dateFormat(new Date(value));
@@ -55,7 +60,9 @@ export default function EventHeader({ data, config, disabled }) {
         return { label: t(label), field, data: thisData };
       }),
     };
-  }, [data, config]);
+  }, [config, itemInfo]);
+
+  console.log({ fields });
 
   return (
     <Box
@@ -63,7 +70,7 @@ export default function EventHeader({ data, config, disabled }) {
       height={config.height}
       sx={disabled ? styleSx.mainBoxDisabled : styleSx.mainBox}
     >
-      {Boolean(data) &&
+      {Boolean(itemInfo?.find((item) => item.name === config.name)?.output) &&
         fields.map(({ data, label }, index) => (
           <LabelBox key={index} title={t(label)} label={data} />
         ))}

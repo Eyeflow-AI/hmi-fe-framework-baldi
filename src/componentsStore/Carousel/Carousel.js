@@ -26,7 +26,7 @@ const styleSx = {
 
 export default function Carousel({
   data,
-  selectedItemId,
+  selectedItem,
   loadingData,
   onClick,
   dateField,
@@ -39,7 +39,7 @@ export default function Carousel({
 
   function ItemRenderer({ index, style }) {
     let item = data?.output?.[index];
-    let selected = selectedItemId === item?._id;
+    let selected = selectedItem?._id === item?._id;
     const customStyle = Object.assign(
       {
         display: "flex",
@@ -55,7 +55,7 @@ export default function Carousel({
     let onItemClick = () => {};
 
     if (onClick) {
-      onItemClick = () => onClick(item._id);
+      onItemClick = () => onClick(item);
     } else {
       onItemClick = () => {}; // a fazer
     }

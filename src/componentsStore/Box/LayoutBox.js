@@ -4,8 +4,8 @@ import Box from "@mui/material/Box";
 
 import LayoutConstructor from "../layoutConstructor";
 
-export default function LayoutBox({ name, style, components }) {
-  console.log({ Box: name, style, components });
+export default function LayoutBox({ name, style, components, componentsInfo }) {
+  console.log({ Box: name, style, components, componentsInfo });
   const [_style, _setStyle] = useState({});
 
   useEffect(() => {
@@ -35,7 +35,10 @@ export default function LayoutBox({ name, style, components }) {
       }}
       key={name}
     >
-      <LayoutConstructor config={{ components }} />
+      <LayoutConstructor
+        config={{ components }}
+        componentsInfo={componentsInfo}
+      />
     </Box>
   );
 }

@@ -13,6 +13,7 @@ import { monitorSlice } from "../../../../store/slices/monitor";
 import GetSelectedStation from "../../../../utils/Hooks/GetSelectedStation";
 import CarouselWithQuery from "../../../../componentsStore/Carousel/CarouselWithQuery";
 import GetComponentData from "../../../../utils/Hooks/GetComponentData";
+import getComponentData from "../../../../utils/functions/getComponentData";
 
 //Third-party
 import { useTranslation } from "react-i18next";
@@ -57,8 +58,16 @@ const styleSx = {
   }),
 };
 
-export default function EventMenuBox({ height, width, config }) {
-  const [selectedItemId, setSelectedItemId] = useState(null);
+export default function EventMenuBox({
+  height,
+  width,
+  config,
+  selectedItem,
+  setSelectedItem,
+  setItemInfo,
+  itemInfo,
+}) {
+  const [changeEventType, setChangeEventType] = useState("");
 
   const { _id: stationId } = GetSelectedStation();
 
@@ -97,7 +106,7 @@ export default function EventMenuBox({ height, width, config }) {
     query: { limit: 10, test: new Date() },
     stationId,
     run: true,
-    sleepTime: 5000,
+    sleepTime: 30000,
   });
 
   const [menuBoxHeight, setMenuBoxHeight] = useState(height);
@@ -124,8 +133,9 @@ export default function EventMenuBox({ height, width, config }) {
     });
   };
 
-  const handleSelectItem = (itemId) => {
-    setSelectedItemId(itemId);
+  const handleSelectItem = (item, type = "click") => {
+    setSelectedItem(item);
+    setChangeEventType(type);
   };
 
   useEffect(() => {
@@ -133,6 +143,36 @@ export default function EventMenuBox({ height, width, config }) {
       setQueryParams((params) => Object.assign({}, params));
     }
   }, [stationId, queryParams]);
+
+  useEffect(() => {
+    if (
+      changeEventType === "click" &&
+      selectedItem &&
+      selectedItem._id &&
+      selectedItem?.on?.click
+    ) {
+      let query = selectedItem;
+      let component = selectedItem.on.click;
+      let result = null;
+      getComponentData({
+        query,
+        component,
+        stationId,
+        // setLoading,
+        setResponse: setItemInfo,
+      });
+    } else if (
+      changeEventType === "update" &&
+      selectedItem &&
+      selectedItem._id &&
+      selectedItem?.on?.update
+    ) {
+    }
+
+    if (changeEventType !== "") {
+      setChangeEventType("");
+    }
+  }, [changeEventType]);
 
   return (
     <Box id="event-menu-box" width={width} sx={styleSx.mainBox}>
@@ -174,7 +214,7 @@ export default function EventMenuBox({ height, width, config }) {
           data={response?.find((item) => item.name === conveyorComponent) ?? []}
           name={conveyorComponent}
           onClick={handleSelectItem}
-          selectedItemId={selectedItemId}
+          selectedItem={selectedItem}
         />
       </Box>
     </Box>

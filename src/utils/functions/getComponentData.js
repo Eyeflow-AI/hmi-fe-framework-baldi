@@ -32,7 +32,10 @@ function putTypeInObjcts(obj) {
 
   let newObj = {};
   for (let key in obj) {
-    newObj[key] = { type: getType(obj[key]), value: obj[key] };
+    newObj[key] = {
+      type: getType(obj[key]),
+      value: encodeURIComponent(obj[key]),
+    };
   }
   return newObj;
 }

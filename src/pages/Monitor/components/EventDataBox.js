@@ -22,10 +22,11 @@ const styleSx = {
   mainBoxDisabled: Object.assign({}, mainBoxSx, { opacity: 0.8 }),
 };
 
-export default function EventDataBox({ config }) {
+export default function EventDataBox({ config, itemInfo }) {
+  console.log({ EventDataBox: itemInfo });
   return (
     <Box sx={styleSx.mainBox}>
-      <LayoutConstructor config={config} />
+      <LayoutConstructor config={config} componentsInfo={itemInfo} />
     </Box>
   );
 }
