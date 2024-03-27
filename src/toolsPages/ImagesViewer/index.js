@@ -206,7 +206,7 @@ export default function ImagesViewer({ pageOptions }) {
               <IconButton
                 edge="start"
                 color="inherit"
-                onClick={() => downloadImage(`${dirPath}${day}/${currentImage}`, currentImageDate)}
+                onClick={() => downloadImage(`${dirPath}${day}/${currentImage}`, `${currentImage.replace('.jpg', '')}-${currentImageDate.replaceAll(' ', '')}`)}
               >
                 <DownloadIcon />
               </IconButton>
