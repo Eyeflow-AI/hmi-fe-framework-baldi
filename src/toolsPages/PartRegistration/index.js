@@ -22,7 +22,6 @@ import ImageDialog from "../../components/ImageDialog";
 import GetImagesList from "../utils/Hooks/GetImagesList";
 
 // Third-party
-
 const style = {
   mainBox: Object.assign({}, window.app_config.style.box, {
     bgcolor: "background.paper",
