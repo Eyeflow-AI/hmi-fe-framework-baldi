@@ -503,7 +503,7 @@ export default function CarrouselBox({ data, config }) {
                 gap: 0.25,
                 padding: 1,
                 backgroundColor:
-                  Math.random() > 0.5
+                  color === "red"
                     ? colors.eyeflow.red.dark
                     : colors.eyeflow.green.dark,
                 // margin: "1 1 10 1",
