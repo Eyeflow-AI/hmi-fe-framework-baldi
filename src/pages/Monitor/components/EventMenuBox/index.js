@@ -11,14 +11,16 @@ import EventMenuItem from "./EventMenuItem";
 import fetchJson from "../../../../utils/functions/fetchJson";
 import { monitorSlice } from "../../../../store/slices/monitor";
 import GetSelectedStation from "../../../../utils/Hooks/GetSelectedStation";
-import CarouselWithQuery from "../../../../componentsStore/Carousel/CarouselWithQuery";
+import {
+  CarouselWithQuery,
+  CarouselItem,
+} from "../../../../componentsStore/Carousel";
 import GetComponentData from "../../../../utils/Hooks/GetComponentData";
 import getComponentData from "../../../../utils/functions/getComponentData";
 
 //Third-party
 import { useTranslation } from "react-i18next";
 import { colors } from "sdk-fe-eyeflow";
-import { useDispatch, useSelector } from "react-redux";
 
 const styleSx = {
   mainBox: {
@@ -66,6 +68,8 @@ export default function EventMenuBox({
   setSelectedItem,
   setItemInfo,
   itemInfo,
+  setRunningItem,
+  runningItem,
 }) {
   const [changeEventType, setChangeEventType] = useState("");
 
@@ -73,8 +77,6 @@ export default function EventMenuBox({
 
   const [queryParams, setQueryParams] = useState(null);
 
-  const dispatch = useDispatch();
-  const state = useSelector((state) => state.monitor);
   const { t } = useTranslation();
 
   const {
@@ -85,6 +87,7 @@ export default function EventMenuBox({
     dateField,
     component,
     conveyorComponent,
+    runningItemComponent,
   } = useMemo(() => {
     const itemMenuHeight = config?.itemHeight ?? 200;
     return {
@@ -95,6 +98,7 @@ export default function EventMenuBox({
       dateField: config?.dateField ?? "event_time",
       component: config?.component ?? "eventMenuBox",
       conveyorComponent: config?.conveyorComponent ?? "eventMenuList",
+      runningItemComponent: config?.runningItemComponent ?? "runningItem",
     };
   }, [config]);
 
@@ -167,6 +171,15 @@ export default function EventMenuBox({
       selectedItem._id &&
       selectedItem?.on?.update
     ) {
+      let query = selectedItem;
+      let component = selectedItem.on.update;
+      getComponentData({
+        query,
+        component,
+        stationId,
+        // setLoading,
+        setResponse: setItemInfo,
+      });
     }
 
     if (changeEventType !== "") {
@@ -174,18 +187,44 @@ export default function EventMenuBox({
     }
   }, [changeEventType]);
 
+  useEffect(() => {
+    console.log({ response });
+    let item =
+      response?.find((item) => item.name === conveyorComponent) ?? null;
+    let runningItem =
+      response?.find((item) => item.name === runningItemComponent) ?? null;
+
+    setRunningItem(runningItem?.output ?? null);
+    // página carregada e sem item selecionado
+    if (!selectedItem && runningItem?.output) {
+      handleSelectItem(runningItem.output, "update");
+    } else if (!selectedItem && item?.output?.length > 0) {
+      handleSelectItem(item.output[0], "update");
+    } else if (selectedItem && item?.output?.length > 0) {
+      let _item = item?.output?.find((item) => item?._id === selectedItem?._id);
+      // página carregada e com item selecionado, mas o item não está na lista
+      if (!_item) {
+        handleSelectItem(_item?.output?.[0], "update");
+      }
+      // página carregada e com item selecionado, e o item está na lista
+      else {
+        if (JSON.stringify(_item) !== JSON.stringify(selectedItem)) {
+          handleSelectItem(_item, "update");
+        }
+      }
+    }
+  }, [response, conveyorComponent, runningItemComponent]);
+
   return (
     <Box id="event-menu-box" width={width} sx={styleSx.mainBox}>
       {hasMainButton && (
         <Box height={buttonBoxHeight} sx={styleSx.defaultBox}>
-          {state?.runningEvent ? (
-            <EventMenuItem
-              index={null}
-              dateField={dateField}
-              eventData={state?.runningEvent}
-              selected={state?.runningEvent._id === state?.id}
-              // onClick={() => onChangeEventByClick(state?.runningEvent._id)}
+          {runningItem ? (
+            <CarouselItem
+              data={runningItem}
               conveyorIcon={conveyorIcon}
+              selected={selectedItem?._id === runningItem?._id}
+              onClick={() => handleSelectItem(runningItem, "click")}
             />
           ) : (
             <ButtonBase>

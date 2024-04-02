@@ -12,7 +12,7 @@ import EventMenuBox from "./components/EventMenuBox";
 import EventDataBox from "./components/EventDataBox";
 import GetSerialList from "../../utils/Hooks/GetSerialList";
 import GetRunningSerial from "../../utils/Hooks/GetRunningSerial";
-
+import { LayoutDialog } from "../../componentsStore/Dialog";
 import GetSelectedStation from "../../utils/Hooks/GetSelectedStation";
 import API from "../../api";
 
@@ -36,16 +36,9 @@ const style = {
 };
 
 export default function Monitor({ pageOptions }) {
-  const dispatch = useDispatch();
-  const state = useSelector((state) => state.monitor);
   const [selectedItem, setSelectedItem] = useState(null);
   const [itemInfo, setItemInfo] = useState(null);
-
-  useEffect(() => {
-    return () => {
-      dispatch(monitorSlice.actions.setInitialState());
-    };
-  }, []);
+  const [runningItem, setRunningItem] = useState(null);
 
   return (
     <PageWrapper>
@@ -66,6 +59,8 @@ export default function Monitor({ pageOptions }) {
               setSelectedItem={setSelectedItem}
               setItemInfo={setItemInfo}
               itemInfo={itemInfo}
+              runningItem={runningItem}
+              setRunningItem={setRunningItem}
             />
           </Box>
           <Box id="monitor-data-box" sx={style.dataBox}>
@@ -90,6 +85,7 @@ export default function Monitor({ pageOptions }) {
               />
             </Box>
           </Box>
+          <LayoutDialog />
         </Box>
       )}
     </PageWrapper>

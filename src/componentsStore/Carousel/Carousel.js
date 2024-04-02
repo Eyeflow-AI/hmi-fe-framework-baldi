@@ -34,6 +34,7 @@ export default function Carousel({
   conveyorIcon,
 }) {
   const { t } = useTranslation();
+  console.log({ Carousel: selectedItem });
 
   const dataLength = data?.output?.length ?? 0;
 
