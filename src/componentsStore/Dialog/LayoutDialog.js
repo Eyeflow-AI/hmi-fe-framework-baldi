@@ -1,47 +1,57 @@
+// React
 import React from "react";
+
+// Design
 import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import TextField from "@mui/material/TextField";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 
+// Internal
+import LayoutConstructor from "../layoutConstructor";
+
+// Third-party
+import { useTranslation } from "react-i18next";
+
 export default function LayoutDialog({
   open,
-  handleClose,
+  onClose,
   name,
+  data,
   style,
+  config,
   components,
   componentsInfo,
 }) {
+  const { t } = useTranslation();
+
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="form-dialog-title"
-    >
-      <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+    <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
+      {/* <DialogTitle id="form-dialog-title">Subscribe</DialogTitle> */}
       <DialogContent>
-        <DialogContentText>
-          To subscribe to this website, please enter your email address here. We
-          will send updates occasionally.
-        </DialogContentText>
-        <TextField
-          autoFocus
-          margin="dense"
-          id="name"
-          label="Email Address"
-          type="email"
-          fullWidth
-        />
+        <LayoutConstructor config={config} componentsInfo={componentsInfo} />
       </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} color="primary">
-          Cancel
+      <DialogActions
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          gap: 1,
+          padding: 2,
+        }}
+      >
+        <Button
+          onClick={onClose}
+          variant="outlined"
+          sx={{
+            color: "white",
+            // backgroundColor: "white",
+            borderColor: "white",
+          }}
+        >
+          {t("cancel")}
         </Button>
-        <Button onClick={handleClose} color="primary">
-          Subscribe
+        <Button onClick={onClose} color="primary" variant="contained">
+          {t("submit")}
         </Button>
       </DialogActions>
     </Dialog>

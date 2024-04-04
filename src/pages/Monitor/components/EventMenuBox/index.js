@@ -70,6 +70,7 @@ export default function EventMenuBox({
   itemInfo,
   setRunningItem,
   runningItem,
+  setDialogStartInfo,
 }) {
   const [changeEventType, setChangeEventType] = useState("");
 
@@ -88,6 +89,9 @@ export default function EventMenuBox({
     component,
     conveyorComponent,
     runningItemComponent,
+    conveyorComponentSleepTime,
+    runningItemComponentSleepTime,
+    loadStartInfoComponent,
   } = useMemo(() => {
     const itemMenuHeight = config?.itemHeight ?? 200;
     return {
@@ -98,7 +102,11 @@ export default function EventMenuBox({
       dateField: config?.dateField ?? "event_time",
       component: config?.component ?? "eventMenuBox",
       conveyorComponent: config?.conveyorComponent ?? "eventMenuList",
+      conveyorComponentSleepTime: config?.conveyorComponentSleepTime ?? 10000,
       runningItemComponent: config?.runningItemComponent ?? "runningItem",
+      runningItemComponentSleepTime:
+        config?.runningItemComponentSleepTime ?? 1000,
+      loadStartInfoComponent: config?.loadStartInfoComponent ?? "loadStartInfo",
     };
   }, [config]);
 
@@ -110,7 +118,19 @@ export default function EventMenuBox({
     query: { limit: 10, test: new Date() },
     stationId,
     run: true,
-    sleepTime: 30000,
+    sleepTime: conveyorComponentSleepTime,
+  });
+
+  const {
+    response: runningItemResponse,
+    loading: runningItemLoading,
+    loadResponse: loadRunningItemResponse,
+  } = GetComponentData({
+    component: runningItemComponent,
+    query: { limit: 10, test: new Date() },
+    stationId,
+    run: true,
+    sleepTime: runningItemComponentSleepTime,
   });
 
   const [menuBoxHeight, setMenuBoxHeight] = useState(height);
@@ -188,32 +208,63 @@ export default function EventMenuBox({
   }, [changeEventType]);
 
   useEffect(() => {
-    console.log({ response });
+    let _runningItem =
+      runningItemResponse?.find((item) => item.name === runningItemComponent) ??
+      null;
+
+    if (JSON.stringify(_runningItem?.output) !== JSON.stringify(runningItem)) {
+      setRunningItem(_runningItem?.output ?? null);
+      if (_runningItem?.output?._id === selectedItem?._id) {
+        handleSelectItem(_runningItem?.output, "update");
+      }
+    }
+
+    // página carregada e sem item selecionado
+    if (!selectedItem && _runningItem?.output) {
+      handleSelectItem(_runningItem?.output, "update");
+    }
+  }, [runningItemComponent, runningItemResponse]);
+
+  useEffect(() => {
     let item =
       response?.find((item) => item.name === conveyorComponent) ?? null;
-    let runningItem =
-      response?.find((item) => item.name === runningItemComponent) ?? null;
 
-    setRunningItem(runningItem?.output ?? null);
     // página carregada e sem item selecionado
-    if (!selectedItem && runningItem?.output) {
-      handleSelectItem(runningItem.output, "update");
-    } else if (!selectedItem && item?.output?.length > 0) {
+    if (!selectedItem && item?.output?.length > 0) {
       handleSelectItem(item.output[0], "update");
     } else if (selectedItem && item?.output?.length > 0) {
       let _item = item?.output?.find((item) => item?._id === selectedItem?._id);
       // página carregada e com item selecionado, mas o item não está na lista
-      if (!_item) {
+      if (!_item && runningItem?._id !== selectedItem?._id) {
         handleSelectItem(_item?.output?.[0], "update");
       }
       // página carregada e com item selecionado, e o item está na lista
       else {
-        if (JSON.stringify(_item) !== JSON.stringify(selectedItem)) {
+        if (
+          JSON.stringify(_item) !== JSON.stringify(selectedItem) &&
+          _item &&
+          _item?._id &&
+          selectedItem?._id &&
+          _item?._id === selectedItem?._id
+        ) {
           handleSelectItem(_item, "update");
         }
       }
     }
-  }, [response, conveyorComponent, runningItemComponent]);
+  }, [response, conveyorComponent]);
+
+  const handleStart = () => {
+    let query = {};
+    let component = loadStartInfoComponent;
+
+    getComponentData({
+      query,
+      component,
+      stationId,
+      // setLoading,
+      setResponse: setDialogStartInfo,
+    });
+  };
 
   return (
     <Box id="event-menu-box" width={width} sx={styleSx.mainBox}>
@@ -231,7 +282,7 @@ export default function EventMenuBox({
               <Box
                 height={buttonBoxHeight}
                 width={width}
-                // onClick={onClickCreateBatch}
+                onClick={handleStart}
                 sx={styleSx.startButton}
               >
                 <img alt="" src={startIcon} style={styleSx.startButtonIcon} />

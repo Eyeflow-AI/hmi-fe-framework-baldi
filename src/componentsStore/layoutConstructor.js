@@ -4,6 +4,7 @@ import { LabelBox, FilterBox, LayoutBox } from "./Box";
 import { ImageCard } from "./Card";
 import { Carousel, CarouselItem, CarouselWithQuery } from "./Carousel";
 import { Bar, DivergingBar, Funnel, Line, Pie } from "./Chart";
+import { TextField } from "./Field";
 import { Tooltip } from "./Wrapper";
 
 import Box from "@mui/material/Box";
@@ -24,6 +25,8 @@ const store = {
   Funnel: (props) => <Funnel {...props} />,
   Line: (props) => <Line {...props} />,
   Pie: (props) => <Pie {...props} />,
+
+  TextField: (props) => <TextField {...props} />,
 
   Tooltip: (props) => <Tooltip {...props} />,
 };

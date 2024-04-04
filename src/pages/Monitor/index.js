@@ -39,7 +39,9 @@ export default function Monitor({ pageOptions }) {
   const [selectedItem, setSelectedItem] = useState(null);
   const [itemInfo, setItemInfo] = useState(null);
   const [runningItem, setRunningItem] = useState(null);
+  const [dialogStartInfo, setDialogStartInfo] = useState(null);
 
+  console.log({ dialogStartInfo });
   return (
     <PageWrapper>
       {({ width, height }) => (
@@ -61,6 +63,7 @@ export default function Monitor({ pageOptions }) {
               itemInfo={itemInfo}
               runningItem={runningItem}
               setRunningItem={setRunningItem}
+              setDialogStartInfo={setDialogStartInfo}
             />
           </Box>
           <Box id="monitor-data-box" sx={style.dataBox}>
@@ -85,7 +88,13 @@ export default function Monitor({ pageOptions }) {
               />
             </Box>
           </Box>
-          <LayoutDialog />
+          <LayoutDialog
+            open={Boolean(dialogStartInfo)}
+            // data={dialogStartInfo}
+            componentsInfo={dialogStartInfo}
+            onClose={() => setDialogStartInfo(null)}
+            config={pageOptions.components.EventCreateDialog}
+          />
         </Box>
       )}
     </PageWrapper>
