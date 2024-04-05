@@ -4,7 +4,9 @@ import { LabelBox, FilterBox, LayoutBox } from "./Box";
 import { ImageCard } from "./Card";
 import { Carousel, CarouselItem, CarouselWithQuery } from "./Carousel";
 import { Bar, DivergingBar, Funnel, Line, Pie } from "./Chart";
+import { Select } from "./Select";
 import { TextField } from "./Field";
+import { Image } from "./General";
 import { Tooltip } from "./Wrapper";
 
 import Box from "@mui/material/Box";
@@ -26,7 +28,11 @@ const store = {
   Line: (props) => <Line {...props} />,
   Pie: (props) => <Pie {...props} />,
 
+  Select: (props) => <Select {...props} />,
+
   TextField: (props) => <TextField {...props} />,
+
+  Image: (props) => <Image {...props} />,
 
   Tooltip: (props) => <Tooltip {...props} />,
 };
@@ -37,7 +43,7 @@ export default function LayoutConstructor({ config, componentsInfo }) {
   useEffect(() => {
     let component = null;
     component = config?.components?.map((item, index) => {
-      console.log({ map: item });
+      console.log({ map: item, componentsInfo });
       try {
         return store[item.tag]({ ...item, componentsInfo });
       } catch (err) {

@@ -26,7 +26,7 @@ export default function LayoutDialog({
   const { t } = useTranslation();
 
   return (
-    <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       {/* <DialogTitle id="form-dialog-title">Subscribe</DialogTitle> */}
       <DialogContent>
         <LayoutConstructor config={config} componentsInfo={componentsInfo} />
