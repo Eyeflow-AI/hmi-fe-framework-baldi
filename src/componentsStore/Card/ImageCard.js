@@ -63,7 +63,7 @@ const loadingImageStyle = Object.assign({}, styleSx.imageStyle, {
   opacity: "0.7",
 });
 
-export default function ImageCard({ name, tag, componentsInfo }) {
+export default function ImageCard({ name, tag, componentsInfo, style }) {
   console.log({ ImageCard: name, tag, componentsInfo });
   const [onImageLoading, setOnImageLoading] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -76,6 +76,16 @@ export default function ImageCard({ name, tag, componentsInfo }) {
   const [tooltip, setTooltip] = useState({});
   const [_name, _setName] = useState("");
   const [backgroundColor, setBackgroundColor] = useState("");
+  const [_style, _setStyle] = useState({});
+
+  useEffect(() => {
+    if (style) {
+      let __style = Object.assign({}, styleSx.mainBoxSx, style);
+      _setStyle(__style);
+    } else {
+      _setStyle(styleSx.mainBoxSx);
+    }
+  }, [style]);
 
   useEffect(() => {
     if (componentsInfo && typeof componentsInfo === "object") {
@@ -118,7 +128,7 @@ export default function ImageCard({ name, tag, componentsInfo }) {
 
   return (
     <Tooltip tooltip={tooltip}>
-      <Box sx={styleSx.mainBoxSx}>
+      <Box sx={{ ..._style }}>
         <Box
           id="header-box"
           sx={styleSx.headerBoxSx}

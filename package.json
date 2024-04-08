@@ -40,6 +40,7 @@
     "react18-json-view": "^0.0.8",
     "redux-persist": "^6.0.0",
     "sdk-fe-eyeflow": "^0.0.32",
+    "traverse": "^0.6.8",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

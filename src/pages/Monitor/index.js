@@ -40,8 +40,6 @@ export default function Monitor({ pageOptions }) {
   const [itemInfo, setItemInfo] = useState(null);
   const [runningItem, setRunningItem] = useState(null);
   const [dialogStartInfo, setDialogStartInfo] = useState(null);
-
-  console.log({ dialogStartInfo });
   return (
     <PageWrapper>
       {({ width, height }) => (

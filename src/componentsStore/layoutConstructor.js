@@ -6,7 +6,7 @@ import { Carousel, CarouselItem, CarouselWithQuery } from "./Carousel";
 import { Bar, DivergingBar, Funnel, Line, Pie } from "./Chart";
 import { Select } from "./Select";
 import { TextField } from "./Field";
-import { Image } from "./General";
+import { Image, Title, Table } from "./General";
 import { Tooltip } from "./Wrapper";
 
 import Box from "@mui/material/Box";
@@ -33,6 +33,8 @@ const store = {
   TextField: (props) => <TextField {...props} />,
 
   Image: (props) => <Image {...props} />,
+  Title: (props) => <Title {...props} />,
+  Table: (props) => <Table {...props} />,
 
   Tooltip: (props) => <Tooltip {...props} />,
 };
