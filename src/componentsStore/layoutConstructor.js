@@ -39,15 +39,20 @@ const store = {
   Tooltip: (props) => <Tooltip {...props} />,
 };
 
-export default function LayoutConstructor({ config, componentsInfo }) {
+export default function LayoutConstructor({
+  config,
+  componentsInfo,
+  setComponentsInfo,
+}) {
   const [toBeShown, setToBeShown] = useState(null);
+  console.log({ layout: setComponentsInfo });
 
   useEffect(() => {
     let component = null;
     component = config?.components?.map((item, index) => {
       console.log({ map: item, componentsInfo });
       try {
-        return store[item.tag]({ ...item, componentsInfo });
+        return store[item.tag]({ ...item, componentsInfo, setComponentsInfo });
       } catch (err) {
         return (
           <Box

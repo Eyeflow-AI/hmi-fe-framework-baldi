@@ -40,6 +40,7 @@ export default function Monitor({ pageOptions }) {
   const [itemInfo, setItemInfo] = useState(null);
   const [runningItem, setRunningItem] = useState(null);
   const [dialogStartInfo, setDialogStartInfo] = useState(null);
+
   return (
     <PageWrapper>
       {({ width, height }) => (
@@ -82,7 +83,8 @@ export default function Monitor({ pageOptions }) {
             >
               <EventDataBox
                 config={pageOptions.components.EventDataBox}
-                itemInfo={itemInfo}
+                componentsInfo={itemInfo}
+                setComponentsInfo={setItemInfo}
               />
             </Box>
           </Box>
@@ -91,6 +93,7 @@ export default function Monitor({ pageOptions }) {
             // data={dialogStartInfo}
             componentsInfo={dialogStartInfo}
             onClose={() => setDialogStartInfo(null)}
+            setComponentsInfo={setDialogStartInfo}
             config={pageOptions.components.EventCreateDialog}
           />
         </Box>

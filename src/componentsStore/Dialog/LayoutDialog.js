@@ -19,17 +19,24 @@ export default function LayoutDialog({
   name,
   data,
   style,
+  metadata,
   config,
   components,
   componentsInfo,
+  setComponentsInfo,
 }) {
   const { t } = useTranslation();
+  console.log({ LayoutDialog: setComponentsInfo });
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       {/* <DialogTitle id="form-dialog-title">Subscribe</DialogTitle> */}
       <DialogContent>
-        <LayoutConstructor config={config} componentsInfo={componentsInfo} />
+        <LayoutConstructor
+          config={config}
+          componentsInfo={componentsInfo}
+          setComponentsInfo={setComponentsInfo}
+        />
       </DialogContent>
       <DialogActions
         sx={{

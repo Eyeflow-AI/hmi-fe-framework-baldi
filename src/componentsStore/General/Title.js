@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 
-export default function Title({ name, tag, componentsInfo, style }) {
+export default function Title({ name, tag, componentsInfo, style, metadata }) {
   console.log({ Title: name, tag, componentsInfo, style });
 
   const [value, setValue] = useState("");
@@ -37,7 +37,7 @@ export default function Title({ name, tag, componentsInfo, style }) {
         ..._style,
       }}
     >
-      {value}
+      {value ?? metadata?.text}
     </Typography>
   );
 }

@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import MUITextField from "@mui/material/TextField";
 
-export default function TextField({ name, tag, componentsInfo }) {
+export default function TextField({
+  name,
+  tag,
+  componentsInfo,
+  setComponentsInfo,
+  metadata,
+}) {
   console.log({ TextField: name, tag, componentsInfo });
 
   const [value, setValue] = useState("");
@@ -21,6 +27,7 @@ export default function TextField({ name, tag, componentsInfo }) {
     <MUITextField
       value={value}
       helperText={error ? "Please enter a valid value" : ""}
+      label={metadata?.label ?? ""}
     />
   );
 }

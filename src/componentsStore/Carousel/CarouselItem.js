@@ -60,6 +60,7 @@ export default function CarouselItem({
   selected,
   onClick,
   conveyorIcon,
+  setComponentsInfo,
 }) {
   const { t } = useTranslation();
 

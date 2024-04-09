@@ -5,12 +5,43 @@ import InputLabel from "@mui/material/InputLabel";
 import MUISelect from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 
-export default function Select({ name, tag, componentsInfo }) {
-  console.log({ Select: name, tag, componentsInfo });
-
+export default function Select({
+  name,
+  tag,
+  style,
+  metadata,
+  componentsInfo,
+  setComponentsInfo,
+}) {
   const [label, setLabel] = useState("");
   const [value, setValue] = useState("");
   const [list, setList] = useState([]);
+  console.log({ componentsInfo, setComponentsInfo, metadata });
+
+  const handleClick = (item) => {
+    setValue(item.value);
+    let _componentsInfo = [...componentsInfo];
+    console.log({ click: item });
+    let components = item?.data?.info?.components ?? [];
+    for (let i = 0; i < components.length; i++) {
+      let index = _componentsInfo.findIndex(
+        (item) =>
+          item.tag === components[i].tag && item.name === components[i].name
+      );
+      if (index !== -1) {
+        _componentsInfo[index].output = {
+          ...components[i].output,
+        };
+      } else {
+        _componentsInfo.push({
+          tag: components[i].tag,
+          name: components[i].name,
+          output: components[i].output,
+        });
+      }
+    }
+    setComponentsInfo(_componentsInfo);
+  };
 
   useEffect(() => {
     if (componentsInfo && typeof componentsInfo === "object") {
@@ -21,38 +52,25 @@ export default function Select({ name, tag, componentsInfo }) {
       setLabel(component?.label);
       const _list = component?.list ?? [];
       setList(_list);
-      setValue(_list[0]);
-      // setTitle(component?.title);
-      // setAdjacentText(component?.adjacentText);
-      // setTimestamp(component?.timestamp);
-      // setImageURL(component?.imageURL);
-      // setColor(component?.color);
-      // setImageCaption(component?.imageCaption);
-      // setTooltip(component?.tooltip);
-      // setOnImageLoading(true);
-
-      // let status = component?.status ?? "";
-      // let backgroundColor =
-      //   component?.backgroundColor && component?.backgroundColor !== ""
-      //     ? component?.backgroundColor
-      //     : colors.statuses[status];
-      // setBackgroundColor(backgroundColor);
     }
   }, [componentsInfo]);
 
+  useEffect(() => {
+    if (list && list.length > 0) {
+      handleClick(list[0]);
+    }
+  }, [list]);
+
   return (
     <FormControl fullWidth>
-      <InputLabel id="demo-simple-select-label">{label}</InputLabel>
-      <MUISelect
-        labelId="demo-simple-select-label"
-        id="demo-simple-select"
-        // value={age}
-        value={value}
-        label={label}
-        // onChange={handleChange}
-      >
+      <InputLabel id="select-label">{metadata?.label}</InputLabel>
+      <MUISelect labelId="select" id="select" value={value} label={label}>
         {list.map((item, index) => (
-          <MenuItem key={index} value={item.value}>
+          <MenuItem
+            key={index}
+            value={item.value}
+            onClick={() => handleClick(item)}
+          >
             {item.text}
           </MenuItem>
         ))}

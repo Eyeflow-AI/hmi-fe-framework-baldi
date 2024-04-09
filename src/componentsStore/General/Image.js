@@ -60,7 +60,13 @@ const loadingImageStyle = Object.assign({}, styleSx.imageStyle, {
   opacity: "0.7",
 });
 
-export default function Image({ name, tag, componentsInfo }) {
+export default function Image({
+  name,
+  tag,
+  componentsInfo,
+  metadata,
+  setComponentsInfo,
+}) {
   console.log({ ImageCard: name, tag, componentsInfo });
   const [onImageLoading, setOnImageLoading] = useState(false);
   const [loading, setLoading] = useState(true);

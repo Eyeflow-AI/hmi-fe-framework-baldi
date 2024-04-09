@@ -32,6 +32,7 @@ export default function Carousel({
   dateField,
   itemMenuHeight,
   conveyorIcon,
+  setComponentsInfo,
 }) {
   const { t } = useTranslation();
   console.log({ Carousel: selectedItem });

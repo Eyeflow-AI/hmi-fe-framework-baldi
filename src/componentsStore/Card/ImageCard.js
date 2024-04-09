@@ -21,8 +21,9 @@ const styleSx = {
     position: "block",
     position: "absolute",
     width: "100%",
-    height: "calc(100% - 40px)",
-    marginTop: "40px",
+    // height: "calc(100% - 50px)",
+    height: "inherit", // 'calc(100% - 50px)
+    marginTop: "50px",
     display: "inline-block",
     // border: "1px solid green",
   },
@@ -63,7 +64,14 @@ const loadingImageStyle = Object.assign({}, styleSx.imageStyle, {
   opacity: "0.7",
 });
 
-export default function ImageCard({ name, tag, componentsInfo, style }) {
+export default function ImageCard({
+  name,
+  tag,
+  componentsInfo,
+  style,
+  metadata,
+  setComponentsInfo,
+}) {
   console.log({ ImageCard: name, tag, componentsInfo });
   const [onImageLoading, setOnImageLoading] = useState(false);
   const [loading, setLoading] = useState(true);

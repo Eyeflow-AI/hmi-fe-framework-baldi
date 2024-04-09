@@ -4,7 +4,14 @@ import Box from "@mui/material/Box";
 
 import LayoutConstructor from "../layoutConstructor";
 
-export default function LayoutBox({ name, style, components, componentsInfo }) {
+export default function LayoutBox({
+  name,
+  style,
+  components,
+  componentsInfo,
+  setComponentsInfo,
+  metadata,
+}) {
   const [_style, _setStyle] = useState({});
 
   useEffect(() => {
@@ -24,12 +31,15 @@ export default function LayoutBox({ name, style, components, componentsInfo }) {
     <Box
       sx={{
         ..._style,
+        border: 1,
+        overflow: "hidden",
       }}
       key={name}
     >
       <LayoutConstructor
         config={{ components }}
         componentsInfo={componentsInfo}
+        setComponentsInfo={setComponentsInfo}
       />
     </Box>
   );

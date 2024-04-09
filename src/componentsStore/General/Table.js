@@ -9,11 +9,11 @@ const styleSx = {
     display: "flex",
     flexDirection: "column",
     width: "100%",
-    height: "100%",
+    height: "50%",
   },
 };
 
-export default function Table({ name, tag, componentsInfo, style }) {
+export default function Table({ name, tag, componentsInfo, style, metadata }) {
   console.log({ Table: name, tag, componentsInfo, style });
 
   const [error, setError] = useState(false);
@@ -52,38 +52,12 @@ export default function Table({ name, tag, componentsInfo, style }) {
         ..._style,
       }}
     >
-      {/* <MUITable sx={{ ..._style }} size="small">
-        <TableHead>
-          <TableRow>
-            {headers.map((header, index) => (
-              <TableCell key={index}>{header}</TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {body.map((row, index) => {
-            return (
-              <TableRow key={index}>
-                {row.map((cell, index) => (
-                  <TableCell key={index}>{cell}</TableCell>
-                ))}
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </MUITable> */}
-      {/* <Box
-        sx=
-      > */}
       <Box
         sx={{
           display: "flex",
           flexDirection: "row",
-          justifyContent: "space-between",
           width: "100%",
           height: "45px",
-          // border: "5px solid red",
-          // position: "relative",
         }}
       >
         {headers.map((header, index) => (
@@ -93,6 +67,7 @@ export default function Table({ name, tag, componentsInfo, style }) {
               alignItems: "center",
               justifyContent: "center",
               width: `calc(100% / ${headers.length})`,
+              height: "100%",
               textTransform: "uppercase",
               fontWeight: "bold",
             }}
@@ -104,14 +79,10 @@ export default function Table({ name, tag, componentsInfo, style }) {
       </Box>
       <Box
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-          flexGrow: 1,
-          // height: "calc(100% - 95px)",
-          overflow: "auto",
-          // border: "5px solid red",
-          // position: "relative",
+          height: "calc(100%)",
+          justifyContent: "center",
+          alignItems: "center",
+          overflowY: "auto",
         }}
       >
         {body.map((row, index) => {
@@ -122,13 +93,11 @@ export default function Table({ name, tag, componentsInfo, style }) {
                 flexDirection: "row",
                 justifyContent: "center",
                 width: `calc(100%)`,
-                // height: "45px",
-                // border: "5px solid yellow",
-                // position: "relative",
+                height: "50px",
               }}
               key={index}
             >
-              {row.map((cell, index) => (
+              {row.map((cell, i) => (
                 <Box
                   sx={{
                     display: "flex",
@@ -136,11 +105,9 @@ export default function Table({ name, tag, componentsInfo, style }) {
                     justifyContent: "center",
                     alignItems: "center",
                     width: `calc(100% / ${headers.length})`,
-                    // height: "30px",
-                    // border: "5px solid blue",
-                    // position: "relative",
+                    height: "100%",
                   }}
-                  key={index}
+                  key={i}
                 >
                   {cell}
                 </Box>
@@ -148,29 +115,7 @@ export default function Table({ name, tag, componentsInfo, style }) {
             </Box>
           );
         })}
-        {/* </Box> */}
       </Box>
     </Box>
   );
 }
-
-// [
-//   [
-//       "name",
-//       "address.zip",
-//       "address.state",
-//       "address.street"
-//   ],
-//   [
-//       "Bob",
-//       12345,
-//       "Euphoria",
-//       ""
-//   ],
-//   [
-//       "Jon",
-//       "",
-//       "Arizona",
-//       "1234 Main St."
-//   ]
-// ]
