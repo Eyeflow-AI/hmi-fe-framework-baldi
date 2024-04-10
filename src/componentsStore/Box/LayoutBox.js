@@ -4,6 +4,17 @@ import Box from "@mui/material/Box";
 
 import LayoutConstructor from "../layoutConstructor";
 
+const styleSx = {
+  mainBoxSx: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    // height: "100%",
+    flexGrow: 1,
+    // flexWrap: "no-wrap",
+  },
+};
+
 export default function LayoutBox({
   name,
   style,
@@ -16,14 +27,10 @@ export default function LayoutBox({
 
   useEffect(() => {
     if (style) {
-      _setStyle(style);
+      let __style = Object.assign({}, styleSx.mainBoxSx, style);
+      _setStyle(__style);
     } else {
-      _setStyle({
-        borderRadius: 1,
-        width: "100%",
-        height: "100%",
-        display: "flex",
-      });
+      _setStyle(styleSx.mainBoxSx);
     }
   }, [style]);
 
@@ -31,7 +38,7 @@ export default function LayoutBox({
     <Box
       sx={{
         ..._style,
-        border: 1,
+        // border: 1,
         overflow: "hidden",
       }}
       key={name}

@@ -9,7 +9,8 @@ const styleSx = {
     display: "flex",
     flexDirection: "column",
     width: "100%",
-    height: "50%",
+    height: "100%",
+    // flexWrap: "no-wrap",
   },
 };
 
@@ -50,6 +51,7 @@ export default function Table({ name, tag, componentsInfo, style, metadata }) {
     <Box
       sx={{
         ..._style,
+        // border: "1px solid black",
       }}
     >
       <Box

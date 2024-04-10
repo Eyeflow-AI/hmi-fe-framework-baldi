@@ -5,6 +5,8 @@ import Box from "@mui/material/Box";
 
 import LayoutConstructor from "../../../componentsStore/layoutConstructor";
 
+import GetWindowDimentions from "../../../utils/Hooks/GetWindowDimensions";
+
 const mainBoxSx = Object.assign({}, window.app_config.style.box, {
   bgcolor: "background.paper",
   display: "flex",
@@ -28,8 +30,10 @@ export default function EventDataBox({
   setComponentsInfo,
 }) {
   console.log({ EventDataBox: componentsInfo });
+
+  const { width, height } = GetWindowDimentions();
   return (
-    <Box sx={styleSx.mainBox}>
+    <Box sx={styleSx.mainBox} height={height}>
       <LayoutConstructor
         config={config}
         componentsInfo={componentsInfo}

@@ -16,6 +16,9 @@ export default function Title({ name, tag, componentsInfo, style, metadata }) {
         textAlign: "center",
         textTransform: "uppercase",
         fontSize: 24,
+        display: "flex",
+        justifyContent: "center",
+        height: "100%",
         fontWeight: "bold",
       });
     }

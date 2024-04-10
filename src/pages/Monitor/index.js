@@ -41,6 +41,8 @@ export default function Monitor({ pageOptions }) {
   const [runningItem, setRunningItem] = useState(null);
   const [dialogStartInfo, setDialogStartInfo] = useState(null);
 
+  console.log({ pageOptions });
+
   return (
     <PageWrapper>
       {({ width, height }) => (
@@ -95,6 +97,16 @@ export default function Monitor({ pageOptions }) {
             onClose={() => setDialogStartInfo(null)}
             setComponentsInfo={setDialogStartInfo}
             config={pageOptions.components.EventCreateDialog}
+            submitStartInfoComponentFnName={
+              pageOptions.components.EventMenuBox.submitStartInfoComponentFnName
+            }
+            submitStartInfoComponentFnExecutor={
+              pageOptions.components.EventMenuBox
+                .submitStartInfoComponentFnExecutor
+            }
+            submitStartInfoComponent={
+              pageOptions.components.EventMenuBox.submitStartInfoComponent
+            }
           />
         </Box>
       )}

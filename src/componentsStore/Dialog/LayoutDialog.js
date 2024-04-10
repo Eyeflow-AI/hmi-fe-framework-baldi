@@ -12,6 +12,7 @@ import LayoutConstructor from "../layoutConstructor";
 
 // Third-party
 import { useTranslation } from "react-i18next";
+import eventsHandler from "../../utils/functions/eventsHandler";
 
 export default function LayoutDialog({
   open,
@@ -24,9 +25,29 @@ export default function LayoutDialog({
   components,
   componentsInfo,
   setComponentsInfo,
+  submitStartInfoComponentFnName,
+  submitStartInfoComponentFnExecutor,
+  submitStartInfoComponent,
 }) {
   const { t } = useTranslation();
-  console.log({ LayoutDialog: setComponentsInfo });
+  console.log({
+    LayoutDialog: componentsInfo,
+    setComponentsInfo,
+    submitStartInfoComponentFnName,
+    submitStartInfoComponentFnExecutor,
+    submitStartInfoComponent,
+  });
+
+  const handleClick = () => {
+    eventsHandler({
+      componentsInfo,
+      item: submitStartInfoComponent,
+      fnExecutor: submitStartInfoComponentFnExecutor,
+      fnName: submitStartInfoComponentFnName,
+    });
+
+    onClose();
+  };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -57,7 +78,7 @@ export default function LayoutDialog({
         >
           {t("cancel")}
         </Button>
-        <Button onClick={onClose} color="primary" variant="contained">
+        <Button onClick={handleClick} color="primary" variant="contained">
           {t("submit")}
         </Button>
       </DialogActions>
