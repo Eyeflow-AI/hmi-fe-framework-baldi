@@ -13,6 +13,7 @@ export default function Select({
   metadata,
   componentsInfo,
   setComponentsInfo,
+  stationId,
 }) {
   const [label, setLabel] = useState("");
   const [value, setValue] = useState("");
@@ -32,6 +33,7 @@ export default function Select({
       item,
       fnExecutor: setComponentsInfo,
       fnName: on?.click,
+      stationId,
     });
   };
 

@@ -43,6 +43,7 @@ export default function LayoutConstructor({
   config,
   componentsInfo,
   setComponentsInfo,
+  stationId,
 }) {
   const [toBeShown, setToBeShown] = useState(null);
   console.log({ layout: setComponentsInfo });
@@ -52,7 +53,12 @@ export default function LayoutConstructor({
     component = config?.components?.map((item, index) => {
       console.log({ map: item, componentsInfo });
       try {
-        return store[item.tag]({ ...item, componentsInfo, setComponentsInfo });
+        return store[item.tag]({
+          ...item,
+          componentsInfo,
+          setComponentsInfo,
+          stationId,
+        });
       } catch (err) {
         return (
           <Box

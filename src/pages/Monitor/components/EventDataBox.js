@@ -28,9 +28,8 @@ export default function EventDataBox({
   config,
   componentsInfo,
   setComponentsInfo,
+  stationId,
 }) {
-  console.log({ EventDataBox: componentsInfo });
-
   const { width, height } = GetWindowDimentions();
   return (
     <Box sx={styleSx.mainBox} height={height}>
@@ -38,6 +37,7 @@ export default function EventDataBox({
         config={config}
         componentsInfo={componentsInfo}
         setComponentsInfo={setComponentsInfo}
+        stationId={stationId}
       />
     </Box>
   );

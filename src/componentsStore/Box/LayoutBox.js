@@ -22,6 +22,7 @@ export default function LayoutBox({
   componentsInfo,
   setComponentsInfo,
   metadata,
+  stationId,
 }) {
   const [_style, _setStyle] = useState({});
 
@@ -47,6 +48,7 @@ export default function LayoutBox({
         config={{ components }}
         componentsInfo={componentsInfo}
         setComponentsInfo={setComponentsInfo}
+        stationId={stationId}
       />
     </Box>
   );

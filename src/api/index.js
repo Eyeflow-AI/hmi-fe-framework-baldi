@@ -119,6 +119,11 @@ const API = {
       request(instance.post(`internal/script`, { name }), setLoading),
     component: ({ name }, setLoading) =>
       request(instance.post(`internal/component`, { name }), setLoading),
+    componentData: ({ data, component, stationId }, setLoading) =>
+      request(
+        instance.post(`components/${stationId}/${component}`, { data }),
+        setLoading
+      ),
   },
   get: {
     batchList: ({ params, stationId }, setLoading) =>

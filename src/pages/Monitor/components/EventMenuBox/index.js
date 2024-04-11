@@ -10,7 +10,6 @@ import FilterBox from "../../../../componentsStore/Box/FilterBox";
 import EventMenuItem from "./EventMenuItem";
 import fetchJson from "../../../../utils/functions/fetchJson";
 import { monitorSlice } from "../../../../store/slices/monitor";
-import GetSelectedStation from "../../../../utils/Hooks/GetSelectedStation";
 import {
   CarouselWithQuery,
   CarouselItem,
@@ -71,10 +70,9 @@ export default function EventMenuBox({
   setRunningItem,
   runningItem,
   setDialogStartInfo,
+  stationId,
 }) {
   const [changeEventType, setChangeEventType] = useState("");
-
-  const { _id: stationId } = GetSelectedStation();
 
   const [queryParams, setQueryParams] = useState(null);
 

@@ -36,12 +36,13 @@ const style = {
 };
 
 export default function Monitor({ pageOptions }) {
+  const { _id: stationId } = GetSelectedStation();
   const [selectedItem, setSelectedItem] = useState(null);
   const [itemInfo, setItemInfo] = useState(null);
   const [runningItem, setRunningItem] = useState(null);
   const [dialogStartInfo, setDialogStartInfo] = useState(null);
 
-  console.log({ pageOptions });
+  console.log({ pageOptions, stationId });
 
   return (
     <PageWrapper>
@@ -65,6 +66,7 @@ export default function Monitor({ pageOptions }) {
               runningItem={runningItem}
               setRunningItem={setRunningItem}
               setDialogStartInfo={setDialogStartInfo}
+              stationId={stationId}
             />
           </Box>
           <Box id="monitor-data-box" sx={style.dataBox}>
@@ -87,6 +89,7 @@ export default function Monitor({ pageOptions }) {
                 config={pageOptions.components.EventDataBox}
                 componentsInfo={itemInfo}
                 setComponentsInfo={setItemInfo}
+                stationId={stationId}
               />
             </Box>
           </Box>
@@ -107,6 +110,7 @@ export default function Monitor({ pageOptions }) {
             submitStartInfoComponent={
               pageOptions.components.EventMenuBox.submitStartInfoComponent
             }
+            stationId={stationId}
           />
         </Box>
       )}

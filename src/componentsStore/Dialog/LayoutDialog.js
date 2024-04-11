@@ -28,6 +28,7 @@ export default function LayoutDialog({
   submitStartInfoComponentFnName,
   submitStartInfoComponentFnExecutor,
   submitStartInfoComponent,
+  stationId,
 }) {
   const { t } = useTranslation();
   console.log({
@@ -44,6 +45,7 @@ export default function LayoutDialog({
       item: submitStartInfoComponent,
       fnExecutor: submitStartInfoComponentFnExecutor,
       fnName: submitStartInfoComponentFnName,
+      stationId,
     });
 
     onClose();
