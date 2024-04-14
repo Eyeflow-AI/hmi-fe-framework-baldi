@@ -1,6 +1,13 @@
 import API from "../../../api";
 
-function postData({ componentsInfo, item, fnExecutor, stationId }) {
+function postData({
+  componentsInfo,
+  item,
+  fnExecutor,
+  stationId,
+  handleNotificationBar,
+}) {
+  let notificationBar = null;
   API.post
     .componentData({
       stationId,
@@ -15,10 +22,47 @@ function postData({ componentsInfo, item, fnExecutor, stationId }) {
         fnExecutor,
         stationId,
       });
-      // fnExecutor(response.data);
+      console.log({ RESPONSE: response });
+      let notification = response?.notification ?? null;
+      console.log({ notification });
+      // if (response.ok) {
+      if (notification) {
+        notificationBar = {
+          show: true,
+          type: notification.type,
+          message: notification.message,
+        };
+        // }
+      } else {
+        notificationBar = {
+          show: true,
+          type: "error",
+          message: "error",
+        };
+      }
     })
     .catch((error) => {
       console.error({ error });
+      let notification = error?.data?.notification ?? null;
+      console.log({ notification });
+      if (notification) {
+        notificationBar = {
+          show: true,
+          type: notification.type,
+          message: notification.message,
+        };
+      } else {
+        notificationBar = {
+          show: true,
+          type: "error",
+          message: "error",
+        };
+      }
+    })
+    .finally(() => {
+      if (notificationBar) {
+        handleNotificationBar(notificationBar.message, notificationBar.type);
+      }
     });
 }
 

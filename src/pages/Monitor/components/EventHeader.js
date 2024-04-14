@@ -41,25 +41,29 @@ export default function EventHeader({ config, disabled, itemInfo }) {
   const { t } = useTranslation();
 
   const { fields } = useMemo(() => {
-    console.log({ itemInfo });
-    let newData =
-      itemInfo?.find((item) => item.name === config.name)?.output ?? {};
-    return {
-      fields: config.fields.map(({ label, field, type, defaultValue }) => {
-        let thisData = defaultValue ?? "";
-        console.log({ newData, field });
-        let value = accessObjValueWithMongoNotation(newData, field);
-        if (value) {
-          if (type === "date") {
-            thisData = dateFormat(new Date(value));
-          } else {
-            thisData = value;
+    console.log({ itemInfo, x: typeof itemInfo === "object" });
+    if (itemInfo && typeof itemInfo === "object") {
+      let newData =
+        itemInfo?.find((item) => item.name === config.name)?.output ?? {};
+      return {
+        fields: config.fields.map(({ label, field, type, defaultValue }) => {
+          let thisData = defaultValue ?? "";
+          console.log({ newData, field });
+          let value = accessObjValueWithMongoNotation(newData, field);
+          if (value) {
+            if (type === "date") {
+              thisData = dateFormat(new Date(value));
+            } else {
+              thisData = value;
+            }
           }
-        }
 
-        return { label: t(label), field, data: thisData };
-      }),
-    };
+          return { label: t(label), field, data: thisData };
+        }),
+      };
+    } else {
+      return { fields: [], label: "", data: "" };
+    }
   }, [config, itemInfo]);
 
   console.log({ fields });
@@ -70,7 +74,11 @@ export default function EventHeader({ config, disabled, itemInfo }) {
       height={config.height}
       sx={disabled ? styleSx.mainBoxDisabled : styleSx.mainBox}
     >
-      {Boolean(itemInfo?.find((item) => item.name === config.name)?.output) &&
+      {Boolean(
+        itemInfo &&
+          typeof itemInfo === "object" &&
+          itemInfo?.find((item) => item.name === config.name)?.output
+      ) &&
         fields.map(({ data, label }, index) => (
           <LabelBox key={index} title={t(label)} label={data} />
         ))}

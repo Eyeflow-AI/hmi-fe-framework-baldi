@@ -21,6 +21,8 @@ export default function Table({ name, tag, componentsInfo, style, metadata }) {
   const [_style, _setStyle] = useState({});
   const [headers, setHeaders] = useState([]);
   const [body, setBody] = useState([]);
+  const [backgroundColors, setBackgroundColors] = useState([]);
+  console.log({ backgroundColors });
 
   useEffect(() => {
     if (style) {
@@ -36,10 +38,21 @@ export default function Table({ name, tag, componentsInfo, style, metadata }) {
       const component =
         componentsInfo?.find((item) => item?.tag === tag && item?.name === name)
           ?.output ?? [];
-      const tabled = jsonToTable(component);
+
+      const _backgroundColors = component.map((item) => item.backgroundColor);
+      console.log({ component, _backgroundColors });
+      setBackgroundColors(_backgroundColors);
+      let _component = component.map((item) => {
+        let _item = structuredClone(item);
+        delete _item.backgroundColor;
+        return _item;
+      });
+      const tabled = jsonToTable(_component);
       // delete lineStatus from headers
       let headers = tabled.shift();
-      headers = headers.filter((header) => header !== "lineStatus");
+      headers = headers.filter(
+        (header) => !["lineStatus", "backgroundColor"].includes(header)
+      );
       const body = tabled;
       console.log({ headers, body });
       setHeaders(headers);
@@ -96,6 +109,7 @@ export default function Table({ name, tag, componentsInfo, style, metadata }) {
                 justifyContent: "center",
                 width: `calc(100%)`,
                 height: "50px",
+                backgroundColor: backgroundColors[index],
               }}
               key={index}
             >
@@ -107,6 +121,7 @@ export default function Table({ name, tag, componentsInfo, style, metadata }) {
                     justifyContent: "center",
                     alignItems: "center",
                     width: `calc(100% / ${headers.length})`,
+                    // backgroundColor: backgroundColors[index],
                     height: "100%",
                   }}
                   key={i}

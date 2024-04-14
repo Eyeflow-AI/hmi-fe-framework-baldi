@@ -12,9 +12,16 @@ function eventsHandler({
   item,
   componentsInfo,
   stationId,
+  handleNotificationBar,
 }) {
   if (functions[fnName]) {
-    functions[fnName]({ componentsInfo, item, fnExecutor, stationId });
+    functions[fnName]({
+      componentsInfo,
+      item,
+      fnExecutor,
+      stationId,
+      handleNotificationBar,
+    });
   } else {
     console.error(`Function ${fnName} not found in eventsHandler`);
   }

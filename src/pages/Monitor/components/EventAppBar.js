@@ -1,11 +1,15 @@
 // React
 import React, { useMemo } from "react";
 
+// Design
 import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
-import IconButton from "@mui/material/IconButton";
 import CircularProgress from "@mui/material/CircularProgress";
 
+// Internal
+import { IconButton } from "../../../componentsStore/Button";
+
+// Third-party
 import { useTranslation } from "react-i18next";
 
 const mainBoxSx = Object.assign({}, window.app_config.style.box, {
@@ -41,110 +45,69 @@ const style = {
   },
 };
 
-export default function EventAppBar({
-  isBatchRunning,
-  data,
-  config,
-  disabled,
-  onClickPause,
-  onClickResume,
-  onClickStop,
-  onClickPrint,
-  resumeLoading,
-  pauseLoading,
-  stopLoading,
-}) {
+export default function EventAppBar({ config, stationId, componentsInfo }) {
+  console.log({ EventAppBar: componentsInfo, config });
   const { t } = useTranslation();
 
   const { buttonList, hasAppBar } = useMemo(() => {
     let buttonList = [];
-    if (data) {
-      for (let buttonData of config?.button_list ?? []) {
-        if (buttonData.id === "pause_or_resume") {
-          if (data.status === "running") {
-            buttonList.push({
-              label: "pause",
-              icon: buttonData.pause_icon,
-              onClick: onClickPause,
-              disabled: pauseLoading,
-              loading: pauseLoading,
-            });
-            buttonList.push({
-              label: "stop",
-              icon: buttonData.stop_icon,
-              onClick: onClickStop,
-              disabled: stopLoading,
-              loading: stopLoading,
-            });
-          } else if (data.status === "paused") {
-            buttonList.push({
-              label: "resume",
-              icon: buttonData.resume_icon,
-              onClick: onClickResume,
-              disabled: isBatchRunning || resumeLoading,
-              loading: resumeLoading,
-            });
-          }
+    let hasAppBar = false;
+    let buttonListName = "";
+    if (componentsInfo && typeof componentsInfo === "object") {
+      let output =
+        componentsInfo?.find((item) => item.name === config.name)?.output ??
+        null;
+      console.log({ output });
+      if (output?.status) {
+        hasAppBar = true;
+        if (output?.status === "running") {
+          buttonListName = "runningItemButtonList";
+        } else if (output?.status === "paused") {
+          buttonListName = "pausedItemButtonList";
+        } else if (output?.status === "stopped") {
+          buttonListName = "itemButtonList";
         }
-        if (buttonData.id === "print") {
-          buttonList.push({
-            label: "print",
+
+        for (let buttonData of config?.[buttonListName] ?? []) {
+          console.log({ buttonData });
+          let button = {
             icon: buttonData.icon,
-            onClick: onClickPrint,
-            // disabled: isBatchRunning
-          });
-        }
-        if (
-          buttonData.id === "stop" &&
-          ["running", "paused"].includes(data.status)
-        ) {
-          buttonList.push({
-            label: "stop",
-            icon: buttonData.icon,
-            onClick: onClickStop,
-            disabled: stopLoading,
-            loading: stopLoading,
-          });
+            tooltip: buttonData.tooltip,
+            component: buttonData.component,
+            stationId,
+            fnName: "postData",
+          };
+          buttonList.push(button);
         }
       }
     }
     return {
       buttonList,
-      hasAppBar: buttonList.length > 0,
+      hasAppBar,
     };
-  }, [
-    isBatchRunning,
-    data,
-    config,
-    onClickPause,
-    onClickResume,
-    onClickPrint,
-    pauseLoading,
-    resumeLoading,
-  ]);
+  }, [componentsInfo, config]);
+  console.log({ hasAppBar });
 
   if (hasAppBar) {
     return (
       <Box
         width={`${buttonList.length * 70}px`}
-        sx={disabled ? style.mainBoxDisabled : style.mainBox}
+        sx={true ? style.mainBoxDisabled : style.mainBox}
       >
         {buttonList.map((buttonProps, index) => (
           <Box sx={style.buttonBox} key={`${index}-button-app-bar`}>
-            <Tooltip key={index} title={t(buttonProps.label)}>
-              <IconButton
-                onClick={buttonProps.onClick}
-                disabled={buttonProps.disabled}
-              >
-                <img
-                  alt=""
-                  src={buttonProps.icon}
-                  style={Object.assign({}, style.buttonImage, {
-                    opacity: buttonProps.disabled ? 0.3 : 1,
-                  })}
+            {buttonList.length > 0 &&
+              buttonList.map((button, index) => (
+                <IconButton
+                  key={index}
+                  tooltip={button.tooltip}
+                  icon={button.icon}
+                  component={button.component}
+                  stationId={button.stationId}
+                  componentsInfo={componentsInfo}
+                  fnName={button.fnName}
                 />
-              </IconButton>
-            </Tooltip>
+              ))}
             {buttonProps.loading && (
               <CircularProgress
                 style={style.circularProgress}

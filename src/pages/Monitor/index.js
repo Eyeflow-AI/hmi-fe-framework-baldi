@@ -75,7 +75,11 @@ export default function Monitor({ pageOptions }) {
                 display: "flex",
               }}
             >
-              <EventAppBar config={pageOptions.components.EventAppBar} />
+              <EventAppBar
+                config={pageOptions.components.EventAppBar}
+                componentsInfo={itemInfo}
+                stationId={stationId}
+              />
               <EventHeader
                 config={pageOptions.components.EventHeader}
                 itemInfo={itemInfo}

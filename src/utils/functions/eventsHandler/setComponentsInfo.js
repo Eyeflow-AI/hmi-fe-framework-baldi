@@ -1,4 +1,9 @@
-function setComponentsInfo({ componentsInfo, item, fnExecutor }) {
+function setComponentsInfo({
+  componentsInfo,
+  item,
+  fnExecutor,
+  handleNotificatioBar,
+}) {
   let _componentsInfo = [...componentsInfo];
   let components = item?.data?.info?.components ?? [];
   for (let i = 0; i < components.length; i++) {

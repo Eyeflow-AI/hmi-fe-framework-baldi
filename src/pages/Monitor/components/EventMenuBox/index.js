@@ -133,6 +133,8 @@ export default function EventMenuBox({
 
   const [menuBoxHeight, setMenuBoxHeight] = useState(height);
 
+  console.log({ runningItem, runningItemResponse, runningItemComponent });
+
   useEffect(() => {
     if (hasMainButton) {
       setMenuBoxHeight(height - buttonBoxHeight);

@@ -9,8 +9,10 @@ import Button from "@mui/material/Button";
 
 // Internal
 import LayoutConstructor from "../layoutConstructor";
+import { setNotificationBar } from "../../store/slices/app";
 
 // Third-party
+import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import eventsHandler from "../../utils/functions/eventsHandler";
 
@@ -31,6 +33,7 @@ export default function LayoutDialog({
   stationId,
 }) {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   console.log({
     LayoutDialog: componentsInfo,
     setComponentsInfo,
@@ -39,6 +42,16 @@ export default function LayoutDialog({
     submitStartInfoComponent,
   });
 
+  const handleNotificationBar = (message, severity) => {
+    dispatch(
+      setNotificationBar({
+        show: true,
+        type: severity,
+        message: message,
+      })
+    );
+  };
+
   const handleClick = () => {
     eventsHandler({
       componentsInfo,
@@ -46,6 +59,7 @@ export default function LayoutDialog({
       fnExecutor: submitStartInfoComponentFnExecutor,
       fnName: submitStartInfoComponentFnName,
       stationId,
+      handleNotificationBar,
     });
 
     onClose();
