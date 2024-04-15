@@ -47,7 +47,7 @@ const CustomTooltip = ({ color, value, id }) => {
 export default function CarrouselBox({ data, config }) {
   return (
     <Box
-      width={config?.width ?? "calc(100vw - 502px)"}
+      width={"calc(100vw - 320px)"}
       height={config?.height ?? "100%"}
       sx={style.dataBoxSx}
     >
@@ -57,7 +57,7 @@ export default function CarrouselBox({ data, config }) {
           display: "flex",
           // gap: 0.25,
           width: "100%",
-          height: "calc(100% - 500px)",
+          height: "calc(100% - 300px)",
           // padding: 1,
         }}
       >
@@ -65,9 +65,10 @@ export default function CarrouselBox({ data, config }) {
           sx={{
             display: "flex",
             flexGrow: 1,
-            width: 1 / 4,
+            width: 2 / 8,
             position: "relative",
             flexDirection: "column",
+            // padding,
           }}
         >
           <Box
@@ -77,9 +78,10 @@ export default function CarrouselBox({ data, config }) {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
+              paddingTop: 5,
             }}
           >
-            <Typography variant="h6" textAlign={"center"}>
+            <Typography variant="h4" textAlign={"center"}>
               Produtividade
             </Typography>
           </Box>
@@ -98,7 +100,8 @@ export default function CarrouselBox({ data, config }) {
                 color: "hsl(118, 100%, 50%)",
               },
             ]}
-            margin={{ top: 50, right: 0, bottom: 100, left: 0 }}
+            margin={{ top: 50, right: 20, bottom: 100, left: 20 }}
+            enableArcLinkLabels={false}
             innerRadius={0.5}
             padAngle={0.7}
             cornerRadius={3}
@@ -120,7 +123,14 @@ export default function CarrouselBox({ data, config }) {
             theme={{
               labels: {
                 text: {
-                  fontSize: 15,
+                  fontSize: 25,
+                  fill: "#ffffff",
+                  textShadow: "1px 1px 2px #353535",
+                },
+              },
+              legends: {
+                text: {
+                  fontSize: 25,
                   fill: "#ffffff",
                   textShadow: "1px 1px 2px #353535",
                 },
@@ -133,9 +143,9 @@ export default function CarrouselBox({ data, config }) {
                 translateY: 56,
                 translateX: 30,
                 itemWidth: 100,
-                itemHeight: 18,
+                itemHeight: 45,
                 itemTextColor: "#999",
-                symbolSize: 18,
+                symbolSize: 35,
                 symbolShape: "circle",
                 effects: [
                   {
@@ -151,7 +161,7 @@ export default function CarrouselBox({ data, config }) {
           <Box
             sx={{
               position: "absolute",
-              top: "50%",
+              top: "calc(50% + 20px)",
               left: "50%",
               transform: "translate(-50%, -50%)",
             }}
@@ -163,7 +173,9 @@ export default function CarrouselBox({ data, config }) {
           sx={{
             display: "flex",
             flexGrow: 1,
-            width: 1 / 4,
+            width: 2 / 8,
+            paddingTop: 4,
+            height: "100%",
             position: "relative",
             flexDirection: "column",
             display: "flex",
@@ -172,203 +184,214 @@ export default function CarrouselBox({ data, config }) {
           <Box
             sx={{
               width: "100%",
-              height: "30px",
+              height: "calc(50% - 30px)",
               display: "flex",
+              flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
+              // border: "1px solid white",
+              position: "relative",
             }}
           >
-            <Typography variant="h6" textAlign={"center"}>
-              Defeitos
-            </Typography>
-          </Box>
-          <ResponsivePie
-            data={[
-              {
-                id: "pico",
-                label: "pico",
-                value: 50,
-                color: "hsl(50, 100%, 50%)",
-              },
-              {
-                id: "amassado",
-                label: "amassado",
-                value: 30,
-                color: "hsl(318, 70%, 50%)",
-              },
-              {
-                id: "material",
-                label: "material",
-                value: 20,
-                color: "hsl(190, 100%, 50%)",
-              },
-            ]}
-            margin={{ top: 50, right: 0, bottom: 100, left: 0 }}
-            innerRadius={0.5}
-            padAngle={0.7}
-            cornerRadius={3}
-            colors={(item) => item.data.color}
-            borderWidth={1}
-            borderColor={{ from: "color", modifiers: [["darker", 0.2]] }}
-            tooltip={(i) => {
-              let value = i?.datum?.data?.value;
-              let color = i?.datum?.data?.color;
-              let id = i?.datum?.data?.id;
-              return <CustomTooltip color={color} value={value} id={id} />;
-            }}
-            motionDamping={15}
-            valueFormat={function (e) {
-              return e + "%";
-            }}
-            theme={{
-              labels: {
-                text: {
-                  fontSize: 15,
-                  fill: "#ffffff",
-                  textShadow: "1px 1px 2px #353535",
+            <Box
+              sx={{
+                width: "100%",
+                height: "30px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="h6" textAlign={"center"}>
+                Qualidade
+              </Typography>
+            </Box>
+            <ResponsivePie
+              data={[
+                {
+                  id: "falha b1",
+                  label: "falha b1",
+                  value: 50,
+                  color: "hsl(211, 12%, 48%)",
                 },
-              },
-            }}
-            legends={[
-              {
-                anchor: "bottom",
-                direction: "row",
-                translateY: 56,
-                translateX: 30,
-                itemWidth: 100,
-                itemHeight: 18,
-                itemTextColor: "#999",
-                symbolSize: 18,
-                symbolShape: "circle",
-                effects: [
-                  {
-                    on: "hover",
-                    style: {
-                      itemTextColor: "#000",
-                    },
+                {
+                  id: "falha b",
+                  label: "falha b",
+                  value: 30,
+                  color: "hsl(14, 49%, 40%)",
+                },
+                {
+                  id: "falha c1",
+                  label: "falha c1",
+                  value: 20,
+                  color: "hsl(14, 83%, 40%)",
+                },
+              ]}
+              margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+              innerRadius={0.5}
+              enableArcLinkLabels={false}
+              padAngle={0.7}
+              cornerRadius={3}
+              colors={(item) => item.data.color}
+              borderWidth={1}
+              borderColor={{ from: "color", modifiers: [["darker", 0.2]] }}
+              tooltip={(i) => {
+                let value = i?.datum?.data?.value;
+                let color = i?.datum?.data?.color;
+                let id = i?.datum?.data?.id;
+                return <CustomTooltip color={color} value={value} id={id} />;
+              }}
+              motionDamping={15}
+              valueFormat={function (e) {
+                return e + "%";
+              }}
+              theme={{
+                labels: {
+                  text: {
+                    fontSize: 15,
+                    fill: "#ffffff",
+                    textShadow: "1px 1px 2px #353535",
                   },
-                ],
-              },
-            ]}
-          />
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-            }}
-          >
-            <Typography variant="h3">1000</Typography>
+                },
+              }}
+              legends={[
+                {
+                  anchor: "left",
+                  direction: "column",
+                  translateY: 10,
+                  translateX: 30,
+                  itemWidth: 100,
+                  itemHeight: 45,
+                  itemTextColor: "#999",
+                  symbolSize: 35,
+                  symbolShape: "circle",
+                  effects: [
+                    {
+                      on: "hover",
+                      style: {
+                        itemTextColor: "#000",
+                      },
+                    },
+                  ],
+                },
+              ]}
+            />
+            <Box
+              sx={{
+                position: "absolute",
+                top: "calc(50% + 12px)",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              <Typography variant="h4">1000</Typography>
+            </Box>
           </Box>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexGrow: 1,
-            width: 1 / 4,
-            position: "relative",
-            flexDirection: "column",
-            display: "flex",
-          }}
-        >
           <Box
             sx={{
               width: "100%",
-              height: "30px",
+              height: "calc(50% - 30px)",
               display: "flex",
+              marginTop: "30px",
               justifyContent: "center",
               alignItems: "center",
+              flexDirection: "column",
+              position: "relative",
             }}
           >
-            <Typography variant="h6" textAlign={"center"}>
-              Qualidade
-            </Typography>
-          </Box>
-          <ResponsivePie
-            data={[
-              {
-                id: "falha b1",
-                label: "falha b1",
-                value: 50,
-                color: "hsl(211, 12%, 48%)",
-              },
-              {
-                id: "falha b",
-                label: "falha b",
-                value: 30,
-                color: "hsl(14, 49%, 40%)",
-              },
-              {
-                id: "falha c",
-                label: "falha c",
-                value: 20,
-                color: "hsl(15, 35%, 10%)",
-              },
-              {
-                id: "falha c1",
-                label: "falha c1",
-                value: 20,
-                color: "hsl(14, 83%, 40%)",
-              },
-            ]}
-            margin={{ top: 50, right: 0, bottom: 100, left: 0 }}
-            innerRadius={0.5}
-            padAngle={0.7}
-            cornerRadius={3}
-            colors={(item) => item.data.color}
-            borderWidth={1}
-            borderColor={{ from: "color", modifiers: [["darker", 0.2]] }}
-            tooltip={(i) => {
-              let value = i?.datum?.data?.value;
-              let color = i?.datum?.data?.color;
-              let id = i?.datum?.data?.id;
-              return <CustomTooltip color={color} value={value} id={id} />;
-            }}
-            motionDamping={15}
-            valueFormat={function (e) {
-              return e + "%";
-            }}
-            theme={{
-              labels: {
-                text: {
-                  fontSize: 15,
-                  fill: "#ffffff",
-                  textShadow: "1px 1px 2px #353535",
+            <Box
+              sx={{
+                width: "100%",
+                height: "30px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="h6" textAlign={"center"}>
+                Defeitos
+              </Typography>
+            </Box>
+            <ResponsivePie
+              data={[
+                {
+                  id: "pico",
+                  label: "pico",
+                  value: 50,
+                  color: "hsl(50, 100%, 50%)",
                 },
-              },
-            }}
-            legends={[
-              {
-                anchor: "bottom",
-                direction: "row",
-                translateY: 56,
-                translateX: 30,
-                itemWidth: 100,
-                itemHeight: 18,
-                itemTextColor: "#999",
-                symbolSize: 18,
-                symbolShape: "circle",
-                effects: [
-                  {
-                    on: "hover",
-                    style: {
-                      itemTextColor: "#000",
-                    },
+                {
+                  id: "amassado",
+                  label: "amassado",
+                  value: 30,
+                  color: "hsl(318, 70%, 50%)",
+                },
+                {
+                  id: "material",
+                  label: "material",
+                  value: 20,
+                  color: "hsl(190, 100%, 50%)",
+                },
+              ]}
+              margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+              innerRadius={0.5}
+              padAngle={0.7}
+              cornerRadius={3}
+              enableArcLinkLabels={false}
+              colors={(item) => item.data.color}
+              borderWidth={1}
+              borderColor={{ from: "color", modifiers: [["darker", 0.2]] }}
+              tooltip={(i) => {
+                let value = i?.datum?.data?.value;
+                let color = i?.datum?.data?.color;
+                let id = i?.datum?.data?.id;
+                return <CustomTooltip color={color} value={value} id={id} />;
+              }}
+              motionDamping={15}
+              valueFormat={function (e) {
+                return e + "%";
+              }}
+              theme={{
+                labels: {
+                  text: {
+                    fontSize: 15,
+                    fill: "#ffffff",
+                    textShadow: "1px 1px 2px #353535",
                   },
-                ],
-              },
-            ]}
-          />
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-            }}
-          >
-            <Typography variant="h3">1000</Typography>
+                },
+              }}
+              legends={[
+                {
+                  anchor: "left",
+                  direction: "column",
+                  translateY: 10,
+                  translateX: 30,
+                  itemWidth: 100,
+                  itemHeight: 45,
+                  itemTextColor: "#999",
+                  symbolSize: 35,
+                  symbolShape: "circle",
+                  effects: [
+                    {
+                      on: "hover",
+                      style: {
+                        itemTextColor: "#000",
+                      },
+                    },
+                  ],
+                },
+              ]}
+            />
+            <Box
+              sx={{
+                position: "absolute",
+                top: "calc(50% + 12px)",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              <Typography variant="h4">1000</Typography>
+            </Box>
           </Box>
         </Box>
         <Box
@@ -376,7 +399,7 @@ export default function CarrouselBox({ data, config }) {
             display: "flex",
             flexGrow: 1,
             flexDirection: "column",
-            width: 1 / 4,
+            width: 3 / 8,
           }}
         >
           <Box
@@ -389,7 +412,7 @@ export default function CarrouselBox({ data, config }) {
             }}
           >
             <img
-              src="/assets/carro_pontos.png"
+              src="/assets/carro_counting.png"
               style={{
                 width: "100%",
                 height: "100%",
@@ -471,7 +494,7 @@ export default function CarrouselBox({ data, config }) {
           // flexDirection: "column",
           gap: 0.25,
           width: "100%",
-          height: "500px",
+          height: "300px",
           padding: 2,
           // border: "1px solid red",
         }}
@@ -521,7 +544,7 @@ export default function CarrouselBox({ data, config }) {
                 }}
               />
               <CardActions>
-                <Typography variant="h6" textAlign={"center"}>
+                <Typography variant="h4" textAlign={"center"}>
                   Seq {reverseIndex}
                 </Typography>
               </CardActions>
