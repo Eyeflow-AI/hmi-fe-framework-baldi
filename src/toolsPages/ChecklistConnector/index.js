@@ -95,6 +95,7 @@ export default function ChecklistConnector({ pageOptions }) {
 
   useEffect(() => {
     getData();
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -205,6 +206,7 @@ export default function ChecklistConnector({ pageOptions }) {
                     height: "100%",
                     // border: '1px solid red',
                   }}
+                  alt=""
                 />
               )}
               {selectedItemRegions?.checkList?.map((el, index) => {

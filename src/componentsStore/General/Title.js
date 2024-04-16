@@ -5,7 +5,7 @@ export default function Title({ name, tag, componentsInfo, style, metadata }) {
   console.log({ Title: name, tag, componentsInfo, style });
 
   const [value, setValue] = useState("");
-  const [error, setError] = useState(false);
+  // const [error, setError] = useState(false);
   const [_style, _setStyle] = useState({});
 
   useEffect(() => {
@@ -32,6 +32,7 @@ export default function Title({ name, tag, componentsInfo, style, metadata }) {
       // console.log({ component });
       setValue(component?.text);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [componentsInfo]);
 
   return (

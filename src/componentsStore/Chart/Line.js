@@ -148,6 +148,7 @@ export default function Line({ chart }) {
       );
     }
     // setData(chart.result)
+    // eslint-disable-next-line
   }, [chart]);
 
   return (

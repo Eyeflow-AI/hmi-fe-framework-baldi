@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 
 //Design
 import Box from "@mui/material/Box";
@@ -10,16 +10,16 @@ import EventAppBar from "./components/EventAppBar";
 import EventMenuBox from "./components/EventMenuBox";
 // import EventSerialDataBox from "../../components/EventSerialDataBox";
 import EventDataBox from "./components/EventDataBox";
-import GetSerialList from "../../utils/Hooks/GetSerialList";
-import GetRunningSerial from "../../utils/Hooks/GetRunningSerial";
+// import GetSerialList from "../../utils/Hooks/GetSerialList";
+// import GetRunningSerial from "../../utils/Hooks/GetRunningSerial";
 import { LayoutDialog } from "../../componentsStore/Dialog";
 import GetSelectedStation from "../../utils/Hooks/GetSelectedStation";
-import API from "../../api";
+// import API from "../../api";
 
-import { monitorSlice } from "../../store/slices/monitor";
+// import { monitorSlice } from "../../store/slices/monitor";
 
 // Third-party
-import { useDispatch, useSelector } from "react-redux";
+// import { useDispatch, useSelector } from "react-redux";
 
 const style = {
   mainBox: {

@@ -19,8 +19,8 @@ import ImageDialog from "../../components/ImageDialog";
 import GetImagesList from "../utils/Hooks/GetImagesList";
 import GetEdgeEnvVar from "../../utils/Hooks/GetEdgeEnvVar";
 
-import axios from "axios";
 // Third-party
+import axios from "axios";
 
 const style = {
   mainBox: Object.assign({}, window.app_config.style.box, {
@@ -37,7 +37,6 @@ export default function ImagesCapturer({ pageOptions }) {
   const [openImageDialog, setOpenImageDialog] = useState(false);
   const [openImageInfoDialog, setOpenImageInfoDialog] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
-  const [takeOneFrame, setTakeOneFrame] = useState(false);
   const [imagePath, setImagePath] = useState("");
   const [recording, setRecording] = useState(false);
   const { imageBaseURL, infoURL, envVarURL, appbarButtonList } = useMemo(() => {
@@ -113,6 +112,7 @@ export default function ImagesCapturer({ pageOptions }) {
         })
         .catch(console.error);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recording, envVarURL]);
 
   const refImagesList = useRef(imagesList);
@@ -131,6 +131,7 @@ export default function ImagesCapturer({ pageOptions }) {
       setImagePath(item?.full_url);
       setOpenImageInfoDialog(true);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [imagesList]
   );
 
@@ -152,6 +153,7 @@ export default function ImagesCapturer({ pageOptions }) {
         onClick,
       };
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appbarButtonList, recording]);
 
   return (

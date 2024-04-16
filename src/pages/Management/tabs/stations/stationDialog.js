@@ -1,60 +1,58 @@
 // React
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 // Design
 
-import DialogTitle from '@mui/material/DialogTitle';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import SaveIcon from '@mui/icons-material/Save';
-import CloseIcon from '@mui/icons-material/Close';
-
+import DialogTitle from "@mui/material/DialogTitle";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import SaveIcon from "@mui/icons-material/Save";
+import CloseIcon from "@mui/icons-material/Close";
 
 // Internal
-import API from '../../../../api';
-import getStationListThunk from '../../../../store/thunks/stationList';
+import API from "../../../../api";
+import getStationListThunk from "../../../../store/thunks/stationList";
 
 // Third-Party
 import { useTranslation } from "react-i18next";
-import { useDispatch } from 'react-redux';
-
+import { useDispatch } from "react-redux";
 
 export default function StationDialog({
-  open
-  , stations
-  , onClose
-  , title
-  , selectedStationInfo = null
+  open,
+  stations,
+  onClose,
+  title,
+  selectedStationInfo = null,
 }) {
-
-
   const dispatch = useDispatch();
 
   const { t } = useTranslation();
-  const [parms, setParms] = useState('');
-  const [edges, setEdges] = useState('');
-  const [stationName, setStationName] = useState('');
+  const [parms, setParms] = useState("");
+  const [edges, setEdges] = useState("");
+  const [stationName, setStationName] = useState("");
   const [stationNameError, setStationNameError] = useState(false);
   const [parmsError, setParmsError] = useState(false);
   const [edgesError, setEdgesError] = useState(false);
 
   const handleClose = () => {
-    setStationName('');
-    setParms('');
+    setStationName("");
+    setParms("");
     onClose(false);
   };
 
   const handleEditStation = () => {
     if (stationName && !stationNameError && !parmsError && !edgesError) {
-      API.put.station({
-        stationId: selectedStationInfo._id,
-        stationName,
-        parms,
-        edges
-      }).then(() => { })
+      API.put
+        .station({
+          stationId: selectedStationInfo._id,
+          stationName,
+          parms,
+          edges,
+        })
+        .then(() => {})
         .catch(console.log)
         .finally(() => {
           dispatch(getStationListThunk());
@@ -65,10 +63,15 @@ export default function StationDialog({
 
   useEffect(() => {
     if (stationName) {
-      setStationNameError(stations?.filter(station => station._id !== selectedStationInfo._id).find(station => station.label === stationName));
+      setStationNameError(
+        stations
+          ?.filter((station) => station._id !== selectedStationInfo._id)
+          .find((station) => station.label === stationName)
+      );
     }
-    let stationname = stationName.replace(/\./g, '');
+    let stationname = stationName.replace(/\./g, "");
     setStationName(stationname);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stationName, stations]);
 
   useEffect(() => {
@@ -88,8 +91,7 @@ export default function StationDialog({
         JSON.parse(edges);
         if (!Array.isArray(JSON.parse(edges))) {
           setEdgesError(true);
-        }
-        else {
+        } else {
           setEdgesError(false);
         }
       } catch (e) {
@@ -114,11 +116,11 @@ export default function StationDialog({
           autoFocus
           margin="dense"
           id="name"
-          label={t('label')}
+          label={t("label")}
           type="text"
           fullWidth
           error={stationNameError}
-          helperText={stationNameError && t('cannot_repeat_station_name')}
+          helperText={stationNameError && t("cannot_repeat_station_name")}
           value={stationName}
           onChange={(e) => setStationName(e.target.value)}
         />
@@ -126,44 +128,46 @@ export default function StationDialog({
           autoFocus
           margin="dense"
           id="parameters"
-          label={t('parameters')}
+          label={t("parameters")}
           type="text"
           fullWidth
           multiline
           value={parms}
           error={parmsError}
-          helperText={parmsError && t('parms_must_be_json')}
+          helperText={parmsError && t("parms_must_be_json")}
           onChange={(e) => setParms(e.target.value)}
         />
         <TextField
           autoFocus
           margin="dense"
           id="edges"
-          label={t('edges')}
+          label={t("edges")}
           type="text"
           fullWidth
           multiline
           value={edges}
           error={edgesError}
-          helperText={edgesError && t('edges_must_be_an_array_of_objects_and_json')}
+          helperText={
+            edgesError && t("edges_must_be_an_array_of_objects_and_json")
+          }
           onChange={(e) => setEdges(e.target.value)}
         />
       </DialogContent>
       <DialogActions>
         <Button
           onClick={handleClose}
-          variant='contained'
+          variant="contained"
           startIcon={<CloseIcon />}
         >
-          {t('cancel')}
+          {t("cancel")}
         </Button>
         <Button
           onClick={handleEditStation}
-          variant='contained'
+          variant="contained"
           disabled={!stationName || !parms || stationNameError}
           startIcon={<SaveIcon />}
         >
-          {t('save')}
+          {t("save")}
         </Button>
       </DialogActions>
     </Dialog>

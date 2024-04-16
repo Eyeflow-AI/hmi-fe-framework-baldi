@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Autocomplete from "@mui/material/Autocomplete";
+import { Button } from "@mui/material";
 
 // Internal
 import API from "../api";
@@ -27,8 +28,6 @@ import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
-import { Button, CircularProgress, Tooltip } from "@mui/material";
-
 
 const gridToolbarSx = {
   width: "100%",
@@ -52,7 +51,7 @@ export default function UploadImageDialog({
   open,
   setOpen,
   maskMapParmsURL,
-  datasets
+  datasets,
 }) {
   const user = useSelector(getUser);
   const dispatch = useDispatch();
@@ -88,7 +87,13 @@ export default function UploadImageDialog({
     setCroppedWidth(cropInfo.getCroppedCanvas().width);
     setCroppedHeight(cropInfo.getCroppedCanvas().height);
     setCropping(false);
-    dispatch(setNotificationBar({ show: true, type: 'success', message: "image_crop_sucessful" }));
+    dispatch(
+      setNotificationBar({
+        show: true,
+        type: "success",
+        message: "image_crop_sucessful",
+      })
+    );
   };
 
   const handleUpload = () => {
@@ -118,7 +123,13 @@ export default function UploadImageDialog({
         maskMap: dataset?.maskMap,
       })
       .then(() => {
-        dispatch(setNotificationBar({ show: true, type: 'success', message: "upload_sucessful" }));
+        dispatch(
+          setNotificationBar({
+            show: true,
+            type: "success",
+            message: "upload_sucessful",
+          })
+        );
         setLoading(false);
         setDataset(null);
         setOpen(false);
@@ -141,7 +152,7 @@ export default function UploadImageDialog({
   }, [urlParms]);
 
   useEffect(() => {
-    if (!base64Str) return
+    if (!base64Str) return;
     _setBase64Str(base64Str);
   }, [base64Str]);
 
@@ -158,7 +169,8 @@ export default function UploadImageDialog({
   }, [open]);
 
   useEffect(() => {
-    setDatasetList(datasets)
+    setDatasetList(datasets);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -210,8 +222,14 @@ export default function UploadImageDialog({
     setCroppedWidth(0);
     setCroppedHeight(0);
     setCropping(false);
-    dispatch(setNotificationBar({ show: true, type: 'success', message: "original_image_restored" }));
-  }
+    dispatch(
+      setNotificationBar({
+        show: true,
+        type: "success",
+        message: "original_image_restored",
+      })
+    );
+  };
 
   return (
     <Dialog fullScreen open={open} onClose={() => setOpen(false)}>
@@ -238,7 +256,11 @@ export default function UploadImageDialog({
             </Grid>
             <Grid xs={2} item>
               <Box display="flex" justifyContent="flex-end">
-                <IconButton edge="start" color="inherit" onClick={() => setOpen(false)}>
+                <IconButton
+                  edge="start"
+                  color="inherit"
+                  onClick={() => setOpen(false)}
+                >
                   <CloseIcon />
                 </IconButton>
               </Box>
@@ -251,7 +273,7 @@ export default function UploadImageDialog({
           margin: "1vw 0 1vw 0",
         }}
       >
-        {_base64Str || croppedBase64Str && !noImage ? (
+        {_base64Str || (croppedBase64Str && !noImage) ? (
           <Box
             sx={{
               display: "flex",
@@ -277,7 +299,6 @@ export default function UploadImageDialog({
                     margin: "1rem",
                   }}
                 >
-
                   {!cropping ? (
                     <Fragment>
                       <TransformComponent>
@@ -299,7 +320,7 @@ export default function UploadImageDialog({
                           flexDirection: "row",
                           justifyContent: "center",
                           alignItems: "center",
-                          gap: 2
+                          gap: 2,
                         }}
                       >
                         <Button
@@ -307,7 +328,7 @@ export default function UploadImageDialog({
                           color="primary"
                           onClick={() => setCropping(true)}
                         >
-                          {t('crop_image')}
+                          {t("crop_image")}
                         </Button>
                         {croppedBase64Str && (
                           <Button
@@ -315,7 +336,7 @@ export default function UploadImageDialog({
                             color="primary"
                             onClick={() => handleResetCrop()}
                           >
-                            {t('reset_crop_image')}
+                            {t("reset_crop_image")}
                           </Button>
                         )}
                       </Box>
@@ -347,7 +368,6 @@ export default function UploadImageDialog({
                           alignItems: "center",
                           justifyContent: "center",
                           flexDirection: "column",
-                          objectFit: "contain",
                         }}
                         onWheel={(e) => e.preventDefault()}
                         zoomOnTouch={false}
@@ -364,7 +384,7 @@ export default function UploadImageDialog({
                           mt: "2rem",
                         }}
                       >
-                        {t('cancel_cropping')}
+                        {t("cancel_cropping")}
                       </Button>
                       <Button
                         variant="contained"
@@ -374,16 +394,20 @@ export default function UploadImageDialog({
                           mt: "2rem",
                         }}
                       >
-                        {t('saved_cropped_image')}
+                        {t("saved_cropped_image")}
                       </Button>
                     </Box>
                   )}
                   {!cropping && (
                     <Fragment>
-                      <Grid container spacing={1} sx={{
-                        maxWidth: "50%",
-                        marginBlock: 1,
-                      }}>
+                      <Grid
+                        container
+                        spacing={1}
+                        sx={{
+                          maxWidth: "50%",
+                          marginBlock: 1,
+                        }}
+                      >
                         <Grid item xs={6}>
                           <Autocomplete
                             fullWidth
@@ -416,30 +440,38 @@ export default function UploadImageDialog({
                             )}
                           />
                         </Grid>
-                        {parms?.length > 0 && parms?.map((part, index) => (
-                          <Grid item xs={
-                            parms.length % 2 === 0 && index === parms.length - 1 ? 12 : 6
-                          }>
-                            <TextField
-                              fullWidth
-                              key={index}
-                              id={part.id}
-                              variant="outlined"
-                              color="secondary"
-                              value={dataset?.[part.id]}
-                              required={true}
-                              onChange={(e) => handleUpdate(part.id, e.target.value)}
-                              label={part.label}
-                              error={errorInText?.[part.id] ?? false}
-                              helperText={
-                                errorInText?.[part.id] ?? false
-                                  ? "Campo obrigatório."
-                                  : ""
+                        {parms?.length > 0 &&
+                          parms?.map((part, index) => (
+                            <Grid
+                              item
+                              xs={
+                                parms.length % 2 === 0 &&
+                                index === parms.length - 1
+                                  ? 12
+                                  : 6
                               }
-                            />
-                          </Grid>
-                        ))}
-
+                            >
+                              <TextField
+                                fullWidth
+                                key={index}
+                                id={part.id}
+                                variant="outlined"
+                                color="secondary"
+                                value={dataset?.[part.id]}
+                                required={true}
+                                onChange={(e) =>
+                                  handleUpdate(part.id, e.target.value)
+                                }
+                                label={part.label}
+                                error={errorInText?.[part.id] ?? false}
+                                helperText={
+                                  errorInText?.[part.id] ?? false
+                                    ? "Campo obrigatório."
+                                    : ""
+                                }
+                              />
+                            </Grid>
+                          ))}
                       </Grid>
 
                       <LoadingButton
@@ -453,7 +485,7 @@ export default function UploadImageDialog({
                         disabled={disabled || loading}
                         loading={loading}
                       >
-                        {t('upload_image')}
+                        {t("upload_image")}
                       </LoadingButton>
                     </Fragment>
                   )}
@@ -478,7 +510,7 @@ export default function UploadImageDialog({
                 margin: "auto",
               }}
             >
-              {t('no_image_error')}
+              {t("no_image_error")}
             </Typography>
           </Box>
         )}

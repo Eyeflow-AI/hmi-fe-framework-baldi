@@ -1,5 +1,5 @@
 // React
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useMemo } from "react";
 
 //Design
 import Box from "@mui/material/Box";
@@ -76,18 +76,17 @@ export default function CarouselWithQuery({
   selectedItem,
   setComponentsInfo,
 }) {
-  const { itemMenuHeight, buttonBoxHeight, hasMainButton, dateField } =
-    useMemo(() => {
-      const itemMenuHeight = config?.itemHeight ?? 200;
-      return {
-        itemMenuHeight,
-        buttonBoxHeight: itemMenuHeight + 10,
-        hasMainButton: config?.hasMainButton ?? true,
-        dateField: config?.dateField ?? "event_time",
-      };
-    }, [config]);
+  const { itemMenuHeight, buttonBoxHeight } = useMemo(() => {
+    const itemMenuHeight = config?.itemHeight ?? 200;
+    return {
+      itemMenuHeight,
+      buttonBoxHeight: itemMenuHeight + 10,
+      hasMainButton: config?.hasMainButton ?? true,
+      dateField: config?.dateField ?? "event_time",
+    };
+  }, [config]);
 
-  const [menuBoxHeight, setMenuBoxHeight] = useState(height);
+  const menuBoxHeight = height;
 
   return (
     <Box id="menu-box" height={menuBoxHeight} sx={styleSx.menuBox}>

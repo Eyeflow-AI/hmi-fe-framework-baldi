@@ -40,5 +40,6 @@ export default function CheckVersion({ sleepTime = 10000 }) {
 
   useEffect(() => {
     checkMetaVersion();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clock]);
 }

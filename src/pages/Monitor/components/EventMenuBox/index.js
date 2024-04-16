@@ -6,10 +6,6 @@ import Box from "@mui/material/Box";
 import ButtonBase from "@mui/material/ButtonBase";
 
 //Internal
-import FilterBox from "../../../../componentsStore/Box/FilterBox";
-import EventMenuItem from "./EventMenuItem";
-import fetchJson from "../../../../utils/functions/fetchJson";
-import { monitorSlice } from "../../../../store/slices/monitor";
 import {
   CarouselWithQuery,
   CarouselItem,
@@ -79,11 +75,11 @@ export default function EventMenuBox({
   const { t } = useTranslation();
 
   const {
-    itemMenuHeight,
+    // itemMenuHeight,
     buttonBoxHeight,
     hasMainButton,
     queryFields,
-    dateField,
+    // dateField,
     component,
     conveyorComponent,
     runningItemComponent,
@@ -111,6 +107,7 @@ export default function EventMenuBox({
   const startIcon = config?.startIcon;
   const conveyorIcon = config?.conveyorIcon;
 
+  // eslint-disable-next-line
   const { response, loading, loadResponse } = GetComponentData({
     component: component,
     query: { limit: 10, test: new Date() },
@@ -121,7 +118,9 @@ export default function EventMenuBox({
 
   const {
     response: runningItemResponse,
+    // eslint-disable-next-line no-unused-vars
     loading: runningItemLoading,
+    // eslint-disable-next-line no-unused-vars
     loadResponse: loadRunningItemResponse,
   } = GetComponentData({
     component: runningItemComponent,
@@ -177,7 +176,7 @@ export default function EventMenuBox({
     ) {
       let query = selectedItem;
       let component = selectedItem.on.click;
-      let result = null;
+      // let result = null;
       getComponentData({
         query,
         component,
@@ -205,6 +204,7 @@ export default function EventMenuBox({
     if (changeEventType !== "") {
       setChangeEventType("");
     }
+    // eslint-disable-next-line
   }, [changeEventType]);
 
   useEffect(() => {
@@ -223,6 +223,7 @@ export default function EventMenuBox({
     if (!selectedItem && _runningItem?.output) {
       handleSelectItem(_runningItem?.output, "update");
     }
+    // eslint-disable-next-line
   }, [runningItemComponent, runningItemResponse]);
 
   useEffect(() => {
@@ -251,6 +252,7 @@ export default function EventMenuBox({
         }
       }
     }
+    // eslint-disable-next-line
   }, [response, conveyorComponent]);
 
   const handleStart = () => {

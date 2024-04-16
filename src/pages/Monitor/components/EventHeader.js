@@ -64,6 +64,7 @@ export default function EventHeader({ config, disabled, itemInfo }) {
     } else {
       return { fields: [], label: "", data: "" };
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config, itemInfo]);
 
   console.log({ fields });

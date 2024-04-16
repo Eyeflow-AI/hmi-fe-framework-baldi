@@ -36,7 +36,7 @@ export default function AppParameters({ pageOptions }) {
   const [parametersData, setParametersData] = useState([]);
   const [currentText, setCurrentText] = useState({});
   const [errorInText, setErrorInText] = useState(false);
-  const [waitForChange, setWaitForChange] = useState(false);
+  // const [waitForChange, setWaitForChange] = useState(false);
   const [selectedParam, setSelectedParam] = useState("");
 
   const getData = () => {
@@ -76,12 +76,12 @@ export default function AppParameters({ pageOptions }) {
       .finally(() => {});
   };
 
-  const waitChange = () => {
-    // setWaitForChange(true);
-    setTimeout(() => {
-      setWaitForChange(false);
-    }, 3100);
-  };
+  // const waitChange = () => {
+  //   // setWaitForChange(true);
+  //   setTimeout(() => {
+  //     setWaitForChange(false);
+  //   }, 3100);
+  // };
 
   useEffect(() => {
     getData();
@@ -199,7 +199,7 @@ export default function AppParameters({ pageOptions }) {
                   onClick={saveParam}
                   variant="contained"
                   startIcon={<SaveIcon />}
-                  disabled={errorInText || waitForChange}
+                  disabled={errorInText}
                 >
                   {t("save")}
                 </Button>

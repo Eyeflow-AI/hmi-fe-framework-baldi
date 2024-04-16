@@ -1,63 +1,66 @@
 // React
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 // Design
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Fade from '@mui/material/Fade';
-import MenuItem from '@mui/material/MenuItem';
-import CardMedia from '@mui/material/CardMedia';
-import CircularProgress from '@mui/material/CircularProgress';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import Fade from "@mui/material/Fade";
+import MenuItem from "@mui/material/MenuItem";
+import CardMedia from "@mui/material/CardMedia";
+import CircularProgress from "@mui/material/CircularProgress";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
 
 // Internal
-import SiliconCopyright from '../../components/SiliconCopyright';
-import login from '../../store/thunks/login';
-import loginByIp from '../../store/thunks/loginByIp';
-import { getStationList, getStationId, setStationId } from '../../store/slices/app';
-import { getLoadingLogin } from '../../store/slices/auth';
-import { setNotificationBar } from '../../store/slices/app';
-
+import SiliconCopyright from "../../components/SiliconCopyright";
+import login from "../../store/thunks/login";
+import loginByIp from "../../store/thunks/loginByIp";
+import {
+  getStationList,
+  getStationId,
+  setStationId,
+} from "../../store/slices/app";
+import { getLoadingLogin } from "../../store/slices/auth";
+import { setNotificationBar } from "../../store/slices/app";
 
 // Third-Party
 import { useTranslation } from "react-i18next";
-import { unwrapResult } from '@reduxjs/toolkit';
-import { useDispatch, useSelector } from 'react-redux';
+import { unwrapResult } from "@reduxjs/toolkit";
+import { useDispatch, useSelector } from "react-redux";
 
 const styleSx = {
   mainBox: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: '85vh',
-    width: '100vw',
-    justifyContent: 'center',
-    alignItems: 'center'
+    display: "flex",
+    flexDirection: "column",
+    height: "85vh",
+    width: "100vw",
+    justifyContent: "center",
+    alignItems: "center",
   },
   loginBox: {
-    bgcolor: 'background.paper',
+    bgcolor: "background.paper",
     boxShadow: 2,
-    borderRadius: '12px',
+    borderRadius: "12px",
     padding: (theme) => theme.spacing(2, 5, 2, 5),
     marginTop: 1,
-    alignItems: 'center',
+    alignItems: "center",
     width: 350,
     // maxWidth: '100%',
     // maxHeight: '100%',
-    display: 'flex',
-    flexDirection: 'column',
+    display: "flex",
+    flexDirection: "column",
   },
   grid: {
-    width: 340
+    width: 340,
   },
   textfield: {
     width: 300,
   },
   cardMedia: {
-    maxWidth: '22em',
+    maxWidth: "22em",
   },
   loginButton: {
     width: 300,
@@ -74,8 +77,8 @@ export default function Login() {
   const stationId = useSelector(getStationId);
   const loginLoading = useSelector(getLoadingLogin);
 
-  const [user, setUser] = useState('');
-  const [password, setPassword] = useState('');
+  const [user, setUser] = useState("");
+  const [password, setPassword] = useState("");
 
   const checkLoginByIp = () => {
     dispatch(loginByIp())
@@ -83,10 +86,11 @@ export default function Login() {
       .catch((err) => {
         console.log(err.message);
       });
-  }
+  };
 
   useEffect(() => {
     checkLoginByIp();
+    // eslint-disable-next-line
   }, []);
 
   const onClickLoginButton = (event) => {
@@ -95,14 +99,30 @@ export default function Login() {
       .then(unwrapResult)
       .catch((err) => {
         if (err.message === "Network Error") {
-          dispatch(setNotificationBar({ show: true, type: 'error', message: "network_error" }));
+          dispatch(
+            setNotificationBar({
+              show: true,
+              type: "error",
+              message: "network_error",
+            })
+          );
+        } else if (err.message === "Wrong username/password") {
+          dispatch(
+            setNotificationBar({
+              show: true,
+              type: "error",
+              message: "invalid_username/password",
+            })
+          );
+        } else {
+          dispatch(
+            setNotificationBar({
+              show: true,
+              type: "error",
+              message: "internal_server_error",
+            })
+          );
         }
-        else if (err.message === "Wrong username/password") {
-          dispatch(setNotificationBar({ show: true, type: 'error', message: 'invalid_username/password' }));
-        }
-        else {
-          dispatch(setNotificationBar({ show: true, type: 'error', message: 'internal_server_error' }));
-        };
       });
   };
 
@@ -119,7 +139,7 @@ export default function Login() {
   };
 
   return (
-    <Fade in={true} timeout={800} >
+    <Fade in={true} timeout={800}>
       <Box sx={styleSx.mainBox}>
         <CardMedia
           sx={styleSx.cardMedia}
@@ -129,7 +149,14 @@ export default function Login() {
         />
         <form noValidate onSubmit={onClickLoginButton}>
           <Box sx={styleSx.loginBox}>
-            <Grid container direction='column' alignItems="center" justifyContent="flex-start" spacing={2} sx={styleSx.grid}>
+            <Grid
+              container
+              direction="column"
+              alignItems="center"
+              justifyContent="flex-start"
+              spacing={2}
+              sx={styleSx.grid}
+            >
               <Grid item>
                 <TextField
                   variant="outlined"
@@ -175,28 +202,28 @@ export default function Login() {
                     onChange={onChangeStation}
                   >
                     {stationList.map(({ _id, label }) => (
-                      <MenuItem key={_id} value={_id}>{label}</MenuItem>
+                      <MenuItem key={_id} value={_id}>
+                        {label}
+                      </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
               </Grid>
 
               <Grid item>
-                {
-                  loginLoading
-                    ? <CircularProgress />
-                    : (
-                      <Button
-                        type="submit"
-                        // onClick={onClickLoginButton}
-                        variant="contained"
-                        sx={styleSx.loginButton}
-                        disabled={loginLoading}
-                      >
-                        {t('Login')}
-                      </Button>
-                    )
-                }
+                {loginLoading ? (
+                  <CircularProgress />
+                ) : (
+                  <Button
+                    type="submit"
+                    // onClick={onClickLoginButton}
+                    variant="contained"
+                    sx={styleSx.loginButton}
+                    disabled={loginLoading}
+                  >
+                    {t("Login")}
+                  </Button>
+                )}
               </Grid>
             </Grid>
             <Box sx={{ marginTop: 2 }}>

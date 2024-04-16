@@ -11,15 +11,16 @@ import React, {
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+import CloudDoneIcon from "@mui/icons-material/CloudDone";
 
 // Internal
 import PageWrapper from "../../structure/PageWrapper";
 import API from "../../api";
-import GetSelectedStation from "../../utils/Hooks/GetSelectedStation";
 import GetStationsList from "../../utils/Hooks/GetStationsList";
 import Select from "../../components/Select";
 import AppBar from "./AppBar";
 import RegionBox from "./RegionBox";
+import { setNotificationBar } from "../../store/slices/app";
 
 // Third-party
 import { FixedSizeList } from "react-window";
@@ -31,8 +32,6 @@ import {
 } from "@pronestor/react-zoom-pan-pinch";
 import JsonView from "react18-json-view";
 import "react18-json-view/src/style.css";
-import CloudDoneIcon from "@mui/icons-material/CloudDone";
-import { setNotificationBar } from "../../store/slices/app";
 
 const appBarHeight = 64;
 
@@ -93,56 +92,56 @@ const style = {
   },
 };
 
-function getImageDataList(filesList) {
-  filesList.sort((a, b) => b.name - a.name);
-  let lenFilesList = filesList.length;
-  let imageData;
-  let newFilesList = [];
-  for (let i = 0; i < lenFilesList; i++) {
-    let fileData = filesList[i];
-    if (fileData.name.endsWith(".json")) {
-      if (imageData) {
-        let imageNameWithoutExtension = imageData.name
-          .split(".")
-          .slice(0, -1)
-          .join(".");
-        let jsonNameWithoutExtension = fileData.name
-          .split(".")
-          .slice(0, -1)
-          .join(".");
-        if (
-          imageNameWithoutExtension &&
-          imageNameWithoutExtension === jsonNameWithoutExtension
-        ) {
-          imageData.hasJson = true;
-          imageData.jsonFileData = { ...fileData };
-          newFilesList.push(imageData);
-          imageData = null;
-        }
-      }
-    } else {
-      if (imageData) {
-        imageData.hasJson = false;
-        newFilesList.push(imageData);
-      }
-      imageData = { ...fileData };
-    }
-  }
+// function getImageDataList(filesList) {
+//   filesList.sort((a, b) => b.name - a.name);
+//   let lenFilesList = filesList.length;
+//   let imageData;
+//   let newFilesList = [];
+//   for (let i = 0; i < lenFilesList; i++) {
+//     let fileData = filesList[i];
+//     if (fileData.name.endsWith(".json")) {
+//       if (imageData) {
+//         let imageNameWithoutExtension = imageData.name
+//           .split(".")
+//           .slice(0, -1)
+//           .join(".");
+//         let jsonNameWithoutExtension = fileData.name
+//           .split(".")
+//           .slice(0, -1)
+//           .join(".");
+//         if (
+//           imageNameWithoutExtension &&
+//           imageNameWithoutExtension === jsonNameWithoutExtension
+//         ) {
+//           imageData.hasJson = true;
+//           imageData.jsonFileData = { ...fileData };
+//           newFilesList.push(imageData);
+//           imageData = null;
+//         }
+//       }
+//     } else {
+//       if (imageData) {
+//         imageData.hasJson = false;
+//         newFilesList.push(imageData);
+//       }
+//       imageData = { ...fileData };
+//     }
+//   }
 
-  if (imageData) {
-    imageData.hasJson = false;
-    newFilesList.push(imageData);
-    imageData = null;
-  }
+//   if (imageData) {
+//     imageData.hasJson = false;
+//     newFilesList.push(imageData);
+//     imageData = null;
+//   }
 
-  newFilesList
-    .sort((a, b) => b.birthtime - a.birthtime)
-    .map((fileData, index) => {
-      fileData.index = index;
-      return fileData;
-    });
-  return newFilesList;
-}
+//   newFilesList
+//     .sort((a, b) => b.birthtime - a.birthtime)
+//     .map((fileData, index) => {
+//       fileData.index = index;
+//       return fileData;
+//     });
+//   return newFilesList;
+// }
 
 const getButtonStyle = ({ selected, width, height }) => {
   return {
@@ -174,7 +173,7 @@ const getButtonStyle = ({ selected, width, height }) => {
 };
 
 export default function ImageAnalyser({ pageOptions }) {
-  const { _id: stationId } = GetSelectedStation();
+  // const { _id: stationId } = GetSelectedStation();
   const stationsList = GetStationsList();
 
   const listRef = useRef();
@@ -419,6 +418,7 @@ export default function ImageAnalyser({ pageOptions }) {
     // listRef.current = newImagesList;
 
     setImageList([...newImagesList]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inspections]);
 
   const handleUpdateEvent = ({ data }) => {

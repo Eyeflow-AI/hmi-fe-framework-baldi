@@ -35,6 +35,7 @@ const CustomTooltip = ({ color, value, id, value_type, total }) => {
       setCurrentValue(_currentValue);
       setValueSymbol("%");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value_type]);
 
   return (
@@ -142,52 +143,52 @@ const responsiveLegends = [
   },
 ];
 
-const months = ["jan", "feb", "mar"];
-const items = ["tare_ok", "tare_ng", "no_plate"];
-const _colors = [
-  `${colors.eyeflow.green.dark}80`,
-  `${colors.red}60`,
-  `${colors.red}90`,
-];
+// const months = ["jan", "feb", "mar"];
+// const items = ["tare_ok", "tare_ng", "no_plate"];
+// const _colors = [
+//   `${colors.eyeflow.green.dark}80`,
+//   `${colors.red}60`,
+//   `${colors.red}90`,
+// ];
 
-const generateData = months.map((month) => {
-  let monthData = {
-    month,
-  };
-  // set a random value negative or positive
-  let _item = {};
+// const generateData = months.map((month) => {
+//   let monthData = {
+//     month,
+//   };
+//   // set a random value negative or positive
+//   let _item = {};
 
-  items.forEach((item, index) => {
-    let isPositive = false;
-    if (item === "tare_nok" || item === "no_plate") {
-      // monthData[item] = Math.round(Math.random() * -100);
-      _item[item] = Math.round(Math.random() * -100);
-    } else {
-      // monthData[item] = Math.round(Math.random() * 100);
-      _item[item] = Math.round(Math.random() * 100);
-      isPositive = true;
-    }
-    _item[`${item}Color`] = _colors[index];
-  });
+//   items.forEach((item, index) => {
+//     let isPositive = false;
+//     if (item === "tare_nok" || item === "no_plate") {
+//       // monthData[item] = Math.round(Math.random() * -100);
+//       _item[item] = Math.round(Math.random() * -100);
+//     } else {
+//       // monthData[item] = Math.round(Math.random() * 100);
+//       _item[item] = Math.round(Math.random() * 100);
+//       isPositive = true;
+//     }
+//     _item[`${item}Color`] = _colors[index];
+//   });
 
-  // leave the values as percentages
-  let total = 0;
-  Object.keys(_item).forEach((item) => {
-    if (!item.includes("Color")) {
-      total += Math.abs(_item[item]);
-    }
-  });
-  Object.keys(_item).forEach((item) => {
-    if (!item.includes("Color")) {
-      _item[item] =
-        (Math.abs(_item[item]) / total) * 100 * (_item[item] < 0 ? -1 : 1);
-      // round to two decimals
-      _item[item] = Math.round(_item[item] * 100) / 100;
-    }
-  });
-  monthData = { ...monthData, ..._item };
-  return monthData;
-});
+//   // leave the values as percentages
+//   let total = 0;
+//   Object.keys(_item).forEach((item) => {
+//     if (!item.includes("Color")) {
+//       total += Math.abs(_item[item]);
+//     }
+//   });
+//   Object.keys(_item).forEach((item) => {
+//     if (!item.includes("Color")) {
+//       _item[item] =
+//         (Math.abs(_item[item]) / total) * 100 * (_item[item] < 0 ? -1 : 1);
+//       // round to two decimals
+//       _item[item] = Math.round(_item[item] * 100) / 100;
+//     }
+//   });
+//   monthData = { ...monthData, ..._item };
+//   return monthData;
+// });
 
 export default function DivergingBar({ chart }) {
   const { t } = useTranslation();
@@ -286,6 +287,7 @@ export default function DivergingBar({ chart }) {
       //     : false
       // );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chart]);
   // console.log({ generateData, chart, info });
 

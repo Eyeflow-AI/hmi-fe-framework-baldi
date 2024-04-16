@@ -11,7 +11,7 @@ export default function TextField({
   console.log({ TextField: name, tag, componentsInfo });
 
   const [value, setValue] = useState("");
-  const [error, setError] = useState(false);
+  const error = false;
 
   useEffect(() => {
     if (componentsInfo && typeof componentsInfo === "object") {
@@ -21,6 +21,7 @@ export default function TextField({
       // console.log({ component });
       setValue(component?.text);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [componentsInfo]);
 
   return (

@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 
 import CircularProgress from "@mui/material/CircularProgress";
-import Typography from "@mui/material/Box";
 import Box from "@mui/material/Box";
 
 import Tooltip from "../Wrapper/Tooltip";
 
-import { colors } from "sdk-fe-eyeflow";
 import { t } from "i18next";
 
 const styleSx = {
@@ -73,7 +71,7 @@ export default function Image({
   const [imageURL, setImageURL] = useState("");
   const [imageCaption, setImageCaption] = useState("");
   const [tooltip, setTooltip] = useState({});
-  const [_name, _setName] = useState("");
+  // const [_name, _setName] = useState("");
 
   useEffect(() => {
     if (componentsInfo && typeof componentsInfo === "object") {
@@ -86,6 +84,7 @@ export default function Image({
       setTooltip(component?.tooltip);
       setOnImageLoading(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [componentsInfo]);
 
   console.log({ onImageLoading });
@@ -97,11 +96,11 @@ export default function Image({
     }
   }, [onImageLoading]);
 
-  useEffect(() => {
-    if (name) {
-      _setName(name);
-    }
-  }, [name]);
+  // useEffect(() => {
+  //   if (name) {
+  //     _setName(name);
+  //   }
+  // }, [name]);
 
   return (
     <Tooltip tooltip={tooltip}>

@@ -3,14 +3,12 @@ import React, { useMemo } from "react";
 
 // Design
 import Box from "@mui/material/Box";
-import Tooltip from "@mui/material/Tooltip";
 import CircularProgress from "@mui/material/CircularProgress";
 
 // Internal
 import { IconButton } from "../../../componentsStore/Button";
 
 // Third-party
-import { useTranslation } from "react-i18next";
 
 const mainBoxSx = Object.assign({}, window.app_config.style.box, {
   bgcolor: "background.paper",
@@ -47,7 +45,6 @@ const style = {
 
 export default function EventAppBar({ config, stationId, componentsInfo }) {
   console.log({ EventAppBar: componentsInfo, config });
-  const { t } = useTranslation();
 
   const { buttonList, hasAppBar } = useMemo(() => {
     let buttonList = [];
@@ -85,6 +82,7 @@ export default function EventAppBar({ config, stationId, componentsInfo }) {
       buttonList,
       hasAppBar,
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [componentsInfo, config]);
   console.log({ hasAppBar });
 

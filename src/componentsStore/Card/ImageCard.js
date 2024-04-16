@@ -19,7 +19,7 @@ const styleSx = {
   },
   imageBoxSx: {
     position: "block",
-    position: "absolute",
+    // position: "absolute",
     width: "100%",
     // height: "calc(100% - 50px)",
     height: "inherit", // 'calc(100% - 50px)
@@ -80,9 +80,8 @@ export default function ImageCard({
   const [timestamp, setTimestamp] = useState("");
   const [imageURL, setImageURL] = useState("");
   const [imageCaption, setImageCaption] = useState("");
-  const [color, setColor] = useState("");
   const [tooltip, setTooltip] = useState({});
-  const [_name, _setName] = useState("");
+  // const [_name, _setName] = useState("");
   const [backgroundColor, setBackgroundColor] = useState("");
   const [_style, _setStyle] = useState({});
 
@@ -105,7 +104,6 @@ export default function ImageCard({
       setAdjacentText(component?.adjacentText);
       setTimestamp(component?.timestamp);
       setImageURL(component?.imageURL);
-      setColor(component?.color);
       setImageCaption(component?.imageCaption);
       setTooltip(component?.tooltip);
       setOnImageLoading(true);
@@ -117,6 +115,7 @@ export default function ImageCard({
           : colors.statuses[status];
       setBackgroundColor(backgroundColor);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [componentsInfo]);
 
   console.log({ onImageLoading });
@@ -128,11 +127,11 @@ export default function ImageCard({
     }
   }, [onImageLoading]);
 
-  useEffect(() => {
-    if (name) {
-      _setName(name);
-    }
-  }, [name]);
+  // useEffect(() => {
+  //   if (name) {
+  //     _setName(name);
+  //   }
+  // }, [name]);
 
   return (
     <Tooltip tooltip={tooltip}>

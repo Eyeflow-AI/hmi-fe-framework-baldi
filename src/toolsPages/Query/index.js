@@ -199,7 +199,7 @@ export default function Query({ pageOptions }) {
       setSearchMethod(searchMethod);
       setCurrentText(JSON.stringify(method, undefined, 4));
     }
-    // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedQuery]);
 
   useEffect(() => {

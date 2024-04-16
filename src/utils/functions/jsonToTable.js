@@ -66,8 +66,8 @@ module.exports = function transformJSONToTable(docs, options = {}) {
         if (header.indexOf(".`") > -1) {
           // One of those special cases where a path is nested, AND has a dot in the name.
           const parts = header.split(".`");
-          const head = parts[0].replace(/\`/g, "");
-          const tail = parts[1].replace(/\`/g, "");
+          const head = parts[0].replace(/`/g, "");
+          const tail = parts[1].replace(/`/g, "");
 
           return _.get(doc, head, {})[tail];
         }

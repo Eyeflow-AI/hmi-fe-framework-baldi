@@ -17,7 +17,7 @@ const styleSx = {
 export default function Table({ name, tag, componentsInfo, style, metadata }) {
   console.log({ Table: name, tag, componentsInfo, style });
 
-  const [error, setError] = useState(false);
+  // const [error, setError] = useState(false);
   const [_style, _setStyle] = useState({});
   const [headers, setHeaders] = useState([]);
   const [body, setBody] = useState([]);
@@ -58,6 +58,7 @@ export default function Table({ name, tag, componentsInfo, style, metadata }) {
       setHeaders(headers);
       setBody(body);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [componentsInfo]);
 
   return (

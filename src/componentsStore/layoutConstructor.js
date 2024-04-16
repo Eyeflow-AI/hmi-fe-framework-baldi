@@ -77,6 +77,7 @@ export default function LayoutConstructor({
       }
     });
     setToBeShown(component);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config, componentsInfo]);
   return toBeShown;
 }

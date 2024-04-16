@@ -30,6 +30,7 @@ export default function EventDataBox({
   setComponentsInfo,
   stationId,
 }) {
+  // eslint-disable-next-line no-unused-vars
   const { width, height } = GetWindowDimentions();
   return (
     <Box sx={styleSx.mainBox} height={height}>

@@ -15,7 +15,7 @@ export default function Select({
   setComponentsInfo,
   stationId,
 }) {
-  const [label, setLabel] = useState("");
+  // const [label, setLabel] = useState("");
   const [value, setValue] = useState("");
   const [list, setList] = useState([]);
   const [on, setOn] = useState({});
@@ -51,6 +51,7 @@ export default function Select({
       setOn(_on);
       setValue(_value);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [componentsInfo]);
 
   // useEffect(() => {
@@ -76,7 +77,12 @@ export default function Select({
       >
         {metadata?.label}
       </InputLabel>
-      <MUISelect labelId="select" id="select" value={value} label={label}>
+      <MUISelect
+        labelId="select"
+        id="select"
+        value={value}
+        label={metadata?.label}
+      >
         {list.map((item, index) => (
           <MenuItem
             key={index}

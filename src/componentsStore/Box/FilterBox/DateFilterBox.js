@@ -1,5 +1,5 @@
 // React
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 
 //Design
 import Box from "@mui/material/Box";
@@ -60,6 +60,7 @@ export default function DateFilterBox({ onChangeParams }) {
       }
     }, 60000);
     return () => clearInterval(interval);
+    // eslint-disable-next-line
   }, []);
 
   return (

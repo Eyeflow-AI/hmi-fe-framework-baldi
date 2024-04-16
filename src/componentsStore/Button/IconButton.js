@@ -10,7 +10,6 @@ import { setNotificationBar } from "../../store/slices/app";
 import eventsHandler from "../../utils/functions/eventsHandler";
 
 // Third-party
-import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 
 const style = {
@@ -34,7 +33,6 @@ export default function IconButton({
   fnName,
 }) {
   const dispatch = useDispatch();
-  const { t } = useTranslation();
   console.log({ component, IconButtonbuttonData: tooltip });
 
   const handleNotificationBar = (message, severity) => {

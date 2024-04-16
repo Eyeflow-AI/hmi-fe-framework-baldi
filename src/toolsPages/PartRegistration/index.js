@@ -124,6 +124,7 @@ export default function PartRegistration({ pageOptions }) {
           : `${item?.camera_name}`
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openImageDialog, openImageInfoDialog]);
 
   useEffect(() => {

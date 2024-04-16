@@ -56,6 +56,7 @@ export default function Home({ pageOptions }) {
     }
     // let pageList = .map((page) => {window.app_config.pages[]});
     return { pageList };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageOptions]);
 
   useEffect(() => {
