@@ -44,7 +44,7 @@ const style = {
   itemImage: {
     height: 70,
     maxWidth: "calc(100% - 10px)",
-    filter: "invert(1)",
+    // filter: "invert(1)",
   },
   itemFooter: {
     paddingBottom: 0.2,
