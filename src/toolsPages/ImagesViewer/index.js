@@ -1,10 +1,5 @@
 // React
-import React, {
-  useEffect,
-  useState,
-  Fragment,
-  useMemo,
-} from "react";
+import React, { useEffect, useState, Fragment, useMemo } from "react";
 
 //Design
 import Box from "@mui/material/Box";
@@ -21,10 +16,10 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 //Internal
 import fetchJson from "../../utils/functions/fetchJson";
-import PageWrapper from "../../components/PageWrapper";
+import PageWrapper from "../../structure/PageWrapper";
 
 // Third-party
-import AutoSizer from 'react-virtualized-auto-sizer';
+import AutoSizer from "react-virtualized-auto-sizer";
 import { useTranslation } from "react-i18next";
 import { downloadImage } from "sdk-fe-eyeflow";
 import { CardActions } from "@mui/material";
@@ -45,7 +40,6 @@ const style = {
 };
 
 export default function ImagesViewer({ pageOptions }) {
-
   const { t } = useTranslation();
 
   const [imagesList, setImagesList] = useState([]);
@@ -73,25 +67,31 @@ export default function ImagesViewer({ pageOptions }) {
     setImagePath(imgPath);
     setImageName(imgName);
     setLoadingImage(false);
-  }
+  };
 
   useEffect(() => {
     fetchJson(dirPath)
       .then((res) => {
-        let _days = res.filter(item => item.type === "directory").map((item) => {
-          return {
-            date: item.name,
-            formattedDate: item.name.substring(6, 8) + "/" + item.name.substring(4, 6) + "/" + item.name.substring(0, 4),
-          };
-        });
+        let _days = res
+          .filter((item) => item.type === "directory")
+          .map((item) => {
+            return {
+              date: item.name,
+              formattedDate:
+                item.name.substring(6, 8) +
+                "/" +
+                item.name.substring(4, 6) +
+                "/" +
+                item.name.substring(0, 4),
+            };
+          });
 
         _days.reverse();
         setDays(_days);
       })
       .catch((err) => {
         console.log(err);
-      }
-    );
+      });
   }, [dirPath]);
 
   useEffect(() => {
@@ -103,25 +103,27 @@ export default function ImagesViewer({ pageOptions }) {
     const fetchFiles = async () => {
       try {
         const res = await fetchJson(`${dirPath}/${day}/`);
-        const filesList = res.filter(item => item.name.includes('.jpg')).map(item => ({
-          name: item.name,
-          mtime: item.mtime,
-        }));
+        const filesList = res
+          .filter((item) => item.name.includes(".jpg"))
+          .map((item) => ({
+            name: item.name,
+            mtime: item.mtime,
+          }));
 
-        const imagesList = filesList.map(item => item.name);
-        const imageDatesList = filesList.map(item => {
+        const imagesList = filesList.map((item) => item.name);
+        const imageDatesList = filesList.map((item) => {
           const mtimeString = item.mtime;
 
           const date = new Date(mtimeString);
-          const formattedDate = date.toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
+          const formattedDate = date.toLocaleDateString("pt-BR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
           });
-          const formattedTime = date.toLocaleTimeString('pt-BR', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
+          const formattedTime = date.toLocaleTimeString("pt-BR", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
           });
 
           return `${formattedDate} - ${formattedTime}`;
@@ -136,10 +138,7 @@ export default function ImagesViewer({ pageOptions }) {
       }
     };
     fetchFiles();
-  }, [
-    day,
-    dirPath,
-  ]);
+  }, [day, dirPath]);
 
   const itemRenderer = ({ index, style }) => {
     let currentImage = imagesList[index];
@@ -147,10 +146,10 @@ export default function ImagesViewer({ pageOptions }) {
 
     const customStyle = Object.assign(
       {
-        display: 'flex',
+        display: "flex",
         flexDirection: "column",
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: "center",
+        alignItems: "center",
         width: "100%",
         height: "150px",
         //marginBottom: 5,
@@ -176,7 +175,8 @@ export default function ImagesViewer({ pageOptions }) {
             justifyContent: "center",
             alignItems: "center",
             //gap: 1,
-            bgcolor: index === selectedImageIndex ? "lightblue" : "background.paper",
+            bgcolor:
+              index === selectedImageIndex ? "lightblue" : "background.paper",
           }}
         >
           <CardMedia
@@ -188,7 +188,13 @@ export default function ImagesViewer({ pageOptions }) {
               cursor: "pointer",
               marginTop: 1,
             }}
-            onClick={() => onClickImage(`${dirPath}${day}/${currentImage}`, `${currentImage.replace('.jpg', '')} - ${currentImageDate}`, index)}
+            onClick={() =>
+              onClickImage(
+                `${dirPath}${day}/${currentImage}`,
+                `${currentImage.replace(".jpg", "")} - ${currentImageDate}`,
+                index
+              )
+            }
             image={`${dirPath}/${day}/${currentImage}`}
             alt={currentImageDate}
           />
@@ -201,12 +207,24 @@ export default function ImagesViewer({ pageOptions }) {
               //gap: 1,
             }}
           >
-            <Typography textAlign="center" variant="body2" sx={{ marginRight: 1 }}>{`${currentImageDate}`}</Typography>
+            <Typography
+              textAlign="center"
+              variant="body2"
+              sx={{ marginRight: 1 }}
+            >{`${currentImageDate}`}</Typography>
             <Tooltip title={t("download")}>
               <IconButton
                 edge="start"
                 color="inherit"
-                onClick={() => downloadImage(`${dirPath}${day}/${currentImage}`, `${currentImage.replace('.jpg', '')}-${currentImageDate.replaceAll(' ', '')}`)}
+                onClick={() =>
+                  downloadImage(
+                    `${dirPath}${day}/${currentImage}`,
+                    `${currentImage.replace(
+                      ".jpg",
+                      ""
+                    )}-${currentImageDate.replaceAll(" ", "")}`
+                  )
+                }
               >
                 <DownloadIcon />
               </IconButton>
@@ -214,18 +232,14 @@ export default function ImagesViewer({ pageOptions }) {
           </CardActions>
         </Card>
       </Grid>
-    )
-  }
+    );
+  };
 
   return (
     <Fragment>
       <PageWrapper>
         {({ width, height }) => (
-          <Box
-            width={width}
-            height={height}
-            sx={style.mainBox}
-          >
+          <Box width={width} height={height} sx={style.mainBox}>
             <Box
               sx={{
                 width: pageOptions.options.eventMenuWidth,
@@ -236,7 +250,9 @@ export default function ImagesViewer({ pageOptions }) {
                 //minWidth: "15%"
               }}
             >
-              <Box id="menu-box" height={height}
+              <Box
+                id="menu-box"
+                height={height}
                 sx={{
                   bgcolor: "background.paper",
                   display: "flex",
@@ -256,21 +272,24 @@ export default function ImagesViewer({ pageOptions }) {
                     flexDirection: "column",
                     justifyContent: "flex-start",
                     alignItems: "center",
-                  }}>
+                  }}
+                >
                   <Autocomplete
                     fullWidth
                     autoComplete
                     label="Date"
                     variant="outlined"
                     color="secondary"
-                    sx={{ width: "100%", }}
+                    sx={{ width: "100%" }}
                     value={day[0]}
                     options={days}
                     defaultValue={days[0]}
                     onChange={(_, newValue) => setDay(newValue?.date)}
                     renderInput={(params) => <TextField {...params} />}
                     getOptionLabel={(option) => option?.formattedDate ?? ""}
-                    isOptionEqualToValue={(option, value) => option?.date === value?.date}
+                    isOptionEqualToValue={(option, value) =>
+                      option?.date === value?.date
+                    }
                   />
                 </Box>
                 <Grid
@@ -284,26 +303,30 @@ export default function ImagesViewer({ pageOptions }) {
                     height: "100%",
                   }}
                 >
-                  {loadingFilesList ?
+                  {loadingFilesList ? (
                     <Grid>
                       <CircularProgress />
                     </Grid>
-                    : imagesList.length === 0 && day ? (
-                      <Grid>
-                        <Typography variant="h6" textAlign="center">{t("empty_list")}</Typography>
-                      </Grid>
-                    ) : imagesList.length > 0 && !loadingFilesList && (
+                  ) : imagesList.length === 0 && day ? (
+                    <Grid>
+                      <Typography variant="h6" textAlign="center">
+                        {t("empty_list")}
+                      </Typography>
+                    </Grid>
+                  ) : (
+                    imagesList.length > 0 &&
+                    !loadingFilesList && (
                       <Box
                         width={menuWidth}
                         sx={{
-                          bgcolor: 'background.paper',
+                          bgcolor: "background.paper",
                           height: `calc(${height}px - 55px)`,
-                          width: '100%',
+                          width: "100%",
                           gap: 1,
-                          display: 'flex',
-                          flexDirection: 'column',
+                          display: "flex",
+                          flexDirection: "column",
                           p: 1,
-                          flexGrow: 1
+                          flexGrow: 1,
                         }}
                       >
                         <AutoSizer>
@@ -320,7 +343,7 @@ export default function ImagesViewer({ pageOptions }) {
                         </AutoSizer>
                       </Box>
                     )
-                  }
+                  )}
                 </Grid>
               </Box>
             </Box>
@@ -341,7 +364,9 @@ export default function ImagesViewer({ pageOptions }) {
             >
               {imagesList.length > 0 && !imagePath ? (
                 <Box>
-                  <Typography variant="h6" textAlign="center">{t("select_an_image_for_download")}</Typography>
+                  <Typography variant="h6" textAlign="center">
+                    {t("select_an_image_for_download")}
+                  </Typography>
                 </Box>
               ) : (
                 imagePath && (
@@ -379,7 +404,7 @@ export default function ImagesViewer({ pageOptions }) {
                               gap: 5,
                               width: "100%",
                               bgcolor: "background.paper",
-                              minHeight: "5%"
+                              minHeight: "5%",
                             }}
                           >
                             <Typography textAlign="center">{`${imageName}`}</Typography>
@@ -387,7 +412,9 @@ export default function ImagesViewer({ pageOptions }) {
                               <IconButton
                                 edge="start"
                                 color="inherit"
-                                onClick={() => downloadImage(imagePath, imageName)}
+                                onClick={() =>
+                                  downloadImage(imagePath, imageName)
+                                }
                               >
                                 <DownloadIcon />
                               </IconButton>
@@ -397,7 +424,8 @@ export default function ImagesViewer({ pageOptions }) {
                       )}
                     </Card>
                   </Fragment>
-                ))}
+                )
+              )}
             </Box>
           </Box>
         )}

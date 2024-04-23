@@ -10,7 +10,6 @@ import {
   CarouselWithQuery,
   CarouselItem,
 } from "../../../../componentsStore/Carousel";
-import GetComponentData from "../../../../utils/Hooks/GetComponentData";
 import getComponentData from "../../../../utils/functions/getComponentData";
 import Clock from "../../../../utils/Hooks/Clock";
 import lodash from "lodash";
@@ -71,7 +70,7 @@ export default function EventMenuBox({
   stationId,
   setLoadingSelectedItem,
 }) {
-  const [changeEventType, setChangeEventType] = useState("");
+  const [changeEventType, setChangeEventType] = useState("update");
 
   const [queryParams, setQueryParams] = useState(null);
 
@@ -144,6 +143,7 @@ export default function EventMenuBox({
     });
     // console.log({ response });
     // setResponse(response);
+    // eslint-disable-next-line
   }, [queryParams, conveyourClock]);
 
   const [runningItemResponse, setRunningItemResponse] = useState(null);
@@ -160,6 +160,7 @@ export default function EventMenuBox({
       setResponse: (newResponse) =>
         handleRunningItemResponse(runningItemResponse, newResponse),
     });
+    // eslint-disable-next-line
   }, [runningItemClock]);
 
   // const {
@@ -203,6 +204,7 @@ export default function EventMenuBox({
   };
 
   const handleSelectItem = (item, type = "click") => {
+    console.log({ type });
     setSelectedItem(item);
     setChangeEventType(type);
   };
@@ -233,7 +235,7 @@ export default function EventMenuBox({
     } else if (
       changeEventType === "update" &&
       selectedItem &&
-      selectedItem._id &&
+      selectedItem?._id &&
       selectedItem?.on?.update
     ) {
       let query = selectedItem;
@@ -247,11 +249,11 @@ export default function EventMenuBox({
       });
     }
 
-    if (changeEventType !== "") {
-      setChangeEventType("");
-    }
+    // if (changeEventType !== "") {
+    //   setChangeEventType("update");
+    // }
     // eslint-disable-next-line
-  }, [changeEventType]);
+  }, [changeEventType, selectedItem]);
 
   useEffect(() => {
     let _runningItem =
@@ -260,17 +262,19 @@ export default function EventMenuBox({
 
     if (JSON.stringify(_runningItem?.output) !== JSON.stringify(runningItem)) {
       setRunningItem(_runningItem?.output ?? null);
-      if (_runningItem?.output?._id === selectedItem?._id) {
-        handleSelectItem(_runningItem?.output, "update");
-      }
+      // if (_runningItem?.output?._id === selectedItem?._id) {
+      //   handleSelectItem(_runningItem?.output, "update");
+      // }
     }
 
     // página carregada e sem item selecionado
-    if (!selectedItem && _runningItem?.output) {
-      handleSelectItem(_runningItem?.output, "update");
-    }
+    // if (!selectedItem && _runningItem?.output) {
+    //   handleSelectItem(_runningItem?.output, "update");
+    // }
     // eslint-disable-next-line
   }, [runningItemComponent, runningItemResponse]);
+
+  console.log({ changeEventType });
 
   useEffect(() => {
     let item =
@@ -278,15 +282,24 @@ export default function EventMenuBox({
 
     // página carregada e sem item selecionado
     if (!selectedItem && item?.output?.length > 0) {
+      console.log("entrou1", item);
       handleSelectItem(item.output[0], "update");
     } else if (selectedItem && item?.output?.length > 0) {
+      console.log("entrou2");
       let _item = item?.output?.find((item) => item?._id === selectedItem?._id);
+      console.log({ _item });
       // página carregada e com item selecionado, mas o item não está na lista
       if (!_item && runningItem?._id !== selectedItem?._id) {
+        console.log("entrou3");
         handleSelectItem(_item?.output?.[0], "update");
       }
       // página carregada e com item selecionado, e o item está na lista
-      else {
+      else if (
+        changeEventType === "update" &&
+        item?.output?.[0]?._id !== selectedItem?._id
+      ) {
+        handleSelectItem(item?.output?.[0], "update");
+      } else {
         if (
           JSON.stringify(_item) !== JSON.stringify(selectedItem) &&
           _item &&
