@@ -8,16 +8,19 @@ import React, {
 } from "react";
 
 // Design
-import { Box, Typography, Card, CardMedia } from "@mui/material";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardMedia from "@mui/material/CardMedia";
+import Typography from "@mui/material/Typography";
 
 // Internal
-import PageWrapper from "../../components/PageWrapper";
+import PageWrapper from "../../structure/PageWrapper";
 import ImageDialog from "../../components/ImageDialog";
 import GetImagesList from "../utils/Hooks/GetImagesList";
 import GetEdgeEnvVar from "../../utils/Hooks/GetEdgeEnvVar";
 
-import axios from "axios";
 // Third-party
+import axios from "axios";
 
 const style = {
   mainBox: Object.assign({}, window.app_config.style.box, {
@@ -34,7 +37,6 @@ export default function ImagesCapturer({ pageOptions }) {
   const [openImageDialog, setOpenImageDialog] = useState(false);
   const [openImageInfoDialog, setOpenImageInfoDialog] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
-  const [takeOneFrame, setTakeOneFrame] = useState(false);
   const [imagePath, setImagePath] = useState("");
   const [recording, setRecording] = useState(false);
   const { imageBaseURL, infoURL, envVarURL, appbarButtonList } = useMemo(() => {
@@ -110,6 +112,7 @@ export default function ImagesCapturer({ pageOptions }) {
         })
         .catch(console.error);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recording, envVarURL]);
 
   const refImagesList = useRef(imagesList);
@@ -128,6 +131,7 @@ export default function ImagesCapturer({ pageOptions }) {
       setImagePath(item?.full_url);
       setOpenImageInfoDialog(true);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [imagesList]
   );
 
@@ -149,6 +153,7 @@ export default function ImagesCapturer({ pageOptions }) {
         onClick,
       };
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appbarButtonList, recording]);
 
   return (
@@ -189,9 +194,9 @@ export default function ImagesCapturer({ pageOptions }) {
                       justifyContent: "center",
                       alignItems: "center",
                       boxShadow: 1,
-                      borderRadius: '1rem',
-                      padding: '1rem',
-                      cursor: 'pointer',
+                      borderRadius: "1rem",
+                      padding: "1rem",
+                      cursor: "pointer",
                     }}
                     onClick={onOpenDialog(item)}
                   >
@@ -199,14 +204,14 @@ export default function ImagesCapturer({ pageOptions }) {
                       component="img"
                       image={`${item?.full_url}?time=${clock}`}
                       style={{
-                        objectFit: 'contain',
+                        objectFit: "contain",
                         //maxWidth: `calc(${pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)]})`,
-                        minWidth: '2560px * 0.3',
+                        minWidth: "2560px * 0.3",
                         //maxHeight: pageOptions?.options?.IMAGE_SIZES[String(imagesList.length)],
-                        minHeigth: '1440px * 0.3',
-                        display: 'block',
-                        margin: 'auto',
-                        paddingBottom: '.5rem',
+                        minHeigth: "1440px * 0.3",
+                        display: "block",
+                        margin: "auto",
+                        paddingBottom: ".5rem",
                       }}
                     />
                   </Card>

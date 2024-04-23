@@ -9,22 +9,25 @@ const Menu = lazy(() => import("./pages/Menu"));
 const Login = lazy(() => import("./pages/Login"));
 const UserSettings = lazy(() => import("./pages/UserSettings"));
 
-const MonitorBatch = lazy(() => import("./pages/MonitorBatch"));
-const MonitorSerial = lazy(() => import("./pages/MonitorSerial"));
+// const MonitorBatch = lazy(() => import("./pages/MonitorBatch"));
+// const MonitorSerial = lazy(() => import("./pages/MonitorSerial"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Management = lazy(() => import("./pages/Management"));
 const Report = lazy(() => import("./pages/Report"));
+const Monitor = lazy(() => import("./pages/Monitor"));
+const Scripts = lazy(() => import("./toolsPages/Scripts"));
 
 const homeURL = "/app/:stationSlugLabel/home";
 
 const Query = lazy(() => import("./toolsPages/Query"));
-const Monitor = lazy(() => import("./toolsPages/Monitor"));
+const Cameras = lazy(() => import("./toolsPages/Cameras"));
 const ImagesCapturer = lazy(() => import("./toolsPages/ImagesCapturer"));
 const PartRegistration = lazy(() => import("./toolsPages/PartRegistration"));
 const ImagesViewer = lazy(() => import("./toolsPages/ImagesViewer"));
 const ImagesAnalyser = lazy(() => import("./toolsPages/ImagesAnalyser"));
 const ChecklistConnector = lazy(() => import("./toolsPages/ChecklistConnector"));
 const AppParameters = lazy(() => import("./toolsPages/AppParameters"));
+const Components = lazy(() => import("./toolsPages/Components"));
 
 function NotFound() {
   return <>404: Not Found</>;
@@ -36,20 +39,23 @@ function Version() {
 
 const components = {
   Menu: (pageOptions) => <Menu pageOptions={pageOptions} />,
-  MonitorBatch: (pageOptions) => <MonitorBatch pageOptions={pageOptions} />,
-  MonitorSerial: (pageOptions) => <MonitorSerial pageOptions={pageOptions} />,
+  // MonitorBatch: (pageOptions) => <MonitorBatch pageOptions={pageOptions} />,
+  // MonitorSerial: (pageOptions) => <MonitorSerial pageOptions={pageOptions} />,
   Dashboard: (pageOptions) => <Dashboard pageOptions={pageOptions} />,
   Management: (pageOptions) => <Management pageOptions={pageOptions} />,
   Report: (pageOptions) => <Report pageOptions={pageOptions} />,
 
   Query: (pageOptions) => <Query pageOptions={pageOptions} />,
-  Monitor: (pageOptions) => <Monitor pageOptions={pageOptions} />,
+  Cameras: (pageOptions) => <Cameras pageOptions={pageOptions} />,
   ImagesCapturer: (pageOptions) => <ImagesCapturer pageOptions={pageOptions} />,
   PartRegistration: (pageOptions) => <PartRegistration pageOptions={pageOptions} />,
   ImagesViewer: (pageOptions) => <ImagesViewer pageOptions={pageOptions} />,
   ImagesAnalyser: (pageOptions) => <ImagesAnalyser pageOptions={pageOptions} />,
   ChecklistConnector: (pageOptions) => (<ChecklistConnector pageOptions={pageOptions} />),
   AppParameters: (pageOptions) => <AppParameters pageOptions={pageOptions} />,
+  Monitor: (pageOptions) => <Monitor pageOptions={pageOptions} />,
+  Scripts: (pageOptions) => <Scripts pageOptions={pageOptions} />,
+  Components: (pageOptions) => <Components pageOptions={pageOptions} />,
 };
 
 export default function Routes({
@@ -72,7 +78,11 @@ export default function Routes({
         // console.log(components[value.component]);
         appRoutes.push({
           path: value.path,
-          element: components[value.component] ? components[value.component](value) : <NotFound />,
+          element: components[value.component] ? (
+            components[value.component](value)
+          ) : (
+            <NotFound />
+          ),
         });
       }
     }

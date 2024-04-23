@@ -1,6 +1,6 @@
 {
   "name": "hmi-fe-framework",
-  "version": "0.123.2",
+  "version": "2.2.0",
   "description": "Frontend framework for HMI",
   "private": true,
   "dependencies": {
@@ -19,12 +19,14 @@
     "@nivo/pie": "^0.83.0",
     "@pronestor/react-zoom-pan-pinch": "^2.4.5",
     "@reduxjs/toolkit": "^1.9.1",
+    "ace-builds": "^1.32.7",
     "axios": "^1.2.3",
     "date-fns": "^2.29.3",
     "i18next": "^22.4.9",
     "i18next-browser-languagedetector": "^7.0.1",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
+    "react-ace": "^10.1.0",
     "react-cropper": "^2.3.3",
     "react-dom": "^18.2.0",
     "react-i18next": "^12.1.4",
@@ -37,7 +39,8 @@
     "react-window": "^1.8.8",
     "react18-json-view": "^0.0.8",
     "redux-persist": "^6.0.0",
-    "sdk-fe-eyeflow": "^0.0.31",
+    "sdk-fe-eyeflow": "^0.0.32",
+    "traverse": "^0.6.8",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

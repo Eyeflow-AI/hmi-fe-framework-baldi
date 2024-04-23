@@ -1,0 +1,88 @@
+import API from "../../api";
+
+function getType(obj) {
+  // check if boolean
+  if (obj === true || obj === false) {
+    return "boolean";
+  }
+
+  if (
+    (new Date(obj) &&
+      new Date(obj) instanceof Date &&
+      String(new Date(obj)) !== "Invalid Date" &&
+      !(obj instanceof Boolean)) ||
+    obj instanceof Date
+  ) {
+    return "date";
+  }
+  if (obj === null) {
+    return "null";
+  }
+  if (obj === undefined) {
+    return "undefined";
+  }
+  if (Array.isArray(obj)) {
+    return "array";
+  }
+
+  if (Number.isNaN(obj)) {
+    return "NaN";
+  }
+
+  if (typeof obj === "number") {
+    if (Number.isInteger(obj)) {
+      return "integer";
+    }
+    return "float";
+  }
+  return typeof obj;
+}
+
+function putTypeInObjcts(obj) {
+  // read the type of the object and return a new object with the type
+
+  let newObj = {};
+  for (let key in obj) {
+    let type = getType(obj[key]);
+    let value = encodeURIComponent(obj[key]);
+    if (type === "object") {
+      // newObj[key] = putTypeInObjcts(obj[key]);
+      // continue;
+      value = JSON.stringify(obj[key]);
+    }
+
+    newObj[key] = {
+      type,
+      value,
+    };
+  }
+  return newObj;
+}
+
+const getComponentData = ({
+  query,
+  component,
+  stationId,
+  setLoading = null,
+  setResponse = null,
+}) => {
+  console.log({ iteminfo2: query });
+  let dataToSend = putTypeInObjcts(query);
+  console.log({ iteminfo2: dataToSend });
+  API.get
+    .componentData(
+      { query: JSON.stringify(dataToSend), component, stationId },
+      setLoading
+    )
+    .then((response) => {
+      let data = response?.result;
+      console.log({ response: data });
+      if (setResponse) {
+        setResponse(data);
+      }
+      return data;
+    })
+    .catch(console.log);
+};
+
+export default getComponentData;

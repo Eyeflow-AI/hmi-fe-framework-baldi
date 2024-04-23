@@ -1,98 +1,90 @@
 // React
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 // Design
 import {
-  Dialog
-  , DialogTitle
-  , DialogContent
-  , TableContainer
-  , Table
-  , TableHead
-  , TableBody
-  , TableRow
-  , TableCell
-  , Paper
-  , IconButton
-  , Tooltip
-  , FormControl
-  , InputLabel
-  , Select
-  , MenuItem
-  , TextField
-  , DialogActions
-  , Button
-} from '@mui/material';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import CloseIcon from '@mui/icons-material/Close';
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TableContainer,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Paper,
+  IconButton,
+  Tooltip,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+  DialogActions,
+  Button,
+} from "@mui/material";
+import AddBoxIcon from "@mui/icons-material/AddBox";
+import CloseIcon from "@mui/icons-material/Close";
 
 // Internal
-import API from '../../api';
-
+import API from "../../api";
 
 // Third-party
-import { useTranslation } from 'react-i18next';
-
+import { useTranslation } from "react-i18next";
 
 function AddReferenceDialog({ open, setOpen, schema }) {
-
   const { t } = useTranslation();
 
-
-  const [selectedType, setSelectedType] = useState('');
+  const [selectedType, setSelectedType] = useState("");
   const [referenceNameError, setReferenceNameError] = useState(false);
-  const [referenceName, setReferenceName] = useState('');
-
+  const [referenceName, setReferenceName] = useState("");
 
   const handleTypeSelection = (event) => {
     setSelectedType(event.target.value);
-  }
+  };
 
   const handleReferenceNameChange = (event) => {
     let value = event.target.value;
     setReferenceName(value);
     if (Object.keys(schema?.[selectedType] ?? {}).includes(value)) {
       setReferenceNameError(true);
-    }
-    else {
+    } else {
       setReferenceNameError(false);
     }
-  }
+  };
 
   const handleAddReference = () => {
-    API.put.referenceToSchema({ referenceName, referenceType: selectedType })
-      .then(res => {
+    API.put
+      .referenceToSchema({ referenceName, referenceType: selectedType })
+      .then((res) => {
         console.log(res);
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       })
       .finally(() => {
         setOpen(false);
-      })
-  }
+      });
+  };
 
   useEffect(() => {
     if (open) {
-      setSelectedType('');
-      setReferenceName('');
+      setSelectedType("");
+      setReferenceName("");
       setReferenceNameError(false);
     }
-  }, [open])
+  }, [open]);
 
   return (
-    <Dialog
-      open={open}
-      onClose={() => setOpen(false)}
-    >
+    <Dialog open={open} onClose={() => setOpen(false)}>
       <DialogTitle>
-        {t('add_reference')}
+        {t("add_reference")}
         <IconButton
           onClick={() => setOpen(false)}
           sx={{
-            position: 'absolute',
+            position: "absolute",
             right: 8,
-            top: 8
+            top: 8,
           }}
         >
           <CloseIcon />
@@ -105,7 +97,9 @@ function AddReferenceDialog({ open, setOpen, schema }) {
           }}
           fullWidth
         >
-          <InputLabel id="demo-simple-select-label">{t("reference_type")}</InputLabel>
+          <InputLabel id="demo-simple-select-label">
+            {t("reference_type")}
+          </InputLabel>
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
@@ -113,13 +107,13 @@ function AddReferenceDialog({ open, setOpen, schema }) {
             label={t("reference_type")}
             onChange={handleTypeSelection}
           >
-            {
-              Object.keys(schema ?? {}).map(key => {
-                return (
-                  <MenuItem key={key} value={key}>{key}</MenuItem>
-                )
-              })
-            }
+            {Object.keys(schema ?? {}).map((key) => {
+              return (
+                <MenuItem key={key} value={key}>
+                  {key}
+                </MenuItem>
+              );
+            })}
           </Select>
           <TextField
             ss={{
@@ -129,7 +123,7 @@ function AddReferenceDialog({ open, setOpen, schema }) {
             label={t("reference")}
             variant="outlined"
             error={referenceNameError}
-            helperText={referenceNameError && t('reference_already_exists')}
+            helperText={referenceNameError && t("reference_already_exists")}
             onChange={handleReferenceNameChange}
             value={referenceName}
           />
@@ -139,18 +133,15 @@ function AddReferenceDialog({ open, setOpen, schema }) {
         <Button
           startIcon={<AddBoxIcon />}
           variant="contained"
-          disabled={selectedType === '' || referenceNameError || !referenceName}
+          disabled={selectedType === "" || referenceNameError || !referenceName}
           onClick={handleAddReference}
         >
-          {t('add')}
+          {t("add")}
         </Button>
       </DialogActions>
     </Dialog>
-  )
+  );
 }
-
-
-
 
 export default function ChecklistReferenceSchemaDialog({
   open,
@@ -158,7 +149,6 @@ export default function ChecklistReferenceSchemaDialog({
   schema,
   getSchemaData,
 }) {
-
   const [schemaForTable, setSchemaForTable] = useState(null);
   const [openAddReference, setOpenAddReference] = useState(false);
 
@@ -190,50 +180,52 @@ export default function ChecklistReferenceSchemaDialog({
       });
       _schemaForTable.maxColumns = _schemaForTable.header.length;
       _schemaForTable.lines = [];
-      Array(_schemaForTable.maxLines).fill(undefined).forEach((_, index) => {
-        _schemaForTable.lines.push(Array(_schemaForTable.maxColumns).fill(undefined));
-      });
+      Array(_schemaForTable.maxLines)
+        .fill(undefined)
+        .forEach((_, index) => {
+          _schemaForTable.lines.push(
+            Array(_schemaForTable.maxColumns).fill(undefined)
+          );
+        });
 
       _schemaForTable.body.forEach((row, index) => {
         Object.keys(row).forEach((cell, i) => {
-          _schemaForTable.lines[i][index] = { [cell]: row[cell], header: _schemaForTable.header[index] };
-        })
-      })
+          _schemaForTable.lines[i][index] = {
+            [cell]: row[cell],
+            header: _schemaForTable.header[index],
+          };
+        });
+      });
 
       setSchemaForTable(_schemaForTable);
     }
   }, [schema]);
 
-
   useEffect(() => {
     if (open) {
       getSchemaData();
     }
-  }, [open])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   useEffect(() => {
     if (!openAddReference) {
       getSchemaData();
     }
-  }, [openAddReference])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openAddReference]);
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      maxWidth={'lg'}
-    >
-      <DialogTitle
-        textAlign={'center'}
-      >
-        {t('checklist_references_schema')}
-        <Tooltip title={t('add_reference')}>
+    <Dialog open={open} onClose={handleClose} maxWidth={"lg"}>
+      <DialogTitle textAlign={"center"}>
+        {t("checklist_references_schema")}
+        <Tooltip title={t("add_reference")}>
           <IconButton
             onClick={() => setOpenAddReference(true)}
             sx={{
-              position: 'absolute',
+              position: "absolute",
               right: 8,
-              top: 12
+              top: 12,
             }}
           >
             <AddBoxIcon />
@@ -243,61 +235,52 @@ export default function ChecklistReferenceSchemaDialog({
       <DialogContent>
         <Paper
           sx={{
-            width: '100%',
-            overflow: 'hidden',
+            width: "100%",
+            overflow: "hidden",
           }}
         >
           <TableContainer
             sx={{
-              maxHeight: 440
+              maxHeight: 440,
             }}
           >
             <Table stickyHeader>
               <TableHead>
                 <TableRow>
-                  {
-                    schemaForTable?.header?.map((key, index) => {
-                      return (
-                        <TableCell align='center' key={`${key}-${index}`}>
-                          {key}
-                        </TableCell>
-                      )
-                    })
-                  }
+                  {schemaForTable?.header?.map((key, index) => {
+                    return (
+                      <TableCell align="center" key={`${key}-${index}`}>
+                        {key}
+                      </TableCell>
+                    );
+                  })}
                 </TableRow>
               </TableHead>
               <TableBody>
-
-                {
-                  schemaForTable?.lines?.map((line, index) => {
-                    return (
-                      <TableRow key={index}>
-                        {
-                          line.map((cell, i) => {
-                            return (
+                {schemaForTable?.lines?.map((line, index) => {
+                  return (
+                    <TableRow key={index}>
+                      {line.map((cell, i) => {
+                        return (
+                          <>
+                            {cell ? (
                               <>
-                                {
-                                  cell ?
-                                    <>
-                                      <TableCell key={`${cell}-${i}-${index}`}>
-                                        {cell ? Object.keys(cell)[0] : ''}
-                                      </TableCell>
-                                    </>
-                                    :
-                                    <>
-                                      <TableCell key={`${cell}-${i}-${index}`} />
-                                    </>
-                                }
+                                <TableCell key={`${cell}-${i}-${index}`}>
+                                  {cell ? Object.keys(cell)[0] : ""}
+                                </TableCell>
                               </>
-                            )
-                          })
-                        }
-                      </TableRow>
-                    )
-                  })
-                }
+                            ) : (
+                              <>
+                                <TableCell key={`${cell}-${i}-${index}`} />
+                              </>
+                            )}
+                          </>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })}
               </TableBody>
-
             </Table>
           </TableContainer>
         </Paper>
@@ -308,5 +291,5 @@ export default function ChecklistReferenceSchemaDialog({
         schema={schema}
       />
     </Dialog>
-  )
+  );
 }

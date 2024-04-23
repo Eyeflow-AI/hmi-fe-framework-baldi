@@ -1,44 +1,34 @@
 // React
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 // Design
-import {
-  TableContainer
-  , Table
-  , TableHead
-  , TableBody
-  , TableRow
-  , TableCell
-  , Paper
-  , FormControl
-  , TextField
-} from '@mui/material';
+import TableContainer from "@mui/material/TableContainer";
+import Table from "@mui/material/Table";
+import TableHead from "@mui/material/TableHead";
+import TableBody from "@mui/material/TableBody";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
+import Paper from "@mui/material/Paper";
+import FormControl from "@mui/material/FormControl";
+import TextField from "@mui/material/TextField";
 
 // Internal
 
 // Third-party
-import { useTranslation } from 'react-i18next';
-
-
-
 
 export default function ChecklistReferencesTable({
-  schemaDocument
-  , selectedItem
-  , referenceToSave
-  , setReferenceToSave
+  schemaDocument,
+  selectedItem,
+  referenceToSave,
+  setReferenceToSave,
 }) {
-
   const [schemaForTable, setSchemaForTable] = useState(null);
-
-  const { t } = useTranslation();
 
   // const handleChange = (event) => {
   //   setSelectedItem(event.target.value);
   // }
 
   const buildTable = (reference) => {
-
     let _schemaForTable = {
       header: [],
       body: [],
@@ -55,15 +45,22 @@ export default function ChecklistReferencesTable({
     });
     _schemaForTable.maxColumns = _schemaForTable.header.length;
     _schemaForTable.lines = [];
-    Array(_schemaForTable.maxLines).fill(undefined).forEach((_, index) => {
-      _schemaForTable.lines.push(Array(_schemaForTable.maxColumns).fill(undefined));
-    });
+    Array(_schemaForTable.maxLines)
+      .fill(undefined)
+      .forEach((_, index) => {
+        _schemaForTable.lines.push(
+          Array(_schemaForTable.maxColumns).fill(undefined)
+        );
+      });
 
     _schemaForTable.body.forEach((row, index) => {
       Object.keys(row).forEach((cell, i) => {
-        _schemaForTable.lines[i][index] = { [cell]: row[cell], header: _schemaForTable.header[index] };
-      })
-    })
+        _schemaForTable.lines[i][index] = {
+          [cell]: row[cell],
+          header: _schemaForTable.header[index],
+        };
+      });
+    });
 
     setSchemaForTable(_schemaForTable);
   };
@@ -73,7 +70,7 @@ export default function ChecklistReferencesTable({
     _referenceToSave[type][variable] = value;
     setReferenceToSave(_referenceToSave);
     buildTable(_referenceToSave);
-  }
+  };
 
   useEffect(() => {
     if (schemaDocument && selectedItem) {
@@ -88,85 +85,82 @@ export default function ChecklistReferencesTable({
           referenceToUse[key] = {};
         }
         Object.keys(value).forEach((cell) => {
-          referenceToUse[key][cell] = selectedReference?.[key]?.[cell] ?? '';
+          referenceToUse[key][cell] = selectedReference?.[key]?.[cell] ?? "";
         });
       });
 
-      console.log('schemaDocument', schemaDocument);
-      console.log('customSchema', customSchema);
+      console.log("schemaDocument", schemaDocument);
+      console.log("customSchema", customSchema);
       setReferenceToSave(referenceToUse);
       buildTable(referenceToUse);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [schemaDocument, selectedItem]);
-
 
   return (
     <Paper
       sx={{
-        width: '100%',
-        overflow: 'hidden',
+        width: "100%",
+        overflow: "hidden",
       }}
     >
       <TableContainer
         sx={{
-          maxHeight: '100%'
+          maxHeight: "100%",
         }}
       >
         <Table stickyHeader>
           <TableHead>
             <TableRow>
-              {
-                schemaForTable?.header?.map((key, index) => {
-                  return (
-                    <TableCell align='center' key={`${key}-${index}`}>
-                      {key}
-                    </TableCell>
-                  )
-                })
-              }
+              {schemaForTable?.header?.map((key, index) => {
+                return (
+                  <TableCell align="center" key={`${key}-${index}`}>
+                    {key}
+                  </TableCell>
+                );
+              })}
             </TableRow>
           </TableHead>
           <TableBody>
-
-            {
-              schemaForTable?.lines?.map((line, index) => {
-                return (
-                  <TableRow key={index}>
-                    {
-                      line.map((cell, i) => {
-                        return (
+            {schemaForTable?.lines?.map((line, index) => {
+              return (
+                <TableRow key={index}>
+                  {line.map((cell, i) => {
+                    return (
+                      <>
+                        {cell ? (
                           <>
-                            {
-                              cell ?
-                                <>
-                                  <TableCell key={`${Object.keys(cell)[0]}-${index}`}>
-                                    <FormControl fullWidth>
-                                      <TextField
-                                        id="outlined-required"
-                                        label={Object.keys(cell)[0]}
-                                        value={Object.values(cell)[0]}
-                                        onChange={(event) => fillReference(cell.header, Object.keys(cell)[0], event.target.value)}
-                                      />
-                                    </FormControl>
-                                  </TableCell>
-                                </>
-                                :
-                                <>
-                                  <TableCell key={`${i}-${index}`} />
-                                </>
-                            }
+                            <TableCell key={`${Object.keys(cell)[0]}-${index}`}>
+                              <FormControl fullWidth>
+                                <TextField
+                                  id="outlined-required"
+                                  label={Object.keys(cell)[0]}
+                                  value={Object.values(cell)[0]}
+                                  onChange={(event) =>
+                                    fillReference(
+                                      cell.header,
+                                      Object.keys(cell)[0],
+                                      event.target.value
+                                    )
+                                  }
+                                />
+                              </FormControl>
+                            </TableCell>
                           </>
-                        )
-                      })
-                    }
-                  </TableRow>
-                )
-              })
-            }
+                        ) : (
+                          <>
+                            <TableCell key={`${i}-${index}`} />
+                          </>
+                        )}
+                      </>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
           </TableBody>
-
         </Table>
       </TableContainer>
     </Paper>
-  )
+  );
 }

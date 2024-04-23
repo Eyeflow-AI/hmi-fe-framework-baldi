@@ -16,7 +16,7 @@ import Typography from "@mui/material/Typography";
 import Autocomplete from "@mui/material/Autocomplete";
 
 // Internal
-import PageWrapper from "../../components/PageWrapper";
+import PageWrapper from "../../structure/PageWrapper";
 import UploadImageDialog from "../../components/UploadImageDialog";
 import ImageDialog from "../../components/ImageDialog";
 import GetImagesList from "../utils/Hooks/GetImagesList";
@@ -123,6 +123,7 @@ export default function PartRegistration({ pageOptions }) {
           : `${item?.camera_name}`
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openImageDialog, openImageInfoDialog]);
 
   useEffect(() => {

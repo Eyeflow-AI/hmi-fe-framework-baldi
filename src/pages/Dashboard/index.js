@@ -7,12 +7,18 @@ import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 
 // Internal
-import PageWrapper from "../../components/PageWrapper";
+import PageWrapper from "../../structure/PageWrapper";
 import API from "../../api";
 import GetSelectedStation from "../../utils/Hooks/GetSelectedStation";
 import getQueryDateString from "../../utils/functions/getQueryDateString";
 import Clock from "../../utils/Hooks/Clock";
-import { Bar, Pie, Funnel, Line, DivergingBar } from "../../components/Charts";
+import {
+  Bar,
+  Pie,
+  Funnel,
+  Line,
+  DivergingBar,
+} from "../../componentsStore/Chart";
 
 // Third-party
 import { useTranslation } from "react-i18next";
@@ -93,7 +99,7 @@ export default function Dashboard({ pageOptions }) {
           startTime: getQueryDateString(startDate, 0, "between"),
           endTime: getQueryDateString(startDate, 0, "end"),
           queryName: charts[i].query_name,
-          stationId
+          stationId,
         });
         if (!data?.chartInfo?.width) {
           data.chartInfo.width =

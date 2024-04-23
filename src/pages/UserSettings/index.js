@@ -5,14 +5,14 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 
 // Internal
-import PageWrapper from "../../components/PageWrapper";
+import PageWrapper from "../../structure/PageWrapper";
 import Menu from "./menu";
 import ChangePassword from "./dialog/ChangePassword";
 import API from "../../api";
-import authSlice from "../../store/slices/auth";
+// import authSlice from "../../store/slices/auth";
 
 // Third-party
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
 
 const style = {
   mainBox: Object.assign({}, window.app_config.style.box, {
@@ -28,7 +28,7 @@ const style = {
 const UserSettings = () => {
   const [selectedDialog, setSelectedDialog] = useState(null);
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const resetPassword = (username, newPassword) => {
     API.put

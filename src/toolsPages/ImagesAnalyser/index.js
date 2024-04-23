@@ -1,30 +1,37 @@
 // React
-import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+  useRef,
+} from "react";
 
 // Design
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import CloudDoneIcon from "@mui/icons-material/CloudDone";
 
 // Internal
-import PageWrapper from '../../components/PageWrapper';
-import API from '../../api';
-import GetSelectedStation from '../../utils/Hooks/GetSelectedStation';
-import GetStationsList from '../../utils/Hooks/GetStationsList';
-import Select from '../../components/Select'
-import AppBar from './AppBar';
-import RegionBox from './RegionBox';
+import PageWrapper from "../../structure/PageWrapper";
+import API from "../../api";
+import GetStationsList from "../../utils/Hooks/GetStationsList";
+import Select from "../../components/Select";
+import AppBar from "./AppBar";
+import RegionBox from "./RegionBox";
+import { setNotificationBar } from "../../store/slices/app";
 
 // Third-party
 import { FixedSizeList } from "react-window";
-import AutoSizer from 'react-virtualized-auto-sizer';
-import { colors } from 'sdk-fe-eyeflow';
-import { TransformWrapper, TransformComponent } from "@pronestor/react-zoom-pan-pinch";
-import JsonView from 'react18-json-view';
-import 'react18-json-view/src/style.css';
-import CloudDoneIcon from '@mui/icons-material/CloudDone';
-import { setNotificationBar } from '../../store/slices/app';
-
+import AutoSizer from "react-virtualized-auto-sizer";
+import { colors } from "sdk-fe-eyeflow";
+import {
+  TransformWrapper,
+  TransformComponent,
+} from "@pronestor/react-zoom-pan-pinch";
+import JsonView from "react18-json-view";
+import "react18-json-view/src/style.css";
 
 const appBarHeight = 64;
 
@@ -32,116 +39,131 @@ const style = {
   mainBox: {
     // bgcolor: 'background.paper',
     // bgcolor: 'red',
-    display: 'flex',
+    display: "flex",
     flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     gap: 1,
   },
   menuBox: Object.assign({}, window.app_config.style.box, {
-    bgcolor: 'background.paper',
-    height: '100%',
+    bgcolor: "background.paper",
+    height: "100%",
     gap: 1,
-    display: 'flex',
-    flexDirection: 'column',
+    display: "flex",
+    flexDirection: "column",
     p: 1,
   }),
   listBox: {
     flexGrow: 1,
     boxShadow: `inset 0 0 4px black`,
-    borderRadius: 1
+    borderRadius: 1,
   },
   dataBox: {
-    height: '100%',
+    height: "100%",
     flexGrow: 1,
     gap: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   jsonBox: Object.assign({}, window.app_config.style.box, {
-    bgcolor: 'background.paper',
-    height: '100%',
-    width: '100%',
+    bgcolor: "background.paper",
+    height: "100%",
+    width: "100%",
     // gap: 1,
     // display: 'flex',
     // flexDirection: 'column',
     p: 1,
-    overflowY: 'auto',
+    overflowY: "auto",
   }),
   imgWrapper: {
     boxShadow: 1,
-    position: 'relative',
+    position: "relative",
     // height: 'auto'
     // display: 'block',
   },
   imgDrawer: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     top: 0,
-    height: '100%',
-    width: '100%',
+    height: "100%",
+    width: "100%",
     // border: '1px solid yellow'
-  }
+  },
 };
 
-function getImageDataList(filesList) {
+// function getImageDataList(filesList) {
+//   filesList.sort((a, b) => b.name - a.name);
+//   let lenFilesList = filesList.length;
+//   let imageData;
+//   let newFilesList = [];
+//   for (let i = 0; i < lenFilesList; i++) {
+//     let fileData = filesList[i];
+//     if (fileData.name.endsWith(".json")) {
+//       if (imageData) {
+//         let imageNameWithoutExtension = imageData.name
+//           .split(".")
+//           .slice(0, -1)
+//           .join(".");
+//         let jsonNameWithoutExtension = fileData.name
+//           .split(".")
+//           .slice(0, -1)
+//           .join(".");
+//         if (
+//           imageNameWithoutExtension &&
+//           imageNameWithoutExtension === jsonNameWithoutExtension
+//         ) {
+//           imageData.hasJson = true;
+//           imageData.jsonFileData = { ...fileData };
+//           newFilesList.push(imageData);
+//           imageData = null;
+//         }
+//       }
+//     } else {
+//       if (imageData) {
+//         imageData.hasJson = false;
+//         newFilesList.push(imageData);
+//       }
+//       imageData = { ...fileData };
+//     }
+//   }
 
-  filesList.sort((a, b) => b.name - a.name);
-  let lenFilesList = filesList.length;
-  let imageData;
-  let newFilesList = [];
-  for (let i = 0; i < lenFilesList; i++) {
-    let fileData = filesList[i];
-    if (fileData.name.endsWith('.json')) {
-      if (imageData) {
-        let imageNameWithoutExtension = imageData.name.split('.').slice(0, -1).join('.')
-        let jsonNameWithoutExtension = fileData.name.split('.').slice(0, -1).join('.')
-        if (imageNameWithoutExtension && imageNameWithoutExtension === jsonNameWithoutExtension) {
-          imageData.hasJson = true;
-          imageData.jsonFileData = { ...fileData };
-          newFilesList.push(imageData);
-          imageData = null;
-        }
-      }
-    }
-    else {
-      if (imageData) {
-        imageData.hasJson = false;
-        newFilesList.push(imageData);
-      };
-      imageData = { ...fileData };
-    }
-  }
+//   if (imageData) {
+//     imageData.hasJson = false;
+//     newFilesList.push(imageData);
+//     imageData = null;
+//   }
 
-  if (imageData) {
-    imageData.hasJson = false;
-    newFilesList.push(imageData);
-    imageData = null;
-  };
-
-  newFilesList.sort((a, b) => b.birthtime - a.birthtime).map((fileData, index) => {
-    fileData.index = index;
-    return fileData;
-  });
-  return newFilesList;
-};
+//   newFilesList
+//     .sort((a, b) => b.birthtime - a.birthtime)
+//     .map((fileData, index) => {
+//       fileData.index = index;
+//       return fileData;
+//     });
+//   return newFilesList;
+// }
 
 const getButtonStyle = ({ selected, width, height }) => {
   return {
-    display: 'flex',
-    borderRadius: '4px',
-    justifyContent: 'center',
+    display: "flex",
+    borderRadius: "4px",
+    justifyContent: "center",
     height,
     fontSize: 18,
-    cursor: 'pointer',
-    color: 'white',
+    cursor: "pointer",
+    color: "white",
     width,
     padding: 1,
     background: selected ? colors.blue : `${colors.blue}60`,
-    boxShadow: (theme) => selected ? `inset 0 0 0 2px ${colors.darkGray}, ${theme.shadows[5]}` : theme.shadows[2],
+    boxShadow: (theme) =>
+      selected
+        ? `inset 0 0 0 2px ${colors.darkGray}, ${theme.shadows[5]}`
+        : theme.shadows[2],
     "&:hover": {
-      boxShadow: (theme) => selected ? `inset 0 0 0 2px ${colors.darkGray}, ${theme.shadows[5]}` : theme.shadows[5],
+      boxShadow: (theme) =>
+        selected
+          ? `inset 0 0 0 2px ${colors.darkGray}, ${theme.shadows[5]}`
+          : theme.shadows[5],
     },
     // transition: (theme) => theme.transitions.create(["width", "boxShadow", "color"], {
     //   easing: theme.transitions.easing.sharp,
@@ -151,10 +173,8 @@ const getButtonStyle = ({ selected, width, height }) => {
 };
 
 export default function ImageAnalyser({ pageOptions }) {
-
-  const { _id: stationId } = GetSelectedStation();
+  // const { _id: stationId } = GetSelectedStation();
   const stationsList = GetStationsList();
-
 
   const listRef = useRef();
 
@@ -170,12 +190,12 @@ export default function ImageAnalyser({ pageOptions }) {
   // eslint-disable-next-line no-unused-vars
   const [loadingFilesList, setLoadingFilesList] = useState(false);
   const [dayList, setDayList] = useState([]);
-  const [selectedDay, setSelectedDay] = useState('');
+  const [selectedDay, setSelectedDay] = useState("");
   const [idList, setIdList] = useState([]);
-  const [selectedId, setSelectedId] = useState('');
+  const [selectedId, setSelectedId] = useState("");
   const [imageList, setImageList] = useState([]);
   const [selectedImageData, setSelectedImageData] = useState(null);
-  const [imageURL, setSelectedImageURL] = useState('');
+  const [imageURL, setSelectedImageURL] = useState("");
   const [showDetections, setShowDetections] = useState(true);
   const [showJson, setShowJson] = useState(false);
   const [imageWidth, setImageWidth] = useState(0);
@@ -189,78 +209,75 @@ export default function ImageAnalyser({ pageOptions }) {
 
   useEffect(() => {
     if (stationsList) {
-      set_stationsList(stationsList.map((el) => {
-        return {
-          name: el.label,
-          _id: el._id,
-          parms: el.parms,
-        }
-      }));
+      set_stationsList(
+        stationsList.map((el) => {
+          return {
+            name: el.label,
+            _id: el._id,
+            parms: el.parms,
+          };
+        })
+      );
     }
   }, [stationsList]);
 
+  const onSelectImage = useCallback(
+    (imageData) => () => {
+      // if (imageData.hasJson) {
 
+      fetch(imageData?.json_url)
+        .then((response) => response.json())
+        .then((jsonData) => {
+          if (jsonData && !Array.isArray(jsonData)) {
+            jsonData = [jsonData];
+          }
 
-
-
-
-  const onSelectImage = useCallback((imageData) => () => {
-    // if (imageData.hasJson) {
-
-    fetch(imageData?.json_url)
-      .then((response) => response.json())
-      .then((jsonData) => {
-        if (jsonData && !Array.isArray(jsonData)) {
-          jsonData = [jsonData];
-        }
-
-        imageData.jsonData = jsonData;
-        listRef.current.scrollToItem(imageData.index, 'auto');
-        console.log({ imageData })
-        setSelectedImageData(imageData);
-      })
-      .catch((err) => {
-        console.error(err);
-        listRef.current.scrollToItem(imageData.index, 'auto');
-        setSelectedImageData(imageData);
-      })
-  }, []);
+          imageData.jsonData = jsonData;
+          listRef.current.scrollToItem(imageData.index, "auto");
+          console.log({ imageData });
+          setSelectedImageData(imageData);
+        })
+        .catch((err) => {
+          console.error(err);
+          listRef.current.scrollToItem(imageData.index, "auto");
+          setSelectedImageData(imageData);
+        });
+    },
+    []
+  );
 
   useEffect(() => {
     // Arrow key event listener
     const handleKeyDown = (event) => {
-      if (['ArrowLeft', 'ArrowUp'].includes(event.key)) {
+      if (["ArrowLeft", "ArrowUp"].includes(event.key)) {
         if (selectedImageData?.index > 0) {
           onSelectImage(imageList[selectedImageData.index - 1])();
         }
-      }
-      else if (['ArrowRight', 'ArrowDown'].includes(event.key)) {
+      } else if (["ArrowRight", "ArrowDown"].includes(event.key)) {
         if (selectedImageData?.index < imageList.length - 1) {
           onSelectImage(imageList[selectedImageData.index + 1])();
         }
       }
-    }
-    window.addEventListener('keydown', handleKeyDown);
+    };
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
-      console.log('remove event listener');
-      window.removeEventListener('keydown', handleKeyDown);
-    }
+      console.log("remove event listener");
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [imageList, selectedImageData, onSelectImage]);
 
   useEffect(() => {
     if (selectedImageData) {
       setSelectedImageURL(selectedImageData?.image_url);
-    }
-    else {
-      setSelectedImageURL('');
+    } else {
+      setSelectedImageURL("");
     }
   }, [selectedImageData]);
 
   const onSelectDay = (_selectedDay, erase = true) => {
-
     setSelectedDay(_selectedDay);
     if (erase) {
-      setSelectedId('');
+      setSelectedId("");
       setIdList([]);
       setImageList([]);
       setInspections([]);
@@ -271,22 +288,32 @@ export default function ImageAnalyser({ pageOptions }) {
       let station = stationsList.find((item) => item.label === selectedStation);
       let edge = station?.edges?.find((item) => item.name === selectedEdge);
 
-      API.get.filesListMongo({ params: { dirPath, host: edge?.host, port: edge?.filesPort, inspectionDate: _selectedDay } }, setLoadingFilesList)
+      API.get
+        .filesListMongo(
+          {
+            params: {
+              dirPath,
+              host: edge?.host,
+              port: edge?.filesPort,
+              inspectionDate: _selectedDay,
+            },
+          },
+          setLoadingFilesList
+        )
         .then((data) => {
           let newIdList = [];
           let docs = data?.docs ?? [];
           docs = docs.map((item, index) => {
             return {
               ...item,
-              index
-            }
+              index,
+            };
           });
 
           setInspections(docs);
-          newIdList = [...new Set(docs.map(item => item.inspection_id))]
+          newIdList = [...new Set(docs.map((item) => item.inspection_id))];
           // reverse newIdList order
           newIdList = newIdList.sort((a, b) => b - a);
-
 
           setIdList(newIdList);
         })
@@ -294,17 +321,16 @@ export default function ImageAnalyser({ pageOptions }) {
           setInspections([]);
           setIdList([]);
           console.error(err);
-        })
-    };
-
-  }
+        });
+    }
+  };
 
   const onSelectStation = (_selectedStation) => {
     let station = stationsList.find((item) => item.label === _selectedStation);
     setSelectedStation(_selectedStation);
     setSelectedEdge({});
-    setSelectedDay('');
-    setSelectedId('');
+    setSelectedDay("");
+    setSelectedId("");
     setIdList([]);
     setImageList([]);
     setDayList([]);
@@ -320,18 +346,22 @@ export default function ImageAnalyser({ pageOptions }) {
     setSelectedEdge(_selectedEdge);
     if (erase) {
       setDayList([]);
-      setSelectedDay('');
-      setSelectedId('');
+      setSelectedDay("");
+      setSelectedId("");
       setIdList([]);
       setImageList([]);
       setInspections([]);
       setSelectedImageData(null);
     }
-    API.get.folderListMongo({ params: { dirPath, host: edge?.host, port: edge?.filesPort } }, setLoadingFilesList)
+    API.get
+      .folderListMongo(
+        { params: { dirPath, host: edge?.host, port: edge?.filesPort } },
+        setLoadingFilesList
+      )
       .then((data) => {
         let inspectionDates = data?.inspectionDates ?? [];
         setDayList(inspectionDates);
-      })
+      });
   };
 
   const onSelectId = (_selectedId, erase = true) => {
@@ -342,11 +372,13 @@ export default function ImageAnalyser({ pageOptions }) {
     }
 
     let newImagesList = [];
-    newImagesList = inspections.filter((item) => item.inspection_id === _selectedId);
+    newImagesList = inspections.filter(
+      (item) => item.inspection_id === _selectedId
+    );
     let station = stationsList.find((item) => item.label === selectedStation);
     let edge = station?.edges?.find((item) => item.name === selectedEdge);
-    let host = edge?.host ?? '';
-    let filePort = edge?.filesPort ?? '';
+    let host = edge?.host ?? "";
+    let filePort = edge?.filesPort ?? "";
     let path = pageOptions?.options?.dirPath;
     newImagesList = newImagesList.map((item, index) => {
       let json_url = `${host}:${filePort}${path}/${item?.inspection_date}/${item?.inspection_id}/${item?.json_file}`;
@@ -355,8 +387,8 @@ export default function ImageAnalyser({ pageOptions }) {
         ...item,
         json_url,
         image_url,
-        index
-      }
+        index,
+      };
     });
     // listRef.current = newImagesList;
 
@@ -365,11 +397,13 @@ export default function ImageAnalyser({ pageOptions }) {
 
   useEffect(() => {
     let newImagesList = [];
-    newImagesList = inspections.filter((item) => item.inspection_id === selectedId);
+    newImagesList = inspections.filter(
+      (item) => item.inspection_id === selectedId
+    );
     let station = stationsList.find((item) => item.label === selectedStation);
     let edge = station?.edges?.find((item) => item.name === selectedEdge);
-    let host = edge?.host ?? '';
-    let filePort = edge?.filesPort ?? '';
+    let host = edge?.host ?? "";
+    let filePort = edge?.filesPort ?? "";
     let path = pageOptions?.options?.dirPath;
     newImagesList = newImagesList.map((item, index) => {
       let json_url = `${host}:${filePort}${path}/${item?.inspection_date}/${item?.inspection_id}/${item?.json_file}`;
@@ -378,21 +412,25 @@ export default function ImageAnalyser({ pageOptions }) {
         ...item,
         json_url,
         image_url,
-        index
-      }
+        index,
+      };
     });
     // listRef.current = newImagesList;
 
     setImageList([...newImagesList]);
-  }, [inspections])
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inspections]);
 
   const handleUpdateEvent = ({ data }) => {
-    API.post.toUpload({ ...data })
+    API.post
+      .toUpload({ ...data })
       .then((res) => {
-        setNotificationBar({ show: true, message: 'Uploaded Successfully', type: 'success' });
-      }
-      )
+        setNotificationBar({
+          show: true,
+          message: "Uploaded Successfully",
+          type: "success",
+        });
+      })
       .catch(console.log)
       .finally(() => {
         let _selectedDay = selectedDay;
@@ -403,7 +441,7 @@ export default function ImageAnalyser({ pageOptions }) {
         onSelectDay(_selectedDay, false);
         onSelectId(_selectedId, false);
         onSelectImage(_selectedImageData);
-      })
+      });
   };
 
   function itemRenderer({ index, style }) {
@@ -412,7 +450,7 @@ export default function ImageAnalyser({ pageOptions }) {
     // let errMessage = imageData.hasJson ? '' : 'json_file_missing';
 
     const customStyle = Object.assign(
-      { display: 'flex', justifyContent: 'center', alignItems: 'center' },
+      { display: "flex", justifyContent: "center", alignItems: "center" },
       style
     );
 
@@ -422,32 +460,24 @@ export default function ImageAnalyser({ pageOptions }) {
       height: itemHeight - 20,
     });
 
-
     return (
       <div key={`item-${index}`} style={customStyle}>
-        <Box
-          sx={buttonStyle}
-          onClick={onSelectImage(imageData)}
-        >
+        <Box sx={buttonStyle} onClick={onSelectImage(imageData)}>
           <Grid
             container
-            alignItems='center'
-            direction='column'
-            justifyContent='center'
+            alignItems="center"
+            direction="column"
+            justifyContent="center"
           >
-            {imageData?.uploaded &&
+            {imageData?.uploaded && (
               <Grid item>
-                <CloudDoneIcon color='success' />
+                <CloudDoneIcon color="success" />
               </Grid>
-            }
+            )}
             <Grid item>
-              <Typography>
-                {index + 1}
-              </Typography>
-              <Typography variant='body2'>
-                {imageData.image_file}
-              </Typography>
-              <Typography variant='body2'>
+              <Typography>{index + 1}</Typography>
+              <Typography variant="body2">{imageData.image_file}</Typography>
+              <Typography variant="body2">
                 {`${imageData.frame_time}`} <br />
               </Typography>
               {/* {errMessage && (
@@ -459,8 +489,8 @@ export default function ImageAnalyser({ pageOptions }) {
           </Grid>
         </Box>
       </div>
-    )
-  };
+    );
+  }
 
   const onClickLeft = useCallback(() => {
     if (selectedImageData) {
@@ -471,7 +501,8 @@ export default function ImageAnalyser({ pageOptions }) {
       }
     }
   }, [imageList, onSelectImage, selectedImageData]);
-  const onClickLeftDisabled = !selectedImageData || selectedImageData.index <= 0;
+  const onClickLeftDisabled =
+    !selectedImageData || selectedImageData.index <= 0;
 
   const onClickRight = useCallback(() => {
     if (selectedImageData) {
@@ -482,12 +513,15 @@ export default function ImageAnalyser({ pageOptions }) {
       }
     }
   }, [imageList, onSelectImage, selectedImageData]);
-  const onClickRightDisabled = !selectedImageData || selectedImageData.index >= imageList.length - 1;
+  const onClickRightDisabled =
+    !selectedImageData || selectedImageData.index >= imageList.length - 1;
 
-
-
-  const onChangeView = useCallback(() => { setShowJson(!showJson) }, [showJson]);
-  const onChangeShowDetections = useCallback(() => { setShowDetections(!showDetections) }, [showDetections]);
+  const onChangeView = useCallback(() => {
+    setShowJson(!showJson);
+  }, [showJson]);
+  const onChangeShowDetections = useCallback(() => {
+    setShowDetections(!showDetections);
+  }, [showDetections]);
 
   const onImageLoad = (resetTransform) => (event) => {
     const image = event.target;
@@ -497,15 +531,10 @@ export default function ImageAnalyser({ pageOptions }) {
     resetTransform();
   };
 
-
   return (
     <PageWrapper>
-      {({ width, height }) =>
-        <Box
-          width={width}
-          height={height}
-          sx={style.mainBox}
-        >
+      {({ width, height }) => (
+        <Box width={width} height={height} sx={style.mainBox}>
           <Box width={menuWidth} sx={style.menuBox}>
             <Select
               choices={_stationsList}
@@ -517,14 +546,19 @@ export default function ImageAnalyser({ pageOptions }) {
             <Select
               choices={edgesList}
               // title
-              disabled={Object.keys(selectedStation).length === 0 || edgesList.length === 0}
+              disabled={
+                Object.keys(selectedStation).length === 0 ||
+                edgesList.length === 0
+              }
               value={selectedEdge}
               setValue={onSelectEdge}
             />
             <Select
               choices={dayList}
               // title
-              disabled={Object.keys(selectedEdge).length === 0 || dayList.length === 0}
+              disabled={
+                Object.keys(selectedEdge).length === 0 || dayList.length === 0
+              }
               value={selectedDay}
               setValue={onSelectDay}
             />
@@ -553,7 +587,6 @@ export default function ImageAnalyser({ pageOptions }) {
           </Box>
 
           <Box sx={style.dataBox}>
-
             {selectedImageData && imageURL && (
               <AppBar
                 height={appBarHeight}
@@ -566,7 +599,9 @@ export default function ImageAnalyser({ pageOptions }) {
                 onChangeView={onChangeView}
                 onChangeShowDetections={onChangeShowDetections}
                 selectedImageData={selectedImageData}
-                metadata={inspections.find((item) => item._id === selectedImageData._id)}
+                metadata={inspections.find(
+                  (item) => item._id === selectedImageData._id
+                )}
                 handleUpdateEvent={handleUpdateEvent}
                 selectedId={selectedId}
                 selectedDay={selectedDay}
@@ -574,58 +609,60 @@ export default function ImageAnalyser({ pageOptions }) {
               />
             )}
 
-            {showJson
-              ? (
-                <Box sx={style.jsonBox}>
-                  <JsonView
-                    src={selectedImageData?.jsonData ?? {}}
-                    height={'100%'}
-                    width={'100%'}
-                    theme={'monokai'}
-                  />
-                </Box>
-              )
-              : (
-                <TransformWrapper
-                // wheel={{ step: 0.2 }}
-                // limitToBounds={true}
-                >
-                  {({ resetTransform }) => (
-                    <TransformComponent>
-                      {selectedImageData && imageURL && (
-                        <Box id="img-wrapper" sx={style.imgWrapper}>
-                          <img
-                            id="img"
-                            src={imageURL}
-                            alt=""
-                            onLoad={onImageLoad(resetTransform)}
-                            style={{
-                              objectFit: 'contain',
-                              maxHeight: height - appBarHeight - 10,
-                              width: 'auto',
-                              maxWidth: width - menuWidth - 10,
-                              display: 'block'
-                            }}
-                          />
-                          {showDetections && selectedImageData && Array.isArray(selectedImageData.jsonData) &&
+            {showJson ? (
+              <Box sx={style.jsonBox}>
+                <JsonView
+                  src={selectedImageData?.jsonData ?? {}}
+                  height={"100%"}
+                  width={"100%"}
+                  theme={"monokai"}
+                />
+              </Box>
+            ) : (
+              <TransformWrapper
+              // wheel={{ step: 0.2 }}
+              // limitToBounds={true}
+              >
+                {({ resetTransform }) => (
+                  <TransformComponent>
+                    {selectedImageData && imageURL && (
+                      <Box id="img-wrapper" sx={style.imgWrapper}>
+                        <img
+                          id="img"
+                          src={imageURL}
+                          alt=""
+                          onLoad={onImageLoad(resetTransform)}
+                          style={{
+                            objectFit: "contain",
+                            maxHeight: height - appBarHeight - 10,
+                            width: "auto",
+                            maxWidth: width - menuWidth - 10,
+                            display: "block",
+                          }}
+                        />
+                        {showDetections &&
+                          selectedImageData &&
+                          Array.isArray(selectedImageData.jsonData) && (
                             <div id="img-drawer" style={style.imgDrawer}>
                               {selectedImageData.jsonData.map((data, index) => (
-                                <RegionBox key={index} data={data} imageWidth={imageWidth} imageHeight={imageHeight} />
+                                <RegionBox
+                                  key={index}
+                                  data={data}
+                                  imageWidth={imageWidth}
+                                  imageHeight={imageHeight}
+                                />
                               ))}
                             </div>
-                          }
-                        </Box>
-                      )}
-                    </TransformComponent>
-                  )}
-                </TransformWrapper>
-              )
-            }
+                          )}
+                      </Box>
+                    )}
+                  </TransformComponent>
+                )}
+              </TransformWrapper>
+            )}
           </Box>
         </Box>
-      }
+      )}
     </PageWrapper>
-  )
+  );
 }
-
-
