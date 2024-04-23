@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 //Design
 import Box from "@mui/material/Box";
@@ -8,18 +8,11 @@ import PageWrapper from "../../structure/PageWrapper";
 import EventHeader from "./components/EventHeader";
 import EventAppBar from "./components/EventAppBar";
 import EventMenuBox from "./components/EventMenuBox";
-// import EventSerialDataBox from "../../components/EventSerialDataBox";
 import EventDataBox from "./components/EventDataBox";
-// import GetSerialList from "../../utils/Hooks/GetSerialList";
-// import GetRunningSerial from "../../utils/Hooks/GetRunningSerial";
 import { LayoutDialog } from "../../componentsStore/Dialog";
 import GetSelectedStation from "../../utils/Hooks/GetSelectedStation";
-// import API from "../../api";
-
-// import { monitorSlice } from "../../store/slices/monitor";
 
 // Third-party
-// import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 
 const style = {
@@ -46,19 +39,6 @@ export default function Monitor({ pageOptions }) {
   const [dialogStartInfo, setDialogStartInfo] = useState(null);
   const [loadingSelectedItem, setLoadingSelectedItem] = useState(false);
   console.log({ itemInfo });
-
-  // const handleSetSelectedItem = (info) => {
-  //   setSelectedItem(null);
-  //   setSelectedItem(info);
-  // };
-
-  // useEffect(() => {
-  //   if (!selectedItem) {
-  //     setLoadingItemInfo(true);
-  //   } else {
-  //     setLoadingItemInfo(false);
-  //   }
-  // }, [selectedItem]);
 
   return (
     <PageWrapper>
