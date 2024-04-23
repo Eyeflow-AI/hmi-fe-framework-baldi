@@ -1,7 +1,18 @@
 import API from "../../api";
 
 function getType(obj) {
-  if (obj instanceof Date) {
+  // check if boolean
+  if (obj === true || obj === false) {
+    return "boolean";
+  }
+
+  if (
+    (new Date(obj) &&
+      new Date(obj) instanceof Date &&
+      String(new Date(obj)) !== "Invalid Date" &&
+      !(obj instanceof Boolean)) ||
+    obj instanceof Date
+  ) {
     return "date";
   }
   if (obj === null) {
@@ -32,9 +43,17 @@ function putTypeInObjcts(obj) {
 
   let newObj = {};
   for (let key in obj) {
+    let type = getType(obj[key]);
+    let value = encodeURIComponent(obj[key]);
+    if (type === "object") {
+      // newObj[key] = putTypeInObjcts(obj[key]);
+      // continue;
+      value = JSON.stringify(obj[key]);
+    }
+
     newObj[key] = {
-      type: getType(obj[key]),
-      value: encodeURIComponent(obj[key]),
+      type,
+      value,
     };
   }
   return newObj;
@@ -47,7 +66,9 @@ const getComponentData = ({
   setLoading = null,
   setResponse = null,
 }) => {
+  console.log({ iteminfo2: query });
   let dataToSend = putTypeInObjcts(query);
+  console.log({ iteminfo2: dataToSend });
   API.get
     .componentData(
       { query: JSON.stringify(dataToSend), component, stationId },
@@ -55,9 +76,11 @@ const getComponentData = ({
     )
     .then((response) => {
       let data = response?.result;
+      console.log({ response: data });
       if (setResponse) {
         setResponse(data);
       }
+      return data;
     })
     .catch(console.log);
 };

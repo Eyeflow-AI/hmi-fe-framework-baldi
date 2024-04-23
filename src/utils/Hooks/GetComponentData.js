@@ -12,6 +12,7 @@ export default function GetComponentData({
 } = {}) {
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(null);
+
   const { clock } = Clock({ sleepTime });
 
   const loadResponse = () => {

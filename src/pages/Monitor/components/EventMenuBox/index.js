@@ -12,6 +12,8 @@ import {
 } from "../../../../componentsStore/Carousel";
 import GetComponentData from "../../../../utils/Hooks/GetComponentData";
 import getComponentData from "../../../../utils/functions/getComponentData";
+import Clock from "../../../../utils/Hooks/Clock";
+import lodash from "lodash";
 
 //Third-party
 import { useTranslation } from "react-i18next";
@@ -67,10 +69,13 @@ export default function EventMenuBox({
   runningItem,
   setDialogStartInfo,
   stationId,
+  setLoadingSelectedItem,
 }) {
   const [changeEventType, setChangeEventType] = useState("");
 
   const [queryParams, setQueryParams] = useState(null);
+
+  console.log({ queryParams });
 
   const { t } = useTranslation();
 
@@ -86,6 +91,7 @@ export default function EventMenuBox({
     conveyorComponentSleepTime,
     runningItemComponentSleepTime,
     loadStartInfoComponent,
+    trigger,
   } = useMemo(() => {
     const itemMenuHeight = config?.itemHeight ?? 200;
     return {
@@ -101,34 +107,74 @@ export default function EventMenuBox({
       runningItemComponentSleepTime:
         config?.runningItemComponentSleepTime ?? 1000,
       loadStartInfoComponent: config?.loadStartInfoComponent ?? "loadStartInfo",
+      trigger: config?.trigger ?? "person",
     };
   }, [config]);
 
   const startIcon = config?.startIcon;
   const conveyorIcon = config?.conveyorIcon;
+  // const [clock, setClock] = useState(null);
 
-  // eslint-disable-next-line
-  const { response, loading, loadResponse } = GetComponentData({
-    component: component,
-    query: { limit: 10, test: new Date() },
-    stationId,
-    run: true,
+  // console.log({ _memo2: conveyourClock });
+
+  const { clock: conveyourClock } = Clock({
     sleepTime: conveyorComponentSleepTime,
   });
-
-  const {
-    response: runningItemResponse,
-    // eslint-disable-next-line no-unused-vars
-    loading: runningItemLoading,
-    // eslint-disable-next-line no-unused-vars
-    loadResponse: loadRunningItemResponse,
-  } = GetComponentData({
-    component: runningItemComponent,
-    query: { limit: 10, test: new Date() },
-    stationId,
-    run: true,
+  const { clock: runningItemClock } = Clock({
     sleepTime: runningItemComponentSleepTime,
   });
+  // useEffect(() => {
+  //   setClock(conveyourClock);
+  //   console.log({ _memo: conveyourClock });
+  // }, [conveyourClock]);
+  // eslint-disable-next-line
+  const [response, setResponse] = useState(null);
+
+  const handleResponse = (response, newResponse) => {
+    if (!lodash.isEqual(response, newResponse)) {
+      setResponse(newResponse);
+    }
+  };
+  useEffect(() => {
+    getComponentData({
+      query: queryParams,
+      component,
+      stationId,
+      setResponse: (newResponse) => handleResponse(response, newResponse),
+    });
+    // console.log({ response });
+    // setResponse(response);
+  }, [queryParams, conveyourClock]);
+
+  const [runningItemResponse, setRunningItemResponse] = useState(null);
+  const handleRunningItemResponse = (response, newResponse) => {
+    if (!lodash.isEqual(response, newResponse)) {
+      setRunningItemResponse(newResponse);
+    }
+  };
+  useEffect(() => {
+    getComponentData({
+      query: queryParams,
+      component: runningItemComponent,
+      stationId,
+      setResponse: (newResponse) =>
+        handleRunningItemResponse(runningItemResponse, newResponse),
+    });
+  }, [runningItemClock]);
+
+  // const {
+  //   response: runningItemResponse,
+  //   // eslint-disable-next-line no-unused-vars
+  //   loading: runningItemLoading,
+  //   // eslint-disable-next-line no-unused-vars
+  //   loadResponse: loadRunningItemResponse,
+  // } = GetComponentData({
+  //   component: runningItemComponent,
+  //   query: { limit: 10, test: new Date() },
+  //   stationId,
+  //   run: false,
+  //   sleepTime: runningItemComponentSleepTime,
+  // });
 
   const [menuBoxHeight, setMenuBoxHeight] = useState(height);
 
@@ -181,7 +227,7 @@ export default function EventMenuBox({
         query,
         component,
         stationId,
-        // setLoading,
+        setLoading: setLoadingSelectedItem,
         setResponse: setItemInfo,
       });
     } else if (
@@ -279,7 +325,7 @@ export default function EventMenuBox({
               selected={selectedItem?._id === runningItem?._id}
               onClick={() => handleSelectItem(runningItem, "click")}
             />
-          ) : (
+          ) : trigger === "person" ? (
             <ButtonBase>
               <Box
                 height={buttonBoxHeight}
@@ -289,6 +335,16 @@ export default function EventMenuBox({
               >
                 <img alt="" src={startIcon} style={styleSx.startButtonIcon} />
                 {t("start")}
+              </Box>
+            </ButtonBase>
+          ) : (
+            <ButtonBase>
+              <Box
+                height={buttonBoxHeight}
+                width={width}
+                sx={styleSx.noEventBox}
+              >
+                {t("no_event_running")}
               </Box>
             </ButtonBase>
           )}

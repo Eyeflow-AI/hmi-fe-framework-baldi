@@ -88,6 +88,8 @@ export default function CarouselWithQuery({
 
   const menuBoxHeight = height;
 
+  console.log({ name, selectedItem });
+
   return (
     <Box id="menu-box" height={menuBoxHeight} sx={styleSx.menuBox}>
       <FilterBox

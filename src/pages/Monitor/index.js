@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 //Design
 import Box from "@mui/material/Box";
@@ -20,6 +20,7 @@ import GetSelectedStation from "../../utils/Hooks/GetSelectedStation";
 
 // Third-party
 // import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 const style = {
   mainBox: {
@@ -36,13 +37,28 @@ const style = {
 };
 
 export default function Monitor({ pageOptions }) {
+  const { t } = useTranslation();
+
   const { _id: stationId } = GetSelectedStation();
   const [selectedItem, setSelectedItem] = useState(null);
   const [itemInfo, setItemInfo] = useState(null);
   const [runningItem, setRunningItem] = useState(null);
   const [dialogStartInfo, setDialogStartInfo] = useState(null);
+  const [loadingSelectedItem, setLoadingSelectedItem] = useState(false);
+  console.log({ itemInfo });
 
-  console.log({ pageOptions, stationId });
+  // const handleSetSelectedItem = (info) => {
+  //   setSelectedItem(null);
+  //   setSelectedItem(info);
+  // };
+
+  // useEffect(() => {
+  //   if (!selectedItem) {
+  //     setLoadingItemInfo(true);
+  //   } else {
+  //     setLoadingItemInfo(false);
+  //   }
+  // }, [selectedItem]);
 
   return (
     <PageWrapper>
@@ -67,6 +83,8 @@ export default function Monitor({ pageOptions }) {
               setRunningItem={setRunningItem}
               setDialogStartInfo={setDialogStartInfo}
               stationId={stationId}
+              loadingSelectedItem={loadingSelectedItem}
+              setLoadingSelectedItem={setLoadingSelectedItem}
             />
           </Box>
           <Box id="monitor-data-box" sx={style.dataBox}>
@@ -75,26 +93,47 @@ export default function Monitor({ pageOptions }) {
                 display: "flex",
               }}
             >
-              <EventAppBar
-                config={pageOptions.components.EventAppBar}
-                componentsInfo={itemInfo}
-                stationId={stationId}
-              />
-              <EventHeader
-                config={pageOptions.components.EventHeader}
-                itemInfo={itemInfo}
-              />
+              {!loadingSelectedItem && itemInfo && (
+                <>
+                  <EventAppBar
+                    config={pageOptions.components.EventAppBar}
+                    componentsInfo={itemInfo}
+                    stationId={stationId}
+                  />
+                  <EventHeader
+                    config={pageOptions.components.EventHeader}
+                    itemInfo={itemInfo}
+                  />
+                </>
+              )}
             </Box>
             <Box
               display="flex"
               height={height - pageOptions.components.EventHeader.height}
             >
-              <EventDataBox
-                config={pageOptions.components.EventDataBox}
-                componentsInfo={itemInfo}
-                setComponentsInfo={setItemInfo}
-                stationId={stationId}
-              />
+              {!loadingSelectedItem && itemInfo ? (
+                <EventDataBox
+                  config={pageOptions.components.EventDataBox}
+                  componentsInfo={itemInfo}
+                  setComponentsInfo={setItemInfo}
+                  stationId={stationId}
+                />
+              ) : (
+                loadingSelectedItem && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: "100%",
+                      width: "100%",
+                      fontSize: "5rem",
+                    }}
+                  >
+                    {t("loading")}...
+                  </Box>
+                )
+              )}
             </Box>
           </Box>
           <LayoutDialog
