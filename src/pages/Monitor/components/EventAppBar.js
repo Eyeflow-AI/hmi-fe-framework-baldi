@@ -50,9 +50,10 @@ export default function EventAppBar({ config, stationId, componentsInfo }) {
     let buttonList = [];
     let hasAppBar = false;
     let buttonListName = "";
-    if (componentsInfo && typeof componentsInfo === "object") {
+    console.log({ componentsInfo });
+    if (componentsInfo && Array.isArray(componentsInfo)) {
       let output =
-        componentsInfo?.find((item) => item.name === config.name)?.output ??
+        componentsInfo?.find((item) => item?.name === config?.name)?.output ??
         null;
       console.log({ output });
       if (output?.status) {

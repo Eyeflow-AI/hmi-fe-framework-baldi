@@ -69,6 +69,8 @@ export default function EventMenuBox({
   setDialogStartInfo,
   stationId,
   setLoadingSelectedItem,
+  setLoadingList,
+  loadingList,
 }) {
   const [changeEventType, setChangeEventType] = useState("update");
 
@@ -134,6 +136,7 @@ export default function EventMenuBox({
       setResponse(newResponse);
     }
   };
+
   useEffect(() => {
     getComponentData({
       query: queryParams,
@@ -144,7 +147,20 @@ export default function EventMenuBox({
     // console.log({ response });
     // setResponse(response);
     // eslint-disable-next-line
-  }, [queryParams, conveyourClock]);
+  }, [conveyourClock]);
+
+  useEffect(() => {
+    getComponentData({
+      query: queryParams,
+      component,
+      stationId,
+      setResponse: (newResponse) => handleResponse(response, newResponse),
+      setLoading: setLoadingList,
+    });
+    // console.log({ response });
+    // setResponse(response);
+    // eslint-disable-next-line
+  }, [queryParams]);
 
   const [runningItemResponse, setRunningItemResponse] = useState(null);
   const handleRunningItemResponse = (response, newResponse) => {
@@ -259,6 +275,7 @@ export default function EventMenuBox({
     let _runningItem =
       runningItemResponse?.find((item) => item.name === runningItemComponent) ??
       null;
+    console.log({ _runningItem });
 
     if (JSON.stringify(_runningItem?.output) !== JSON.stringify(runningItem)) {
       setRunningItem(_runningItem?.output ?? null);
@@ -267,6 +284,15 @@ export default function EventMenuBox({
       // }
     }
 
+    // if (
+    //   !_runningItem &&
+    //   runningItem &&
+    //   selectedItem?._id === runningItem?._id
+    // ) {
+    //   setSelectedItem(null);
+    //   setItemInfo(null);
+    // }
+
     // página carregada e sem item selecionado
     // if (!selectedItem && _runningItem?.output) {
     //   handleSelectItem(_runningItem?.output, "update");
@@ -274,23 +300,18 @@ export default function EventMenuBox({
     // eslint-disable-next-line
   }, [runningItemComponent, runningItemResponse]);
 
-  console.log({ changeEventType });
-
   useEffect(() => {
     let item =
       response?.find((item) => item.name === conveyorComponent) ?? null;
 
     // página carregada e sem item selecionado
     if (!selectedItem && item?.output?.length > 0) {
-      console.log("entrou1", item);
       handleSelectItem(item.output[0], "update");
     } else if (selectedItem && item?.output?.length > 0) {
-      console.log("entrou2");
       let _item = item?.output?.find((item) => item?._id === selectedItem?._id);
       console.log({ _item });
       // página carregada e com item selecionado, mas o item não está na lista
       if (!_item && runningItem?._id !== selectedItem?._id) {
-        console.log("entrou3");
         handleSelectItem(_item?.output?.[0], "update");
       }
       // página carregada e com item selecionado, e o item está na lista
@@ -376,6 +397,7 @@ export default function EventMenuBox({
           name={conveyorComponent}
           onClick={handleSelectItem}
           selectedItem={selectedItem}
+          loadingList={loadingList}
         />
       </Box>
     </Box>

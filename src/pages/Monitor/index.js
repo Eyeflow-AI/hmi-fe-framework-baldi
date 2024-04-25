@@ -38,7 +38,8 @@ export default function Monitor({ pageOptions }) {
   const [runningItem, setRunningItem] = useState(null);
   const [dialogStartInfo, setDialogStartInfo] = useState(null);
   const [loadingSelectedItem, setLoadingSelectedItem] = useState(false);
-  console.log({ itemInfo });
+  const [loadingList, setLoadingList] = useState(false);
+  console.log({ itemInfo, pageOptions });
 
   return (
     <PageWrapper>
@@ -65,6 +66,8 @@ export default function Monitor({ pageOptions }) {
               stationId={stationId}
               loadingSelectedItem={loadingSelectedItem}
               setLoadingSelectedItem={setLoadingSelectedItem}
+              loadingList={loadingList}
+              setLoadingList={setLoadingList}
             />
           </Box>
           <Box id="monitor-data-box" sx={style.dataBox}>
