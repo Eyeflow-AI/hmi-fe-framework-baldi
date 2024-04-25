@@ -75,6 +75,7 @@ export default function CarouselWithQuery({
   onClick,
   selectedItem,
   setComponentsInfo,
+  loadingList,
 }) {
   const { itemMenuHeight, buttonBoxHeight } = useMemo(() => {
     const itemMenuHeight = config?.itemHeight ?? 200;
@@ -103,6 +104,7 @@ export default function CarouselWithQuery({
         defaultIcon={defaultIcon}
         name={name}
         data={data}
+        loadingData={loadingList}
         itemMenuHeight={itemMenuHeight}
         onClick={onClick}
         selectedItem={selectedItem}

@@ -76,7 +76,7 @@ export default function Carousel({
 
   return (
     <Box id="list-box" sx={styleSx.listBox}>
-      {dataLength === 0 && loadingData ? (
+      {loadingData ? (
         <Box
           height="100%"
           display="flex"
