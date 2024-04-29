@@ -66,13 +66,21 @@ export default function Select({
       sx={
         {
           //marginTop: "12px",
+          '& label.Mui-focused': {
+            "color": '#E0E3E7',
+          },
+          '& .MuiOutlinedInput-root': {
+            '&.Mui-focused fieldset': {
+              "borderColor": '#E0E3E7',
+            },
+          }
         }
       }
     >
       <InputLabel
         id="select-label"
         sx={{
-          paddingTop: `12px`,
+          // paddingTop: `12px`,
         }}
       >
         {metadata?.label}
