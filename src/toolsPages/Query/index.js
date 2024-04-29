@@ -344,7 +344,7 @@ export default function Query({ pageOptions }) {
               sx={{
                 display: "flex",
                 flexGrow: 1,
-                height: "calc(100%)",
+                height: "calc(100% - 85px - 60px)",
                 width: "100%",
                 marginBottom: 2,
               }}
@@ -355,7 +355,7 @@ export default function Query({ pageOptions }) {
                 value={currentText}
                 onChange={(e) => setCurrentText(e.target.value)}
                 multiline
-                rows={33}
+                rows={42}
                 fullWidth
                 error={errorInText}
                 helperText={errorInText && t("parms_must_be_json")}
@@ -369,6 +369,7 @@ export default function Query({ pageOptions }) {
                 display: "flex",
                 flexDirection: "row",
                 width: "100%",
+                height: "60px",
               }}
             >
               <Box

@@ -172,7 +172,17 @@ export default function AppParameters({ pageOptions }) {
               width: "calc(50% - 250px)",
             }}
           >
-            <Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                width: "100%",
+                height: "calc(100% - 60px)",
+                overflow: "hidden",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <TextField
                 id="outlined-basic"
                 variant="outlined"
@@ -192,6 +202,7 @@ export default function AppParameters({ pageOptions }) {
             <Box
               sx={{
                 flexGrow: 1,
+                height: "60px",
               }}
             >
               <Stack direction="row" justifyContent="flex-start" gap={1}>
