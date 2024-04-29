@@ -138,25 +138,29 @@ export default function EventMenuBox({
   };
 
   useEffect(() => {
-    getComponentData({
-      query: queryParams,
-      component,
-      stationId,
-      setResponse: (newResponse) => handleResponse(response, newResponse),
-    });
+    if (queryParams) {
+      getComponentData({
+        query: queryParams,
+        component,
+        stationId,
+        setResponse: (newResponse) => handleResponse(response, newResponse),
+      });
+    }
     // console.log({ response });
     // setResponse(response);
     // eslint-disable-next-line
   }, [conveyourClock]);
 
   useEffect(() => {
-    getComponentData({
-      query: queryParams,
-      component,
-      stationId,
-      setResponse: (newResponse) => handleResponse(response, newResponse),
-      setLoading: setLoadingList,
-    });
+    if (queryParams) {
+      getComponentData({
+        query: queryParams,
+        component,
+        stationId,
+        setResponse: (newResponse) => handleResponse(response, newResponse),
+        setLoading: setLoadingList,
+      });
+    }
     // console.log({ response });
     // setResponse(response);
     // eslint-disable-next-line
@@ -169,13 +173,15 @@ export default function EventMenuBox({
     }
   };
   useEffect(() => {
-    getComponentData({
-      query: queryParams,
-      component: runningItemComponent,
-      stationId,
-      setResponse: (newResponse) =>
-        handleRunningItemResponse(runningItemResponse, newResponse),
-    });
+    if (queryParams) {
+      getComponentData({
+        query: queryParams,
+        component: runningItemComponent,
+        stationId,
+        setResponse: (newResponse) =>
+          handleRunningItemResponse(runningItemResponse, newResponse),
+      });
+    }
     // eslint-disable-next-line
   }, [runningItemClock]);
 
