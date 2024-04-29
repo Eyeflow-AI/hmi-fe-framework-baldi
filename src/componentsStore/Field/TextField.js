@@ -11,6 +11,7 @@ export default function TextField({
   console.log({ TextField: name, tag, componentsInfo });
 
   const [value, setValue] = useState("");
+  const [disabled, setDisabled] = useState(false);
   const error = false;
 
   useEffect(() => {
@@ -20,15 +21,26 @@ export default function TextField({
           ?.output ?? {};
       // console.log({ component });
       setValue(component?.text);
+      setDisabled(component?.disabled);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [componentsInfo]);
-
   return (
     <MUITextField
       value={value}
       helperText={error ? "Please enter a valid value" : ""}
       label={metadata?.label ?? ""}
+      disabled={disabled}
+      sx={{
+        '& label.Mui-focused': {
+          "color": '#E0E3E7',
+        },
+        '& .MuiOutlinedInput-root': {
+          '&.Mui-focused fieldset': {
+            "borderColor": '#E0E3E7',
+          },
+        }
+      }}
     />
   );
 }
