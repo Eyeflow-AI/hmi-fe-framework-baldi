@@ -115,6 +115,13 @@ export default function SimplifiedCarousel({
     });
   };
 
+  useEffect(() => {
+    if (Array.isArray(data?.output) && data?.output.length > 0) {
+      handleClick(data?.output[0]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
   return (
     <Carousel
       // name={name}
