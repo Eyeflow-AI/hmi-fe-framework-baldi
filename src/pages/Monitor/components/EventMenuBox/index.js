@@ -221,6 +221,7 @@ export default function EventMenuBox({
       for (let key of deleteKeys) {
         delete newParams[key];
       }
+      console.log({ newParams });
       return newParams;
     });
   };

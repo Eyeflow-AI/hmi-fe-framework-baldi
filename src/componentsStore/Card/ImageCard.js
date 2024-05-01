@@ -84,7 +84,7 @@ export default function ImageCard({
   // const [_name, _setName] = useState("");
   const [backgroundColor, setBackgroundColor] = useState("");
   const [detections, setDetections] = useState([]);
-  const [annotatedImage, setAnnotatedImage] = useState("");
+  const [annotatedImage, setAnnotatedImage] = useState(null);
   const [_style, _setStyle] = useState({});
 
   useEffect(() => {
@@ -99,7 +99,7 @@ export default function ImageCard({
   useEffect(() => {
     if (componentsInfo && typeof componentsInfo === "object") {
       const component =
-        componentsInfo.find((item) => item.tag === tag && item.name === name)
+        componentsInfo.find((item) => item?.tag === tag && item?.name === name)
           ?.output ?? {};
       // console.log({ component });
       setTitle(component?.title);
@@ -128,34 +128,6 @@ export default function ImageCard({
       setOnImageLoading(false);
     }
   }, [onImageLoading]);
-
-
-  useEffect(() => {
-
-      if (imageURL) {
-        let url = imageURL;
-        url = `${url}?time=${Date.now()}`;
-        getAnnotatedImg({
-          image: url,
-          regions: detections,
-          scale: 1,
-          setAnnotatedImage,
-          // setExternalText: setAdjacentText,
-          options: {
-            severalAnnotations: true,
-            returnCanvasURL: false,
-            // showLabels,
-          },
-        });
-      }
-  }, [
-    imageURL,
-    // imageDataURL,
-    // showLabels,
-    detections,
-    setAnnotatedImage,
-    // setExternalText,
-  ]);
 
   function expandCoordinates({
     imgWidth,
@@ -207,14 +179,19 @@ export default function ImageCard({
     },
   }) => {
     console.log({
-      image, index, scale, setAnnotatedImage, regions, options
-    })
+      image,
+      index,
+      scale,
+      setAnnotatedImage,
+      regions,
+      options,
+    });
     let strokeStyle = options.strokeStyle || colors.eyeflow.green.dark;
     let expandBox = options.expandBox || 1;
-    var img = new Image();
+    let img = new Image();
     img.src = image;
 
-    console.log({src:img.src});
+    console.log({ src: img.src });
     img.crossOrigin = "anonymous";
 
     img.onload = function () {
@@ -236,7 +213,7 @@ export default function ImageCard({
         // console.log({regions},"dri");
         (Array.isArray(regions) && regions.length > 0 ? regions : []).forEach(
           (region, i) => {
-            let bboxRegion = region
+            let bboxRegion = region;
             let [x_min, x_max, y_min, y_max] = expandCoordinates({
               imgWidth: img.width / scale,
               imgHeight: img.height / scale,
@@ -359,6 +336,32 @@ export default function ImageCard({
     };
   };
 
+  useEffect(() => {
+    if (imageURL) {
+      let url = imageURL;
+      url = `${url}?time=${Date.now()}`;
+      getAnnotatedImg({
+        image: url,
+        regions: detections,
+        scale: 1,
+        setAnnotatedImage,
+        // setExternalText: setAdjacentText,
+        options: {
+          severalAnnotations: true,
+          returnCanvasURL: false,
+          // showLabels,
+        },
+      });
+    }
+  }, [
+    imageURL,
+    // imageDataURL,
+    // showLabels,
+    detections,
+    setAnnotatedImage,
+    // setExternalText,
+  ]);
+
   return (
     <Tooltip tooltip={tooltip}>
       <Box sx={{ ..._style }}>
@@ -383,7 +386,7 @@ export default function ImageCard({
           >
             <img
               alt={imageCaption}
-              src={annotatedImage.url ?? imageURL}
+              src={annotatedImage?.url ?? imageURL}
               // src={"/assets/cat.webp"}
               style={loading ? loadingImageStyle : styleSx.imageStyle}
               // onLoad={onImageLoad}

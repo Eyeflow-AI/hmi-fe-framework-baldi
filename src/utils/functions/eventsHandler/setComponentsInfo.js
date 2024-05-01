@@ -4,6 +4,7 @@ function setComponentsInfo({
   fnExecutor,
   handleNotificatioBar,
 }) {
+  console.log({ item, componentsInfo });
   let _componentsInfo = [...componentsInfo];
   let components = item?.data?.info?.components ?? [];
   for (let i = 0; i < components.length; i++) {

@@ -1,5 +1,11 @@
 import API from "../../api";
 
+function isIsoDate(str) {
+  if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(str)) return false;
+  const d = new Date(str);
+  return d instanceof Date && !isNaN(d) && d.toISOString() === str;
+}
+
 function getType(obj) {
   // check if boolean
   if (obj === true || obj === false) {
@@ -8,6 +14,7 @@ function getType(obj) {
 
   if (
     (new Date(obj) &&
+      isIsoDate(obj) &&
       new Date(obj) instanceof Date &&
       String(new Date(obj)) !== "Invalid Date" &&
       !(obj instanceof Boolean)) ||

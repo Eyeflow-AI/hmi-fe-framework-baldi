@@ -30,7 +30,7 @@ export default function Carousel({
   loadingData,
   onClick,
   dateField,
-  itemMenuHeight,
+  itemMenuHeight = 200,
   conveyorIcon,
   setComponentsInfo,
 }) {

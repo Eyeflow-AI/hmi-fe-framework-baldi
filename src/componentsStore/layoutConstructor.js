@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 
 import { LabelBox, FilterBox, LayoutBox } from "./Box";
 import { ImageCard } from "./Card";
-import { Carousel, CarouselItem, CarouselWithQuery } from "./Carousel";
+import {
+  Carousel,
+  CarouselItem,
+  CarouselWithQuery,
+  SimplifiedCarousel,
+} from "./Carousel";
 import { Bar, DivergingBar, Funnel, Line, Pie } from "./Chart";
 import { Select } from "./Select";
 import { TextField } from "./Field";
@@ -21,6 +26,7 @@ const store = {
   Carousel: (props) => <Carousel {...props} />,
   CarouselItem: (props) => <CarouselItem {...props} />,
   CarouselWithQuery: (props) => <CarouselWithQuery {...props} />,
+  SimplifiedCarousel: (props) => <SimplifiedCarousel {...props} />,
 
   Bar: (props) => <Bar {...props} />,
   DivergingBar: (props) => <DivergingBar {...props} />,
@@ -58,6 +64,7 @@ export default function LayoutConstructor({
           componentsInfo,
           setComponentsInfo,
           stationId,
+          key: index,
         });
       } catch (err) {
         return (
@@ -70,6 +77,7 @@ export default function LayoutConstructor({
               width: "100%",
               backgroundColor: "error.main",
             }}
+            key={index}
           >
             Missing component: {item.tag}
           </Box>
