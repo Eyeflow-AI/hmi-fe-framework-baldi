@@ -161,11 +161,11 @@ export default function ImageTag({
       const notAnnotatedCtx = notAnnotatedCanvas.getContext("2d");
       notAnnotatedCtx.drawImage(img, 0, 0, img.width, img.height);
       if (options.severalAnnotations) {
-        let totalRegions = Array.isArray(regions) && regions.length;
+        let totalRegions = Array.isArray(regions) && regions?.length;
         let okRegions = 0;
         let ngRegions = 0;
         // console.log({regions},"dri");
-        (Array.isArray(regions) && regions.length > 0 ? regions : []).forEach(
+        (Array.isArray(regions) && regions?.length > 0 ? regions : []).forEach(
           (region, i) => {
             let bboxRegion = region;
             let [x_min, x_max, y_min, y_max] = expandCoordinates({
@@ -292,7 +292,7 @@ export default function ImageTag({
   };
 
   useEffect(() => {
-    if (imageURL && detections.length > 0) {
+    if (imageURL && detections?.length > 0) {
       let url = imageURL;
       url = `${url}?time=${Date.now()}`;
       getAnnotatedImg({

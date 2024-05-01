@@ -18,9 +18,10 @@ function setComponentsInfo({
       };
     } else {
       _componentsInfo.push({
-        tag: components[i].tag,
-        name: components[i].name,
-        output: components[i].output,
+        // tag: components[i].tag,
+        // name: components[i].name,
+        // output: components[i].output,
+        ...components[i],
       });
     }
   }
