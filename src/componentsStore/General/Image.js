@@ -307,6 +307,8 @@ export default function ImageTag({
           // showLabels,
         },
       });
+    } else {
+      setAnnotatedImage(null);
     }
   }, [
     imageURL,
