@@ -91,22 +91,22 @@ export default function EventAppBar({ config, stationId, componentsInfo }) {
     return (
       <Box
         width={`${buttonList.length * 70}px`}
-        sx={true ? style.mainBoxDisabled : style.mainBox}
+        sx={buttonList.length > 0 ? (true ? style.mainBoxDisabled : style.mainBox) : { display: "none" }}
       >
         {buttonList.map((buttonProps, index) => (
           <Box sx={style.buttonBox} key={`${index}-button-app-bar`}>
-            {buttonList.length > 0 &&
-              buttonList.map((button, index) => (
+            {/* {buttonList.length > 0 && */}
+              {/* buttonList.map((button, index) => ( */}
                 <IconButton
                   key={index}
-                  tooltip={button.tooltip}
-                  icon={button.icon}
-                  component={button.component}
-                  stationId={button.stationId}
+                  tooltip={buttonProps.tooltip}
+                  icon={buttonProps.icon}
+                  component={buttonProps.component}
+                  stationId={buttonProps.stationId}
                   componentsInfo={componentsInfo}
-                  fnName={button.fnName}
+                  fnName={buttonProps.fnName}
                 />
-              ))}
+              {/* ))} */}
             {buttonProps.loading && (
               <CircularProgress
                 style={style.circularProgress}
