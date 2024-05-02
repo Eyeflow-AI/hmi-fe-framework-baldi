@@ -19,7 +19,7 @@ function postData({
         response,
         postData: componentsInfo,
         item,
-        fnExecutor,
+        // fnExecutor,
         stationId,
       });
       console.log({ RESPONSE: response });

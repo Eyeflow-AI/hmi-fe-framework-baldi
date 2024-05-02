@@ -11,7 +11,7 @@ import {
 import { Bar, DivergingBar, Funnel, Line, Pie } from "./Chart";
 import { Select } from "./Select";
 import { TextField } from "./Field";
-import { Image, Title, Table } from "./General";
+import { Image, Title, Table, Button } from "./General";
 import { Tooltip } from "./Wrapper";
 
 import Box from "@mui/material/Box";
@@ -41,6 +41,7 @@ const store = {
   Image: (props) => <Image {...props} />,
   Title: (props) => <Title {...props} />,
   Table: (props) => <Table {...props} />,
+  Button: (props) => <Button {...props} />,
 
   Tooltip: (props) => <Tooltip {...props} />,
 };
