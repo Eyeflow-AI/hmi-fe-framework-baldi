@@ -85,6 +85,7 @@ export default function ImageCard({
   const [backgroundColor, setBackgroundColor] = useState("");
   const [detections, setDetections] = useState([]);
   const [annotatedImage, setAnnotatedImage] = useState(null);
+  const [showLabels, setShowLabels] = useState(false);
   const [_style, _setStyle] = useState({});
 
   useEffect(() => {
@@ -110,6 +111,7 @@ export default function ImageCard({
       setTooltip(component?.tooltip);
       setOnImageLoading(true);
       setDetections(component?.detections);
+      setShowLabels(component?.showLabels);
       let status = component?.status ?? "";
       let backgroundColor =
         component?.backgroundColor && component?.backgroundColor !== ""
@@ -178,14 +180,7 @@ export default function ImageCard({
       info: {},
     },
   }) => {
-    console.log({
-      image,
-      index,
-      scale,
-      setAnnotatedImage,
-      regions,
-      options,
-    });
+
     let strokeStyle = options.strokeStyle || colors.eyeflow.green.dark;
     let expandBox = options.expandBox || 1;
     let img = new Image();
@@ -246,22 +241,21 @@ export default function ImageCard({
               parseInt((x_max - x_min) * scale),
               parseInt((y_max - y_min) * scale)
             );
-            // if (options?.showLabels) {
-            //   ctx.font = "30px Arial";
-            //   ctx.fillStyle = "white";
-            //   ctx.fillText(
-            //     `${bboxRegion?.label}`,
-            //     parseInt(x_min * scale - 3),
-            //     parseInt(y_min * scale - 12)
-            //   );
-            //   ctx.fillStyle = strokeStyle;
-            //   ctx.fillText(
-            //     `${bboxRegion?.label}`,
-            //     parseInt(x_min * scale - 2),
-            //     parseInt(y_min * scale - 10)
-            //   );
-            // }
-            // }
+            if (options?.showLabels) {
+              ctx.font = "30px Arial";
+              ctx.fillStyle = "white";
+              ctx.fillText(
+                `${bboxRegion?.label}`,
+                parseInt(x_min * scale - 3),
+                parseInt(y_min * scale - 12)
+              );
+              ctx.fillStyle = strokeStyle;
+              ctx.fillText(
+                `${bboxRegion?.label}`,
+                parseInt(x_min * scale - 2),
+                parseInt(y_min * scale - 10)
+              );
+            }
             (region?.detections ?? [])?.forEach((detection) => {
               let bb = detection?.[0];
               let [x_min, x_max, y_min, y_max] = expandCoordinates({
@@ -292,22 +286,22 @@ export default function ImageCard({
                 parseInt((y_max - y_min) * scale)
               );
 
-              // if (options?.showLabels) {
-              //   ctx.font = "30px Arial";
+              if (options?.showLabels) {
+                ctx.font = "30px Arial";
 
-              //   ctx.fillStyle = "white";
-              //   ctx.fillText(
-              //     `${bb?.label}`,
-              //     parseInt(x_min * scale - 3),
-              //     parseInt(y_min * scale - 12)
-              //   );
-              //   ctx.fillStyle = strokeStyle;
-              //   ctx.fillText(
-              //     `${bb?.label}`,
-              //     parseInt(x_min * scale - 2),
-              //     parseInt(y_min * scale - 10)
-              //   );
-              // }
+                ctx.fillStyle = "white";
+                ctx.fillText(
+                  `${bb?.label}`,
+                  parseInt(x_min * scale - 3),
+                  parseInt(y_min * scale - 12)
+                );
+                ctx.fillStyle = strokeStyle;
+                ctx.fillText(
+                  `${bb?.label}`,
+                  parseInt(x_min * scale - 2),
+                  parseInt(y_min * scale - 10)
+                );
+              }
             });
           }
         );
@@ -319,12 +313,6 @@ export default function ImageCard({
             setAnnotatedImage(options.camera, canvas.toDataURL("image/jpeg"));
           } else {
             setAnnotatedImage({
-              index,
-              url: canvas.toDataURL("image/jpeg"),
-              notAnnotatedURL: notAnnotatedCanvas.toDataURL("image/jpeg"),
-            });
-
-            console.log({
               index,
               url: canvas.toDataURL("image/jpeg"),
               notAnnotatedURL: notAnnotatedCanvas.toDataURL("image/jpeg"),
@@ -349,14 +337,14 @@ export default function ImageCard({
         options: {
           severalAnnotations: true,
           returnCanvasURL: false,
-          // showLabels,
+          showLabels,
         },
       });
     }
   }, [
     imageURL,
     // imageDataURL,
-    // showLabels,
+    showLabels,
     detections,
     setAnnotatedImage,
     // setExternalText,
