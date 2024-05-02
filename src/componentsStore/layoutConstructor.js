@@ -9,7 +9,7 @@ import {
   SimplifiedCarousel,
 } from "./Carousel";
 import { Bar, DivergingBar, Funnel, Line, Pie } from "./Chart";
-import { Select } from "./Select";
+import { Select, Autocomplete } from "./Select";
 import { TextField } from "./Field";
 import { Image, Title, Table, Button } from "./General";
 import { Tooltip } from "./Wrapper";
@@ -35,6 +35,7 @@ const store = {
   Pie: (props) => <Pie {...props} />,
 
   Select: (props) => <Select {...props} />,
+  Autocomplete: (props) => <Autocomplete {...props} />,
 
   TextField: (props) => <TextField {...props} />,
 
