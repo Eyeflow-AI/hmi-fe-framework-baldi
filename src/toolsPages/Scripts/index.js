@@ -14,6 +14,7 @@ import Tooltip from "@mui/material/Tooltip";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import EditIcon from "@mui/icons-material/Edit";
+import DownloadIcon from "@mui/icons-material/Download";
 // Internal
 import PageWrapper from "../../structure/PageWrapper";
 import API from "../../api";
@@ -21,6 +22,7 @@ import API from "../../api";
 // Third-party
 import { useTranslation } from "react-i18next";
 import AceEditor from "react-ace";
+import { downloadJsonData } from "sdk-fe-eyeflow";
 
 // import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/mode-javascript";
@@ -192,6 +194,15 @@ export default function Scripts({ pageOptions }) {
   }
   console.log({ createScriptDialogOpen });
 
+  function handleDownloadAllScripts() {
+    API.get.downloadAllScripts().then((res) => {
+      let documents = res?.documents ?? [];
+      documents.forEach((doc) => {
+        downloadJsonData(doc, `script_${doc.name}`);
+      });
+    });
+  }
+
   return (
     <PageWrapper>
       {({ width, height }) => (
@@ -261,6 +272,21 @@ export default function Scripts({ pageOptions }) {
                     </ListItemButton>
                   );
                 })}
+                <Tooltip title={t("download_all_scripts")}>
+                  <ListItemButton
+                    key="donwloadScriptsButton"
+                    // onClick={() => setSelectedScript(script.name)}
+                    // selected={selectedScript.name === script.name}
+                    onClick={handleDownloadAllScripts}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <DownloadIcon />
+                  </ListItemButton>
+                </Tooltip>
               </List>
             </Box>
           </Box>

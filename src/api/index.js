@@ -224,6 +224,11 @@ const API = {
       ),
     scriptDocument: ({ name }, setLoading) =>
       request(instance.get(`internal/script-document/${name}`), setLoading),
+
+    downloadAllScripts: (setLoading) =>
+      request(instance.get(`internal/scripts/download`), setLoading),
+    downloadAllComponents: (setLoading) =>
+      request(instance.get(`internal/components/download`), setLoading),
     componentDocument: ({ name }, setLoading) =>
       request(instance.get(`internal/component-document/${name}`), setLoading),
     componentData: ({ component, query, stationId }, setLoading) =>

@@ -2,16 +2,16 @@
 import React, { useEffect, useState } from "react";
 
 // Design
-import {
-  Box,
-  List,
-  ListItemButton,
-  Typography,
-  Button,
-  Stack,
-  TextField,
-} from "@mui/material";
+
+import Box from "@mui/material/Box";
+import List from "@mui/material/List";
+import ListItemButton from "@mui/material/ListItemButton";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
 import SaveIcon from "@mui/icons-material/Save";
+import DownloadIcon from "@mui/icons-material/Download";
 
 // Internal
 import PageWrapper from "../../structure/PageWrapper";
@@ -19,6 +19,7 @@ import API from "../../api";
 
 // Third-party
 import { useTranslation } from "react-i18next";
+import { downloadJsonData } from "sdk-fe-eyeflow";
 
 const style = {
   mainBox: Object.assign({}, window.app_config.style.box, {
@@ -105,6 +106,10 @@ export default function AppParameters({ pageOptions }) {
       }
     }
   }, [currentText]);
+
+  function downloadDocument() {
+    downloadJsonData(JSON.parse(currentText), selectedParam);
+  }
 
   return (
     <PageWrapper>
@@ -213,6 +218,14 @@ export default function AppParameters({ pageOptions }) {
                   disabled={errorInText}
                 >
                   {t("save")}
+                </Button>
+                <Button
+                  onClick={downloadDocument}
+                  variant="contained"
+                  startIcon={<DownloadIcon />}
+                  disabled={errorInText || !selectedParam}
+                >
+                  {t("download")}
                 </Button>
               </Stack>
             </Box>
