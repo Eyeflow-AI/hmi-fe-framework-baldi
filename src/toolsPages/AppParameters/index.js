@@ -212,20 +212,20 @@ export default function AppParameters({ pageOptions }) {
             >
               <Stack direction="row" justifyContent="flex-start" gap={1}>
                 <Button
-                  onClick={saveParam}
-                  variant="contained"
-                  startIcon={<SaveIcon />}
-                  disabled={errorInText}
-                >
-                  {t("save")}
-                </Button>
-                <Button
                   onClick={downloadDocument}
                   variant="contained"
                   startIcon={<DownloadIcon />}
                   disabled={errorInText || !selectedParam}
                 >
                   {t("download")}
+                </Button>
+                <Button
+                  onClick={saveParam}
+                  variant="contained"
+                  startIcon={<SaveIcon />}
+                  disabled={errorInText}
+                >
+                  {t("save")}
                 </Button>
               </Stack>
             </Box>
