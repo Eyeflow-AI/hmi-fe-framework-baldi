@@ -25,9 +25,12 @@ const ImagesCapturer = lazy(() => import("./toolsPages/ImagesCapturer"));
 const PartRegistration = lazy(() => import("./toolsPages/PartRegistration"));
 const ImagesViewer = lazy(() => import("./toolsPages/ImagesViewer"));
 const ImagesAnalyser = lazy(() => import("./toolsPages/ImagesAnalyser"));
-const ChecklistConnector = lazy(() => import("./toolsPages/ChecklistConnector"));
+const ChecklistConnector = lazy(() =>
+  import("./toolsPages/ChecklistConnector")
+);
 const AppParameters = lazy(() => import("./toolsPages/AppParameters"));
 const Components = lazy(() => import("./toolsPages/Components"));
+const QueriesPipelines = lazy(() => import("./toolsPages/QueriesPipelines"));
 
 function NotFound() {
   return <>404: Not Found</>;
@@ -48,14 +51,21 @@ const components = {
   Query: (pageOptions) => <Query pageOptions={pageOptions} />,
   Cameras: (pageOptions) => <Cameras pageOptions={pageOptions} />,
   ImagesCapturer: (pageOptions) => <ImagesCapturer pageOptions={pageOptions} />,
-  PartRegistration: (pageOptions) => <PartRegistration pageOptions={pageOptions} />,
+  PartRegistration: (pageOptions) => (
+    <PartRegistration pageOptions={pageOptions} />
+  ),
   ImagesViewer: (pageOptions) => <ImagesViewer pageOptions={pageOptions} />,
   ImagesAnalyser: (pageOptions) => <ImagesAnalyser pageOptions={pageOptions} />,
-  ChecklistConnector: (pageOptions) => (<ChecklistConnector pageOptions={pageOptions} />),
+  ChecklistConnector: (pageOptions) => (
+    <ChecklistConnector pageOptions={pageOptions} />
+  ),
   AppParameters: (pageOptions) => <AppParameters pageOptions={pageOptions} />,
   Monitor: (pageOptions) => <Monitor pageOptions={pageOptions} />,
   Scripts: (pageOptions) => <Scripts pageOptions={pageOptions} />,
   Components: (pageOptions) => <Components pageOptions={pageOptions} />,
+  QueriesPipelines: (pageOptions) => (
+    <QueriesPipelines pageOptions={pageOptions} />
+  ),
 };
 
 export default function Routes({

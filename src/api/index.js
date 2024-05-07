@@ -117,6 +117,10 @@ const API = {
       ),
     script: ({ name }, setLoading) =>
       request(instance.post(`internal/script`, { name }), setLoading),
+
+    queryPipeline: ({ name }, setLoading) =>
+      request(instance.post(`internal/queries-pipeline`, { name }), setLoading),
+
     component: ({ name }, setLoading) =>
       request(instance.post(`internal/component`, { name }), setLoading),
     componentData: ({ data, component, stationId }, setLoading) =>
@@ -225,10 +229,19 @@ const API = {
     scriptDocument: ({ name }, setLoading) =>
       request(instance.get(`internal/script-document/${name}`), setLoading),
 
+    queriesPipelineDocument: ({ name }, setLoading) =>
+      request(instance.get(`internal/queries-pipeline/${name}`), setLoading),
+
+    queriesPipeline: (setLoading) =>
+      request(instance.get(`internal/queries-pipeline`), setLoading),
+
     downloadAllScripts: (setLoading) =>
       request(instance.get(`internal/scripts/download`), setLoading),
     downloadAllComponents: (setLoading) =>
       request(instance.get(`internal/components/download`), setLoading),
+    downloadAllQueriesPipelines: (setLoading) =>
+      request(instance.get(`internal/queries-pipeline/download`), setLoading),
+
     componentDocument: ({ name }, setLoading) =>
       request(instance.get(`internal/component-document/${name}`), setLoading),
     componentData: ({ component, query, stationId }, setLoading) =>
@@ -356,6 +369,18 @@ const API = {
         instance.put(`internal/component/${oldName}`, { name }),
         setLoading
       ),
+
+    queryPipelinesName: ({ name, oldName }, setLoading) =>
+      request(
+        instance.put(`internal/queries-pipeline/${oldName}`, { name }),
+        setLoading
+      ),
+
+    queryPipelines: ({ document }, setLoading) =>
+      request(
+        instance.put(`internal/queries-pipeline`, { document }),
+        setLoading
+      ),
   },
   delete: {
     user: ({ username }, setLoading) =>
@@ -376,6 +401,8 @@ const API = {
       request(instance.delete(`internal/script/${name}`), setLoading),
     component: ({ name }, setLoading) =>
       request(instance.delete(`internal/component/${name}`), setLoading),
+    queryPipelines: ({ name }, setLoading) =>
+      request(instance.delete(`internal/queries-pipeline/${name}`), setLoading),
   },
 };
 
