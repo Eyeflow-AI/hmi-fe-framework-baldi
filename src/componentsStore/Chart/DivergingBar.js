@@ -199,7 +199,7 @@ export default function DivergingBar({ chart }) {
   const [maxValue, setMaxValue] = useState(0);
   const [minValue, setMinValue] = useState(0);
 
-  console.log({ info });
+  console.log({ DivergingBar: info, chart });
 
   useEffect(() => {
     if (!chart?.result?.length) return;
@@ -225,14 +225,18 @@ export default function DivergingBar({ chart }) {
         };
         Object.entries(value?.fields ?? {}).forEach(([field, fieldValue]) => {
           // if (Math.abs(fieldValue) <= 0.05) dontSave = true;
-          _item[`${t(field)}`] = fieldValue;
+          // _item[`${t(field)}`] = fieldValue;
+          _item[`${field}`] = fieldValue;
           _item["total"] += Math.abs(fieldValue);
+          _item[`${field}_tooltip`] =
+            value?.tooltip_fields?.[field] ?? fieldValue;
           if (fieldValue > _maxValue) _maxValue = fieldValue;
           if (fieldValue < _minValue) _minValue = fieldValue;
           // chart?.chartInfo?.colors_results?.[i.id];
           if (queryHasColors) {
-            _item[`${t(field)}Color`] =
-              chart?.chartInfo?.colors_results?.[field];
+            // _item[`${t(field)}Color`] =
+            // chart?.chartInfo?.colors_results?.[field];
+            _item[`${field}Color`] = chart?.chartInfo?.colors_results?.[field];
           }
         });
 
@@ -244,7 +248,8 @@ export default function DivergingBar({ chart }) {
       // set keys
       let keys = [];
       Object.keys(chart?.chartInfo?.colors_results ?? {}).forEach((key) => {
-        keys.push(`${t(key)}`);
+        // keys.push(`${t(key)}`);
+        keys.push(`${key}`);
       });
       setKeys(keys);
 
@@ -354,7 +359,9 @@ export default function DivergingBar({ chart }) {
             }
             // colors={{ scheme: "nivo" }}
             tooltip={(info) => {
-              let value = info.data[info.id];
+              // let value = info.data[info.id];
+              let value =
+                info?.data?.[`${info.id}_tooltip`] ?? info.data[info.id];
               console.log({ i: info });
               let total = info?.data?.total ?? 0;
               let color = info.color;
