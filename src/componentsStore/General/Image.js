@@ -73,6 +73,7 @@ export default function ImageTag({
   const [tooltip, setTooltip] = useState({});
   const [detections, setDetections] = useState([]);
   const [annotatedImage, setAnnotatedImage] = useState(null);
+  const [backgroundColor, setBackgroundColor] = useState("transparent");
   // const [_name, _setName] = useState("");
   console.log({ Image: name, tag, componentsInfo, detections });
 
@@ -326,6 +327,7 @@ export default function ImageTag({
       setImageCaption(component?.imageCaption);
       setDetections(component?.detections);
       setTooltip(component?.tooltip);
+      setBackgroundColor(component?.backgroundColor ?? "transparent");
       setOnImageLoading(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -349,6 +351,7 @@ export default function ImageTag({
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          backgroundColor,
         }}
       >
         {imageURL || annotatedImage?.url ? (
