@@ -72,6 +72,7 @@ export default function ImageTag({
   const [imageCaption, setImageCaption] = useState("");
   const [tooltip, setTooltip] = useState({});
   const [detections, setDetections] = useState([]);
+  const [showLabels, setShowLabels] = useState(false);
   const [annotatedImage, setAnnotatedImage] = useState(null);
   const [backgroundColor, setBackgroundColor] = useState("transparent");
   // const [_name, _setName] = useState("");
@@ -201,22 +202,21 @@ export default function ImageTag({
               parseInt((x_max - x_min) * scale),
               parseInt((y_max - y_min) * scale)
             );
-            // if (options?.showLabels) {
-            //   ctx.font = "30px Arial";
-            //   ctx.fillStyle = "white";
-            //   ctx.fillText(
-            //     `${bboxRegion?.label}`,
-            //     parseInt(x_min * scale - 3),
-            //     parseInt(y_min * scale - 12)
-            //   );
-            //   ctx.fillStyle = strokeStyle;
-            //   ctx.fillText(
-            //     `${bboxRegion?.label}`,
-            //     parseInt(x_min * scale - 2),
-            //     parseInt(y_min * scale - 10)
-            //   );
-            // }
-            // }
+            if (options?.showLabels) {
+              ctx.font = "30px Arial";
+              ctx.fillStyle = "white";
+              ctx.fillText(
+                `${bboxRegion?.label}`,
+                parseInt(x_min * scale - 3),
+                parseInt(y_min * scale - 12)
+              );
+              ctx.fillStyle = strokeStyle;
+              ctx.fillText(
+                `${bboxRegion?.label}`,
+                parseInt(x_min * scale - 2),
+                parseInt(y_min * scale - 10)
+              );
+            }
             (region?.detections ?? [])?.forEach((detection) => {
               let bb = detection?.[0];
               let [x_min, x_max, y_min, y_max] = expandCoordinates({
@@ -247,22 +247,22 @@ export default function ImageTag({
                 parseInt((y_max - y_min) * scale)
               );
 
-              // if (options?.showLabels) {
-              //   ctx.font = "30px Arial";
+              if (options?.showLabels) {
+                ctx.font = "30px Arial";
 
-              //   ctx.fillStyle = "white";
-              //   ctx.fillText(
-              //     `${bb?.label}`,
-              //     parseInt(x_min * scale - 3),
-              //     parseInt(y_min * scale - 12)
-              //   );
-              //   ctx.fillStyle = strokeStyle;
-              //   ctx.fillText(
-              //     `${bb?.label}`,
-              //     parseInt(x_min * scale - 2),
-              //     parseInt(y_min * scale - 10)
-              //   );
-              // }
+                ctx.fillStyle = "white";
+                ctx.fillText(
+                  `${bb?.label}`,
+                  parseInt(x_min * scale - 3),
+                  parseInt(y_min * scale - 12)
+                );
+                ctx.fillStyle = strokeStyle;
+                ctx.fillText(
+                  `${bb?.label}`,
+                  parseInt(x_min * scale - 2),
+                  parseInt(y_min * scale - 10)
+                );
+              }
             });
           }
         );
@@ -305,7 +305,7 @@ export default function ImageTag({
         options: {
           severalAnnotations: true,
           returnCanvasURL: false,
-          // showLabels,
+          showLabels,
         },
       });
     } else {
@@ -322,10 +322,10 @@ export default function ImageTag({
       const component =
         componentsInfo.find((item) => item?.tag === tag && item?.name === name)
           ?.output ?? {};
-      // console.log({ component });
       setImageURL(component?.imageURL);
       setImageCaption(component?.imageCaption);
       setDetections(component?.detections);
+      setShowLabels(component?.showLabels);
       setTooltip(component?.tooltip);
       setBackgroundColor(component?.backgroundColor ?? "transparent");
       setOnImageLoading(true);
