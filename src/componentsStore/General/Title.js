@@ -7,6 +7,7 @@ export default function Title({ name, tag, componentsInfo, style, metadata }) {
   const [value, setValue] = useState("");
   // const [error, setError] = useState(false);
   const [_style, _setStyle] = useState({});
+  const [backgroundColor, setBackgroundColor] = useState("transparent");
 
   useEffect(() => {
     if (style) {
@@ -29,8 +30,9 @@ export default function Title({ name, tag, componentsInfo, style, metadata }) {
       const component =
         componentsInfo?.find((item) => item?.tag === tag && item?.name === name)
           ?.output ?? {};
-      // console.log({ component });
+      console.log({ component });
       setValue(component?.text);
+      setBackgroundColor(component?.backgroundColor ?? "transparent");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [componentsInfo]);
@@ -39,6 +41,7 @@ export default function Title({ name, tag, componentsInfo, style, metadata }) {
     <Typography
       sx={{
         ..._style,
+        backgroundColor,
       }}
     >
       {value ?? metadata?.text}
