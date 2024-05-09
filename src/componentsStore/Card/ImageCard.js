@@ -72,7 +72,7 @@ export default function ImageCard({
   metadata,
   setComponentsInfo,
 }) {
-  console.log({ ImageCard: name, tag, componentsInfo });
+  // console.log({ ImageCard: name, tag, componentsInfo });
   const [onImageLoading, setOnImageLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
@@ -122,7 +122,7 @@ export default function ImageCard({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [componentsInfo]);
 
-  console.log({ onImageLoading });
+  // console.log({ onImageLoading });
 
   useEffect(() => {
     if (onImageLoading) {
@@ -180,13 +180,12 @@ export default function ImageCard({
       info: {},
     },
   }) => {
-
     let strokeStyle = options.strokeStyle || colors.eyeflow.green.dark;
     let expandBox = options.expandBox || 1;
     let img = new Image();
     img.src = image;
 
-    console.log({ src: img.src });
+    // console.log({ src: img.src });
     img.crossOrigin = "anonymous";
 
     img.onload = function () {

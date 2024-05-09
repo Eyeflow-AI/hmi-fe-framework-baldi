@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 
 export default function Title({ name, tag, componentsInfo, style, metadata }) {
-  console.log({ Title: name, tag, componentsInfo, style });
+  // console.log({ Title: name, tag, componentsInfo, style });
 
   const [value, setValue] = useState("");
   // const [error, setError] = useState(false);
@@ -30,7 +30,7 @@ export default function Title({ name, tag, componentsInfo, style, metadata }) {
       const component =
         componentsInfo?.find((item) => item?.tag === tag && item?.name === name)
           ?.output ?? {};
-      console.log({ component });
+      // console.log({ component });
       setValue(component?.text);
       setBackgroundColor(component?.backgroundColor ?? "transparent");
     }

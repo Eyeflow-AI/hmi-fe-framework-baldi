@@ -119,7 +119,7 @@ export default function Scripts({ pageOptions }) {
     API.get
       .scriptDocument({ name: selectedScript })
       .then((res) => {
-        console.log({ res });
+        // console.log({ res });
         setCurrentText(res?.document?.document ?? "");
       })
       .finally(() => {});
@@ -181,7 +181,7 @@ export default function Scripts({ pageOptions }) {
 
   useEffect(() => {
     if (selectedScript) {
-      console.log({ selectedScript });
+      // console.log({ selectedScript });
       getDocument(selectedScript);
     } else {
       // setCurrentText(JSON.stringify({}, undefined, 4));
@@ -189,10 +189,10 @@ export default function Scripts({ pageOptions }) {
   }, [selectedScript]);
 
   function onChange(newValue) {
-    console.log("change", newValue);
+    // console.log("change", newValue);
     setCurrentText(newValue);
   }
-  console.log({ createScriptDialogOpen });
+  // console.log({ createScriptDialogOpen });
 
   function handleDownloadAllScripts() {
     API.get.downloadAllScripts().then((res) => {

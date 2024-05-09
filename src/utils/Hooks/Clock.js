@@ -25,7 +25,7 @@ export default function Clock({
     // eslint-disable-next-line
   }, []);
 
-  console.log({ memoazation: clock });
+  // console.log({ memoazation: clock });
 
   useEffect(() => {
     if (tick > 0 && automaticUpdate) {

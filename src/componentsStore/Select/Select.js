@@ -19,7 +19,7 @@ export default function Select({
   const [value, setValue] = useState("");
   const [list, setList] = useState([]);
   const [on, setOn] = useState({});
-  console.log({ componentsInfo, setComponentsInfo, metadata });
+  // console.log({ componentsInfo, setComponentsInfo, metadata });
 
   const handleClick = (item) => {
     setValue(item.value);
@@ -42,7 +42,7 @@ export default function Select({
       const component =
         componentsInfo.find((item) => item.tag === tag && item.name === name)
           ?.output ?? {};
-      console.log({ component });
+      // console.log({ component });
 
       const _list = component?.list ?? [];
       const _on = component?.on ?? {};
@@ -63,25 +63,25 @@ export default function Select({
   return (
     <FormControl
       fullWidth
-      sx={
-        {
-          //marginTop: "12px",
-          '& label.Mui-focused': {
-            "color": '#E0E3E7',
+      sx={{
+        //marginTop: "12px",
+        "& label.Mui-focused": {
+          color: "#E0E3E7",
+        },
+        "& .MuiOutlinedInput-root": {
+          "&.Mui-focused fieldset": {
+            borderColor: "#E0E3E7",
           },
-          '& .MuiOutlinedInput-root': {
-            '&.Mui-focused fieldset': {
-              "borderColor": '#E0E3E7',
-            },
-          }
-        }
-      }
+        },
+      }}
     >
       <InputLabel
         id="select-label"
-        sx={{
-          // paddingTop: `12px`,
-        }}
+        sx={
+          {
+            // paddingTop: `12px`,
+          }
+        }
       >
         {metadata?.label}
       </InputLabel>

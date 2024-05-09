@@ -121,7 +121,7 @@ export default function QueriesPipelines({ pageOptions }) {
     API.get
       .queriesPipelineDocument({ name: selectedScript })
       .then((res) => {
-        console.log({ res });
+        // console.log({ res });
         setCurrentText(res?.document?.document ?? "");
       })
       .finally(() => {});
@@ -183,7 +183,7 @@ export default function QueriesPipelines({ pageOptions }) {
 
   useEffect(() => {
     if (selectedScript) {
-      console.log({ selectedScript });
+      // console.log({ selectedScript });
       getDocument(selectedScript);
     } else {
       // setCurrentText(JSON.stringify({}, undefined, 4));
@@ -191,14 +191,14 @@ export default function QueriesPipelines({ pageOptions }) {
   }, [selectedScript]);
 
   function onChange(newValue) {
-    console.log("change", newValue);
+    // console.log("change", newValue);
     setCurrentText(newValue);
   }
 
   function handleDownloadAllScripts() {
     API.get.downloadAllQueriesPipelines().then((res) => {
       let documents = res?.documents ?? [];
-      console.log({ documents });
+      // console.log({ documents });
       documents.forEach((doc) => {
         downloadJsonData(doc, `query_${doc.name}`);
       });

@@ -15,16 +15,16 @@ function postData({
       component: item,
     })
     .then((response) => {
-      console.log({
-        response,
-        postData: componentsInfo,
-        item,
-        // fnExecutor,
-        stationId,
-      });
-      console.log({ RESPONSE: response });
+      // console.log({
+      //   response,
+      //   postData: componentsInfo,
+      //   item,
+      //   // fnExecutor,
+      //   stationId,
+      // });
+      // console.log({ RESPONSE: response });
       let notification = response?.notification ?? null;
-      console.log({ notification });
+      // console.log({ notification });
       // if (response.ok) {
       if (notification) {
         notificationBar = {
@@ -44,7 +44,7 @@ function postData({
     .catch((error) => {
       console.error({ error });
       let notification = error?.data?.notification ?? null;
-      console.log({ notification });
+      // console.log({ notification });
       if (notification) {
         notificationBar = {
           show: true,

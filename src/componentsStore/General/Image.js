@@ -76,7 +76,7 @@ export default function ImageTag({
   const [annotatedImage, setAnnotatedImage] = useState(null);
   const [backgroundColor, setBackgroundColor] = useState("transparent");
   // const [_name, _setName] = useState("");
-  console.log({ Image: name, tag, componentsInfo, detections });
+  // console.log({ Image: name, tag, componentsInfo, detections });
 
   // useEffect(() => {
   //   if (name) {
@@ -133,21 +133,21 @@ export default function ImageTag({
       info: {},
     },
   }) => {
-    console.log({
-      name,
-      image,
-      index,
-      scale,
-      setAnnotatedImage,
-      regions,
-      options,
-    });
+    // console.log({
+    //   name,
+    //   image,
+    //   index,
+    //   scale,
+    //   setAnnotatedImage,
+    //   regions,
+    //   options,
+    // });
     let strokeStyle = options?.strokeStyle || colors.eyeflow.green.dark;
     let expandBox = options?.expandBox || 1;
     let img = new Image();
     img.src = image;
 
-    console.log({ src: img.src, image });
+    // console.log({ src: img.src, image });
     img.crossOrigin = "anonymous";
 
     img.onload = function () {
@@ -279,12 +279,12 @@ export default function ImageTag({
               notAnnotatedURL: notAnnotatedCanvas.toDataURL("image/jpeg"),
             });
 
-            console.log({
-              index,
-              image,
-              url: canvas.toDataURL("image/jpeg"),
-              notAnnotatedURL: notAnnotatedCanvas.toDataURL("image/jpeg"),
-            });
+            // console.log({
+            //   index,
+            //   image,
+            //   url: canvas.toDataURL("image/jpeg"),
+            //   notAnnotatedURL: notAnnotatedCanvas.toDataURL("image/jpeg"),
+            // });
           }
         }
       } else {
@@ -333,7 +333,7 @@ export default function ImageTag({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [componentsInfo]);
 
-  console.log({ onImageLoading });
+  // console.log({ onImageLoading });
 
   useEffect(() => {
     if (onImageLoading) {

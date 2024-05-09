@@ -89,8 +89,8 @@ export default function ChecklistReferencesTable({
         });
       });
 
-      console.log("schemaDocument", schemaDocument);
-      console.log("customSchema", customSchema);
+      // console.log("schemaDocument", schemaDocument);
+      // console.log("customSchema", customSchema);
       setReferenceToSave(referenceToUse);
       buildTable(referenceToUse);
     }

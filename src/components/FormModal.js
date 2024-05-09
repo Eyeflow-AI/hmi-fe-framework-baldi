@@ -72,9 +72,7 @@ function PartIdAutoComplete(props) {
     <Autocomplete
       disablePortal
       getOptionLabel={getOptionLabel}
-      options={
-        Boolean(usemasklist) ? maskmaplist : partsList
-      }
+      options={Boolean(usemasklist) ? maskmaplist : partsList}
       onChange={_onChange}
       disabled={disabled}
       renderInput={(params) => <TextField {...params} label={label} />}
@@ -145,12 +143,7 @@ export default function FormModal({
       setMaskMapURL(config?.maskMapURL ?? "");
       getMaskMapList();
     }
-  }, [
-    config?.maskMapListURL,
-    config?.useMaskList,
-    config?.maskMapURL,
-    open
-  ]);
+  }, [config?.maskMapListURL, config?.useMaskList, config?.maskMapURL, open]);
 
   const { sendDisabled } = useMemo(() => {
     let sendDisabled = false;
@@ -205,7 +198,7 @@ export default function FormModal({
     _formData["useMaskList"] = useMaskList;
     _formData["maskMapListURL"] = config?.maskMapListURL ?? "";
     _formData["maskMapId"] = config?.maskMapId ?? "";
-    console.log({ _formData });
+    // console.log({ _formData });
     onClickSend(_formData);
   };
 

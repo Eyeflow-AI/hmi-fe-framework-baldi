@@ -149,17 +149,17 @@ export default function Autocomplete({
   const [list, setList] = useState([]);
   const [on, setOn] = useState({});
   const [emptyObject, setEmptyObject] = useState({});
-  console.log({ componentsInfo, setComponentsInfo, metadata, emptyObject });
+  // console.log({ componentsInfo, setComponentsInfo, metadata, emptyObject });
 
   const handleChange = (item) => {
-    console.log({
-      _item: item,
-      componentsInfo,
-      setComponentsInfo,
-      metadata,
-      emptyObject,
-      on,
-    });
+    // console.log({
+    //   _item: item,
+    //   componentsInfo,
+    //   setComponentsInfo,
+    //   metadata,
+    //   emptyObject,
+    //   on,
+    // });
     let _item = { ...item };
     if (!item?.value) {
       _item = { ...emptyObject };
@@ -184,7 +184,7 @@ export default function Autocomplete({
       const component =
         componentsInfo.find((item) => item.tag === tag && item.name === name)
           ?.output ?? {};
-      console.log({ component });
+      // console.log({ component });
 
       const _list = component?.list ?? [];
       const _on = component?.on ?? {};

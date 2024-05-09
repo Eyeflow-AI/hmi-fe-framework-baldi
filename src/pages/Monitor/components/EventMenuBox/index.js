@@ -201,7 +201,7 @@ export default function EventMenuBox({
 
   const [menuBoxHeight, setMenuBoxHeight] = useState(height);
 
-  console.log({ runningItem, runningItemResponse, runningItemComponent });
+  // console.log({ runningItem, runningItemResponse, runningItemComponent });
 
   useEffect(() => {
     if (hasMainButton) {
@@ -221,13 +221,13 @@ export default function EventMenuBox({
       for (let key of deleteKeys) {
         delete newParams[key];
       }
-      console.log({ newParams });
+      // console.log({ newParams });
       return newParams;
     });
   };
 
   const handleSelectItem = (item, type = "click") => {
-    console.log({ type });
+    // console.log({ type });
     setSelectedItem(item);
     setChangeEventType(type);
   };
@@ -282,7 +282,7 @@ export default function EventMenuBox({
     let _runningItem =
       runningItemResponse?.find((item) => item.name === runningItemComponent) ??
       null;
-    console.log({ _runningItem });
+    // console.log({ _runningItem });
 
     if (JSON.stringify(_runningItem?.output) !== JSON.stringify(runningItem)) {
       setRunningItem(_runningItem?.output ?? null);
@@ -316,7 +316,7 @@ export default function EventMenuBox({
       handleSelectItem(item.output[0], "update");
     } else if (selectedItem && item?.output?.length > 0) {
       let _item = item?.output?.find((item) => item?._id === selectedItem?._id);
-      console.log({ _item });
+      // console.log({ _item });
       // página carregada e com item selecionado, mas o item não está na lista
       if (!_item && runningItem?._id !== selectedItem?._id) {
         handleSelectItem(_item?.output?.[0], "update");

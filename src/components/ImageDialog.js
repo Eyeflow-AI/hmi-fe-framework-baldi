@@ -103,7 +103,7 @@ const getAnnotatedImg = ({
     canvas.height = img.height;
     const ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0, img.width, img.height);
-    console.log({ height: img.height, width: img.width });
+    // console.log({ height: img.height, width: img.width });
 
     const notAnnotatedCanvas = document.createElement("canvas");
     notAnnotatedCanvas.width = img.width;

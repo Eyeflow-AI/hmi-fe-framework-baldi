@@ -10,7 +10,7 @@ export default function TextField({
   metadata,
   stationId,
 }) {
-  console.log({ TextField: name, tag, componentsInfo });
+  // console.log({ TextField: name, tag, componentsInfo });
 
   const [item, setItem] = useState(null);
   const [value, setValue] = useState("");
@@ -39,9 +39,9 @@ export default function TextField({
     if (index !== -1) {
       let newValue = event.target.value;
       setValue(newValue);
-      console.log({ name, newValue });
+      // console.log({ name, newValue });
       _componentsInfo[index].output.text = newValue;
-      console.log({ dialogStart: _componentsInfo });
+      // console.log({ dialogStart: _componentsInfo });
       eventsHandler({
         componentsInfo: _componentsInfo,
         item,
@@ -64,7 +64,7 @@ export default function TextField({
     [item]
   );
 
-  console.log({ componentsInfo });
+  // console.log({ componentsInfo });
   return (
     <MUITextField
       value={value}

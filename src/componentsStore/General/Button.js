@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import MUIButton from "@mui/material/Button";
 
 export default function Button({ name, tag, componentsInfo, style, metadata }) {
-  console.log({ Title: name, tag, componentsInfo, style });
+  // console.log({ Title: name, tag, componentsInfo, style });
 
   const [value, setValue] = useState("");
   // const [error, setError] = useState(false);

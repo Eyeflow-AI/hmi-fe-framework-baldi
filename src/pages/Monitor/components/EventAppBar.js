@@ -44,18 +44,18 @@ const style = {
 };
 
 export default function EventAppBar({ config, stationId, componentsInfo }) {
-  console.log({ EventAppBar: componentsInfo, config });
+  // console.log({ EventAppBar: componentsInfo, config });
 
   const { buttonList, hasAppBar } = useMemo(() => {
     let buttonList = [];
     let hasAppBar = false;
     let buttonListName = "";
-    console.log({ componentsInfo });
+    // console.log({ componentsInfo });
     if (componentsInfo && Array.isArray(componentsInfo)) {
       let output =
         componentsInfo?.find((item) => item?.name === config?.name)?.output ??
         null;
-      console.log({ output });
+      // console.log({ output });
       if (output?.status) {
         hasAppBar = true;
         if (output?.status === "running") {
@@ -67,7 +67,7 @@ export default function EventAppBar({ config, stationId, componentsInfo }) {
         }
 
         for (let buttonData of config?.[buttonListName] ?? []) {
-          console.log({ buttonData });
+          // console.log({ buttonData });
           let button = {
             icon: buttonData.icon,
             tooltip: buttonData.tooltip,
@@ -85,28 +85,34 @@ export default function EventAppBar({ config, stationId, componentsInfo }) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [componentsInfo, config]);
-  console.log({ hasAppBar });
+  // console.log({ hasAppBar });
 
   if (hasAppBar) {
     return (
       <Box
         width={`${buttonList.length * 70}px`}
-        sx={buttonList.length > 0 ? (true ? style.mainBoxDisabled : style.mainBox) : { display: "none" }}
+        sx={
+          buttonList.length > 0
+            ? true
+              ? style.mainBoxDisabled
+              : style.mainBox
+            : { display: "none" }
+        }
       >
         {buttonList.map((buttonProps, index) => (
           <Box sx={style.buttonBox} key={`${index}-button-app-bar`}>
             {/* {buttonList.length > 0 && */}
-              {/* buttonList.map((button, index) => ( */}
-                <IconButton
-                  key={index}
-                  tooltip={buttonProps.tooltip}
-                  icon={buttonProps.icon}
-                  component={buttonProps.component}
-                  stationId={buttonProps.stationId}
-                  componentsInfo={componentsInfo}
-                  fnName={buttonProps.fnName}
-                />
-              {/* ))} */}
+            {/* buttonList.map((button, index) => ( */}
+            <IconButton
+              key={index}
+              tooltip={buttonProps.tooltip}
+              icon={buttonProps.icon}
+              component={buttonProps.component}
+              stationId={buttonProps.stationId}
+              componentsInfo={componentsInfo}
+              fnName={buttonProps.fnName}
+            />
+            {/* ))} */}
             {buttonProps.loading && (
               <CircularProgress
                 style={style.circularProgress}

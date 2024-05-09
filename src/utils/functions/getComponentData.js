@@ -73,9 +73,9 @@ const getComponentData = ({
   setLoading = null,
   setResponse = null,
 }) => {
-  console.log({ iteminfo2: query });
+  // console.log({ iteminfo2: query });
   let dataToSend = putTypeInObjcts(query);
-  console.log({ iteminfo2: dataToSend });
+  // console.log({ iteminfo2: dataToSend });
   API.get
     .componentData(
       { query: JSON.stringify(dataToSend), component, stationId },
@@ -83,7 +83,7 @@ const getComponentData = ({
     )
     .then((response) => {
       let data = response?.result;
-      console.log({ response: data });
+      // console.log({ response: data });
       if (setResponse) {
         setResponse(data);
       }

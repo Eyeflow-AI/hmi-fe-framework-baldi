@@ -66,7 +66,7 @@ export default function SimplifiedCarousel({
   stationId,
   setComponentsInfo,
 }) {
-  console.log({ SimplifiedCarousel: name, tag, componentsInfo });
+  // console.log({ SimplifiedCarousel: name, tag, componentsInfo });
 
   // const [_name, _setName] = useState("");
   const [data, setData] = useState(null);
@@ -99,7 +99,7 @@ export default function SimplifiedCarousel({
   //   }
   // }, [name]);
   const handleClick = (item) => {
-    console.log({ item, setComponentsInfo, componentsInfo });
+    // console.log({ item, setComponentsInfo, componentsInfo });
     setSelectedItem(item);
     let _componentsInfo = [...componentsInfo];
     // let index = _componentsInfo.findIndex(

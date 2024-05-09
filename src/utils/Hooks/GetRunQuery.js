@@ -9,7 +9,7 @@ export default function GetRunQuery({
   sleepTime = 30000,
   run,
 } = {}) {
-  console.log({ data, stationId, sleepTime, run });
+  // console.log({ data, stationId, sleepTime, run });
 
   const [queryResponse, setQueryResponse] = useState(null);
   const [loading, setLoading] = useState(null);

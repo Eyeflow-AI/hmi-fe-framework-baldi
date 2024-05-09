@@ -202,7 +202,7 @@ export default function DivergingBar({ chart }) {
   const [maxValue, setMaxValue] = useState(0);
   const [minValue, setMinValue] = useState(0);
 
-  console.log({ DivergingBar: info, chart });
+  // console.log({ DivergingBar: info, chart });
 
   useEffect(() => {
     if (!chart?.result?.length) return;

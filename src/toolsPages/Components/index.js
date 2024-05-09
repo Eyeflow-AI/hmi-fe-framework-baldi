@@ -121,7 +121,7 @@ export default function Components({ pageOptions }) {
     API.get
       .componentDocument({ name: selectedScript })
       .then((res) => {
-        console.log({ res });
+        // console.log({ res });
         setCurrentText(res?.document?.document ?? "");
       })
       .finally(() => {});

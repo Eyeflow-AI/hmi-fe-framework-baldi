@@ -33,7 +33,7 @@ export default function IconButton({
   fnName,
 }) {
   const dispatch = useDispatch();
-  console.log({ component, IconButtonbuttonData: tooltip });
+  // console.log({ component, IconButtonbuttonData: tooltip });
 
   const handleNotificationBar = (message, severity) => {
     dispatch(

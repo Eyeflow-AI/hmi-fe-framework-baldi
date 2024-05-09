@@ -39,8 +39,8 @@ export default function Monitor({ pageOptions }) {
   const [dialogStartInfo, setDialogStartInfo] = useState(null);
   const [loadingSelectedItem, setLoadingSelectedItem] = useState(false);
   const [loadingList, setLoadingList] = useState(false);
-  console.log({ itemInfo, pageOptions });
-  console.log({ dialogStartInfo });
+  // console.log({ itemInfo, pageOptions });
+  // console.log({ dialogStartInfo });
 
   return (
     <PageWrapper>

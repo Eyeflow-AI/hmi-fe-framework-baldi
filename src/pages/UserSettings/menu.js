@@ -43,12 +43,12 @@ export default function Menu({ setSelectedDialog, selectedDialog }) {
           let iconInfo = await API.get.iconInfo({
             icon: FUNCTIONS[funtionName].iconNameDB,
           });
-          console.log({ iconInfo });
+          // console.log({ iconInfo });
 
           FUNCTIONS[
             funtionName
           ].icon = `${window.app_config.hosts["hmi-files-ws"].url}/${iconInfo.source}${iconInfo.path}`;
-          console.log({ iconInfo });
+          // console.log({ iconInfo });
         } catch (err) {
           console.log({ x: err });
         }

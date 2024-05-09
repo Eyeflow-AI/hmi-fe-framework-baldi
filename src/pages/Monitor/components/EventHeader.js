@@ -37,18 +37,18 @@ const styleSx = {
 };
 
 export default function EventHeader({ config, disabled, itemInfo }) {
-  console.log({ config, disabled, itemInfo });
+  // console.log({ config, disabled, itemInfo });
   const { t } = useTranslation();
 
   const { fields } = useMemo(() => {
-    console.log({ itemInfo, x: typeof itemInfo === "object" });
+    // console.log({ itemInfo, x: typeof itemInfo === "object" });
     if (itemInfo && typeof itemInfo === "object") {
       let newData =
         itemInfo?.find((item) => item.name === config.name)?.output ?? {};
       return {
         fields: config.fields.map(({ label, field, type, defaultValue }) => {
           let thisData = defaultValue ?? "";
-          console.log({ newData, field });
+          // console.log({ newData, field });
           let value = accessObjValueWithMongoNotation(newData, field);
           if (value) {
             if (type === "date") {
@@ -67,7 +67,7 @@ export default function EventHeader({ config, disabled, itemInfo }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config, itemInfo]);
 
-  console.log({ fields });
+  // console.log({ fields });
 
   return (
     <Box

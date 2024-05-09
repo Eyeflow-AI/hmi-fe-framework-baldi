@@ -75,7 +75,7 @@ export default function ImagesCapturer({ pageOptions }) {
   //   };
   // }, [envVar]);
 
-  console.log({ envVar, envVarURL, recording });
+  // console.log({ envVar, envVarURL, recording });
 
   useEffect(() => {
     if (envVar?.video_save === "start") {

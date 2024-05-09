@@ -34,13 +34,13 @@ export default function LayoutDialog({
 }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  console.log({
-    LayoutDialog: componentsInfo,
-    setComponentsInfo,
-    submitStartInfoComponentFnName,
-    submitStartInfoComponentFnExecutor,
-    submitStartInfoComponent,
-  });
+  // console.log({
+  //   LayoutDialog: componentsInfo,
+  //   setComponentsInfo,
+  //   submitStartInfoComponentFnName,
+  //   submitStartInfoComponentFnExecutor,
+  //   submitStartInfoComponent,
+  // });
 
   const handleNotificationBar = (message, severity) => {
     dispatch(

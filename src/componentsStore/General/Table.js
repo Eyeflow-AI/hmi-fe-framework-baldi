@@ -15,14 +15,14 @@ const styleSx = {
 };
 
 export default function Table({ name, tag, componentsInfo, style, metadata }) {
-  console.log({ Table: name, tag, componentsInfo, style });
+  // console.log({ Table: name, tag, componentsInfo, style });
 
   // const [error, setError] = useState(false);
   const [_style, _setStyle] = useState({});
   const [headers, setHeaders] = useState([]);
   const [body, setBody] = useState([]);
   const [backgroundColors, setBackgroundColors] = useState([]);
-  console.log({ backgroundColors });
+  // console.log({ backgroundColors });
 
   useEffect(() => {
     if (style) {
@@ -40,7 +40,7 @@ export default function Table({ name, tag, componentsInfo, style, metadata }) {
           ?.output ?? [];
 
       const _backgroundColors = component.map((item) => item.backgroundColor);
-      console.log({ component, _backgroundColors });
+      // console.log({ component, _backgroundColors });
       setBackgroundColors(_backgroundColors);
       let _component = component.map((item) => {
         let _item = structuredClone(item);
@@ -54,7 +54,7 @@ export default function Table({ name, tag, componentsInfo, style, metadata }) {
         (header) => !["lineStatus", "backgroundColor"].includes(header)
       );
       const body = tabled;
-      console.log({ headers, body });
+      // console.log({ headers, body });
       setHeaders(headers);
       setBody(body);
     }

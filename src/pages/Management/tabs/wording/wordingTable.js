@@ -149,7 +149,7 @@ export default function WordingTable({ availableLanguages, usedLanguages }) {
       );
       otherLanguages = otherLanguages.map((language) => language);
 
-      console.log({ defaultLanguage, otherLanguages });
+      // console.log({ defaultLanguage, otherLanguages });
       columns.push({
         active: true,
         id: "system",
