@@ -10,6 +10,7 @@ import Tooltip from "@mui/material/Tooltip";
 import CircularProgress from "@mui/material/CircularProgress";
 
 // Internal
+import splitNumbers from "../../utils/functions/splitNumbers";
 
 // Third-party
 import { useTranslation } from "react-i18next";
@@ -24,14 +25,16 @@ const CustomTooltip = ({ color, value, id, value_type, total }) => {
     if (value_type === "percentage") {
       let _currentValue = (Math.abs(value) / total) * 100;
       _currentValue = _currentValue.toFixed(2);
+      _currentValue = String(_currentValue).replace(".", ",");
       setCurrentValue(_currentValue);
       setValueSymbol("%");
     } else if (value_type === "absolute") {
-      setCurrentValue(value);
+      setCurrentValue(splitNumbers(value));
       setValueSymbol("");
     } else {
       let _currentValue = (Math.abs(value) / total) * 100;
       _currentValue = _currentValue.toFixed(2);
+      _currentValue = String(_currentValue).replace(".", ",");
       setCurrentValue(_currentValue);
       setValueSymbol("%");
     }
@@ -388,13 +391,15 @@ export default function DivergingBar({ chart }) {
               let valueType = chart?.chartInfo?.value_type ?? "percentage";
               if (valueType === "percentage") {
                 if (Math.abs(v) >= chart?.chartInfo?.min_value_to_show ?? 5) {
-                  return `${v}%`;
+                  let _v = String(v).replace(".", ",");
+                  return `${_v}%`;
                 } else {
                   return "";
                 }
               } else if (valueType === "absolute") {
                 // if (Math.abs(v) >= chart?.chartInfo?.min_value_to_show ?? 0) {
-                return `${v}`;
+                let _v = splitNumbers(v);
+                return `${_v}`;
                 // } else {
                 // return "";
                 // }

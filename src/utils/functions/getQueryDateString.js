@@ -33,6 +33,6 @@ export default function getQueryDateString(
     );
   }
   // console.log({ dateType })
-  // console.log({date, dayTimeDelta, dateType, newDate: newDate.toISOString()})
+  console.log({ date, dayTimeDelta, dateType, newDate: newDate.toISOString() });
   return newDate.toISOString();
 }

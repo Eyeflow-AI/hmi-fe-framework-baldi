@@ -10,6 +10,7 @@ import Tooltip from "@mui/material/Tooltip";
 import CircularProgress from "@mui/material/CircularProgress";
 
 // Internal
+import splitNumbers from "../../utils/functions/splitNumbers";
 
 // Third-party
 import { useTranslation } from "react-i18next";
@@ -121,6 +122,8 @@ const responsiveTheme = {
   },
 };
 
+// split numbers with points when it is greater than 1000
+
 export default function Funnel({ chart }) {
   const { t } = useTranslation();
   const [info, setInfo] = useState([]);
@@ -137,12 +140,32 @@ export default function Funnel({ chart }) {
       // let newKeys = Object.keys(chart.result[0]);
       let data = chart.result[0];
       let newInfo = [];
-      Object.keys(data).forEach((item) => {
+      Object.keys(data).forEach((item, index) => {
+        let tooltip_value = 0;
+        let tooltip_value_type =
+          chart?.chartInfo?.tooltip_value_type ?? "absolute";
+        if (index) {
+          let prev = newInfo[index - 1];
+          tooltip_value = prev._value;
+          if (tooltip_value_type === "percentage") {
+            let count = (data?.[item] / prev._value) * 100;
+            count = count.toFixed(2);
+            count = isNaN(count) ? 0 : count;
+            tooltip_value = `${count}%`.replace(".", ",");
+          }
+        } else {
+          tooltip_value = data[item];
+          if (tooltip_value_type === "percentage") {
+            tooltip_value = "100%";
+          }
+        }
         let _item = {
           id: item,
           [item]: data[item],
           label: item,
-          value: data?.[item],
+          _value: data?.[item],
+          value: splitNumbers(data?.[item]),
+          tooltip_value,
         };
 
         if (
@@ -226,7 +249,7 @@ export default function Funnel({ chart }) {
                 : { scheme: "nivo" }
             }
             tooltip={(i) => {
-              let value = i?.part?.data?.value;
+              let value = i?.part?.data?.tooltip_value ?? i?.part?.data?.value;
               let color = i?.part?.data?.color;
               let id = i?.part?.data?.id;
               return <CustomTooltip color={color} value={value} id={t(id)} />;
