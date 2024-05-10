@@ -73,6 +73,7 @@ export default function EventMenuBox({
   loadingList,
 }) {
   const [changeEventType, setChangeEventType] = useState("update");
+  const [oldSelectedItem, setOldSelectedItem] = useState(null);
 
   const [queryParams, setQueryParams] = useState(null);
 
@@ -227,7 +228,7 @@ export default function EventMenuBox({
   };
 
   const handleSelectItem = (item, type = "click") => {
-    // console.log({ type });
+    setOldSelectedItem(selectedItem);
     setSelectedItem(item);
     setChangeEventType(type);
   };
@@ -259,7 +260,8 @@ export default function EventMenuBox({
       changeEventType === "update" &&
       selectedItem &&
       selectedItem?._id &&
-      selectedItem?.on?.update
+      selectedItem?.on?.update &&
+      selectedItem?._id !== oldSelectedItem?._id
     ) {
       let query = selectedItem;
       let component = selectedItem.on.update;
@@ -267,7 +269,23 @@ export default function EventMenuBox({
         query,
         component,
         stationId,
-        // setLoading,
+        setLoading: setLoadingSelectedItem,
+        setResponse: setItemInfo,
+      });
+    } else if (
+      changeEventType === "update" &&
+      selectedItem &&
+      selectedItem?._id &&
+      selectedItem?.on?.update &&
+      selectedItem?._id === oldSelectedItem?._id
+    ) {
+      let query = selectedItem;
+      let component = selectedItem.on.update;
+      getComponentData({
+        query,
+        component,
+        stationId,
+        // setLoading: setLoadingSelectedItem,
         setResponse: setItemInfo,
       });
     }

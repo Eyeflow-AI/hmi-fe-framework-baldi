@@ -371,13 +371,16 @@ export default function ImageCard({
               // border: "1px solid red"
             }}
           >
-            <img
-              alt={imageCaption}
-              src={annotatedImage?.url ?? imageURL}
-              // src={"/assets/cat.webp"}
-              style={loading ? loadingImageStyle : styleSx.imageStyle}
-              // onLoad={onImageLoad}
-            />
+            {(imageURL && detections?.length === 0) ||
+              (annotatedImage?.url && (
+                <img
+                  alt={imageCaption}
+                  src={annotatedImage?.url ?? imageURL}
+                  // src={"/assets/cat.webp"}
+                  style={loading ? loadingImageStyle : styleSx.imageStyle}
+                  // onLoad={onImageLoad}
+                />
+              ))}
           </center>
           {loading && <CircularProgress sx={styleSx.circularProgressSx} />}
         </Box>

@@ -354,7 +354,7 @@ export default function ImageTag({
           backgroundColor,
         }}
       >
-        {imageURL || annotatedImage?.url ? (
+        {(imageURL && detections?.length === 0) || annotatedImage?.url ? (
           <img
             alt={imageCaption}
             src={annotatedImage?.url ?? imageURL}
@@ -363,17 +363,20 @@ export default function ImageTag({
             // onLoad={onImageLoad}
           />
         ) : (
-          <Box
-            sx={{
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {t("no_image")}
-          </Box>
+          !imageURL &&
+          !annotatedImage?.url && (
+            <Box
+              sx={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {t("no_image")}
+            </Box>
+          )
         )}
       </center>
       {loading && <CircularProgress sx={styleSx.circularProgressSx} />}
