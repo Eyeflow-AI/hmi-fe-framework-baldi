@@ -125,7 +125,10 @@ const API = {
       request(instance.post(`internal/component`, { name }), setLoading),
     componentData: ({ data, component, stationId }, setLoading) =>
       request(
-        instance.post(`components/${stationId}/${component}`, { data }),
+        instance.post(
+          `components/${stationId}/${component}?time=${new Date().toISOString()}`,
+          { data }
+        ),
         setLoading
       ),
   },
@@ -246,7 +249,9 @@ const API = {
       request(instance.get(`internal/component-document/${name}`), setLoading),
     componentData: ({ component, query, stationId }, setLoading) =>
       request(
-        instance.get(`components/${stationId}/${component}?data=${query}`),
+        instance.get(
+          `components/${stationId}/${component}?data=${query}&time=${new Date().toISOString()}`
+        ),
 
         setLoading
       ),

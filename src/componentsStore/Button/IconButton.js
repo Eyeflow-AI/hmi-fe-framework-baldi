@@ -1,8 +1,9 @@
 // React
-import React from "react";
+import React, { useState } from "react";
 
 // Design
 import MUIIconButton from "@mui/material/IconButton";
+import CircularProgress from "@mui/material/CircularProgress";
 
 // Internal
 import Tooltip from "../Wrapper/Tooltip";
@@ -22,6 +23,12 @@ const style = {
     position: "relative",
     // border: "1px solid #ccc",
   },
+  circularProgress: {
+    position: "absolute",
+    top: "8px",
+    left: "8px",
+    zIndex: 1,
+  },
 };
 
 export default function IconButton({
@@ -34,6 +41,7 @@ export default function IconButton({
 }) {
   const dispatch = useDispatch();
   // console.log({ component, IconButtonbuttonData: tooltip });
+  const [loading, setLoading] = useState(false);
 
   const handleNotificationBar = (message, severity) => {
     dispatch(
@@ -46,6 +54,7 @@ export default function IconButton({
   };
 
   const handleClick = () => {
+    setLoading(true);
     eventsHandler({
       componentsInfo,
       item: component,
@@ -53,23 +62,32 @@ export default function IconButton({
       fnName,
       stationId,
       handleNotificationBar,
+      setLoading,
     });
   };
 
   return (
     <Tooltip tooltip={tooltip}>
-      <MUIIconButton
-        onClick={handleClick}
-        // disabled={buttonProps.disabled}
-      >
-        <img
-          alt=""
-          src={icon}
-          style={Object.assign({}, style.buttonImage, {
-            // opacity: buttonProps.disabled ? 0.3 : 1,
-          })}
-        />
-      </MUIIconButton>
+      <>
+        <MUIIconButton onClick={handleClick} disabled={loading}>
+          <img
+            alt=""
+            src={icon}
+            style={Object.assign({}, style.buttonImage, {
+              // opacity: buttonProps.disabled ? 0.3 : 1,
+            })}
+          />
+        </MUIIconButton>
+        {loading && (
+          <CircularProgress
+            style={style.circularProgress}
+            size={30}
+            thickness={5}
+            color="inherit"
+            disableShrink={true}
+          />
+        )}
+      </>
     </Tooltip>
   );
 }

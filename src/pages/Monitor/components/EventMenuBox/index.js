@@ -76,7 +76,7 @@ export default function EventMenuBox({
 
   const [queryParams, setQueryParams] = useState(null);
 
-  console.log({ queryParams });
+  // console.log({ queryParams });
 
   const { t } = useTranslation();
 

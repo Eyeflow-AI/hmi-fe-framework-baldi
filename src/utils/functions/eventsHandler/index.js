@@ -13,6 +13,7 @@ function eventsHandler({
   componentsInfo,
   stationId,
   handleNotificationBar,
+  setLoading = null,
 }) {
   if (functions[fnName]) {
     functions[fnName]({
@@ -21,6 +22,7 @@ function eventsHandler({
       fnExecutor,
       stationId,
       handleNotificationBar,
+      setLoading,
     });
   } else {
     console.error(`Function ${fnName} not found in eventsHandler`);

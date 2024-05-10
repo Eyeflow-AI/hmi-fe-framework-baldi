@@ -101,8 +101,6 @@ export default function EventAppBar({ config, stationId, componentsInfo }) {
       >
         {buttonList.map((buttonProps, index) => (
           <Box sx={style.buttonBox} key={`${index}-button-app-bar`}>
-            {/* {buttonList.length > 0 && */}
-            {/* buttonList.map((button, index) => ( */}
             <IconButton
               key={index}
               tooltip={buttonProps.tooltip}
@@ -112,16 +110,6 @@ export default function EventAppBar({ config, stationId, componentsInfo }) {
               componentsInfo={componentsInfo}
               fnName={buttonProps.fnName}
             />
-            {/* ))} */}
-            {buttonProps.loading && (
-              <CircularProgress
-                style={style.circularProgress}
-                size={30}
-                thickness={5}
-                color="inherit"
-                disableShrink={true}
-              />
-            )}
           </Box>
         ))}
       </Box>

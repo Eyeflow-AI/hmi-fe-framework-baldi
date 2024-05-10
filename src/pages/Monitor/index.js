@@ -39,8 +39,6 @@ export default function Monitor({ pageOptions }) {
   const [dialogStartInfo, setDialogStartInfo] = useState(null);
   const [loadingSelectedItem, setLoadingSelectedItem] = useState(false);
   const [loadingList, setLoadingList] = useState(false);
-  // console.log({ itemInfo, pageOptions });
-  // console.log({ dialogStartInfo });
 
   return (
     <PageWrapper>
@@ -122,7 +120,6 @@ export default function Monitor({ pageOptions }) {
           </Box>
           <LayoutDialog
             open={Boolean(dialogStartInfo)}
-            // data={dialogStartInfo}
             componentsInfo={dialogStartInfo}
             onClose={() => setDialogStartInfo(null)}
             setComponentsInfo={setDialogStartInfo}

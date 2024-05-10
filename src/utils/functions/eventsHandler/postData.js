@@ -6,6 +6,7 @@ function postData({
   fnExecutor,
   stationId,
   handleNotificationBar,
+  setLoading,
 }) {
   let notificationBar = null;
   API.post
@@ -63,6 +64,7 @@ function postData({
       if (notificationBar) {
         handleNotificationBar(notificationBar.message, notificationBar.type);
       }
+      if (setLoading) setLoading(false);
     });
 }
 

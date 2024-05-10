@@ -30,7 +30,7 @@ export default function Clock({
   useEffect(() => {
     if (tick > 0 && automaticUpdate) {
       let newValue = getClockValue();
-      console.log({ memo3: newValue !== clock });
+      // console.log({ memo3: newValue !== clock });
       setClock(newValue);
     }
     if (!automaticUpdate) {

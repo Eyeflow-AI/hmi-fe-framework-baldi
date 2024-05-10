@@ -3,6 +3,7 @@ function setComponentsInfo({
   item,
   fnExecutor,
   handleNotificatioBar,
+  setLoading,
 }) {
   console.log({ item, emptyObj: componentsInfo });
   let _componentsInfo = [...componentsInfo];
@@ -26,6 +27,7 @@ function setComponentsInfo({
     }
   }
   fnExecutor(_componentsInfo);
+  if (setLoading) setLoading(false);
 }
 
 export default setComponentsInfo;
