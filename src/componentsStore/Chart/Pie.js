@@ -16,21 +16,6 @@ import { useTranslation } from "react-i18next";
 import { ResponsivePie } from "@nivo/pie";
 import { colors } from "sdk-fe-eyeflow";
 
-const responsiveTheme = {
-  tooltip: {
-    container: {
-      background: colors.paper.blue.dark,
-    },
-  },
-  labels: {
-    text: {
-      fontSize: 15,
-      fill: "#ffffff",
-      textShadow: "1px 1px 2px #353535",
-    },
-  },
-};
-
 const responsivePieLegends = [
   {
     anchor: "bottom",
@@ -62,6 +47,20 @@ export default function Bar({ chart }) {
   // const [keys, setKeys] = useState([]);
   // const [queryHasColors, setQueryHasColors] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
+  const [responsiveTheme, setResponsiveTheme] = useState({
+    tooltip: {
+      container: {
+        background: colors.paper.blue.dark,
+      },
+    },
+    labels: {
+      text: {
+        fontSize: 15,
+        fill: "#ffffff",
+        textShadow: "1px 1px 2px #353535",
+      },
+    },
+  });
 
   useEffect(() => {
     if (!chart?.result?.length) return;
@@ -93,7 +92,9 @@ export default function Bar({ chart }) {
     }
 
     if (Object.keys(chart?.chartInfo).includes("label_font_size")) {
-      responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size;
+      let _responsiveTheme = responsiveTheme;
+      _responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size;
+      setResponsiveTheme(_responsiveTheme);
     }
     // setData(chart.result)
   }, [chart]);

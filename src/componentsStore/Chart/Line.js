@@ -45,61 +45,6 @@ const CustomTooltip = ({ color, value, id }) => {
   );
 };
 
-const responsiveTheme = {
-  // tooltip: {
-  //   container: {
-  //     background: colors.paper.blue.dark,
-  //   },
-  // },
-  labels: {
-    text: {
-      fontSize: 35,
-      fill: "#ffffff",
-      textShadow: "1px 1px 2px #353535",
-    },
-  },
-  legends: {
-    text: {
-      fontSize: 20,
-      fill: "#ffffff",
-    },
-  },
-  grid: {
-    line: {
-      stroke: "#dddddd",
-      strokeWidth: 0.1,
-    },
-  },
-  axis: {
-    domain: {
-      line: {
-        stroke: "#777777",
-        strokeWidth: 1,
-      },
-    },
-    legend: {
-      text: {
-        fontSize: 12,
-        fill: "white",
-        outlineWidth: 0,
-        outlineColor: "transparent",
-      },
-    },
-    ticks: {
-      line: {
-        stroke: "#777777",
-        strokeWidth: 1,
-      },
-      text: {
-        fontSize: 11,
-        fill: "white",
-        outlineWidth: 0,
-        outlineColor: "transparent",
-      },
-    },
-  },
-};
-
 const responsiveLegends = [
   {
     anchor: "bottom",
@@ -131,6 +76,60 @@ export default function Line({ chart }) {
   const [info, setInfo] = useState([]);
   const [queryHasColors, setQueryHasColors] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
+  const [responsiveTheme, setResponsiveTheme] = useState({
+    // tooltip: {
+    //   container: {
+    //     background: colors.paper.blue.dark,
+    //   },
+    // },
+    labels: {
+      text: {
+        fontSize: 35,
+        fill: "#ffffff",
+        textShadow: "1px 1px 2px #353535",
+      },
+    },
+    legends: {
+      text: {
+        fontSize: 20,
+        fill: "#ffffff",
+      },
+    },
+    grid: {
+      line: {
+        stroke: "#dddddd",
+        strokeWidth: 0.1,
+      },
+    },
+    axis: {
+      domain: {
+        line: {
+          stroke: "#777777",
+          strokeWidth: 1,
+        },
+      },
+      legend: {
+        text: {
+          fontSize: 12,
+          fill: "white",
+          outlineWidth: 0,
+          outlineColor: "transparent",
+        },
+      },
+      ticks: {
+        line: {
+          stroke: "#777777",
+          strokeWidth: 1,
+        },
+        text: {
+          fontSize: 11,
+          fill: "white",
+          outlineWidth: 0,
+          outlineColor: "transparent",
+        },
+      },
+    },
+  });
 
   useEffect(() => {
     if (!chart?.result?.length) return;
@@ -150,7 +149,9 @@ export default function Line({ chart }) {
     // setData(chart.result)
 
     if (Object.keys(chart?.chartInfo).includes("label_font_size")) {
-      responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size;
+      let _responsiveTheme = responsiveTheme;
+      _responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size;
+      setResponsiveTheme(_responsiveTheme);
     }
     // eslint-disable-next-line
   }, [chart]);
