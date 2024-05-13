@@ -148,6 +148,10 @@ export default function Line({ chart }) {
       );
     }
     // setData(chart.result)
+
+    if (Object.keys(chart?.chartInfo).includes("label_font_size")) {
+      responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size;
+    }
     // eslint-disable-next-line
   }, [chart]);
 

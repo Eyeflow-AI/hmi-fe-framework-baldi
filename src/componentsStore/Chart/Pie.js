@@ -16,7 +16,7 @@ import { useTranslation } from "react-i18next";
 import { ResponsivePie } from "@nivo/pie";
 import { colors } from "sdk-fe-eyeflow";
 
-const responsivePieTheme = {
+const responsiveTheme = {
   tooltip: {
     container: {
       background: colors.paper.blue.dark,
@@ -91,6 +91,10 @@ export default function Bar({ chart }) {
       // setKeys(newKeys);
       // setQueryHasColors(Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 ? true : false);
     }
+
+    if (Object.keys(chart?.chartInfo).includes("label_font_size")) {
+      responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size;
+    }
     // setData(chart.result)
   }, [chart]);
 
@@ -150,7 +154,7 @@ export default function Bar({ chart }) {
             arcLabelsSkipAngle={10}
             arcLinkLabelsSkipAngle={10}
             margin={{ top: 100, right: 10, bottom: 100, left: 100 }}
-            theme={responsivePieTheme}
+            theme={responsiveTheme}
             legends={responsivePieLegends}
             colors={
               info.every((item) => item.color)

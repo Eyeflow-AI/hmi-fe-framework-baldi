@@ -184,6 +184,10 @@ export default function Bar({ chart }) {
         Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0
       );
     }
+
+    if (Object.keys(chart?.chartInfo).includes("label_font_size")) {
+      responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size;
+    }
   }, [chart]);
 
   return (

@@ -187,6 +187,11 @@ export default function Funnel({ chart }) {
           : false
       );
     }
+
+    
+    if (Object.keys(chart?.chartInfo).includes("label_font_size")) {
+      responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size;
+    }
   }, [chart]);
 
   return (
