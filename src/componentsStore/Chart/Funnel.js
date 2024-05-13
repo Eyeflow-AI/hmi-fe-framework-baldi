@@ -145,10 +145,17 @@ export default function Funnel({ chart }) {
         let tooltip_value_type =
           chart?.chartInfo?.tooltip_value_type ?? "absolute";
         if (index) {
-          let prev = newInfo[index - 1];
-          tooltip_value = prev._value;
+          let reference =
+            Object.keys(chart?.chartInfo).includes(
+              "reference_slice_for_tooltip_calculation"
+            ) &&
+            chart?.chartInfo?.reference_slice_for_tooltip_calculation ===
+              "first"
+              ? newInfo[0]
+              : newInfo[index - 1];
+          tooltip_value = newInfo[index]._value;
           if (tooltip_value_type === "percentage") {
-            let count = (data?.[item] / prev._value) * 100;
+            let count = (data?.[item] / reference._value) * 100;
             count = count.toFixed(2);
             count = isNaN(count) ? 0 : count;
             tooltip_value = `${count}%`.replace(".", ",");
@@ -188,7 +195,6 @@ export default function Funnel({ chart }) {
       );
     }
 
-    
     if (Object.keys(chart?.chartInfo).includes("label_font_size")) {
       responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size;
     }
