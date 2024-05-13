@@ -153,7 +153,7 @@ export default function Funnel({ chart }) {
               "first"
               ? newInfo[0]
               : newInfo[index - 1];
-          tooltip_value = newInfo[index]._value;
+          tooltip_value = splitNumbers(data[item]);
           if (tooltip_value_type === "percentage") {
             let count = (data?.[item] / reference._value) * 100;
             count = count.toFixed(2);
@@ -161,7 +161,7 @@ export default function Funnel({ chart }) {
             tooltip_value = `${count}%`.replace(".", ",");
           }
         } else {
-          tooltip_value = data[item];
+          tooltip_value = splitNumbers(data[item]);
           if (tooltip_value_type === "percentage") {
             tooltip_value = "100%";
           }
