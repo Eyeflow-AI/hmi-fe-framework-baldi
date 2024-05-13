@@ -201,6 +201,7 @@ export default function DivergingBar({ chart }) {
   const [loadingDownload, setLoadingDownload] = useState(false);
   const [maxValue, setMaxValue] = useState(0);
   const [minValue, setMinValue] = useState(0);
+  const [legend, setLegend] = useState([]);
 
   // console.log({ DivergingBar: info, chart });
 
@@ -220,13 +221,18 @@ export default function DivergingBar({ chart }) {
       let newInfo = [];
       let _maxValue = 0;
       let _minValue = 0;
+      let _legend = [];
       Object.entries(data).forEach(([key, value]) => {
         let dontSave = false;
         let _item = {
           period: key,
           total: 0,
         };
+
         Object.entries(value?.fields ?? {}).forEach(([field, fieldValue]) => {
+          let _legendItem = {
+            id: field,
+          };
           // if (Math.abs(fieldValue) <= 0.05) dontSave = true;
           // _item[`${t(field)}`] = fieldValue;
           _item[`${field}`] = fieldValue;
@@ -240,12 +246,15 @@ export default function DivergingBar({ chart }) {
             // _item[`${t(field)}Color`] =
             // chart?.chartInfo?.colors_results?.[field];
             _item[`${field}Color`] = chart?.chartInfo?.colors_results?.[field];
+            _legendItem.color = chart?.chartInfo?.colors_results?.[field];
           }
+          if (!_legend.find((el) => el.id === field)) _legend.push(_legendItem);
         });
 
         if (!dontSave) newInfo.push(_item);
       });
       setInfo(newInfo);
+      setLegend(_legend);
       // setKeys(newKeys);
       setQueryHasColors(queryHasColors);
       // set keys
@@ -345,6 +354,7 @@ export default function DivergingBar({ chart }) {
             width: "100%",
             height: "calc(100% - 50px)",
             flexGrow: 1,
+            flexDirection: "column",
           }}
         >
           <ResponsiveBar
@@ -386,12 +396,17 @@ export default function DivergingBar({ chart }) {
             indexScale={{ type: "band", round: true }}
             enableGridX={true}
             theme={responsiveTheme}
-            legends={responsiveLegends}
+            // legends={responsiveLegends}
             valueFormat={(v) => {
               let valueType = chart?.chartInfo?.value_type ?? "percentage";
               if (valueType === "percentage") {
-                if (Math.abs(v) >= chart?.chartInfo?.min_value_to_show ?? 5) {
-                  let _v = String(v).replace(".", ",");
+                let _v = Object.keys(chart?.chartInfo).includes(
+                  "value_floating_points"
+                )
+                  ? v.toFixed(chart?.chartInfo?.value_floating_points)
+                  : v;
+                if (Math.abs(_v) >= chart?.chartInfo?.min_value_to_show ?? 5) {
+                  _v = String(_v).replace(".", ",");
                   return `${_v}%`;
                 } else {
                   return "";
@@ -405,8 +420,8 @@ export default function DivergingBar({ chart }) {
                 // }
               }
             }}
-            maxValue={maxValue}
-            minValue={minValue}
+            maxValue={chart?.chartInfo?.use_max_value ? maxValue : undefined}
+            minValue={chart?.chartInfo?.use_min_value ? minValue : undefined}
             yScale={{
               type: "linear",
               minInterval: 1,
@@ -468,6 +483,54 @@ export default function DivergingBar({ chart }) {
             // }}
             axisBottom={null}
           />
+          <Box
+            sx={{
+              display: "flex",
+              width: "100%",
+              height: "150px",
+              justifyContent: "flex-start",
+              alignItems: "space-around",
+              marginTop: "-100px",
+              flexDirection: "column",
+              gap: 0,
+              marginLeft: "2rem",
+              // border: '1px solid white',
+            }}
+          >
+            {/* create the legend with the information */}
+            {legend.map((item, index) => {
+              return (
+                <Box
+                  key={index}
+                  sx={{
+                    display: "flex",
+                    width: "100%",
+                    height: "30px",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    // border: '1px solid white',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "15px",
+                      height: "15px",
+                      backgroundColor: item?.color,
+                    }}
+                  ></div>
+                  &nbsp;&nbsp;
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ flexGrow: 1 }}
+                    textAlign={"left"}
+                  >
+                    {t(item?.id)}
+                  </Typography>
+                </Box>
+              );
+            })}
+          </Box>
         </Box>
       ) : (
         <Box
