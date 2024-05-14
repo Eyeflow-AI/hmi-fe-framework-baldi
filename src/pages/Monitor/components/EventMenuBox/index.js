@@ -1,5 +1,5 @@
 // React
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 
 //Design
 import Box from "@mui/material/Box";
@@ -74,6 +74,7 @@ export default function EventMenuBox({
 }) {
   const [changeEventType, setChangeEventType] = useState("update");
   const [oldSelectedItem, setOldSelectedItem] = useState(null);
+  const selectedClickType = useRef("");
 
   const [queryParams, setQueryParams] = useState(null);
 
@@ -228,9 +229,15 @@ export default function EventMenuBox({
   };
 
   const handleSelectItem = (item, type = "click") => {
-    setOldSelectedItem(selectedItem);
-    setSelectedItem(item);
-    setChangeEventType(type);
+    if (
+      (selectedClickType.current === "click" && type !== "update") ||
+      selectedClickType.current === ""
+    ) {
+      setOldSelectedItem(selectedItem);
+      setSelectedItem(item);
+      setChangeEventType(type);
+      if (type === "click") selectedClickType.current = type;
+    }
   };
 
   useEffect(() => {
