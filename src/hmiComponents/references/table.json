@@ -1,0 +1,4 @@
+{
+  "name": "table",
+  "document": "function table({obj}) {\n    if (!obj || !Array.isArray(obj)) {return [];}\n    return obj;\n}\n"
+}

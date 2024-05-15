@@ -9,7 +9,7 @@ import ButtonBase from "@mui/material/ButtonBase";
 import {
   CarouselWithQuery,
   CarouselItem,
-} from "../../../../componentsStore/Carousel";
+} from "../../../../hmiComponents/store/Carousel";
 import getComponentData from "../../../../utils/functions/getComponentData";
 import Clock from "../../../../utils/Hooks/Clock";
 import lodash from "lodash";

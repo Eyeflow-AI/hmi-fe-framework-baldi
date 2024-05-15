@@ -143,6 +143,15 @@ export default function Components({ pageOptions }) {
       .finally(() => {});
   };
 
+  const downloadScript = () => {
+    let document = {
+      name: selectedScript,
+      document: currentText,
+    };
+    console.log({ document });
+    downloadJsonData(document, `${selectedScript}`);
+  };
+
   const deleteScript = ({ name }) => {
     API.delete
       .component({ name })
@@ -341,7 +350,18 @@ export default function Components({ pageOptions }) {
                   {t("edit")}
                 </Button>
                 <Button
+                  // onClick={saveScript}
+                  onClick={downloadScript}
+                  variant="contained"
+                  startIcon={<DownloadIcon />}
+                  disabled={!currentText && !selectedScript}
+                  color="warning"
+                >
+                  {t("download")}
+                </Button>
+                <Button
                   onClick={saveScript}
+                  // onClick={downloadScript}
                   variant="contained"
                   startIcon={<SaveIcon />}
                   disabled={!currentText && !selectedScript}

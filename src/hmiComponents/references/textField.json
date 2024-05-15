@@ -1,0 +1,4 @@
+{
+  "name": "textField",
+  "document": "function textField({obj}) {\n    if (!obj) {return {text: \"\"};}\n    return {\n        text: Object.keys(obj).includes(\"text\") ? obj?.text : \"\",\n        disabled: obj?.disabled ?? true,\n        on: {\n            change: Object.keys(obj).includes(\"on\") && Object.keys(obj.on).includes(\"change\") ? obj.on.change : \"\",\n        }\n    }\n}\n"
+}

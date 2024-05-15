@@ -1,0 +1,4 @@
+{
+  "name": "appBar",
+  "document": "function appBar({obj}) {\n    if (!obj) {return null;}\n    return obj;\n}"
+}

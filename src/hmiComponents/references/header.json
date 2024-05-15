@@ -1,0 +1,4 @@
+{
+  "name": "header",
+  "document": "function header({obj}) {\n    if (!obj) {return null;}\n    return obj;\n}\n"
+}

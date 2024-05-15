@@ -23,7 +23,7 @@ import {
   Funnel,
   Line,
   DivergingBar,
-} from "../../componentsStore/Chart";
+} from "../../hmiComponents/charts";
 import downloadURI from "../../utils/functions/downloadURI";
 import jsonToCSV from "../../utils/functions/jsonToCSV";
 import { setNotificationBar } from "../../store/slices/app";

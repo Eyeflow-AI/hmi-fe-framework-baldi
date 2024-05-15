@@ -1,0 +1,4 @@
+{
+  "name": "title",
+  "document": "// AVALIABLE COLORS:\n// ok ('#79a851')\n// ng ('#ce0c27')\n// unidentified ('#fec43d')\n// repaired ('#5c99ce')\n// running ('#79a851')\n// paused ('#fec43d')\n// closed ('#525252')\nfunction title({obj}) {\n    if (!obj) {return {text: \"\"}}\n    return {\n        text: Object.keys(obj).includes(\"text\") ? obj?.text : \"\",\n        backgroundColor: Object.keys(obj).includes(\"backgroundColor\") ? obj?.backgroundColor : null,\n    }\n}"
+}

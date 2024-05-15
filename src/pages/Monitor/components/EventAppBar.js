@@ -3,10 +3,10 @@ import React, { useMemo } from "react";
 
 // Design
 import Box from "@mui/material/Box";
-import CircularProgress from "@mui/material/CircularProgress";
 
 // Internal
-import { IconButton } from "../../../componentsStore/Button";
+import { IconButton } from "../../../hmiComponents/store/Button";
+import validateData from "../../../hmiComponents/functions/dataValidation/appBar";
 
 // Third-party
 
@@ -52,9 +52,11 @@ export default function EventAppBar({ config, stationId, componentsInfo }) {
     let buttonListName = "";
     // console.log({ componentsInfo });
     if (componentsInfo && Array.isArray(componentsInfo)) {
-      let output =
-        componentsInfo?.find((item) => item?.name === config?.name)?.output ??
-        null;
+      let output = validateData({
+        obj:
+          componentsInfo?.find((item) => item?.name === config?.name)?.output ??
+          {},
+      });
       // console.log({ output });
       if (output?.status) {
         hasAppBar = true;

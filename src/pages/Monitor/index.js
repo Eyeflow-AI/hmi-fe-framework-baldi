@@ -9,7 +9,7 @@ import EventHeader from "./components/EventHeader";
 import EventAppBar from "./components/EventAppBar";
 import EventMenuBox from "./components/EventMenuBox";
 import EventDataBox from "./components/EventDataBox";
-import { LayoutDialog } from "../../componentsStore/Dialog";
+import { LayoutDialog } from "../../hmiComponents/store/Dialog";
 import GetSelectedStation from "../../utils/Hooks/GetSelectedStation";
 
 // Third-party

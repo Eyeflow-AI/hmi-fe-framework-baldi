@@ -3,8 +3,10 @@ import React, { useMemo } from "react";
 
 import Box from "@mui/material/Box";
 
-import LabelBox from "../../../componentsStore/Box/LabelBox";
+import LabelBox from "../../../hmiComponents/store/Box/LabelBox";
 import accessObjValueWithMongoNotation from "../../../utils/functions/accessObjValueWithMongoNotation";
+
+import validateData from "../../../hmiComponents/functions/dataValidation/header";
 
 import { useTranslation } from "react-i18next";
 import { dateFormat } from "sdk-fe-eyeflow";
@@ -43,8 +45,9 @@ export default function EventHeader({ config, disabled, itemInfo }) {
   const { fields } = useMemo(() => {
     // console.log({ itemInfo, x: typeof itemInfo === "object" });
     if (itemInfo && typeof itemInfo === "object") {
-      let newData =
-        itemInfo?.find((item) => item.name === config.name)?.output ?? {};
+      let newData = validateData({
+        obj: itemInfo?.find((item) => item.name === config.name)?.output ?? {},
+      });
       return {
         fields: config.fields.map(({ label, field, type, defaultValue }) => {
           let thisData = defaultValue ?? "";

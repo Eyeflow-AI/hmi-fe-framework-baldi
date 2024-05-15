@@ -1,0 +1,4 @@
+{
+  "name": "hiddenField",
+  "document": "function hiddenField({obj}) {\n  return obj;\n}"
+}

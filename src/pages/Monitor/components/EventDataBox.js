@@ -3,7 +3,7 @@ import React from "react";
 
 import Box from "@mui/material/Box";
 
-import LayoutConstructor from "../../../componentsStore/layoutConstructor";
+import LayoutConstructor from "../../../hmiComponents/layoutConstructor";
 
 import GetWindowDimentions from "../../../utils/Hooks/GetWindowDimensions";
 

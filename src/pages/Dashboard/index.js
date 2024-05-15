@@ -18,7 +18,7 @@ import {
   Funnel,
   Line,
   DivergingBar,
-} from "../../componentsStore/Chart";
+} from "../../hmiComponents/charts";
 
 // Third-party
 import { useTranslation } from "react-i18next";

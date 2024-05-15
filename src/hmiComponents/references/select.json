@@ -1,0 +1,4 @@
+{
+  "name": "select",
+  "document": "function select({obj}) {\n    if (!obj) {return {\n        list: [],\n        on: {},\n        selectedValue,\n    };}\n    const initialList = Object.keys(obj).includes(\"list\") ? obj?.list : [];\n    // const list = [];\n    const list = initialList.map(el => {\n        return {\n            data: el,\n            value: Object.keys(el).includes(\"value\") ? el?.value : \"\",\n            text: Object.keys(el).includes(\"text\") ? el?.text : \"\",\n        }\n    });\n    const on = Object.keys(obj).includes(\"on\") ? obj?.on : {};\n    const selectedValue = Object.keys(obj).includes(\"selectedValue\") ? obj?.selectedValue : \"\";\n    \n    return {\n        list, on, selectedValue\n    }\n    \n}\n"
+}
