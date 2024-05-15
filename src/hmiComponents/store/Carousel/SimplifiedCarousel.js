@@ -71,12 +71,18 @@ export default function SimplifiedCarousel({
 
   useEffect(() => {
     if (componentsInfo && typeof componentsInfo === "object") {
-      const component = validateData(
-        componentsInfo?.find(
-          (item) => item.tag === tag && item.name === name
-        ) ?? {}
+      // const component = {
+      //   output: validateData({
+      //     obj:
+      //       componentsInfo?.find(
+      //         (item) => item.tag === tag && item.name === name
+      //       )?.output ?? [],
+      //   }),
+      // };
+      const component = componentsInfo?.find(
+        (item) => item.tag === tag && item.name === name
       );
-      // console.log({ component });
+      console.log({ Simplified: component });
       setData(component);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

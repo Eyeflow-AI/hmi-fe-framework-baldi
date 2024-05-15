@@ -12,13 +12,11 @@ import {
 import storage from "redux-persist/lib/storage";
 import appReducer from "./slices/app";
 import authReducer from "./slices/auth";
-import monitorReducer from "./slices/monitor";
 import VERSION from "../version";
 
 const rootReducer = combineReducers({
   app: appReducer.reducer,
   auth: authReducer.reducer,
-  monitor: monitorReducer.reducer,
 });
 
 const persistConfig = {

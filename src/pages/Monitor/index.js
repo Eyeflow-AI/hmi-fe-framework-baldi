@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 //Design
 import Box from "@mui/material/Box";
@@ -39,6 +39,11 @@ export default function Monitor({ pageOptions }) {
   const [dialogStartInfo, setDialogStartInfo] = useState(null);
   const [loadingSelectedItem, setLoadingSelectedItem] = useState(false);
   const [loadingList, setLoadingList] = useState(false);
+
+  useEffect(() => {
+    console.log("mudou");
+    console.log({ itemInfo, selectedItem });
+  }, [itemInfo, selectedItem]);
 
   return (
     <PageWrapper>

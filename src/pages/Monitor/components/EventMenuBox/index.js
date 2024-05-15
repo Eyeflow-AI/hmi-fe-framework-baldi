@@ -95,6 +95,7 @@ export default function EventMenuBox({
     runningItemComponentSleepTime,
     loadStartInfoComponent,
     trigger,
+    automaticUpdate,
   } = useMemo(() => {
     const itemMenuHeight = config?.itemHeight ?? 200;
     return {
@@ -111,6 +112,7 @@ export default function EventMenuBox({
         config?.runningItemComponentSleepTime ?? 1000,
       loadStartInfoComponent: config?.loadStartInfoComponent ?? "loadStartInfo",
       trigger: config?.trigger ?? "person",
+      automaticUpdate: config?.automaticUpdate ?? false,
     };
   }, [config]);
 
@@ -140,7 +142,7 @@ export default function EventMenuBox({
   };
 
   useEffect(() => {
-    if (queryParams) {
+    if (queryParams && automaticUpdate) {
       getComponentData({
         query: queryParams,
         component,
@@ -175,7 +177,7 @@ export default function EventMenuBox({
     }
   };
   useEffect(() => {
-    if (queryParams) {
+    if (queryParams && automaticUpdate) {
       getComponentData({
         query: queryParams,
         component: runningItemComponent,
@@ -233,6 +235,7 @@ export default function EventMenuBox({
       (selectedClickType.current === "click" && type !== "update") ||
       selectedClickType.current === ""
     ) {
+      console.log("oxe", item);
       setOldSelectedItem(selectedItem);
       setSelectedItem(item);
       setChangeEventType(type);
@@ -255,6 +258,7 @@ export default function EventMenuBox({
     ) {
       let query = selectedItem;
       let component = selectedItem.on.click;
+      console.log({ query, component });
       // let result = null;
       getComponentData({
         query,

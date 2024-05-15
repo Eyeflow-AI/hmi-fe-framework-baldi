@@ -45,7 +45,7 @@ function getType(obj) {
   return typeof obj;
 }
 
-function putTypeInObjcts(obj) {
+function putTypeInObjects(obj) {
   // read the type of the object and return a new object with the type
 
   let newObj = {};
@@ -73,9 +73,8 @@ const getComponentData = ({
   setLoading = null,
   setResponse = null,
 }) => {
-  console.log({ iteminfo2: query });
-  let dataToSend = putTypeInObjcts(query);
-  console.log({ iteminfo2: dataToSend });
+  let dataToSend = putTypeInObjects(query);
+  console.log({ dataToSend });
   API.get
     .componentData(
       { query: JSON.stringify(dataToSend), component, stationId },

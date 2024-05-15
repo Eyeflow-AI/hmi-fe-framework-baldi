@@ -101,7 +101,6 @@ function simplifiedCarousel({ obj }) {
       }
     }
   }
-  finalList = finalList.reverse();
   return finalList;
 }
 

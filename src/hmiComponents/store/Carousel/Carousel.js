@@ -35,7 +35,6 @@ export default function Carousel({
   setComponentsInfo,
 }) {
   const { t } = useTranslation();
-  // console.log({ Carousel: selectedItem });
 
   const dataLength = data?.output?.length ?? 0;
 

@@ -101,7 +101,6 @@ function carousel({ obj }) {
       }
     }
   }
-  finalList = finalList.reverse();
   return finalList;
 }
 

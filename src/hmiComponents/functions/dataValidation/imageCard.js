@@ -31,6 +31,7 @@ function imageCard({ obj }) {
     imageCaption: Object.keys(obj).includes("imageCaption")
       ? obj?.imageCaption
       : "error",
+    detections: obj?.detections ?? [],
     status: Object.keys(obj).includes("status") ? obj?.status : "error",
     backgroundColor: Object.keys(obj).includes("backgroundColor")
       ? obj?.backgroundColor

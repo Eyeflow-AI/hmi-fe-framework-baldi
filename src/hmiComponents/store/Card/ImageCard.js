@@ -4,7 +4,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Box";
 import Box from "@mui/material/Box";
 
-import validateData from "../../functions/dataValidation/textField";
+import validateData from "../../functions/dataValidation/imageCard";
 
 import Tooltip from "../Wrapper/Tooltip";
 
