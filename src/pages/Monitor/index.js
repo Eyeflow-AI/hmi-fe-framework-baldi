@@ -40,10 +40,10 @@ export default function Monitor({ pageOptions }) {
   const [loadingSelectedItem, setLoadingSelectedItem] = useState(false);
   const [loadingList, setLoadingList] = useState(false);
 
-  useEffect(() => {
-    console.log("mudou");
-    console.log({ itemInfo, selectedItem });
-  }, [itemInfo, selectedItem]);
+  // useEffect(() => {
+  //   // console.log("mudou");
+  //   console.log({ itemInfo, selectedItem });
+  // }, [itemInfo, selectedItem]);
 
   return (
     <PageWrapper>

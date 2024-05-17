@@ -321,12 +321,9 @@ export default function ImageTag({
 
   useEffect(() => {
     if (componentsInfo && typeof componentsInfo === "object") {
-      const component = validateData({
-        obj:
-          componentsInfo.find(
-            (item) => item?.tag === tag && item?.name === name
-          )?.output ?? {},
-      });
+      const component =
+        componentsInfo.find((item) => item?.tag === tag && item?.name === name)
+          ?.output ?? {};
       setImageURL(component?.imageURL);
       setImageCaption(component?.imageCaption);
       setDetections(component?.detections);
@@ -337,8 +334,6 @@ export default function ImageTag({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [componentsInfo]);
-
-  // console.log({ onImageLoading });
 
   useEffect(() => {
     if (onImageLoading) {

@@ -101,12 +101,15 @@ export default function ImageCard({
 
   useEffect(() => {
     if (componentsInfo && typeof componentsInfo === "object") {
-      const component = validateData({
-        obj:
-          componentsInfo.find(
-            (item) => item?.tag === tag && item?.name === name
-          )?.output ?? {},
-      });
+      // const component = validateData({
+      //   obj:
+      //     componentsInfo.find(
+      //       (item) => item?.tag === tag && item?.name === name
+      //     )?.output ?? {},
+      // });
+      const component =
+        componentsInfo.find((item) => item?.tag === tag && item?.name === name)
+          ?.output ?? {};
       // console.log({ component });
       setTitle(component?.title);
       setAdjacentText(component?.adjacentText);

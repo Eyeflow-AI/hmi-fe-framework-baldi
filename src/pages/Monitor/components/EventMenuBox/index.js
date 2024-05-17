@@ -153,7 +153,7 @@ export default function EventMenuBox({
     // console.log({ response });
     // setResponse(response);
     // eslint-disable-next-line
-  }, [conveyourClock]);
+  }, [conveyourClock, automaticUpdate]);
 
   useEffect(() => {
     if (queryParams) {
@@ -187,7 +187,7 @@ export default function EventMenuBox({
       });
     }
     // eslint-disable-next-line
-  }, [runningItemClock]);
+  }, [runningItemClock, automaticUpdate]);
 
   // const {
   //   response: runningItemResponse,
@@ -235,7 +235,7 @@ export default function EventMenuBox({
       (selectedClickType.current === "click" && type !== "update") ||
       selectedClickType.current === ""
     ) {
-      console.log("oxe", item);
+      // console.log("oxe", item);
       setOldSelectedItem(selectedItem);
       setSelectedItem(item);
       setChangeEventType(type);
