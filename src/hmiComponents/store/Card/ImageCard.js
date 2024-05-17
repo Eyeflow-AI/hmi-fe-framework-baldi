@@ -182,6 +182,7 @@ export default function ImageCard({
     setAnnotatedImage,
     // setExternalText,
     regions,
+    annotatedImage,
     options = {
       severalAnnotations: false,
       returnCanvasURL: false,
@@ -316,6 +317,7 @@ export default function ImageCard({
           let canvasURL = canvas.toDataURL("image/jpeg");
           return canvasURL;
         } else {
+          URL.revokeObjectURL(annotatedImage?.url);
           if (options?.camera) {
             setAnnotatedImage(options.camera, canvas.toDataURL("image/jpeg"));
           } else {
@@ -332,13 +334,14 @@ export default function ImageCard({
   };
 
   useEffect(() => {
-    if (imageURL) {
+    if (imageURL && detections?.length > 0) {
       let url = imageURL;
       url = `${url}?time=${Date.now()}`;
       getAnnotatedImg({
         image: url,
         regions: detections,
         scale: 1,
+        annotatedImage,
         setAnnotatedImage,
         // setExternalText: setAdjacentText,
         options: {
@@ -346,6 +349,11 @@ export default function ImageCard({
           returnCanvasURL: false,
           showLabels,
         },
+      });
+    } else {
+      URL.revokeObjectURL(annotatedImage?.url);
+      setAnnotatedImage({
+        url: imageURL,
       });
     }
   }, [
@@ -379,16 +387,15 @@ export default function ImageCard({
               // border: "1px solid red"
             }}
           >
-            {(imageURL && detections?.length === 0) ||
-              (annotatedImage?.url && (
-                <img
-                  alt={imageCaption}
-                  src={annotatedImage?.url ?? imageURL}
-                  // src={"/assets/cat.webp"}
-                  style={loading ? loadingImageStyle : styleSx.imageStyle}
-                  // onLoad={onImageLoad}
-                />
-              ))}
+            {annotatedImage?.url && (
+              <img
+                alt={imageCaption}
+                src={annotatedImage?.url ?? imageURL}
+                // src={"/assets/cat.webp"}
+                style={loading ? loadingImageStyle : styleSx.imageStyle}
+                // onLoad={onImageLoad}
+              />
+            )}
           </center>
           {loading && <CircularProgress sx={styleSx.circularProgressSx} />}
         </Box>

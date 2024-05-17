@@ -127,6 +127,7 @@ export default function ImageTag({
     index,
     scale,
     setAnnotatedImage,
+    annotatedImage,
     // setExternalText,
     regions,
     options = {
@@ -272,6 +273,7 @@ export default function ImageTag({
           let canvasURL = canvas.toDataURL("image/jpeg");
           return canvasURL;
         } else {
+          URL.revokeObjectURL(annotatedImage?.url);
           if (options?.camera) {
             setAnnotatedImage(options.camera, canvas.toDataURL("image/jpeg"));
           } else {
@@ -303,6 +305,7 @@ export default function ImageTag({
         regions: detections,
         scale: 1,
         setAnnotatedImage,
+        annotatedImage,
         // setExternalText: setAdjacentText,
         options: {
           severalAnnotations: true,
@@ -311,7 +314,10 @@ export default function ImageTag({
         },
       });
     } else {
-      setAnnotatedImage(null);
+      URL.revokeObjectURL(annotatedImage?.url);
+      setAnnotatedImage({
+        url: imageURL,
+      });
     }
   }, [
     imageURL,
@@ -354,16 +360,15 @@ export default function ImageTag({
           backgroundColor,
         }}
       >
-        {(imageURL && detections?.length === 0) || annotatedImage?.url ? (
+        {annotatedImage?.url ? (
           <img
             alt={imageCaption}
-            src={annotatedImage?.url ?? imageURL}
+            src={annotatedImage?.url}
             // src={"/assets/cat.webp"}
             style={loading ? loadingImageStyle : styleSx.imageStyle}
             // onLoad={onImageLoad}
           />
         ) : (
-          !imageURL &&
           !annotatedImage?.url && (
             <Box
               sx={{
