@@ -6,6 +6,8 @@ import Box from "@mui/material/Box";
 
 import validateData from "../../functions/dataValidation/imageCard";
 
+import dateFormat from "sdk-fe-eyeflow/functions/dateFormat";
+
 import Tooltip from "../Wrapper/Tooltip";
 
 import { colors } from "sdk-fe-eyeflow";
@@ -100,7 +102,11 @@ export default function ImageCard({
   }, [style]);
 
   useEffect(() => {
-    if (componentsInfo && typeof componentsInfo === "object") {
+    if (
+      componentsInfo &&
+      typeof componentsInfo === "object" &&
+      Object.keys(componentsInfo).length > 0
+    ) {
       // const component = validateData({
       //   obj:
       //     componentsInfo.find(
@@ -113,7 +119,7 @@ export default function ImageCard({
       // console.log({ component });
       setTitle(component?.title);
       setAdjacentText(component?.adjacentText);
-      setTimestamp(component?.timestamp);
+      setTimestamp(dateFormat(component?.timestamp));
       setImageURL(component?.imageURL);
       setImageCaption(component?.imageCaption);
       setTooltip(component?.tooltip);

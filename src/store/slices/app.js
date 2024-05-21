@@ -1,8 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit';
-import stationList from '../thunks/stationList';
-import partsList from '../thunks/partsList';
-import feConfig from '../thunks/feConfig';
-import alerts from '../thunks/alerts';
+import { createSlice } from "@reduxjs/toolkit";
+import stationList from "../thunks/stationList";
+import partsList from "../thunks/partsList";
+import feConfig from "../thunks/feConfig";
+import alerts from "../thunks/alerts";
 
 // VARIABLES
 export const initialState = {
@@ -25,13 +25,13 @@ export const initialState = {
   appBarButtonList: [],
   notificationBar: {
     show: false,
-    message: '',
-    type: '',
-  }
+    message: "",
+    type: "",
+  },
 };
 
 const appSlice = createSlice({
-  name: 'app',
+  name: "app",
   initialState,
   reducers: {
     setStationId: (state, action) => {
@@ -40,16 +40,14 @@ const appSlice = createSlice({
     setLanguageList: (state, action) => {
       if (Array.isArray(action.payload)) {
         state.languageList = action.payload;
-      }
-      else {
+      } else {
         state.languageList = [];
       }
     },
     setAppBarButtonList: (state, action) => {
       if (Array.isArray(action.payload)) {
         state.appBarButtonList = action.payload;
-      }
-      else {
+      } else {
         state.appBarButtonList = [];
       }
     },
@@ -85,8 +83,7 @@ const appSlice = createSlice({
           });
           state.partsObj = partsObj;
           state.partsListHash = action.payload.hash ?? null;
-        }
-        else {
+        } else {
           // console.log("partsList unchanged");
         }
       })
@@ -99,9 +96,10 @@ const appSlice = createSlice({
       })
       .addCase(feConfig.fulfilled, (state, action) => {
         state.loadingFeConfig = false;
+        console.log({ state: state.feConfig, action });
         if (state.feConfig?.datetime !== action.payload?.datetime) {
           state.feConfig = action.payload ?? null;
-        };
+        }
       })
       .addCase(feConfig.rejected, (state) => {
         state.loadingFeConfig = false;
@@ -115,18 +113,18 @@ const appSlice = createSlice({
         if (state.alertsHash !== action.payload.alertsHash) {
           state.alerts = action.payload.alerts ?? [];
           state.alertsHash = action.payload.alertsHash ?? null;
-        };
+        }
       })
       .addCase(alerts.rejected, (state) => {
         state.loadingAlerts = false;
       });
-
   },
 });
 
-export const getStation = (state) => (Boolean(state.app.stationId) && state.app.stationList.length > 0)
-  ? (state.app.stationList.find(el => el._id === state.app.stationId) ?? null)
-  : null;
+export const getStation = (state) =>
+  Boolean(state.app.stationId) && state.app.stationList.length > 0
+    ? state.app.stationList.find((el) => el._id === state.app.stationId) ?? null
+    : null;
 export const getStationId = (state) => state.app.stationId;
 export const getStationList = (state) => state.app.stationList ?? [];
 

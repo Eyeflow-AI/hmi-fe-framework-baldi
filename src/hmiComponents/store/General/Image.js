@@ -326,7 +326,11 @@ export default function ImageTag({
   ]);
 
   useEffect(() => {
-    if (componentsInfo && typeof componentsInfo === "object") {
+    if (
+      componentsInfo &&
+      typeof componentsInfo === "object" &&
+      Object.keys(componentsInfo).length > 0
+    ) {
       const component =
         componentsInfo.find((item) => item?.tag === tag && item?.name === name)
           ?.output ?? {};

@@ -44,7 +44,11 @@ export default function EventHeader({ config, disabled, itemInfo }) {
 
   const { fields } = useMemo(() => {
     // console.log({ itemInfo, x: typeof itemInfo === "object" });
-    if (itemInfo && typeof itemInfo === "object") {
+    if (
+      itemInfo &&
+      typeof itemInfo === "object" &&
+      Object.keys(itemInfo).length > 0
+    ) {
       let newData = validateData({
         obj: itemInfo?.find((item) => item.name === config.name)?.output ?? {},
       });
@@ -81,6 +85,7 @@ export default function EventHeader({ config, disabled, itemInfo }) {
       {Boolean(
         itemInfo &&
           typeof itemInfo === "object" &&
+          Object.keys(itemInfo).length > 0 &&
           itemInfo?.find((item) => item.name === config.name)?.output
       ) &&
         fields.map(({ data, label }, index) => (

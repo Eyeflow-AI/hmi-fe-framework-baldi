@@ -20,7 +20,11 @@ export default function TextField({
   const error = false;
 
   useEffect(() => {
-    if (componentsInfo && typeof componentsInfo === "object") {
+    if (
+      componentsInfo &&
+      typeof componentsInfo === "object" &&
+      Object.keys(componentsInfo).length > 0
+    ) {
       const component = validateData({
         obj:
           componentsInfo?.find(

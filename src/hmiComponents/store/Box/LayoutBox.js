@@ -38,7 +38,11 @@ export default function LayoutBox({
   }, [style]);
 
   useEffect(() => {
-    if (componentsInfo && typeof componentsInfo === "object") {
+    if (
+      componentsInfo &&
+      typeof componentsInfo === "object" &&
+      Object.keys(componentsInfo).length > 0
+    ) {
       const component =
         componentsInfo?.find(
           (item) => item?.tag === "LayoutBox" && item?.name === name
@@ -50,7 +54,7 @@ export default function LayoutBox({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [componentsInfo]);
 
-  if (hide) {
+  if (hide || !components || components.length === 0) {
     return null;
   } else {
     return (
