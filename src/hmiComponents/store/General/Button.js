@@ -66,9 +66,9 @@ export default function Button({ name, tag, componentsInfo, style, metadata, sta
     let _componentsInfo = [...componentsInfo];
     eventsHandler({
       componentsInfo: _componentsInfo,
-      item: "uploadExtractImage",
-      fnExecutor: item.buttonComponentFnExecutor,
-      fnName: item.buttonComponentFnName,
+      item: item?.buttonComponent,
+      fnExecutor: item?.buttonComponentFnExecutor,
+      fnName: item?.buttonComponentFnName,
       stationId,
       handleNotificationBar
     });
