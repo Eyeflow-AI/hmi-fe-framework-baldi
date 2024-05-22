@@ -88,7 +88,13 @@ const getComponentData = ({
       }
       return data;
     })
-    .catch(console.log);
+    .catch((err) => {
+      console.log({ err });
+      if (setResponse) {
+        setResponse({});
+      }
+      return {};
+    });
 };
 
 export default getComponentData;

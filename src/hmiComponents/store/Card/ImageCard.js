@@ -6,6 +6,8 @@ import Box from "@mui/material/Box";
 
 import validateData from "../../functions/dataValidation/imageCard";
 
+import dateFormat from "sdk-fe-eyeflow/functions/dateFormat";
+
 import Tooltip from "../Wrapper/Tooltip";
 
 import { colors } from "sdk-fe-eyeflow";
@@ -100,17 +102,24 @@ export default function ImageCard({
   }, [style]);
 
   useEffect(() => {
-    if (componentsInfo && typeof componentsInfo === "object") {
-      const component = validateData({
-        obj:
-          componentsInfo.find(
-            (item) => item?.tag === tag && item?.name === name
-          )?.output ?? {},
-      });
+    if (
+      componentsInfo &&
+      typeof componentsInfo === "object" &&
+      Object.keys(componentsInfo).length > 0
+    ) {
+      // const component = validateData({
+      //   obj:
+      //     componentsInfo.find(
+      //       (item) => item?.tag === tag && item?.name === name
+      //     )?.output ?? {},
+      // });
+      const component =
+        componentsInfo.find((item) => item?.tag === tag && item?.name === name)
+          ?.output ?? {};
       // console.log({ component });
       setTitle(component?.title);
       setAdjacentText(component?.adjacentText);
-      setTimestamp(component?.timestamp);
+      setTimestamp(dateFormat(component?.timestamp));
       setImageURL(component?.imageURL);
       setImageCaption(component?.imageCaption);
       setTooltip(component?.tooltip);
@@ -179,6 +188,7 @@ export default function ImageCard({
     setAnnotatedImage,
     // setExternalText,
     regions,
+    annotatedImage,
     options = {
       severalAnnotations: false,
       returnCanvasURL: false,
@@ -313,6 +323,7 @@ export default function ImageCard({
           let canvasURL = canvas.toDataURL("image/jpeg");
           return canvasURL;
         } else {
+          URL.revokeObjectURL(annotatedImage?.url);
           if (options?.camera) {
             setAnnotatedImage(options.camera, canvas.toDataURL("image/jpeg"));
           } else {
@@ -329,13 +340,14 @@ export default function ImageCard({
   };
 
   useEffect(() => {
-    if (imageURL) {
+    if (imageURL && detections?.length > 0) {
       let url = imageURL;
       url = `${url}?time=${Date.now()}`;
       getAnnotatedImg({
         image: url,
         regions: detections,
         scale: 1,
+        annotatedImage,
         setAnnotatedImage,
         // setExternalText: setAdjacentText,
         options: {
@@ -343,6 +355,11 @@ export default function ImageCard({
           returnCanvasURL: false,
           showLabels,
         },
+      });
+    } else {
+      URL.revokeObjectURL(annotatedImage?.url);
+      setAnnotatedImage({
+        url: imageURL,
       });
     }
   }, [
@@ -376,16 +393,15 @@ export default function ImageCard({
               // border: "1px solid red"
             }}
           >
-            {(imageURL && detections?.length === 0) ||
-              (annotatedImage?.url && (
-                <img
-                  alt={imageCaption}
-                  src={annotatedImage?.url ?? imageURL}
-                  // src={"/assets/cat.webp"}
-                  style={loading ? loadingImageStyle : styleSx.imageStyle}
-                  // onLoad={onImageLoad}
-                />
-              ))}
+            {annotatedImage?.url && (
+              <img
+                alt={imageCaption}
+                src={annotatedImage?.url ?? imageURL}
+                // src={"/assets/cat.webp"}
+                style={loading ? loadingImageStyle : styleSx.imageStyle}
+                // onLoad={onImageLoad}
+              />
+            )}
           </center>
           {loading && <CircularProgress sx={styleSx.circularProgressSx} />}
         </Box>

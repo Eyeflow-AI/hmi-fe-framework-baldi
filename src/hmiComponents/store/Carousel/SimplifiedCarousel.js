@@ -70,7 +70,11 @@ export default function SimplifiedCarousel({
   const [selectedItem, setSelectedItem] = useState(null);
 
   useEffect(() => {
-    if (componentsInfo && typeof componentsInfo === "object") {
+    if (
+      componentsInfo &&
+      typeof componentsInfo === "object" &&
+      Object.keys(componentsInfo).length > 0
+    ) {
       // const component = {
       //   output: validateData({
       //     obj:

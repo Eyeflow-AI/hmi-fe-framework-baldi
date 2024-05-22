@@ -36,7 +36,11 @@ export default function Table({ name, tag, componentsInfo, style, metadata }) {
   }, [style]);
 
   useEffect(() => {
-    if (componentsInfo && typeof componentsInfo === "object") {
+    if (
+      componentsInfo &&
+      typeof componentsInfo === "object" &&
+      Object.keys(componentsInfo).length > 0
+    ) {
       const component = validateData({
         obj:
           componentsInfo?.find(
