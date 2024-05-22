@@ -2,13 +2,20 @@ import React, { useState, useEffect } from "react";
 import MUIButton from "@mui/material/Button";
 
 import validateData from "../../functions/dataValidation/button";
+import eventsHandler from "../../../utils/functions/eventsHandler";
+import { setNotificationBar } from "../../../store/slices/app";
 
-export default function Button({ name, tag, componentsInfo, style, metadata }) {
-  // console.log({ Title: name, tag, componentsInfo, style });
+import { useDispatch } from "react-redux";
+
+export default function Button({ name, tag, componentsInfo, style, metadata, stationId }) {
+  // console.log({ Title: name, tag, componentsInfo, style })
 
   const [value, setValue] = useState("");
   // const [error, setError] = useState(false);
   const [_style, _setStyle] = useState({});
+  const [item, setItem] = useState(null);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (style) {
@@ -40,9 +47,33 @@ export default function Button({ name, tag, componentsInfo, style, metadata }) {
       });
       // console.log({ component });
       setValue(component?.text);
+      setItem(component);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [componentsInfo]);
+
+  const handleNotificationBar = (message, severity) => {
+    dispatch(
+      setNotificationBar({
+        show: true,
+        type: severity,
+        message: message,
+      })
+    );
+  };
+
+  const handleClick = () => {
+    let _componentsInfo = [...componentsInfo];
+    eventsHandler({
+      componentsInfo: _componentsInfo,
+      item: "uploadExtractImage",
+      fnExecutor: item.buttonComponentFnExecutor,
+      fnName: item.buttonComponentFnName,
+      stationId,
+      handleNotificationBar
+    });
+  };
+
 
   return (
     <MUIButton
@@ -50,6 +81,7 @@ export default function Button({ name, tag, componentsInfo, style, metadata }) {
         ..._style,
       }}
       variant="contained"
+      onClick={() => handleClick()}
     >
       {value ?? metadata?.text}
     </MUIButton>

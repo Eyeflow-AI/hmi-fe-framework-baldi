@@ -26,6 +26,12 @@ function button({ obj }) {
           ? obj.on.click
           : "",
     },
+    stationId: Object.keys(obj).includes("stationId") ? obj.stationId : "",
+    buttonComponent: Object.keys(obj).includes("buttonComponent") ? obj.buttonComponent : "",
+    buttonComponentFnExecutor: Object.keys(obj).includes("buttonComponentFnExecutor")
+      ? obj.buttonComponentFnExecutor
+      : "",
+    buttonComponentFnName: Object.keys(obj).includes("buttonComponentFnName") ? obj.buttonComponentFnName : "",
   };
 }
 
