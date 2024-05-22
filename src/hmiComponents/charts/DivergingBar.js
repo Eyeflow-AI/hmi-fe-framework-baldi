@@ -392,10 +392,10 @@ export default function DivergingBar({ chart }) {
                   total={total}
                   id={id}
                   value_type={
-                    chart?.chartInfo?.tooltip_value_type
-                      ? chart?.chartInfo?.tooltip_value_type
-                      : chart?.chartInfo?.value_type ?? "percentage"
-                  }
+                    chart?.chartInfo?.tooltip_value_type 
+                    ? chart?.chartInfo?.tooltip_value_type 
+                    : (chart?.chartInfo?.value_type === "percentage" ? "absolute" : "percentage")
+                    }                  
                 />
               );
             }}
@@ -404,7 +404,7 @@ export default function DivergingBar({ chart }) {
             theme={responsiveTheme}
             // legends={responsiveLegends}
             valueFormat={(v) => {
-              let valueType = chart?.chartInfo?.value_type ?? "percentage";
+              let valueType = chart?.chartInfo?.value_type || "percentage";
               if (valueType === "percentage") {
                 let _v = Object.keys(chart?.chartInfo).includes(
                   "value_floating_points"

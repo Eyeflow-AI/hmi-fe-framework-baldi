@@ -242,15 +242,7 @@ export default function Line({ chart }) {
                 ? t(chart?.chartInfo?.x_axis).toUpperCase()
                 : "",
               legendOffset: 60,
-              legendPosition: "middle",
-
-              format: (value) => {
-                if (chart?.chartInfo?.format?.function) {
-                  return runFunction(chart?.chartInfo?.format?.function, value);
-                } else {
-                  return value;
-                }
-              },
+              legendPosition: "middle"
             }}
             axisLeft={{
               tickSize: 5,

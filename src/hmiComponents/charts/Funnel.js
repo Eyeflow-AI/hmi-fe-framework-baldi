@@ -129,6 +129,7 @@ export default function Funnel({ chart }) {
       },
     },
   });
+  const [valueFormat, setValueFormat] = useState(null);
 
   useEffect(() => {
     if (!chart?.result?.length) return;
@@ -139,10 +140,14 @@ export default function Funnel({ chart }) {
       // let newKeys = Object.keys(chart.result[0]);
       let data = chart.result[0];
       let newInfo = [];
+      let _valueFormat = null;
+
       Object.keys(data).forEach((item, index) => {
+        let graph_value = 0;
+        let graph_value_type = chart?.chartInfo?.value_type ?? "absolute"
         let tooltip_value = 0;
         let tooltip_value_type =
-          chart?.chartInfo?.tooltip_value_type ?? "absolute";
+          chart?.chartInfo?.tooltip_value_type ? chart?.chartInfo?.tooltip_value_type : (graph_value_type === "absolute" ? "percentage" : "absolute")
         if (index) {
           let reference =
             Object.keys(chart?.chartInfo).includes(
@@ -159,10 +164,29 @@ export default function Funnel({ chart }) {
             count = isNaN(count) ? 0 : count;
             tooltip_value = `${count}%`.replace(".", ",");
           }
+          graph_value = data[item]
+          if (graph_value_type === "percentage") {
+            let count = (data?.[item] / reference._value);
+            count = isNaN(count) ? 0 : count;
+            graph_value = count;
+            _valueFormat = '>-.2%'
+          }
         } else {
           tooltip_value = splitNumbers(data[item]);
           if (tooltip_value_type === "percentage") {
-            tooltip_value = "100%";
+            if (!data?.[item]) {
+              tooltip_value = "0%";
+            } else {
+              tooltip_value = "100%"
+            }
+          }
+          graph_value = data[item]
+          if (graph_value_type === "percentage") {
+            if (!data?.[item]) {
+              graph_value = 0
+            } else {
+              graph_value = 1
+            }
           }
         }
         let _item = {
@@ -170,7 +194,7 @@ export default function Funnel({ chart }) {
           [item]: data[item],
           label: item,
           _value: data?.[item],
-          value: splitNumbers(data?.[item]),
+          value: graph_value,
           tooltip_value,
         };
 
@@ -192,6 +216,7 @@ export default function Funnel({ chart }) {
           ? true
           : false
       );
+      setValueFormat(_valueFormat);
     }
 
     if (Object.keys(chart?.chartInfo).includes("label_font_size")) {
@@ -253,6 +278,7 @@ export default function Funnel({ chart }) {
           <ResponsiveFunnel
             data={info}
             // keys={keys}
+            valueFormat={valueFormat}
             colors={
               queryHasColors
                 ? (i) => {
@@ -267,7 +293,6 @@ export default function Funnel({ chart }) {
               return <CustomTooltip color={color} value={value} id={t(id)} />;
             }}
             margin={{ top: 20, right: 20, bottom: 200, left: 20 }}
-            // valueFormat=">.2s"
             // width={chart.chartInfo.width}
             borderWidth={30}
             borderOpacity={0.3}
