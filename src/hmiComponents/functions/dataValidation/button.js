@@ -26,7 +26,6 @@ function button({ obj }) {
           ? obj.on.click
           : "",
     },
-    stationId: Object.keys(obj).includes("stationId") ? obj.stationId : "",
     fnExecutor: Object.keys(obj).includes("fnExecutor")
       ? obj.fnExecutor
       : "",
