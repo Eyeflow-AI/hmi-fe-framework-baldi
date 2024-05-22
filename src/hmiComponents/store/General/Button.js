@@ -64,11 +64,12 @@ export default function Button({ name, tag, componentsInfo, style, metadata, sta
 
   const handleClick = () => {
     let _componentsInfo = [...componentsInfo];
+
     eventsHandler({
       componentsInfo: _componentsInfo,
-      item: item?.buttonComponent,
-      fnExecutor: item?.buttonComponentFnExecutor,
-      fnName: item?.buttonComponentFnName,
+      item: item?.on?.click,
+      fnExecutor: item?.fnExecutor,
+      fnName: item?.fnName,
       stationId,
       handleNotificationBar
     });

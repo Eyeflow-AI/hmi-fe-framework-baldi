@@ -27,11 +27,10 @@ function button({ obj }) {
           : "",
     },
     stationId: Object.keys(obj).includes("stationId") ? obj.stationId : "",
-    buttonComponent: Object.keys(obj).includes("buttonComponent") ? obj.buttonComponent : "",
-    buttonComponentFnExecutor: Object.keys(obj).includes("buttonComponentFnExecutor")
-      ? obj.buttonComponentFnExecutor
+    fnExecutor: Object.keys(obj).includes("fnExecutor")
+      ? obj.fnExecutor
       : "",
-    buttonComponentFnName: Object.keys(obj).includes("buttonComponentFnName") ? obj.buttonComponentFnName : "",
+    fnName: Object.keys(obj).includes("fnName") ? obj.fnName : "",
   };
 }
 
