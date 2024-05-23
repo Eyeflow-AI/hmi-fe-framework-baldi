@@ -148,6 +148,7 @@ export default function Funnel({ chart }) {
         let tooltip_value = 0;
         let tooltip_value_type =
           chart?.chartInfo?.tooltip_value_type ? chart?.chartInfo?.tooltip_value_type : (graph_value_type === "absolute" ? "percentage" : "absolute")
+        let floatPoints = chart?.chartInfo?.value_floating_points ?? 2
         if (index) {
           let reference =
             Object.keys(chart?.chartInfo).includes(
@@ -169,7 +170,7 @@ export default function Funnel({ chart }) {
             let count = (data?.[item] / reference._value);
             count = isNaN(count) ? 0 : count;
             graph_value = count;
-            _valueFormat = '>-.2%'
+            _valueFormat = `>-.${floatPoints}%`
           }
         } else {
           tooltip_value = splitNumbers(data[item]);

@@ -16,7 +16,14 @@ import { useTranslation } from "react-i18next";
 import { ResponsiveBar } from "@nivo/bar";
 import { colors } from "sdk-fe-eyeflow";
 
-const CustomTooltip = ({ color, value, id }) => (
+const CustomTooltip = ({ color, value, id, value_type, total, floating_points }) => {
+  if (value_type === "percentage") {
+  let count = (value / total) * 100;
+  count = parseFloat(count).toFixed(floating_points)
+  count = isNaN(count) ? 0 : count;
+  value = `${count}%`.replace(".", ",");
+  } 
+  return (
   <Box
     sx={{
       background: colors.paper.blue.dark,
@@ -36,7 +43,7 @@ const CustomTooltip = ({ color, value, id }) => (
     &nbsp;&nbsp;
     {id}: {value}
   </Box>
-);
+)};
 
 const responsiveLegends = [
   {
@@ -68,6 +75,7 @@ export default function Bar({ chart }) {
   const { t } = useTranslation();
   const [info, setInfo] = useState([]);
   const [keys, setKeys] = useState([]);
+  const [totalEl, setTotalEl] = useState(0);
   const [queryHasColors, setQueryHasColors] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
   const [responsiveTheme, setResponsiveTheme] = useState({
@@ -135,6 +143,10 @@ export default function Bar({ chart }) {
       let data = chart.result[0];
       let newInfo = [];
       Object.keys(data).forEach((item) => {
+        if (item === "total") {
+          setTotalEl(data[item])
+          return
+        }
         let _item = {
           id: item,
           [item]: data[item],
@@ -253,8 +265,13 @@ export default function Bar({ chart }) {
             tooltip={(info) => {
               let value = info.data[info.id];
               let color = info.color;
+              let floating_points = chart?.chartInfo?.value_floating_points ?? 2
+              let graph_value_type = chart?.chartInfo?.value_type ?? "percentage"
+              let total = totalEl
+              let value_type = 
+              chart?.chartInfo?.tooltip_value_type ? chart?.chartInfo?.tooltip_value_type : (graph_value_type === "percentage" ? "absolute" : "percentage")
               let id = info.id;
-              return <CustomTooltip color={color} value={value} id={id} />;
+              return <CustomTooltip color={color} value={value} id={id} total={total} value_type={value_type} floating_points={floating_points}/>;
             }}
             theme={responsiveTheme}
             legends={responsiveLegends}
@@ -279,7 +296,17 @@ export default function Bar({ chart }) {
               truncateTickAt: 0,
             }}
             valueFormat={function (e) {
-              return e + "%";
+              let value_type = chart?.chartInfo?.value_type ?? "percentage"
+              if (value_type === "absolute"){
+                return e
+              } else {
+                let floating_points = chart?.chartInfo?.value_floating_points ?? 2
+                let count = (e / totalEl) * 100;
+                count = parseFloat(count).toFixed(floating_points)
+                count = isNaN(count) ? 0 : count;
+                e = `${count}%`.replace(".", ",");
+                return e
+                } 
             }}
           />
         </Box>
