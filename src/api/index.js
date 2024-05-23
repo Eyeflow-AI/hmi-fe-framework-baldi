@@ -242,8 +242,6 @@ const API = {
       request(instance.get(`internal/scripts/download`), setLoading),
     downloadAllComponents: (setLoading) =>
       request(instance.get(`internal/components/download`), setLoading),
-    downloadAllQueriesPipelines: (setLoading) =>
-      request(instance.get(`internal/queries-pipeline/download`), setLoading),
 
     componentDocument: ({ name }, setLoading) =>
       request(instance.get(`internal/component-document/${name}`), setLoading),
