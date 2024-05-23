@@ -26,6 +26,10 @@ function button({ obj }) {
           ? obj.on.click
           : "",
     },
+    fnExecutor: Object.keys(obj).includes("fnExecutor")
+      ? obj.fnExecutor
+      : "",
+    fnName: Object.keys(obj).includes("fnName") ? obj.fnName : "",
   };
 }
 
