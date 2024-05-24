@@ -72,9 +72,10 @@ export default function EventMenuBox({
   setLoadingList,
   loadingList,
 }) {
-  const [changeEventType, setChangeEventType] = useState("update");
-  const [oldSelectedItem, setOldSelectedItem] = useState(null);
-  const selectedClickType = useRef("");
+  const [changeEventType, setChangeEventType] = useState("internal-update");
+  // const [oldSelectedItem, setOldSelectedItem] = useState(null);
+  const selectedClicked = useRef(false);
+  // const lengthResponse = useRef(0);
 
   const [queryParams, setQueryParams] = useState(null);
 
@@ -231,18 +232,12 @@ export default function EventMenuBox({
   };
 
   const handleSelectItem = (item, type = "click") => {
-    if (
-      (selectedClickType.current === "click" && type !== "update") ||
-      selectedClickType.current === ""
-    ) {
-      // console.log("oxe", item);
-      setOldSelectedItem(selectedItem);
-      setSelectedItem(item);
-      setChangeEventType(type);
-      if (type === "click") selectedClickType.current = type;
-    }
+    setSelectedItem(item);
+    setChangeEventType(type);
+    if (type === "click") selectedClicked.current = true;
   };
 
+  // console.log({ selectedItem, oldSelectedItem });
   useEffect(() => {
     if (queryParams && queryParams.station !== stationId) {
       setQueryParams((params) => Object.assign({}, params));
@@ -268,11 +263,11 @@ export default function EventMenuBox({
         setResponse: setItemInfo,
       });
     } else if (
-      changeEventType === "update" &&
+      changeEventType === "external-update" &&
       selectedItem &&
       selectedItem?._id &&
-      selectedItem?.on?.update &&
-      selectedItem?._id !== oldSelectedItem?._id
+      selectedItem?.on?.update
+      // selectedItem?._id !== oldSelectedItem?._id
     ) {
       let query = selectedItem;
       let component = selectedItem.on.update;
@@ -284,11 +279,11 @@ export default function EventMenuBox({
         setResponse: setItemInfo,
       });
     } else if (
-      changeEventType === "update" &&
+      changeEventType === "internal-update" &&
       selectedItem &&
       selectedItem?._id &&
-      selectedItem?.on?.update &&
-      selectedItem?._id === oldSelectedItem?._id
+      selectedItem?.on?.update
+      // selectedItem?._id === oldSelectedItem?._id
     ) {
       let query = selectedItem;
       let component = selectedItem.on.update;
@@ -315,57 +310,45 @@ export default function EventMenuBox({
 
     if (JSON.stringify(_runningItem?.output) !== JSON.stringify(runningItem)) {
       setRunningItem(_runningItem?.output ?? null);
-      // if (_runningItem?.output?._id === selectedItem?._id) {
-      //   handleSelectItem(_runningItem?.output, "update");
-      // }
     }
-
-    // if (
-    //   !_runningItem &&
-    //   runningItem &&
-    //   selectedItem?._id === runningItem?._id
-    // ) {
-    //   setSelectedItem(null);
-    //   setItemInfo(null);
-    // }
-
-    // página carregada e sem item selecionado
-    // if (!selectedItem && _runningItem?.output) {
-    //   handleSelectItem(_runningItem?.output, "update");
-    // }
     // eslint-disable-next-line
   }, [runningItemComponent, runningItemResponse]);
 
   useEffect(() => {
     let item =
       response?.find((item) => item.name === conveyorComponent) ?? null;
+    let _item = item?.output?.find((item) => item?._id === selectedItem?._id);
+    if (runningItem && selectedItem?._id === runningItem?._id && !_item) {
+      handleSelectItem(runningItem, "internal-update");
+    }
+  }, [runningItem]);
 
+  useEffect(() => {
+    let item =
+      response?.find((item) => item.name === conveyorComponent) ?? null;
+    // let currentLength = item?.output?.length ?? 0;
     // página carregada e sem item selecionado
     if (!selectedItem && item?.output?.length > 0) {
-      handleSelectItem(item.output[0], "update");
+      handleSelectItem(item.output[0], "internal-update");
     } else if (selectedItem && item?.output?.length > 0) {
       let _item = item?.output?.find((item) => item?._id === selectedItem?._id);
-      // console.log({ _item });
-      // página carregada e com item selecionado, mas o item não está na lista
-      if (!_item && runningItem?._id !== selectedItem?._id) {
-        handleSelectItem(_item?.output?.[0], "update");
-      }
-      // página carregada e com item selecionado, e o item está na lista
-      else if (
-        changeEventType === "update" &&
-        item?.output?.[0]?._id !== selectedItem?._id
+      if (
+        !selectedClicked.current &&
+        _item?._id === selectedItem?._id &&
+        !lodash.isEqual(selectedItem, _item)
       ) {
-        handleSelectItem(item?.output?.[0], "update");
-      } else {
-        if (
-          JSON.stringify(_item) !== JSON.stringify(selectedItem) &&
-          _item &&
-          _item?._id &&
-          selectedItem?._id &&
-          _item?._id === selectedItem?._id
-        ) {
-          handleSelectItem(_item, "update");
-        }
+        handleSelectItem(_item, "internal-update");
+      } else if (
+        !selectedClicked.current &&
+        item?.output?.[0]?._id !== selectedItem?._id
+        // currentLength !== lengthResponse.current
+      ) {
+        handleSelectItem(item.output[0], "external-update");
+      } else if (
+        _item?._id === selectedItem?._id &&
+        !lodash.isEqual(selectedItem, _item)
+      ) {
+        handleSelectItem(_item, "internal-update");
       }
     }
     // eslint-disable-next-line
