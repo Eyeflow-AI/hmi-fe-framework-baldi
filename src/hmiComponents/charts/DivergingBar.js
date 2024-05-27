@@ -142,7 +142,6 @@ export default function DivergingBar({ chart }) {
   const { t } = useTranslation();
   const [info, setInfo] = useState([]);
   const [keys, setKeys] = useState([]);
-  const [queryHasColors, setQueryHasColors] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
   const [maxValue, setMaxValue] = useState(0);
   const [minValue, setMinValue] = useState(0);
@@ -223,6 +222,7 @@ export default function DivergingBar({ chart }) {
       let _legend = [];
       let value_type = chart?.chartInfo?.value_type || "percentage";
       let floating_points = chart?.chartInfo?.value_floating_points || 2;
+      let fieldColors = {};
       Object.entries(data).forEach(([key, value]) => {
         let dontSave = false;
         let _item = {
@@ -253,11 +253,22 @@ export default function DivergingBar({ chart }) {
             _item[`${field}Color`] = chart?.chartInfo?.colors_results?.[field];
             _legendItem.color = chart?.chartInfo?.colors_results?.[field];
           } else {
-            _item[`${field}Color`] = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-            _legendItem.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+            if (Object.keys(fieldColors).includes(field)) {
+              _item[`${field}Color`] = fieldColors[field];
+              _legendItem.color = fieldColors[field];
+            } else {
+              let color = `#${Math.floor(Math.random() * 16777215).toString(16)}`
+              _item[`${field}Color`] = color;
+              fieldColors[field] = color;
+              _legendItem.color = color;
+            }
+            // _item[`${field}Color`] = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+            // _legendItem.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
           }
           if (!_legend.find((el) => el.id === field)) _legend.push(_legendItem);
         });
+
+        console.log({fieldColors})
 
         if (value_type === "percentage" ) {
           fieldNames.forEach(field => { 
@@ -271,18 +282,15 @@ export default function DivergingBar({ chart }) {
 
         if (!dontSave) newInfo.push(_item);
       });
-      setInfo(newInfo);
-      setLegend(_legend);
+
       // setKeys(newKeys);
-      setQueryHasColors(queryHasColors);
       // set keys
       let keys = [];
       Object.keys(chart?.chartInfo?.colors_results ?? {}).forEach((key) => {
         // keys.push(`${t(key)}`);
         keys.push(`${key}`);
       });
-      setKeys(keys);
-
+;
       if (chart?.chartInfo?.value_type === "percentage") {
         setMaxValue(100);
         setMinValue(-100);
@@ -295,6 +303,9 @@ export default function DivergingBar({ chart }) {
         setMaxValue(100);
         setMinValue(-100);
       }
+      setLegend(_legend);
+      setKeys(keys)
+      setInfo(newInfo);
     } else if (chart.result.length > 1) {
       // let newKeys = chart.result.map((item) => item._id);
       // let data = chart.result;
@@ -332,6 +343,8 @@ export default function DivergingBar({ chart }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chart]);
   // console.log({ generateData, chart, info });
+
+  console.log({info})
 
   return (
     <Box
@@ -388,13 +401,12 @@ export default function DivergingBar({ chart }) {
             indexBy="period"
             margin={{ top: 30, right: 50, bottom: 120, left: 50 }}
             colors={
-              queryHasColors
-                ? (i) => {
+                (i) => {
                     let color = i?.data?.[`${i.id}Color`];
+                    console.log({color})
                     return color;
-                  }
-                : { scheme: "nivo" }
-            }
+                  
+            }}
             // colors={{ scheme: "nivo" }}
             tooltip={(info) => {
               let total = info?.data?.total_tooltip ?? 0;
