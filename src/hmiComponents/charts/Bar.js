@@ -269,7 +269,7 @@ export default function Bar({ chart }) {
               let graph_value_type = chart?.chartInfo?.value_type ?? "percentage"
               let total = totalEl
               let value_type = 
-              chart?.chartInfo?.tooltip_value_type ? chart?.chartInfo?.tooltip_value_type : (graph_value_type === "percentage" ? "absolute" : "percentage")
+              chart?.chartInfo?.tooltip_value_type ? chart?.chartInfo?.tooltip_value_type : (graph_value_type === "absolute" ? "percentage" : "absolute")
               let id = info.id;
               return <CustomTooltip color={color} value={value} id={id} total={total} value_type={value_type} floating_points={floating_points}/>;
             }}
@@ -296,7 +296,7 @@ export default function Bar({ chart }) {
               truncateTickAt: 0,
             }}
             valueFormat={function (e) {
-              let value_type = chart?.chartInfo?.value_type ?? "percentage"
+              let value_type = chart?.chartInfo?.value_type || "percentage"
               if (value_type === "absolute"){
                 return e
               } else {

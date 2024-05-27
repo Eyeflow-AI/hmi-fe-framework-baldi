@@ -147,7 +147,7 @@ export default function Funnel({ chart }) {
         let graph_value_type = chart?.chartInfo?.value_type ?? "absolute"
         let tooltip_value = 0;
         let tooltip_value_type =
-          chart?.chartInfo?.tooltip_value_type ? chart?.chartInfo?.tooltip_value_type : (graph_value_type === "absolute" ? "percentage" : "absolute")
+          chart?.chartInfo?.tooltip_value_type ? chart?.chartInfo?.tooltip_value_type : (graph_value_type === "percentage" ? "absolute" : "percentage")
         let floatPoints = chart?.chartInfo?.value_floating_points ?? 2
         if (index) {
           let reference =
@@ -220,7 +220,7 @@ export default function Funnel({ chart }) {
       setValueFormat(_valueFormat);
     }
 
-    if (Object.keys(chart?.chartInfo).includes("label_font_size")) {
+    if (Object.keys(chart?.chartInfo).includes("label_font_size") && chart?.chartInfo?.label_font_size !== "") {
       let _responsiveTheme = responsiveTheme;
       _responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size;
       setResponsiveTheme(_responsiveTheme);
@@ -317,7 +317,7 @@ export default function Funnel({ chart }) {
             currentPartSizeExtension={10}
             currentBorderWidth={20}
             motionConfig="wobbly"
-            direction={chart?.chartInfo?.direction ?? "vertical"}
+            direction={chart?.chartInfo?.direction || "vertical"}
           />
           <Box
             sx={{

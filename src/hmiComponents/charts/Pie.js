@@ -200,12 +200,12 @@ export default function Bar({ chart }) {
               let graph_value_type = chart?.chartInfo?.value_type ?? "percentage"
               let total = info.datum.data.total;
               let value_type = 
-              chart?.chartInfo?.tooltip_value_type ? chart?.chartInfo?.tooltip_value_type : (graph_value_type === "percentage" ? "absolute" : "percentage")
+              chart?.chartInfo?.tooltip_value_type ? chart?.chartInfo?.tooltip_value_type : (graph_value_type === "absolute" ? "percentage" : "absolute")
               let id = info.datum.data.id;
               return <CustomTooltip color={color} value={value} id={id} total={total} value_type={value_type} floating_points={floating_points}/>;
             }}
             valueFormat={function (e) {
-              let value_type = chart?.chartInfo?.value_type ?? "percentage"
+              let value_type = chart?.chartInfo?.value_type || "percentage"
               if (value_type === "absolute"){
                 return e
               } else {

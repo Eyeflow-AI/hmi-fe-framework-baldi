@@ -221,12 +221,16 @@ export default function DivergingBar({ chart }) {
       let _maxValue = 0;
       let _minValue = 0;
       let _legend = [];
+      let value_type = chart?.chartInfo?.value_type || "percentage";
+      let floating_points = chart?.chartInfo?.value_floating_points || 2;
       Object.entries(data).forEach(([key, value]) => {
         let dontSave = false;
         let _item = {
           period: key,
           total: 0,
+          total_tooltip: 0
         };
+        let fieldNames = []
 
         Object.entries(value?.fields ?? {}).forEach(([field, fieldValue]) => {
           let _legendItem = {
@@ -234,7 +238,9 @@ export default function DivergingBar({ chart }) {
           };
           // if (Math.abs(fieldValue) <= 0.05) dontSave = true;
           // _item[`${t(field)}`] = fieldValue;
-          _item[`${field}`] = fieldValue;
+          fieldNames.push(field)
+          _item[`${field}`] = fieldValue
+          _item["total_tooltip"] += value?.tooltip_fields?.[field] ?? fieldValue;
           _item["total"] += Math.abs(fieldValue);
           _item[`${field}_tooltip`] =
             value?.tooltip_fields?.[field] ?? fieldValue;
@@ -246,9 +252,22 @@ export default function DivergingBar({ chart }) {
             // chart?.chartInfo?.colors_results?.[field];
             _item[`${field}Color`] = chart?.chartInfo?.colors_results?.[field];
             _legendItem.color = chart?.chartInfo?.colors_results?.[field];
+          } else {
+            _item[`${field}Color`] = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+            _legendItem.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
           }
           if (!_legend.find((el) => el.id === field)) _legend.push(_legendItem);
         });
+
+        if (value_type === "percentage" ) {
+          fieldNames.forEach(field => { 
+            let total = _item["total"];
+            let percentage_value = ((_item[field]) / total) * 100;
+            percentage_value = percentage_value.toFixed(floating_points)
+            _item[field] = percentage_value
+          })
+
+        }
 
         if (!dontSave) newInfo.push(_item);
       });
@@ -378,11 +397,10 @@ export default function DivergingBar({ chart }) {
             }
             // colors={{ scheme: "nivo" }}
             tooltip={(info) => {
-              // let value = info.data[info.id];
+              let total = info?.data?.total_tooltip ?? 0;
               let value =
                 info?.data?.[`${info.id}_tooltip`] ?? info.data[info.id];
               console.log({ i: info });
-              let total = info?.data?.total ?? 0;
               let color = info.color;
               let id = info.id;
               return (
@@ -394,7 +412,7 @@ export default function DivergingBar({ chart }) {
                   value_type={
                     chart?.chartInfo?.tooltip_value_type 
                     ? chart?.chartInfo?.tooltip_value_type 
-                    : (chart?.chartInfo?.value_type === "percentage" ? "absolute" : "percentage")
+                    : (chart?.chartInfo?.value_type === "absolute" ? "percentage" : "absolute")
                     }                  
                 />
               );
@@ -409,23 +427,36 @@ export default function DivergingBar({ chart }) {
                 let _v = Object.keys(chart?.chartInfo).includes(
                   "value_floating_points"
                 )
-                  ? v.toFixed(chart?.chartInfo?.value_floating_points)
+                  ? v.toFixed(chart?.chartInfo?.value_floating_points || 2)
                   : v;
-                if (Math.abs(_v) >= chart?.chartInfo?.min_value_to_show ?? 5) {
+                if (Math.abs(_v) >= chart?.chartInfo?.min_value_to_show || 5) {
                   _v = String(_v).replace(".", ",");
                   return `${_v}%`;
                 } else {
                   return "";
                 }
               } else if (valueType === "absolute") {
-                // if (Math.abs(v) >= chart?.chartInfo?.min_value_to_show ?? 0) {
+                if (Math.abs(v) >= chart?.chartInfo?.min_value_to_show || 5) {
                 let _v = splitNumbers(v);
                 return `${_v}`;
+                }
                 // } else {
                 // return "";
                 // }
               }
             }}
+            // valueFormat={ (v) => {
+            //   console.log({v, info, keys,r: chart.result})
+            //   let value_type = chart?.chartInfo?.value_type || "percentage";
+            //   let floating_points = chart?.chartInfo?.value_floating_points || 2;
+            //   if (value_type === "percentage") {
+            //     v = `${_currentValue}%`
+            //     return v;
+            //     } else {
+            //       return v;
+            //     }
+            // }}
+            // valueFormat={v=>v}
             maxValue={chart?.chartInfo?.use_max_value ? maxValue : undefined}
             minValue={chart?.chartInfo?.use_min_value ? minValue : undefined}
             yScale={{
