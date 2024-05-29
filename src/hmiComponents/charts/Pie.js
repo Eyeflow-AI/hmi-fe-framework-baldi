@@ -124,7 +124,7 @@ export default function Bar({ chart }) {
 
     if (Object.keys(chart?.chartInfo).includes("label_font_size")) {
       let _responsiveTheme = responsiveTheme;
-      _responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size;
+      _responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size || _responsiveTheme.labels.text.fontSize;
       setResponsiveTheme(_responsiveTheme);
     }
     // setData(chart.result)
@@ -196,7 +196,7 @@ export default function Bar({ chart }) {
             tooltip={(info) => {
               let value = info.datum.data.value;
               let color = info.datum.color;
-              let floating_points = chart?.chartInfo?.value_floating_points ?? 2
+              let floating_points = chart?.chartInfo?.value_floating_points || 2;
               let graph_value_type = chart?.chartInfo?.value_type ?? "percentage"
               let total = info.datum.data.total;
               let value_type = 
@@ -209,7 +209,7 @@ export default function Bar({ chart }) {
               if (value_type === "absolute"){
                 return e
               } else {
-                let floating_points = chart?.chartInfo?.value_floating_points ?? 2
+                let floating_points = chart?.chartInfo?.value_floating_points || 2
                 let count = (e / totalEl) * 100;
                 count = parseFloat(count).toFixed(floating_points)
                 count = isNaN(count) ? 0 : count;

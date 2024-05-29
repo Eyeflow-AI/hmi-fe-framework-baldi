@@ -165,12 +165,6 @@ export default function Line({ chart }) {
       );
     }
     // setData(chart.result)
-
-    if (Object.keys(chart?.chartInfo).includes("label_font_size")) {
-      let _responsiveTheme = responsiveTheme;
-      _responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size;
-      setResponsiveTheme(_responsiveTheme);
-    }
     // eslint-disable-next-line
   }, [chart]);
 
@@ -228,7 +222,7 @@ export default function Line({ chart }) {
               let value = data?.point?.data?.y;
               let value_type = chart?.chartInfo?.tooltip_value_type ?? "absolute"
               let total = data?.point?.data?.z;
-              let floating_points = chart?.chartInfo?.value_floating_points ?? 2
+              let floating_points = chart?.chartInfo?.value_floating_points || 2
               let color = data?.color;
               let id = data?.point?.serieId;
               // console.log({ _d: data });
@@ -240,6 +234,7 @@ export default function Line({ chart }) {
             colors={
               queryHasColors
                 ? (i) => {
+                  console.log({info})
                     return chart?.chartInfo?.colors_results?.[i?.id];
                   }
                 : { scheme: "nivo" }

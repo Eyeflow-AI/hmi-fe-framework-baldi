@@ -336,7 +336,7 @@ export default function DivergingBar({ chart }) {
 
     if (Object.keys(chart?.chartInfo).includes("label_font_size")) {
       let _responsiveTheme = responsiveTheme;
-      _responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size;
+      _responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size || responsiveTheme.labels.text.fontSize;
       setResponsiveTheme(_responsiveTheme);
     }
 
@@ -400,13 +400,12 @@ export default function DivergingBar({ chart }) {
             keys={keys}
             indexBy="period"
             margin={{ top: 30, right: 50, bottom: 120, left: 50 }}
-            colors={
+            colors={ 
                 (i) => {
                     let color = i?.data?.[`${i.id}Color`];
-                    console.log({color})
-                    return color;
-                  
-            }}
+                    return color; 
+                  }
+                }    
             // colors={{ scheme: "nivo" }}
             tooltip={(info) => {
               let total = info?.data?.total_tooltip ?? 0;
