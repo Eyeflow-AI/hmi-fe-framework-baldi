@@ -148,7 +148,7 @@ export default function Funnel({ chart }) {
         let tooltip_value = 0;
         let tooltip_value_type =
           chart?.chartInfo?.tooltip_value_type ? chart?.chartInfo?.tooltip_value_type : (graph_value_type === "percentage" ? "absolute" : "percentage")
-        let floatPoints = chart?.chartInfo?.value_floating_points ?? 2
+        let floatPoints = chart?.chartInfo?.value_floating_points || 2;
         if (index) {
           let reference =
             Object.keys(chart?.chartInfo).includes(
@@ -161,7 +161,7 @@ export default function Funnel({ chart }) {
           tooltip_value = splitNumbers(data[item]);
           if (tooltip_value_type === "percentage") {
             let count = (data?.[item] / reference._value) * 100;
-            count = count.toFixed(2);
+            count = count.toFixed(floatPoints);
             count = isNaN(count) ? 0 : count;
             tooltip_value = `${count}%`.replace(".", ",");
           }
@@ -212,11 +212,11 @@ export default function Funnel({ chart }) {
       });
       setInfo(newInfo);
       // setKeys(newKeys);
-      setQueryHasColors(
-        Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0
-          ? true
-          : false
-      );
+      // setQueryHasColors(
+      //   Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0
+      //     ? true
+      //     : false
+      // );
       setValueFormat(_valueFormat);
     }
 
@@ -281,11 +281,10 @@ export default function Funnel({ chart }) {
             // keys={keys}
             valueFormat={valueFormat}
             colors={
-              queryHasColors
-                ? (i) => {
-                    return i?.color;
-                  }
-                : { scheme: "nivo" }
+              (i) => {
+                  return i?.color;
+                }
+                // { scheme: "nivo" }
             }
             tooltip={(i) => {
               let value = i?.part?.data?.tooltip_value ?? i?.part?.data?.value;
