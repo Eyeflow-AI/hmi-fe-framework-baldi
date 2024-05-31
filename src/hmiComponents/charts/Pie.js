@@ -16,6 +16,34 @@ import { useTranslation } from "react-i18next";
 import { ResponsivePie } from "@nivo/pie";
 import { colors } from "sdk-fe-eyeflow";
 
+const CustomTooltip = ({ color, value, id, value_type, total, floating_points }) => {
+  if (value_type === "percentage") {
+  let count = (value / total) * 100;
+  count = parseFloat(count).toFixed(floating_points)
+  count = isNaN(count) ? 0 : count;
+  value = `${count}%`.replace(".", ",");
+  } 
+  return (
+  <Box
+    sx={{
+      background: colors.paper.blue.dark,
+      width: "100%",
+      height: "100%",
+      display: "flex",
+      // flexDirection: 'column',
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 1,
+      textTransform: "uppercase",
+    }}
+  >
+    <div
+      style={{ width: "15px", height: "15px", backgroundColor: color }}
+    ></div>
+    &nbsp;&nbsp;
+    {id}: {value}
+  </Box>
+)};
 const responsivePieLegends = [
   {
     anchor: "bottom",
@@ -47,6 +75,7 @@ export default function Bar({ chart }) {
   // const [keys, setKeys] = useState([]);
   // const [queryHasColors, setQueryHasColors] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
+  const [totalEl, setTotalEl] = useState(0);
   const [responsiveTheme, setResponsiveTheme] = useState({
     tooltip: {
       container: {
@@ -65,6 +94,7 @@ export default function Bar({ chart }) {
   useEffect(() => {
     if (!chart?.result?.length) return;
     else {
+      setTotalEl(chart.result[0].total)
       // let newKeys = chart.result.map((item) => item._id);
       let data = chart.result;
       let newInfo = [];
@@ -74,6 +104,7 @@ export default function Bar({ chart }) {
           label: item._id,
           [item._id]: item.value,
           value: item.value,
+          total: item.total
         };
         if (
           Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 &&
@@ -93,7 +124,7 @@ export default function Bar({ chart }) {
 
     if (Object.keys(chart?.chartInfo).includes("label_font_size")) {
       let _responsiveTheme = responsiveTheme;
-      _responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size;
+      _responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size || _responsiveTheme.labels.text.fontSize;
       setResponsiveTheme(_responsiveTheme);
     }
     // setData(chart.result)
@@ -162,8 +193,29 @@ export default function Bar({ chart }) {
                 ? info.map((item) => item.color)
                 : { scheme: "nivo" }
             }
+            tooltip={(info) => {
+              let value = info.datum.data.value;
+              let color = info.datum.color;
+              let floating_points = chart?.chartInfo?.value_floating_points || 2;
+              let graph_value_type = chart?.chartInfo?.value_type ?? "percentage"
+              let total = info.datum.data.total;
+              let value_type = 
+              chart?.chartInfo?.tooltip_value_type ? chart?.chartInfo?.tooltip_value_type : (graph_value_type === "absolute" ? "percentage" : "absolute")
+              let id = info.datum.data.id;
+              return <CustomTooltip color={color} value={value} id={id} total={total} value_type={value_type} floating_points={floating_points}/>;
+            }}
             valueFormat={function (e) {
-              return e + "%";
+              let value_type = chart?.chartInfo?.value_type || "percentage"
+              if (value_type === "absolute"){
+                return e
+              } else {
+                let floating_points = chart?.chartInfo?.value_floating_points || 2
+                let count = (e / totalEl) * 100;
+                count = parseFloat(count).toFixed(floating_points)
+                count = isNaN(count) ? 0 : count;
+                e = `${count}%`.replace(".", ",");
+                return e
+                } 
             }}
           />
         </Box>

@@ -17,7 +17,13 @@ import { useTranslation } from "react-i18next";
 import { ResponsiveLine } from "@nivo/line";
 import { colors } from "sdk-fe-eyeflow";
 
-const CustomTooltip = ({ color, value, id }) => {
+const CustomTooltip = ({ color, value, id, total, value_type, floating_points }) => {
+  if (value_type === "percentage") {
+    let count = (value / total) * 100;
+    count = parseFloat(count).toFixed(floating_points)
+    count = isNaN(count) ? 0 : count;
+    value = `${count}%`.replace(".", ",");
+  } 
   return (
     <Box
       sx={{
@@ -135,8 +141,20 @@ export default function Line({ chart }) {
     if (!chart?.result?.length) return;
     else {
       let newInfo = chart?.result ?? [];
-      newInfo = newInfo.map((el) => {
+      const totals = newInfo.reduce((acc, cur) => {
+        cur.data.forEach(({ x, y }) => {
+            if (!acc[x]) {
+                acc[x] = 0;
+            }
+            acc[x] += y;
+        });
+        return acc;
+    }, {});
+    newInfo = newInfo.map(el => {
         el.id = t(el.id);
+        el.data = el.data.map(d => {
+            return { ...d, z: totals[d.x] };
+        });
         return el;
       });
       setInfo(newInfo);
@@ -147,12 +165,6 @@ export default function Line({ chart }) {
       );
     }
     // setData(chart.result)
-
-    if (Object.keys(chart?.chartInfo).includes("label_font_size")) {
-      let _responsiveTheme = responsiveTheme;
-      _responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size;
-      setResponsiveTheme(_responsiveTheme);
-    }
     // eslint-disable-next-line
   }, [chart]);
 
@@ -208,10 +220,13 @@ export default function Line({ chart }) {
           <ResponsiveLine
             tooltip={(data) => {
               let value = data?.point?.data?.y;
+              let value_type = chart?.chartInfo?.tooltip_value_type ?? "absolute"
+              let total = data?.point?.data?.z;
+              let floating_points = chart?.chartInfo?.value_floating_points || 2
               let color = data?.color;
               let id = data?.point?.serieId;
               // console.log({ _d: data });
-              return <CustomTooltip value={value} id={id} color={color} />;
+              return <CustomTooltip value={value} id={id} color={color} total={total} value_type={value_type} floating_points={floating_points}/>;
             }}
             data={info}
             margin={{ top: 20, right: 30, bottom: 150, left: 80 }}
@@ -219,6 +234,7 @@ export default function Line({ chart }) {
             colors={
               queryHasColors
                 ? (i) => {
+                  console.log({info})
                     return chart?.chartInfo?.colors_results?.[i?.id];
                   }
                 : { scheme: "nivo" }
@@ -242,15 +258,7 @@ export default function Line({ chart }) {
                 ? t(chart?.chartInfo?.x_axis).toUpperCase()
                 : "",
               legendOffset: 60,
-              legendPosition: "middle",
-
-              format: (value) => {
-                if (chart?.chartInfo?.format?.function) {
-                  return runFunction(chart?.chartInfo?.format?.function, value);
-                } else {
-                  return value;
-                }
-              },
+              legendPosition: "middle"
             }}
             axisLeft={{
               tickSize: 5,
