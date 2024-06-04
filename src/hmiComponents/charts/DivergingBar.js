@@ -420,10 +420,9 @@ export default function DivergingBar({ chart }) {
               let total = info?.data?.total_tooltip ?? 0;
               let value =
                 info?.data?.[`${info.id}_tooltip`] ?? info.data[info.id];
-              console.log({ i: info });
               let color = info.color;
               let id = info.id;
-              let floating_points = _chart?.chartInfo?.value_floating_points;
+              let floating_points = _chart?.chartInfo?.value_floating_points || 2;
               return (
                 <CustomTooltip
                   color={color}
