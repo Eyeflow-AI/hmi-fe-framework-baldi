@@ -88,38 +88,41 @@ export default function Dashboard({ pageOptions }) {
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [builtChats, setBuiltChats] = useState([]);
 
-  const getData = async () => {
+  const getData = async (loadingSearch) => {
     const charts = pageOptions?.options?.charts ?? [];
     const chartsToBuild = [];
-    setLoadingSearch(true);
+    // setLoadingSearch(true);
     let flagError = false;
-    for (let i = 0; i < charts.length; i++) {
-      try {
-        let data = await API.get.queryData({
-          startTime: getQueryDateString(startDate, 0, "start"),
-          endTime: getQueryDateString(startDate, 0, "end"),
-          queryName: charts[i].query_name,
-          stationId,
-        });
-        if (!data?.chartInfo?.width) {
-          data.chartInfo.width =
-            charts.length >= 4
-              ? `${(1 / (charts.length / 2)) * 100}%`
-              : `${100 / charts.length}%`;
+    if (!loadingSearch) {
+      setLoadingSearch(true);
+      for (let i = 0; i < charts.length; i++) {
+        try {
+          let data = await API.get.queryData({
+            startTime: getQueryDateString(startDate, 0, "start"),
+            endTime: getQueryDateString(startDate, 0, "end"),
+            queryName: charts[i].query_name,
+            stationId,
+          });
+          if (!data?.chartInfo?.width) {
+            data.chartInfo.width =
+              charts.length >= 4
+                ? `${(1 / (charts.length / 2)) * 100}%`
+                : `${100 / charts.length}%`;
+          }
+          if (!data?.chartInfo?.height) {
+            data.chartInfo.height = charts.length >= 4 ? "50%" : "100%";
+          }
+          data.chartInfo.index = i;
+          chartsToBuild.push(data);
+        } catch (err) {
+          console.error(err);
+          flagError = true;
         }
-        if (!data?.chartInfo?.height) {
-          data.chartInfo.height = charts.length >= 4 ? "50%" : "100%";
-        }
-        data.chartInfo.index = i;
-        chartsToBuild.push(data);
-      } catch (err) {
-        console.error(err);
-        flagError = true;
       }
-    }
-    setBuiltChats(chartsToBuild);
-    if (flagError) {
-      setLoadingSearch(false);
+      setBuiltChats(chartsToBuild);
+      if (flagError) {
+        setLoadingSearch(false);
+      }
     }
   };
 
@@ -132,12 +135,12 @@ export default function Dashboard({ pageOptions }) {
   useEffect(() => {}, []);
 
   useEffect(() => {
-    getData();
+    getData(loadingSearch);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clock]);
 
   useEffect(() => {
-    getData();
+    getData(loadingSearch);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageOptions, stationId]);
 
