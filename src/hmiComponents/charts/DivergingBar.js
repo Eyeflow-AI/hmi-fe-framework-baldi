@@ -396,7 +396,7 @@ export default function DivergingBar({ chart }) {
             </Tooltip>
           ))}
       </Box>
-      {_chart?.result.length > 0 ? (
+      {_chart?.result.length > 0 && Object.keys(_chart?.result[0]).length > 0 ? (
         <Box
           sx={{
             display: "flex",
@@ -417,7 +417,7 @@ export default function DivergingBar({ chart }) {
             }}
             // colors={{ scheme: "nivo" }}
             tooltip={(info) => {
-              let total = info?.data?.total_tooltip ?? 0;
+              let total = info?.data?.total ?? 0;
               let value =
                 info?.data?.[`${info.id}_tooltip`] ?? info.data[info.id];
               let color = info.color;
