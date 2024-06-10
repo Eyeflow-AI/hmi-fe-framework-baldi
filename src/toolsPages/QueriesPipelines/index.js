@@ -1,5 +1,7 @@
 // React
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { setNotificationBar } from "../../store/slices/app";
 
 // Design
 import Box from "@mui/material/Box";
@@ -36,6 +38,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  DialogContentText,
   DialogTitle,
 } from "@mui/material";
 
@@ -113,6 +116,24 @@ export default function QueriesPipelines({ pageOptions }) {
   const [errorInChartInfoText, setErrorInChartInfoText] = useState(false);
   const [currentPipelineText, setCurrentPipelineText] = useState("{}");
   const [errorInPipelineText, setErrorInPipelineText] = useState(false);
+  const [open, setOpen] = useState(false)
+  const dispatch = useDispatch();
+
+  const handleClose = () => {
+    setOpen(false);
+  }
+
+  const handleOpen = () => {
+    setOpen(true);
+  }
+
+  const showMessage = (show, type, message) => {
+    dispatch(setNotificationBar({
+      show: show,
+      type: type,
+      message: message
+    }))
+  };
 
   const getData = () => {
     API.get
@@ -169,6 +190,7 @@ export default function QueriesPipelines({ pageOptions }) {
         document,
       })
       .then((res) => {
+        showMessage(true, "success", "Documento salvo com sucesso!");
         getData();
         getDocument(selectedScript);
       })
@@ -176,6 +198,9 @@ export default function QueriesPipelines({ pageOptions }) {
   };
 
   const deleteScript = ({ name }) => {
+    showMessage(true, "success", "Documento deletado com sucesso!");
+    handleClose();
+    
     API.delete
       .queryPipelines({ name })
       .then((res) => {})
@@ -198,6 +223,7 @@ export default function QueriesPipelines({ pageOptions }) {
       .finally(() => {
         getData();
         setSelectedScript(name);
+        showMessage(true, "success", "Documento editado com sucesso!");
       });
   };
 
@@ -209,6 +235,7 @@ export default function QueriesPipelines({ pageOptions }) {
       .finally(() => {
         getData();
         setSelectedScript(name);
+        showMessage(true, "success", "Documento criado com sucesso!");
       });
   };
 
@@ -470,7 +497,7 @@ export default function QueriesPipelines({ pageOptions }) {
                 >
                   <Stack direction="row" justifyContent="flex-end" gap={1}>
                     <Button
-                      onClick={() => deleteScript({ name: selectedScript })}
+                      onClick={() => handleOpen()}
                       variant="contained"
                       startIcon={<DeleteIcon />}
                       disabled={!selectedScript}
@@ -478,6 +505,22 @@ export default function QueriesPipelines({ pageOptions }) {
                     >
                       {t("delete")}
                     </Button>
+                    <Dialog open={open} onClose={handleClose}>
+                      <DialogTitle>{"Confirmar exclusão?"}</DialogTitle>
+                      <DialogContent>
+                        <DialogContentText>
+                          Você tem certeza que deseja excluir esse documento?
+                        </DialogContentText>
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={() => handleClose()} variant="contained" color="primary" autoFocus>
+                          Voltar
+                        </Button>
+                        <Button onClick={() => deleteScript({ name: selectedScript })} variant="contained" color="error">
+                          Confirma
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
                     <Button
                       onClick={() => setCreateScriptDialogOpen("edit")}
                       variant="contained"

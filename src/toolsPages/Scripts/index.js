@@ -1,5 +1,7 @@
 // React
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { setNotificationBar } from "../../store/slices/app";
 
 // Design
 import Box from "@mui/material/Box";
@@ -36,6 +38,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  DialogContentText,
   DialogTitle,
 } from "@mui/material";
 
@@ -105,6 +108,16 @@ export default function Scripts({ pageOptions }) {
   const [currentText, setCurrentText] = useState("");
   const [selectedScript, setSelectedScript] = useState("");
   const [createScriptDialogOpen, setCreateScriptDialogOpen] = useState("");
+  const [open, setOpen] = useState(false)
+  const dispatch = useDispatch();
+
+  const handleClose = () => {
+    setOpen(false);
+  }
+
+  const handleOpen = () => {
+    setOpen(true);
+  }
 
   const getData = () => {
     API.get
@@ -125,6 +138,14 @@ export default function Scripts({ pageOptions }) {
       .finally(() => {});
   };
 
+  const showMessage = (show, type, message) => {
+    dispatch(setNotificationBar({
+      show: show,
+      type: type,
+      message: message
+    }))
+  };
+
   const saveScript = () => {
     let document = {
       name: selectedScript,
@@ -135,6 +156,7 @@ export default function Scripts({ pageOptions }) {
         document,
       })
       .then((res) => {
+        showMessage(true, "success", "Documento salvo com sucesso!");
         getData();
         getDocument(selectedScript);
       })
@@ -142,6 +164,9 @@ export default function Scripts({ pageOptions }) {
   };
 
   const deleteScript = ({ name }) => {
+    handleClose();
+    showMessage(true, "success", "Documento deletado com sucesso!");
+
     API.delete
       .script({ name })
       .then((res) => {})
@@ -161,6 +186,7 @@ export default function Scripts({ pageOptions }) {
       .finally(() => {
         getData();
         setSelectedScript(name);
+        showMessage(true, "success", "Documento editado com sucesso!");
       });
   };
 
@@ -172,6 +198,7 @@ export default function Scripts({ pageOptions }) {
       .finally(() => {
         getData();
         setSelectedScript(name);
+        showMessage(true, "success", "Documento criado com sucesso!");
       });
   };
 
@@ -324,7 +351,7 @@ export default function Scripts({ pageOptions }) {
             >
               <Stack direction="row" justifyContent="flex-end" gap={1}>
                 <Button
-                  onClick={() => deleteScript({ name: selectedScript })}
+                  onClick={() => handleOpen()}
                   variant="contained"
                   startIcon={<DeleteIcon />}
                   disabled={!selectedScript}
@@ -332,6 +359,22 @@ export default function Scripts({ pageOptions }) {
                 >
                   {t("delete")}
                 </Button>
+                <Dialog open={open} onClose={handleClose}>
+                  <DialogTitle>{"Confirmar exclusão?"}</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText>
+                      Você tem certeza que deseja excluir esse algoritmo?
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={() => handleClose()} variant="contained" color="primary" autoFocus>
+                      Voltar
+                    </Button>
+                    <Button onClick={() => deleteScript({ name: selectedScript })} variant="contained" color="error">
+                      Confirma
+                    </Button>
+                  </DialogActions>
+                </Dialog>
                 <Button
                   onClick={() => setCreateScriptDialogOpen("edit")}
                   variant="contained"
