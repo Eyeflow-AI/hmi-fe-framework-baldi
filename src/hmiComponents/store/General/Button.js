@@ -12,25 +12,24 @@ export default function Button({ name, tag, componentsInfo, style, metadata, sta
 
   const [value, setValue] = useState("");
   // const [error, setError] = useState(false);
-  const [_style, _setStyle] = useState({});
+  const [_style, _setStyle] = useState({
+    textAlign: "center",
+    textTransform: "uppercase",
+    fontSize: 24,
+    display: "flex",
+    justifyContent: "center",
+    height: "100%",
+    fontWeight: "bold",
+  });
   const [item, setItem] = useState(null);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (style) {
-      _setStyle(style);
-    } else {
-      _setStyle({
-        textAlign: "center",
-        textTransform: "uppercase",
-        fontSize: 24,
-        display: "flex",
-        justifyContent: "center",
-        height: "100%",
-        fontWeight: "bold",
-      });
-    }
+      let s = Object.assign(_style, style)
+      _setStyle(s)
+    } 
   }, [style]);
 
   useEffect(() => {

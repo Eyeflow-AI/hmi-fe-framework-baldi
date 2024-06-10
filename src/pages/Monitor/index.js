@@ -52,7 +52,12 @@ export default function Monitor({ pageOptions }) {
           <Box
             sx={{
               width: pageOptions.options.eventMenuWidth,
-              display: "flex",
+              display:
+                Object.keys(pageOptions.components.EventMenuBox).includes(
+                  "show"
+                ) && !pageOptions.components.EventMenuBox.show
+                  ? "none"
+                  : "flex",
               flexDirection: "column",
             }}
           >
@@ -77,7 +82,12 @@ export default function Monitor({ pageOptions }) {
           <Box id="monitor-data-box" sx={style.dataBox}>
             <Box
               sx={{
-                display: "flex",
+                display:
+                  Object.keys(pageOptions.components.EventHeader).includes(
+                    "show"
+                  ) && !pageOptions.components.EventHeader.show
+                    ? "none"
+                    : "flex",
               }}
             >
               {!loadingSelectedItem && itemInfo && (
@@ -96,7 +106,13 @@ export default function Monitor({ pageOptions }) {
             </Box>
             <Box
               display="flex"
-              height={height - pageOptions.components.EventHeader.height}
+              height={
+                Object.keys(pageOptions.components.EventHeader).includes(
+                  "show"
+                ) && !pageOptions.components.EventHeader.show
+                  ? height
+                  : height - pageOptions.components.EventHeader.height
+              }
             >
               {!loadingSelectedItem && itemInfo ? (
                 <EventDataBox
