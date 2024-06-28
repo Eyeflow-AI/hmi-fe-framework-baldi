@@ -8,6 +8,7 @@ import { Box, Typography, Card, CardMedia } from "@mui/material";
 import PageWrapper from "../../structure/PageWrapper";
 import ImageDialog from "../../components/ImageDialog";
 import GetImagesList from "../utils/Hooks/GetImagesList";
+import Clock from "../utils/Hooks/Clock";
 
 // Third-party
 
@@ -26,11 +27,15 @@ export default function Cameras({ pageOptions }) {
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
   const [imagePath, setImagePath] = useState("");
+  let sleepTime = pageOptions?.options?.sleepTime ?? 30000;
+  const { clock } = Clock({ sleepTime });
+  let { imagesList } = { imagesList: [] }
 
-  const { imageBaseURL, infoURL } = useMemo(() => {
+  const { imageBaseURL, infoURL, edges } = useMemo(() => {
     return {
       imageBaseURL: pageOptions?.options?.imageURL ?? "",
       infoURL: pageOptions?.options?.infoURL ?? "",
+      edges: pageOptions?.options?.edges ?? {},
     };
   }, [pageOptions]);
 
@@ -134,11 +139,20 @@ export default function Cameras({ pageOptions }) {
   //   // },
   // ];
 
-  const { clock, imagesList } = GetImagesList({
-    url: infoURL,
-    imageBaseURL,
-    sleepTime: pageOptions?.options?.sleepTime,
-  });
+  if (edges.length > 0) {
+    imagesList = GetImagesList({
+      url: "",
+      imageBaseURL: "",
+      edges,
+      mulpitleEdges: true,
+    }).imagesList
+  } else {
+    imagesList = GetImagesList({
+      url: infoURL,
+      imageBaseURL,
+      sleepTime: pageOptions?.options?.sleepTime,
+    }).imagesList
+  }
 
   const onOpenDialog = useCallback((item) => {
     return () => {
@@ -173,7 +187,7 @@ export default function Cameras({ pageOptions }) {
               overflow: "hidden",
             }}
           >
-            {imagesList.map((item, index) => {
+            {imagesList?.map((item, index) => {
               return (
                 // organize the images within the possible space, all the images must get the same size
                 <Box
