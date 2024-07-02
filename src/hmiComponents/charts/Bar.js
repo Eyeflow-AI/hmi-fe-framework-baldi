@@ -45,31 +45,41 @@ const CustomTooltip = ({ color, value, id, value_type, total, floating_points })
   </Box>
 )};
 
-const responsiveLegends = [
-  {
-    anchor: "bottom",
-    direction: "column",
-    justify: false,
-    translateY: 180,
-    translateX: -50,
-    itemsSpacing: 10,
-    itemWidth: 10,
-    itemHeight: 18,
-    itemTextColor: "white",
-    itemDirection: "left-to-right",
-    itemOpacity: 1,
-    symbolSize: 15,
-    symbolShape: "square",
-    effects: [
+const responsiveLegends = ({setLegends}) => {
+  if (setLegends) {
+    return [
       {
-        on: "hover",
-        style: {
-          itemTextColor: "#000",
-        },
+        // display: "flex",
+        // flexWrap: "wrap",
+        // justifyContent: "center",
+        // alignItems: "center",
+        anchor: "bottom",
+        direction: "row",
+        justify: false,
+        translateY: 75,
+        translateX: 0,
+        itemsSpacing: 10,
+        itemWidth: 50,
+        itemHeight: 18,
+        itemTextColor: "white",
+        itemDirection: "left-to-right",
+        itemOpacity: 1,
+        symbolSize: 15,
+        symbolShape: "square",
+        // effects: [
+        //   {
+        //     on: "hover",
+        //     style: {
+        //       itemTextColor: "#000",
+        //     },
+        //   },
+        // ],
       },
-    ],
-  },
-];
+    ];
+  } else {
+    return []
+  }
+}
 
 export default function Bar({ chart }) {
   const { t } = useTranslation();
@@ -142,15 +152,13 @@ export default function Bar({ chart }) {
       let newKeys = Object.keys(chart.result[0]);
       let data = chart.result[0];
       let newInfo = [];
+      let total = 0;
       Object.keys(data).forEach((item) => {
-        if (item === "total") {
-          setTotalEl(data[item])
-          return
-        }
         let _item = {
           id: item,
           [item]: data[item],
         };
+      total += data[item];
         if (
           Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0 &&
           chart?.chartInfo?.colors_results?.[item]
@@ -162,6 +170,7 @@ export default function Bar({ chart }) {
 
         newInfo.push(_item);
       });
+      setTotalEl(total)
       setInfo(newInfo);
       setKeys(newKeys);
       setQueryHasColors(
@@ -253,6 +262,7 @@ export default function Bar({ chart }) {
         >
           <ResponsiveBar
             data={info}
+            // layout='horizontal'
             keys={keys}
             margin={{ top: 10, right: 0, bottom: 30, left: 50 }}
             colors={
@@ -274,7 +284,7 @@ export default function Bar({ chart }) {
               return <CustomTooltip color={color} value={value} id={id} total={total} value_type={value_type} floating_points={floating_points}/>;
             }}
             theme={responsiveTheme}
-            legends={responsiveLegends}
+            legends={responsiveLegends({setLegends: chart?.chartInfo?.show_legends ?? true})}
             axisLeft={{
               tickSize: 5,
               tickPadding: 5,

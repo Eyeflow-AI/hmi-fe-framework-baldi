@@ -410,10 +410,23 @@ export default function DivergingBar({ chart }) {
             data={info}
             keys={keys}
             indexBy="period"
-            margin={{ top: 30, right: 50, bottom: 120, left: 50 }}
+            margin={{ top: 30, right: 50, bottom: 150, left: 50 }}
             colors={(i) => {
-              let color = i?.data?.[`${i.id}Color`];
-              return color;
+            //   // if (!chart?.chartInfo?.colors_results) {
+            //   console.log({i})
+            //     let color = i?.data?.[`${i.id}Color`];
+            //     return color;
+            //   // } else {
+            //   //   return {scheme:"nivo"}
+            //   // }
+            // }}
+              if (!chart?.chartInfo?.color_scheme) {
+                let color = i?.data?.[`${i.id}Color`];
+                return color;
+              } else {
+                let _scheme = chart?.chartInfo?.color_scheme || "nivo"
+                return {scheme: _scheme}
+              }
             }}
             // colors={{ scheme: "nivo" }}
             tooltip={(info) => {
@@ -548,9 +561,10 @@ export default function DivergingBar({ chart }) {
               display: "flex",
               width: "100%",
               height: "150px",
-              justifyContent: "flex-start",
+              justifyContent: "center",
+              flexWrap: "wrap",
               alignItems: "space-around",
-              marginTop: "-100px",
+              marginTop: "-150px",
               flexDirection: "column",
               gap: 0,
               marginLeft: "2rem",
@@ -564,10 +578,11 @@ export default function DivergingBar({ chart }) {
                   key={index}
                   sx={{
                     display: "flex",
-                    width: "100%",
+                    width: "auto",
                     height: "30px",
                     justifyContent: "center",
                     alignItems: "center",
+                    margin: "5px",
                     // border: '1px solid white',
                   }}
                 >
@@ -582,7 +597,7 @@ export default function DivergingBar({ chart }) {
                   <Typography
                     variant="h6"
                     component="div"
-                    sx={{ flexGrow: 1 }}
+                    sx={{ flexGrow: 1, fontSize: _chart?.chartInfo?.legend_font_size || '12px' }}
                     textAlign={"left"}
                   >
                     {t(item?.id)}
