@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next";
 import { ResponsiveBar } from "@nivo/bar";
 import { colors } from "sdk-fe-eyeflow";
 import lodash from "lodash";
+import * as nivoColors from "@nivo/colors"
 
 const CustomTooltip = ({
   color,
@@ -213,7 +214,7 @@ export default function DivergingBar({ chart }) {
   });
 
   // console.log({ DivergingBar: info, chart });
-
+  const useNivoColors = true;
   useEffect(() => {
     if (!_chart?.result?.length) return;
     else if (
@@ -253,16 +254,18 @@ export default function DivergingBar({ chart }) {
             value?.tooltip_fields?.[field] ?? fieldValue;
           if (fieldValue > _maxValue) _maxValue = fieldValue;
           if (fieldValue < _minValue) _minValue = fieldValue;
-          if (Object.keys(fieldColors).includes(field)) {
-            _item[`${field}Color`] = fieldColors[field];
+          if (useNivoColors) {
+            console.log({ nivoColors: nivoColors.colorSchemes.nivo });
           } else {
-            let color =
-              _chart?.chartInfo?.colors_results?.[field] ||
-              `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-            _item[`${field}Color`] = color;
-            fieldColors[field] = color;
+            if (Object.keys(fieldColors).includes(field)) {
+              _item[`${field}Color`] = fieldColors[field];
+            } else {
+              let color = _chart?.chartInfo?.colors_results?.[field] ||
+                `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+              _item[`${field}Color`] = color;
+              fieldColors[field] = color;
+            }
           }
-          // }
         });
 
         if (value_type === "percentage") {
