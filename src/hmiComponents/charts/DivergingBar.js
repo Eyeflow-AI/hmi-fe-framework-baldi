@@ -235,6 +235,9 @@ export default function DivergingBar({ chart }) {
       let value_type = _chart?.chartInfo?.value_type || "percentage";
       let floating_points = _chart?.chartInfo?.value_floating_points || 2;
       let fieldColors = {};
+      let colorIndex = 0;
+      let colorScheme = nivoColors.colorSchemes[_chart?.chartInfo?.color_scheme || "nivo"]
+      let schemeLength = colorScheme.length
       Object.entries(data).forEach(([key, value]) => {
         let dontSave = false;
         let _item = {
@@ -254,19 +257,16 @@ export default function DivergingBar({ chart }) {
             value?.tooltip_fields?.[field] ?? fieldValue;
           if (fieldValue > _maxValue) _maxValue = fieldValue;
           if (fieldValue < _minValue) _minValue = fieldValue;
-          if (useNivoColors) {
-            console.log({ nivoColors: nivoColors.colorSchemes.nivo });
+          if (Object.keys(fieldColors).includes(field)) {
+            _item[`${field}Color`] = fieldColors[field];
           } else {
-            if (Object.keys(fieldColors).includes(field)) {
-              _item[`${field}Color`] = fieldColors[field];
-            } else {
-              let color = _chart?.chartInfo?.colors_results?.[field] ||
-                `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-              _item[`${field}Color`] = color;
-              fieldColors[field] = color;
-            }
+            let color = _chart?.chartInfo?.colors_results?.[field] ||
+              `${colorScheme[colorIndex]}`;
+            _item[`${field}Color`] = color;
+            fieldColors[field] = color;
           }
-        });
+          colorIndex = (colorIndex + 1) % schemeLength
+      });
 
         if (value_type === "percentage") {
           fieldNames.forEach((field) => {
@@ -415,21 +415,8 @@ export default function DivergingBar({ chart }) {
             indexBy="period"
             margin={{ top: 30, right: 50, bottom: 150, left: 50 }}
             colors={(i) => {
-            //   // if (!chart?.chartInfo?.colors_results) {
-            //   console.log({i})
-            //     let color = i?.data?.[`${i.id}Color`];
-            //     return color;
-            //   // } else {
-            //   //   return {scheme:"nivo"}
-            //   // }
-            // }}
-              if (!chart?.chartInfo?.color_scheme) {
                 let color = i?.data?.[`${i.id}Color`];
                 return color;
-              } else {
-                let _scheme = chart?.chartInfo?.color_scheme || "nivo"
-                return {scheme: _scheme}
-              }
             }}
             // colors={{ scheme: "nivo" }}
             tooltip={(info) => {
@@ -600,7 +587,7 @@ export default function DivergingBar({ chart }) {
                   <Typography
                     variant="h6"
                     component="div"
-                    sx={{ flexGrow: 1, fontSize: _chart?.chartInfo?.legend_font_size || '12px' }}
+                    sx={{ flexGrow: 1, fontSize: _chart?.chartInfo?.legend_font_size || 12 }}
                     textAlign={"left"}
                   >
                     {t(item?.id)}
