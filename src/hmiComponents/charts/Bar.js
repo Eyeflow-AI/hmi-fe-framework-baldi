@@ -45,39 +45,39 @@ const CustomTooltip = ({ color, value, id, value_type, total, floating_points })
   </Box>
 )};
 
-const responsiveLegends = [
-  {
-    anchor: "bottom",
-    direction: "column",
-    justify: false,
-    translateY: 180,
-    translateX: -50,
-    itemsSpacing: 10,
-    itemWidth: 10,
-    itemHeight: 18,
-    itemTextColor: "white",
-    itemDirection: "left-to-right",
-    itemOpacity: 1,
-    symbolSize: 15,
-    symbolShape: "square",
-    effects: [
-      {
-        on: "hover",
-        style: {
-          itemTextColor: "#000",
-        },
-      },
-    ],
-  },
-];
-
 export default function Bar({ chart }) {
   const { t } = useTranslation();
   const [info, setInfo] = useState([]);
   const [keys, setKeys] = useState([]);
   const [totalEl, setTotalEl] = useState(0);
-  const [queryHasColors, setQueryHasColors] = useState(false);
+  // const [queryHasColors, setQueryHasColors] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
+  const [colorScheme, setColorScheme] = useState("nivo");
+  const [responsiveLegends, setResponsiveLegends] = useState([
+    {
+      anchor: "bottom",
+      direction: "column",
+      justify: false,
+      translateY: 180,
+      translateX: -50,
+      itemsSpacing: 10,
+      itemWidth: 10,
+      itemHeight: 18,
+      itemTextColor: "white",
+      itemDirection: "left-to-right",
+      itemOpacity: 1,
+      symbolSize: 15,
+      symbolShape: "square",
+      // effects: [
+      //   {
+      //     on: "hover",
+      //     style: {
+      //       itemTextColor: "#000",
+      //     },
+      //   },
+      // ],
+    },
+  ]);
   const [responsiveTheme, setResponsiveTheme] = useState({
     tooltip: {
       container: {
@@ -142,33 +142,30 @@ export default function Bar({ chart }) {
       let newKeys = Object.keys(chart.result[0]);
       let data = chart.result[0];
       let newInfo = [];
+      let total = 0;
       Object.keys(data).forEach((item) => {
-        if (item === "total") {
-          setTotalEl(data[item])
-          return
-        }
         let _item = {
           id: item,
           [item]: data[item],
         };
-        if (
-          Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0 &&
-          chart?.chartInfo?.colors_results?.[item]
-        ) {
-          _item.color = chart.chartInfo.colors_results[item];
-        } else {
-          _item.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-        }
+      total += data[item];
+      if (
+        Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 &&
+        chart?.chartInfo?.colors_results?.[item] !== undefined
+      ) {
+        _item.color = chart.chartInfo.colors_results[item];
+      }
 
         newInfo.push(_item);
       });
+      setTotalEl(total)
       setInfo(newInfo);
       setKeys(newKeys);
-      setQueryHasColors(
-        Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0
-          ? true
-          : false
-      );
+      // setQueryHasColors(
+      //   Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0
+      //     ? true
+      //     : false
+      // );
     } else if (chart.result.length > 1) {
       let newKeys = chart.result.map((item) => item._id);
       let data = chart.result;
@@ -183,24 +180,34 @@ export default function Bar({ chart }) {
           chart?.chartInfo?.colors_results?.[item._id] !== undefined
         ) {
           _item.color = chart.chartInfo.colors_results[item._id];
-        } else {
-          _item.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
         }
         newInfo.push(_item);
       });
 
       setInfo(newInfo);
       setKeys(newKeys);
-      setQueryHasColors(
-        Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0
-      );
+    //   setQueryHasColors(
+    //     Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0
+    //   );
     }
 
-    if (Object.keys(chart?.chartInfo).includes("label_font_size")) {
-      let _responsiveTheme = responsiveTheme;
-      _responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size || _responsiveTheme.labels.text.fontSize;
-      setResponsiveTheme(_responsiveTheme);
+    if (Object.keys(chart?.chartInfo).includes("color_scheme")) {
+      let colorScheme =  chart?.chartInfo?.color_scheme || "nivo"
+      setColorScheme(colorScheme)
     }
+    let _responsiveTheme = responsiveTheme;
+    if (Object.keys(chart?.chartInfo).includes("label_font_size")) {
+      _responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size || _responsiveTheme.labels.text.fontSize;
+    }
+    if (Object.keys(chart?.chartInfo).includes("legend_font_size")) {
+      if (chart?.chartInfo?.legend_font_size === 0) {
+        setResponsiveLegends([])
+      } else {
+        _responsiveTheme.legends.text.fontSize = chart?.chartInfo?.legend_font_size;
+        responsiveLegends[0].symbolSize = (chart?.chartInfo?.legend_font_size - 5) > 0 ? (chart?.chartInfo?.legend_font_size - 5) : chart?.chartInfo?.legend_font_size;
+      }
+    }
+    setResponsiveTheme(_responsiveTheme);
   }, [chart]);
 
   return (
@@ -253,15 +260,21 @@ export default function Bar({ chart }) {
         >
           <ResponsiveBar
             data={info}
+            // layout='horizontal'
             keys={keys}
             margin={{ top: 10, right: 0, bottom: 30, left: 50 }}
             colors={
-              queryHasColors
-                ? (i) => {
-                    return i.data.color;
-                  }
-                : { scheme: "nivo" }
+              info.every((item) => item.color)
+                ? info.map((item) => item.color)
+                : { scheme: colorScheme }
             }
+            // colors={
+            //   queryHasColors
+            //     ? (i) => {
+            //         return i.data.color;
+            //       }
+            //     : { scheme: colorScheme }
+            // }
             tooltip={(info) => {
               let value = info.data[info.id];
               let color = info.color;

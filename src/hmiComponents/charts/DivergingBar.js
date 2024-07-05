@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next";
 import { ResponsiveBar } from "@nivo/bar";
 import { colors } from "sdk-fe-eyeflow";
 import lodash from "lodash";
+import * as nivoColors from "@nivo/colors"
 
 const CustomTooltip = ({
   color,
@@ -213,7 +214,7 @@ export default function DivergingBar({ chart }) {
   });
 
   // console.log({ DivergingBar: info, chart });
-
+  const useNivoColors = true;
   useEffect(() => {
     if (!_chart?.result?.length) return;
     else if (
@@ -234,6 +235,9 @@ export default function DivergingBar({ chart }) {
       let value_type = _chart?.chartInfo?.value_type || "percentage";
       let floating_points = _chart?.chartInfo?.value_floating_points || 2;
       let fieldColors = {};
+      let colorIndex = 0;
+      let colorScheme = nivoColors.colorSchemes[_chart?.chartInfo?.color_scheme || "nivo"]
+      let schemeLength = colorScheme.length
       Object.entries(data).forEach(([key, value]) => {
         let dontSave = false;
         let _item = {
@@ -256,14 +260,13 @@ export default function DivergingBar({ chart }) {
           if (Object.keys(fieldColors).includes(field)) {
             _item[`${field}Color`] = fieldColors[field];
           } else {
-            let color =
-              _chart?.chartInfo?.colors_results?.[field] ||
-              `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+            let color = _chart?.chartInfo?.colors_results?.[field] ||
+              `${colorScheme[colorIndex]}`;
             _item[`${field}Color`] = color;
             fieldColors[field] = color;
           }
-          // }
-        });
+          colorIndex = (colorIndex + 1) % schemeLength
+      });
 
         if (value_type === "percentage") {
           fieldNames.forEach((field) => {
@@ -410,10 +413,10 @@ export default function DivergingBar({ chart }) {
             data={info}
             keys={keys}
             indexBy="period"
-            margin={{ top: 30, right: 50, bottom: 120, left: 50 }}
+            margin={{ top: 30, right: 50, bottom: 150, left: 50 }}
             colors={(i) => {
-              let color = i?.data?.[`${i.id}Color`];
-              return color;
+                let color = i?.data?.[`${i.id}Color`];
+                return color;
             }}
             // colors={{ scheme: "nivo" }}
             tooltip={(info) => {
@@ -548,9 +551,10 @@ export default function DivergingBar({ chart }) {
               display: "flex",
               width: "100%",
               height: "150px",
-              justifyContent: "flex-start",
+              justifyContent: "center",
+              flexWrap: "wrap",
               alignItems: "space-around",
-              marginTop: "-100px",
+              marginTop: "-150px",
               flexDirection: "column",
               gap: 0,
               marginLeft: "2rem",
@@ -564,17 +568,18 @@ export default function DivergingBar({ chart }) {
                   key={index}
                   sx={{
                     display: "flex",
-                    width: "100%",
+                    width: "auto",
                     height: "30px",
                     justifyContent: "center",
                     alignItems: "center",
+                    margin: "5px",
                     // border: '1px solid white',
                   }}
                 >
                   <div
                     style={{
-                      width: "15px",
-                      height: "15px",
+                      width: (((_chart?.chartInfo?.legend_font_size - 5) > 0) ? _chart?.chartInfo?.legend_font_size - 5 : _chart?.chartInfo?.legend_font_size) ?? 15,
+                      height: (((_chart?.chartInfo?.legend_font_size - 5) > 0) ? _chart?.chartInfo?.legend_font_size - 5 : _chart?.chartInfo?.legend_font_size) ?? 15,
                       backgroundColor: item?.color,
                     }}
                   ></div>
@@ -582,7 +587,7 @@ export default function DivergingBar({ chart }) {
                   <Typography
                     variant="h6"
                     component="div"
-                    sx={{ flexGrow: 1 }}
+                    sx={{ flexGrow: 1, fontSize: _chart?.chartInfo?.legend_font_size ?? 20 }}
                     textAlign={"left"}
                   >
                     {t(item?.id)}

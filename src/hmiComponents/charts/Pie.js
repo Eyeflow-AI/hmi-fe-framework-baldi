@@ -44,31 +44,6 @@ const CustomTooltip = ({ color, value, id, value_type, total, floating_points })
     {id}: {value}
   </Box>
 )};
-const responsivePieLegends = [
-  {
-    anchor: "bottom",
-    direction: "row",
-    justify: false,
-    translateY: 56,
-    itemsSpacing: 5,
-    itemWidth: 100,
-    itemHeight: 18,
-    itemTextColor: "white",
-    itemDirection: "left-to-right",
-    itemOpacity: 1,
-    symbolSize: 12,
-    symbolShape: "circle",
-    // effects: [
-    //     {
-    //         on: 'hover',
-    //         style: {
-    //             itemTextColor: '#000'
-    //         }
-    //     }
-    // ]
-  },
-];
-
 export default function Bar({ chart }) {
   const { t } = useTranslation();
   const [info, setInfo] = useState([]);
@@ -76,6 +51,31 @@ export default function Bar({ chart }) {
   // const [queryHasColors, setQueryHasColors] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
   const [totalEl, setTotalEl] = useState(0);
+  const [colorScheme, setColorScheme] = useState("nivo")
+  const [responsivePieLegends, setResponsivePieLegends] = useState([
+    {
+      anchor: "bottom",
+      direction: "row",
+      justify: false,
+      translateY: 56,
+      itemsSpacing: 5,
+      itemWidth: 100,
+      itemHeight: 18,
+      itemTextColor: "white",
+      itemDirection: "left-to-right",
+      itemOpacity: 1,
+      symbolSize: 12,
+      symbolShape: "circle",
+      // effects: [
+      //     {
+      //         on: 'hover',
+      //         style: {
+      //             itemTextColor: '#000'
+      //         }
+      //     }
+      // ]
+    },
+  ]);
   const [responsiveTheme, setResponsiveTheme] = useState({
     tooltip: {
       container: {
@@ -88,6 +88,12 @@ export default function Bar({ chart }) {
         fill: "#ffffff",
         textShadow: "1px 1px 2px #353535",
       },
+    },
+    legends: {
+      text: {
+        fontSize: 15,
+        fill: "#ffffff",
+      }
     },
   });
 
@@ -111,8 +117,6 @@ export default function Bar({ chart }) {
           chart?.chartInfo?.colors_results?.[item._id] !== undefined
         ) {
           _item.color = chart.chartInfo.colors_results[item._id];
-        } else {
-          _item.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
         }
         newInfo.push(_item);
       });
@@ -122,11 +126,23 @@ export default function Bar({ chart }) {
       // setQueryHasColors(Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 ? true : false);
     }
 
-    if (Object.keys(chart?.chartInfo).includes("label_font_size")) {
-      let _responsiveTheme = responsiveTheme;
-      _responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size || _responsiveTheme.labels.text.fontSize;
-      setResponsiveTheme(_responsiveTheme);
+    if (Object.keys(chart?.chartInfo).includes("color_scheme")) {
+      let colorScheme =  chart?.chartInfo?.color_scheme || "nivo"
+      setColorScheme(colorScheme)
     }
+    let _responsiveTheme = responsiveTheme;
+    if (Object.keys(chart?.chartInfo).includes("label_font_size")) {
+      _responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size || _responsiveTheme.labels.text.fontSize;
+    }
+    if (Object.keys(chart?.chartInfo).includes("legend_font_size")) {
+      if (chart?.chartInfo?.legend_font_size === 0) {
+        setResponsivePieLegends([])
+      } else {
+        _responsiveTheme.legends.text.fontSize = chart?.chartInfo?.legend_font_size;
+        responsivePieLegends[0].symbolSize = (chart?.chartInfo?.legend_font_size - 5) > 0 ? (chart?.chartInfo?.legend_font_size - 5) : chart?.chartInfo?.legend_font_size;
+      }
+    }
+    setResponsiveTheme(_responsiveTheme);
     // setData(chart.result)
   }, [chart]);
 
@@ -191,7 +207,7 @@ export default function Bar({ chart }) {
             colors={
               info.every((item) => item.color)
                 ? info.map((item) => item.color)
-                : { scheme: "nivo" }
+                : { scheme: colorScheme }
             }
             tooltip={(info) => {
               let value = info.datum.data.value;

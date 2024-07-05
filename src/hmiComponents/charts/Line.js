@@ -51,37 +51,63 @@ const CustomTooltip = ({ color, value, id, total, value_type, floating_points })
   );
 };
 
-const responsiveLegends = [
-  {
-    anchor: "bottom",
-    direction: "column",
-    justify: false,
-    translateY: 140,
-    translateX: -200,
-    itemsSpacing: 5,
-    itemWidth: 10,
-    itemHeight: 18,
-    itemTextColor: "white",
-    itemDirection: "left-to-right",
-    itemOpacity: 1,
-    symbolSize: 12,
-    symbolShape: "square",
-    // effects: [
-    //   {
-    //     on: 'hover',
-    //     style: {
-    //       itemTextColor: '#000'
-    //     }
-    //   }
-    // ]
-  },
-];
+// const responsiveLegends = [
+//   {
+//     anchor: "bottom",
+//     direction: "column",
+//     justify: false,
+//     translateY: 140,
+//     translateX: -200,
+//     itemsSpacing: 5,
+//     itemWidth: 10,
+//     itemHeight: 18,
+//     itemTextColor: "white",
+//     itemDirection: "left-to-right",
+//     itemOpacity: 1,
+//     symbolSize: 12,
+//     symbolShape: "square",
+//     // effects: [
+//     //   {
+//     //     on: 'hover',
+//     //     style: {
+//     //       itemTextColor: '#000'
+//     //     }
+//     //   }
+//     // ]
+//   },
+// ];
 
 export default function Line({ chart }) {
   const { t } = useTranslation();
   const [info, setInfo] = useState([]);
   const [queryHasColors, setQueryHasColors] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
+  const [colorScheme, setColorScheme] = useState("nivo");
+  const [responsiveLegends, setResponsiveLegends] = useState([
+    {
+      anchor: "bottom",
+      direction: "column",
+      justify: false,
+      translateY: 140,
+      translateX: -200,
+      itemsSpacing: 5,
+      itemWidth: 10,
+      itemHeight: 18,
+      itemTextColor: "white",
+      itemDirection: "left-to-right",
+      itemOpacity: 1,
+      symbolSize: 12,
+      symbolShape: "square",
+      // effects: [
+      //   {
+      //     on: 'hover',
+      //     style: {
+      //       itemTextColor: '#000'
+      //     }
+      //   }
+      // ]
+    },
+  ]);
   const [responsiveTheme, setResponsiveTheme] = useState({
     // tooltip: {
     //   container: {
@@ -155,17 +181,46 @@ export default function Line({ chart }) {
         el.data = el.data.map(d => {
             return { ...d, z: totals[d.x] };
         });
+        if (
+          Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 &&
+          chart?.chartInfo?.colors_results?.[el.id] !== undefined
+        ) {
+          el.color = chart.chartInfo.colors_results[el.id];
+        }
         return el;
       });
+      // if (
+      //   Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 &&
+      //   chart?.chartInfo?.colors_results?.[el._id] !== undefined
+      // ) {
+      //   el.color = chart.chartInfo.colors_results[el._id];
+      // }
       setInfo(newInfo);
-      setQueryHasColors(
-        Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0
-          ? true
-          : false
-      );
+      // setQueryHasColors(
+      //   Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0
+      //     ? true
+      //     : false
+      // );
     }
     // setData(chart.result)
     // eslint-disable-next-line
+    if (Object.keys(chart?.chartInfo).includes("color_scheme")) {
+      let colorScheme =  chart?.chartInfo?.color_scheme || "nivo"
+      setColorScheme(colorScheme)
+    }
+    let _responsiveTheme = responsiveTheme;
+    if (Object.keys(chart?.chartInfo).includes("label_font_size")) {
+      _responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size || _responsiveTheme.labels.text.fontSize;
+    }
+    if (Object.keys(chart?.chartInfo).includes("legend_font_size")) {
+      if (chart?.chartInfo?.legend_font_size === 0) {
+        setResponsiveLegends([])
+      } else {
+        _responsiveTheme.legends.text.fontSize = chart?.chartInfo?.legend_font_size;
+        responsiveLegends[0].symbolSize = (chart?.chartInfo?.legend_font_size - 5) > 0 ? (chart?.chartInfo?.legend_font_size - 5) : chart?.chartInfo?.legend_font_size;
+      }
+    }
+    setResponsiveTheme(_responsiveTheme);
   }, [chart]);
 
   return (
@@ -232,13 +287,18 @@ export default function Line({ chart }) {
             margin={{ top: 20, right: 30, bottom: 150, left: 80 }}
             theme={responsiveTheme}
             colors={
-              queryHasColors
-                ? (i) => {
-                  console.log({info})
-                    return chart?.chartInfo?.colors_results?.[i?.id];
-                  }
-                : { scheme: "nivo" }
+              info.every((item) => item.color)
+                ? info.map((item) => item.color)
+                : { scheme: colorScheme }
             }
+            // colors={
+            //   queryHasColors
+            //     ? (i) => {
+            //       console.log({info})
+            //         return chart?.chartInfo?.colors_results?.[i?.id];
+            //       }
+            //     : { scheme: colorScheme }
+            // }
             enableArea={chart?.chartInfo?.enableArea ?? false}
             xScale={{ type: "point" }}
             yScale={{
