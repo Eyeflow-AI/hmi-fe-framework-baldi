@@ -201,7 +201,7 @@ export default function Bar({ chart }) {
             arcLinkLabelsStraightLength={0}
             arcLabelsSkipAngle={10}
             arcLinkLabelsSkipAngle={10}
-            margin={{ top: 30, right: 100, bottom: 100, left: 100 }}
+            margin={{ top: 100, right: 10, bottom: 100, left: 100 }}
             theme={responsiveTheme}
             legends={responsivePieLegends}
             colors={
