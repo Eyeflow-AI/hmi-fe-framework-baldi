@@ -578,8 +578,8 @@ export default function DivergingBar({ chart }) {
                 >
                   <div
                     style={{
-                      width: "15px",
-                      height: "15px",
+                      width: (((_chart?.chartInfo?.legend_font_size - 5) > 0) ? _chart?.chartInfo?.legend_font_size - 5 : _chart?.chartInfo?.legend_font_size) ?? 15,
+                      height: (((_chart?.chartInfo?.legend_font_size - 5) > 0) ? _chart?.chartInfo?.legend_font_size - 5 : _chart?.chartInfo?.legend_font_size) ?? 15,
                       backgroundColor: item?.color,
                     }}
                   ></div>
@@ -587,7 +587,7 @@ export default function DivergingBar({ chart }) {
                   <Typography
                     variant="h6"
                     component="div"
-                    sx={{ flexGrow: 1, fontSize: _chart?.chartInfo?.legend_font_size || 12 }}
+                    sx={{ flexGrow: 1, fontSize: _chart?.chartInfo?.legend_font_size ?? 20 }}
                     textAlign={"left"}
                   >
                     {t(item?.id)}

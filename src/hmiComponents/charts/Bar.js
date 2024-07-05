@@ -45,42 +45,6 @@ const CustomTooltip = ({ color, value, id, value_type, total, floating_points })
   </Box>
 )};
 
-const responsiveLegends = ({setLegends}) => {
-  if (setLegends) {
-    return [
-      {
-        // display: "flex",
-        // flexWrap: "wrap",
-        // justifyContent: "center",
-        // alignItems: "center",
-        anchor: "bottom",
-        direction: "row",
-        justify: false,
-        translateY: 75,
-        translateX: 0,
-        itemsSpacing: 10,
-        itemWidth: 50,
-        itemHeight: 18,
-        itemTextColor: "white",
-        itemDirection: "left-to-right",
-        itemOpacity: 1,
-        symbolSize: 15,
-        symbolShape: "square",
-        // effects: [
-        //   {
-        //     on: "hover",
-        //     style: {
-        //       itemTextColor: "#000",
-        //     },
-        //   },
-        // ],
-      },
-    ];
-  } else {
-    return []
-  }
-}
-
 export default function Bar({ chart }) {
   const { t } = useTranslation();
   const [info, setInfo] = useState([]);
@@ -88,6 +52,32 @@ export default function Bar({ chart }) {
   const [totalEl, setTotalEl] = useState(0);
   const [queryHasColors, setQueryHasColors] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
+  const [colorScheme, setColorScheme] = useState("nivo");
+  const [responsiveLegends, setResponsiveLegends] = useState([
+    {
+      anchor: "bottom",
+      direction: "column",
+      justify: false,
+      translateY: 180,
+      translateX: -50,
+      itemsSpacing: 10,
+      itemWidth: 10,
+      itemHeight: 18,
+      itemTextColor: "white",
+      itemDirection: "left-to-right",
+      itemOpacity: 1,
+      symbolSize: 15,
+      symbolShape: "square",
+      // effects: [
+      //   {
+      //     on: "hover",
+      //     style: {
+      //       itemTextColor: "#000",
+      //     },
+      //   },
+      // ],
+    },
+  ]);
   const [responsiveTheme, setResponsiveTheme] = useState({
     tooltip: {
       container: {
@@ -205,11 +195,23 @@ export default function Bar({ chart }) {
       );
     }
 
-    if (Object.keys(chart?.chartInfo).includes("label_font_size")) {
-      let _responsiveTheme = responsiveTheme;
-      _responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size || _responsiveTheme.labels.text.fontSize;
-      setResponsiveTheme(_responsiveTheme);
+    if (Object.keys(chart?.chartInfo).includes("color_scheme")) {
+      let colorScheme =  chart?.chartInfo?.color_scheme || "nivo"
+      setColorScheme(colorScheme)
     }
+    let _responsiveTheme = responsiveTheme;
+    if (Object.keys(chart?.chartInfo).includes("label_font_size")) {
+      _responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size || _responsiveTheme.labels.text.fontSize;
+    }
+    if (Object.keys(chart?.chartInfo).includes("legend_font_size")) {
+      if (chart?.chartInfo?.legend_font_size === 0) {
+        setResponsiveLegends([])
+      } else {
+        _responsiveTheme.legends.text.fontSize = chart?.chartInfo?.legend_font_size;
+        responsiveLegends[0].symbolSize = (chart?.chartInfo?.legend_font_size - 5) > 0 ? (chart?.chartInfo?.legend_font_size - 5) : chart?.chartInfo?.legend_font_size;
+      }
+    }
+    setResponsiveTheme(_responsiveTheme);
   }, [chart]);
 
   return (
@@ -270,7 +272,7 @@ export default function Bar({ chart }) {
                 ? (i) => {
                     return i.data.color;
                   }
-                : { scheme: "nivo" }
+                : { scheme: colorScheme }
             }
             tooltip={(info) => {
               let value = info.data[info.id];
@@ -284,7 +286,7 @@ export default function Bar({ chart }) {
               return <CustomTooltip color={color} value={value} id={id} total={total} value_type={value_type} floating_points={floating_points}/>;
             }}
             theme={responsiveTheme}
-            legends={responsiveLegends({setLegends: chart?.chartInfo?.show_legends ?? true})}
+            legends={responsiveLegends}
             axisLeft={{
               tickSize: 5,
               tickPadding: 5,

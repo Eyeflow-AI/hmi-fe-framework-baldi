@@ -16,6 +16,7 @@ import splitNumbers from "../../utils/functions/splitNumbers";
 import { useTranslation } from "react-i18next";
 import { ResponsiveFunnel } from "@nivo/funnel";
 import { colors } from "sdk-fe-eyeflow";
+import * as nivoColors from "@nivo/colors"
 
 const CustomTooltip = ({ color, value, id }) => {
   return (
@@ -141,6 +142,9 @@ export default function Funnel({ chart }) {
       let data = chart.result[0];
       let newInfo = [];
       let _valueFormat = null;
+      let colorIndex = 0;
+      let colorScheme = nivoColors.colorSchemes[chart?.chartInfo?.color_scheme || "nivo"];
+      let schemeLength = colorScheme.length;
 
       Object.keys(data).forEach((item, index) => {
         let graph_value = 0;
@@ -205,8 +209,11 @@ export default function Funnel({ chart }) {
         ) {
           _item.color = chart.chartInfo.colors_results[item];
         } else {
-          _item.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+          let color = chart?.chartInfo?.colors_results?.[item] ||
+          `${colorScheme[colorIndex]}`;
+          _item.color = color;
         }
+        colorIndex = (colorIndex + 1) % schemeLength
 
         newInfo.push(_item);
       });
@@ -219,12 +226,11 @@ export default function Funnel({ chart }) {
       // );
       setValueFormat(_valueFormat);
     }
-
+    let _responsiveTheme = responsiveTheme;
     if (Object.keys(chart?.chartInfo).includes("label_font_size") && chart?.chartInfo?.label_font_size !== "") {
-      let _responsiveTheme = responsiveTheme;
       _responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size;
-      setResponsiveTheme(_responsiveTheme);
     }
+    setResponsiveTheme(_responsiveTheme);
   }, [chart]);
 
   return (
@@ -323,7 +329,8 @@ export default function Funnel({ chart }) {
               display: "flex",
               width: "100%",
               height: "150px",
-              justifyContent: "flex-start",
+              // justifyContent: "center",
+              // flexWrap: "wrap",
               alignItems: "space-around",
               marginTop: "-150px",
               flexDirection: "column",
@@ -348,8 +355,8 @@ export default function Funnel({ chart }) {
                 >
                   <div
                     style={{
-                      width: "15px",
-                      height: "15px",
+                      width: (((chart?.chartInfo?.legend_font_size - 5) > 0) ? chart?.chartInfo?.legend_font_size - 5 : chart?.chartInfo?.legend_font_size) ?? 15,
+                      height: (((chart?.chartInfo?.legend_font_size - 5) > 0) ? chart?.chartInfo?.legend_font_size - 5 : chart?.chartInfo?.legend_font_size) ?? 15,
                       backgroundColor: item?.color,
                     }}
                   ></div>
@@ -357,7 +364,7 @@ export default function Funnel({ chart }) {
                   <Typography
                     variant="h6"
                     component="div"
-                    sx={{ flexGrow: 1 }}
+                    sx={{ flexGrow: 1, fontSize: chart?.chartInfo?.legend_font_size ?? 20 }}
                     textAlign={"left"}
                   >
                     {t(item?.id)}
