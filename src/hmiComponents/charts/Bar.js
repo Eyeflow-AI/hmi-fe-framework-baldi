@@ -50,7 +50,7 @@ export default function Bar({ chart }) {
   const [info, setInfo] = useState([]);
   const [keys, setKeys] = useState([]);
   const [totalEl, setTotalEl] = useState(0);
-  const [queryHasColors, setQueryHasColors] = useState(false);
+  // const [queryHasColors, setQueryHasColors] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
   const [colorScheme, setColorScheme] = useState("nivo");
   const [responsiveLegends, setResponsiveLegends] = useState([
@@ -149,25 +149,23 @@ export default function Bar({ chart }) {
           [item]: data[item],
         };
       total += data[item];
-        if (
-          Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0 &&
-          chart?.chartInfo?.colors_results?.[item]
-        ) {
-          _item.color = chart.chartInfo.colors_results[item];
-        } else {
-          _item.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-        }
+      if (
+        Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 &&
+        chart?.chartInfo?.colors_results?.[item] !== undefined
+      ) {
+        _item.color = chart.chartInfo.colors_results[item];
+      }
 
         newInfo.push(_item);
       });
       setTotalEl(total)
       setInfo(newInfo);
       setKeys(newKeys);
-      setQueryHasColors(
-        Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0
-          ? true
-          : false
-      );
+      // setQueryHasColors(
+      //   Object.keys(chart?.chartInfo?.colors_results ?? {})?.length > 0
+      //     ? true
+      //     : false
+      // );
     } else if (chart.result.length > 1) {
       let newKeys = chart.result.map((item) => item._id);
       let data = chart.result;
@@ -182,17 +180,15 @@ export default function Bar({ chart }) {
           chart?.chartInfo?.colors_results?.[item._id] !== undefined
         ) {
           _item.color = chart.chartInfo.colors_results[item._id];
-        } else {
-          _item.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
         }
         newInfo.push(_item);
       });
 
       setInfo(newInfo);
       setKeys(newKeys);
-      setQueryHasColors(
-        Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0
-      );
+    //   setQueryHasColors(
+    //     Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0
+    //   );
     }
 
     if (Object.keys(chart?.chartInfo).includes("color_scheme")) {
@@ -268,12 +264,17 @@ export default function Bar({ chart }) {
             keys={keys}
             margin={{ top: 10, right: 0, bottom: 30, left: 50 }}
             colors={
-              queryHasColors
-                ? (i) => {
-                    return i.data.color;
-                  }
+              info.every((item) => item.color)
+                ? info.map((item) => item.color)
                 : { scheme: colorScheme }
             }
+            // colors={
+            //   queryHasColors
+            //     ? (i) => {
+            //         return i.data.color;
+            //       }
+            //     : { scheme: colorScheme }
+            // }
             tooltip={(info) => {
               let value = info.data[info.id];
               let color = info.color;

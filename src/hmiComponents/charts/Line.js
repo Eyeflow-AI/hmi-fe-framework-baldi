@@ -181,14 +181,26 @@ export default function Line({ chart }) {
         el.data = el.data.map(d => {
             return { ...d, z: totals[d.x] };
         });
+        if (
+          Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 &&
+          chart?.chartInfo?.colors_results?.[el.id] !== undefined
+        ) {
+          el.color = chart.chartInfo.colors_results[el.id];
+        }
         return el;
       });
+      // if (
+      //   Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 &&
+      //   chart?.chartInfo?.colors_results?.[el._id] !== undefined
+      // ) {
+      //   el.color = chart.chartInfo.colors_results[el._id];
+      // }
       setInfo(newInfo);
-      setQueryHasColors(
-        Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0
-          ? true
-          : false
-      );
+      // setQueryHasColors(
+      //   Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0
+      //     ? true
+      //     : false
+      // );
     }
     // setData(chart.result)
     // eslint-disable-next-line
@@ -275,13 +287,18 @@ export default function Line({ chart }) {
             margin={{ top: 20, right: 30, bottom: 150, left: 80 }}
             theme={responsiveTheme}
             colors={
-              queryHasColors
-                ? (i) => {
-                  console.log({info})
-                    return chart?.chartInfo?.colors_results?.[i?.id];
-                  }
+              info.every((item) => item.color)
+                ? info.map((item) => item.color)
                 : { scheme: colorScheme }
             }
+            // colors={
+            //   queryHasColors
+            //     ? (i) => {
+            //       console.log({info})
+            //         return chart?.chartInfo?.colors_results?.[i?.id];
+            //       }
+            //     : { scheme: colorScheme }
+            // }
             enableArea={chart?.chartInfo?.enableArea ?? false}
             xScale={{ type: "point" }}
             yScale={{
