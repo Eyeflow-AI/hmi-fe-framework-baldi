@@ -24,6 +24,7 @@ export default function Title({ name, tag, componentsInfo, style, metadata }) {
       let s = Object.assign(_style, style)
       _setStyle(s)
     }
+    // eslint-disable-next-line
   }, [style]);
 
   useEffect(() => {

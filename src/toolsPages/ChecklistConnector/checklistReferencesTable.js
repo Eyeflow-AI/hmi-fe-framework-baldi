@@ -75,7 +75,7 @@ export default function ChecklistReferencesTable({
   useEffect(() => {
     if (schemaDocument && selectedItem) {
       const defaultSchema = schemaDocument?.default_schema;
-      const customSchema = schemaDocument?.custom_schemas?.[selectedItem?._id];
+      //const customSchema = schemaDocument?.custom_schemas?.[selectedItem?._id];
       const selectedReference = selectedItem?.reference ?? {};
 
       let referenceToUse = {};

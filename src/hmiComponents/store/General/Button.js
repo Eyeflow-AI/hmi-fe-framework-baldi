@@ -29,7 +29,8 @@ export default function Button({ name, tag, componentsInfo, style, metadata, sta
     if (style) {
       let s = Object.assign(_style, style)
       _setStyle(s)
-    } 
+    }
+    // eslint-disable-next-line
   }, [style]);
 
   useEffect(() => {

@@ -321,6 +321,7 @@ export default function EventMenuBox({
     if (runningItem && selectedItem?._id === runningItem?._id && !_item) {
       handleSelectItem(runningItem, "internal-update");
     }
+    // eslint-disable-next-line
   }, [runningItem]);
 
   useEffect(() => {

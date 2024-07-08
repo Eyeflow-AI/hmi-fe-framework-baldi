@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 import "../../../css/animateFlicker.css";
 import Tooltip from "../Wrapper/Tooltip";
 
-import validateData from "../../functions/dataValidation/carouselItem";
+//import validateData from "../../functions/dataValidation/carouselItem";
 //Third-party
 import { useTranslation } from "react-i18next";
 import { colors } from "sdk-fe-eyeflow";

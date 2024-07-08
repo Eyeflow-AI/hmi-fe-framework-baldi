@@ -4,7 +4,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Box";
 import Box from "@mui/material/Box";
 
-import validateData from "../../functions/dataValidation/imageCard";
+//import validateData from "../../functions/dataValidation/imageCard";
 
 import dateFormat from "sdk-fe-eyeflow/functions/dateFormat";
 
@@ -216,9 +216,9 @@ export default function ImageCard({
       const notAnnotatedCtx = notAnnotatedCanvas.getContext("2d");
       notAnnotatedCtx.drawImage(img, 0, 0, img.width, img.height);
       if (options.severalAnnotations) {
-        let totalRegions = Array.isArray(regions) && regions.length;
-        let okRegions = 0;
-        let ngRegions = 0;
+        //let totalRegions = Array.isArray(regions) && regions.length;
+        // let okRegions = 0;
+        // let ngRegions = 0;
         // console.log({regions},"dri");
         (Array.isArray(regions) && regions.length > 0 ? regions : []).forEach(
           (region, i) => {
@@ -240,13 +240,13 @@ export default function ImageCard({
                 : colors.eyeflow.red.dark
               : bboxRegion?.color ?? colors.eyeflow.green.dark;
 
-            if (Object.keys(bboxRegion).includes("found")) {
-              if (bboxRegion?.found) {
-                okRegions += 1;
-              } else {
-                ngRegions += 1;
-              }
-            }
+            // if (Object.keys(bboxRegion).includes("found")) {
+            //   if (bboxRegion?.found) {
+            //     okRegions += 1;
+            //   } else {
+            //     ngRegions += 1;
+            //   }
+            // }
 
             ctx.lineWidth = 3;
             ctx.strokeRect(
@@ -362,6 +362,7 @@ export default function ImageCard({
         url: imageURL,
       });
     }
+    // eslint-disable-next-line
   }, [
     imageURL,
     // imageDataURL,

@@ -1,4 +1,7 @@
 function select({ obj }) {
+  const selectedValue = Object.keys(obj).includes("selectedValue")
+  ? obj?.selectedValue
+  : "";
   if (!obj) {
     return {
       list: [],
@@ -16,9 +19,7 @@ function select({ obj }) {
     };
   });
   const on = Object.keys(obj).includes("on") ? obj?.on : {};
-  const selectedValue = Object.keys(obj).includes("selectedValue")
-    ? obj?.selectedValue
-    : "";
+
 
   return {
     list,
