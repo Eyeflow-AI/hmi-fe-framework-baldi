@@ -74,31 +74,31 @@ const CustomTooltip = ({
   );
 };
 
-const responsiveLegends = [
-  {
-    anchor: "bottom",
-    direction: "column",
-    justify: false,
-    translateY: 100,
-    translateX: -200,
-    itemsSpacing: 10,
-    itemWidth: 10,
-    itemHeight: 18,
-    itemTextColor: "white",
-    itemDirection: "left-to-right",
-    itemOpacity: 1,
-    symbolSize: 15,
-    symbolShape: "square",
-    effects: [
-      {
-        on: "hover",
-        style: {
-          itemTextColor: "#000",
-        },
-      },
-    ],
-  },
-];
+// const responsiveLegends = [
+//   {
+//     anchor: "bottom",
+//     direction: "column",
+//     justify: false,
+//     translateY: 100,
+//     translateX: -200,
+//     itemsSpacing: 10,
+//     itemWidth: 10,
+//     itemHeight: 18,
+//     itemTextColor: "white",
+//     itemDirection: "left-to-right",
+//     itemOpacity: 1,
+//     symbolSize: 15,
+//     symbolShape: "square",
+//     effects: [
+//       {
+//         on: "hover",
+//         style: {
+//           itemTextColor: "#000",
+//         },
+//       },
+//     ],
+//   },
+// ];
 
 // const months = ["jan", "feb", "mar"];
 // const items = ["tare_ok", "tare_ng", "no_plate"];
@@ -214,7 +214,6 @@ export default function DivergingBar({ chart }) {
   });
 
   // console.log({ DivergingBar: info, chart });
-  const useNivoColors = true;
   useEffect(() => {
     if (!_chart?.result?.length) return;
     else if (
@@ -222,10 +221,10 @@ export default function DivergingBar({ chart }) {
       Object.keys(_chart.result[0]).length > 0
     ) {
       // let newKeys = Object.keys(chart.result[0]);
-      let queryHasColors =
-        Object.keys(_chart?.chartInfo?.colors_results ?? {})?.length > 0
-          ? true
-          : false;
+      // let queryHasColors =
+      //   Object.keys(_chart?.chartInfo?.colors_results ?? {})?.length > 0
+      //     ? true
+      //     : false;
 
       let data = _chart.result[0];
       let newInfo = [];
@@ -356,6 +355,7 @@ export default function DivergingBar({ chart }) {
       // }
       _setChart(chart);
     }
+    // eslint-disable-next-line
   }, [chart]);
 
   console.log({ info, legend });

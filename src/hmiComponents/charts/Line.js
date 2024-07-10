@@ -10,7 +10,7 @@ import Tooltip from "@mui/material/Tooltip";
 import CircularProgress from "@mui/material/CircularProgress";
 
 // Internal
-import runFunction from "../../utils/functions/runFunction";
+//import runFunction from "../../utils/functions/runFunction";
 
 // Third-party
 import { useTranslation } from "react-i18next";
@@ -80,7 +80,7 @@ const CustomTooltip = ({ color, value, id, total, value_type, floating_points })
 export default function Line({ chart }) {
   const { t } = useTranslation();
   const [info, setInfo] = useState([]);
-  const [queryHasColors, setQueryHasColors] = useState(false);
+  // const [queryHasColors, setQueryHasColors] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
   const [colorScheme, setColorScheme] = useState("nivo");
   const [responsiveLegends, setResponsiveLegends] = useState([
@@ -221,6 +221,7 @@ export default function Line({ chart }) {
       }
     }
     setResponsiveTheme(_responsiveTheme);
+    // eslint-disable-next-line
   }, [chart]);
 
   return (

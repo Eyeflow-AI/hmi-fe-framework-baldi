@@ -208,6 +208,7 @@ export default function Bar({ chart }) {
       }
     }
     setResponsiveTheme(_responsiveTheme);
+    // eslint-disable-next-line
   }, [chart]);
 
   return (

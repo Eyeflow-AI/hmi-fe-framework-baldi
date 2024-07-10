@@ -74,7 +74,7 @@ export default function Funnel({ chart }) {
   const { t } = useTranslation();
   const [info, setInfo] = useState([]);
   // const [keys, setKeys] = useState([]);
-  const [queryHasColors, setQueryHasColors] = useState(false);
+  //const [queryHasColors, setQueryHasColors] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
   const [responsiveTheme, setResponsiveTheme] = useState({
     tooltip: {
@@ -231,6 +231,7 @@ export default function Funnel({ chart }) {
       _responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size;
     }
     setResponsiveTheme(_responsiveTheme);
+    // eslint-disable-next-line
   }, [chart]);
 
   return (

@@ -144,6 +144,7 @@ export default function Bar({ chart }) {
     }
     setResponsiveTheme(_responsiveTheme);
     // setData(chart.result)
+    // eslint-disable-next-line
   }, [chart]);
 
   // console.log({ chart, info })
