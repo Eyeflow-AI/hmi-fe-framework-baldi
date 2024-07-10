@@ -94,9 +94,16 @@ export default function Report({ pageOptions }) {
   const { _id: stationId } = GetSelectedStation();
 
   const startDate = new Date();
-  const [selectedStartDate, setSelectedStartDate] = useState(
-    new Date(startDate.setHours(startDate.getHours() - 24))
-  );
+  const defaultStart = () => {
+    if (Object.keys(pageOptions?.options).includes("defaultPeriod")) {
+      if (pageOptions?.options?.defaultPeriod === "monthly") {
+        return new Date(startDate.setDate(startDate.getDate() - 30));
+      } else if (pageOptions?.options?.defaultPeriod === "weekly") {
+        return new Date(startDate.setDate(startDate.getDate() - 7));
+      }
+    }
+  };
+  const [selectedStartDate, setSelectedStartDate] = useState(defaultStart);
   const [selectedEndDate, setSelectedEndDate] = useState(new Date());
 
   const [loadingSearch, setLoadingSearch] = useState(false);
