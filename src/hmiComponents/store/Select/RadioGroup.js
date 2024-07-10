@@ -68,7 +68,7 @@ export default function RadioButtonsGroup({
           setOn(_on);
           setValue(_value);
         }
-
+        // eslint-disable-next-line
       }, [componentsInfo]);
 
 	return (
