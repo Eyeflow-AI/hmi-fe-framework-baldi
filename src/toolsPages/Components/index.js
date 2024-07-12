@@ -1,5 +1,7 @@
 // React
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { setNotificationBar } from "../../store/slices/app";
 
 // Design
 import Box from "@mui/material/Box";
@@ -37,6 +39,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  DialogContentText,
 } from "@mui/material";
 
 const style = {
@@ -102,11 +105,20 @@ function CreateScriptDialog({
 }
 
 export default function Components({ pageOptions }) {
+  const dispatch = useDispatch();
   const { t } = useTranslation();
   const [scriptData, setScriptData] = useState([]);
   const [currentText, setCurrentText] = useState("");
   const [selectedScript, setSelectedScript] = useState("");
+  const [open, setOpen] = useState(false)
   const [createScriptDialogOpen, setCreateScriptDialogOpen] = useState("");
+
+  const handleOpen = () => {
+    setOpen(true);
+  }
+  const handleClose = () => {
+    setOpen(false);
+  }
 
   const getData = () => {
     API.get
@@ -127,6 +139,14 @@ export default function Components({ pageOptions }) {
       .finally(() => {});
   };
 
+  const showMessage = (show, type, message) => {
+    dispatch(setNotificationBar({
+      show: show,
+      type: type,
+      message: t(message)
+    }))
+  };
+
   const saveScript = () => {
     let document = {
       name: selectedScript,
@@ -139,6 +159,7 @@ export default function Components({ pageOptions }) {
       .then((res) => {
         getData();
         getDocument(selectedScript);
+        showMessage(true, "success", "document_saved");
       })
       .finally(() => {});
   };
@@ -155,7 +176,10 @@ export default function Components({ pageOptions }) {
   const deleteScript = ({ name }) => {
     API.delete
       .component({ name })
-      .then((res) => {})
+      .then((res) => {
+        showMessage(true, "success", "document_deleted");
+        handleClose();
+      })
       .catch(console.error)
       .finally(() => {
         getData();
@@ -167,7 +191,9 @@ export default function Components({ pageOptions }) {
   const editScriptName = ({ name, oldName }) => {
     API.put
       .componentName({ name, oldName })
-      .then((res) => {})
+      .then((res) => {
+        showMessage(true, "success", "document_edited");
+      })
       .catch(console.error)
       .finally(() => {
         getData();
@@ -178,7 +204,9 @@ export default function Components({ pageOptions }) {
   const createScript = ({ name }) => {
     API.post
       .component({ name })
-      .then((res) => {})
+      .then((res) => {
+        showMessage(true, "success", "document_created");
+      })
       .catch(console.error)
       .finally(() => {
         getData();
@@ -333,7 +361,7 @@ export default function Components({ pageOptions }) {
             >
               <Stack direction="row" justifyContent="flex-end" gap={1}>
                 <Button
-                  onClick={() => deleteScript({ name: selectedScript })}
+                  onClick={() => handleOpen()}
                   variant="contained"
                   startIcon={<DeleteIcon />}
                   disabled={!selectedScript}
@@ -341,6 +369,22 @@ export default function Components({ pageOptions }) {
                 >
                   {t("delete")}
                 </Button>
+                <Dialog open={open} onClose={handleClose}>
+                  <DialogTitle>{t("confirm_exclusion")}</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText>
+                      {t('sure')}
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={() => handleClose()} variant="contained" color="primary" autoFocus>
+                      {t('return')}
+                    </Button>
+                    <Button onClick={() => deleteScript({ name: selectedScript })} variant="contained" color="error">
+                      {t('confirm')}
+                    </Button>
+                  </DialogActions>
+                </Dialog>
                 <Button
                   onClick={() => setCreateScriptDialogOpen("edit")}
                   variant="contained"
