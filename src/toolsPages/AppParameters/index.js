@@ -1,5 +1,7 @@
 // React
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { setNotificationBar } from "../../store/slices/app";
 
 // Design
 
@@ -39,6 +41,15 @@ export default function AppParameters({ pageOptions }) {
   const [errorInText, setErrorInText] = useState(false);
   // const [waitForChange, setWaitForChange] = useState(false);
   const [selectedParam, setSelectedParam] = useState("");
+  const dispatch = useDispatch();
+
+  const showMessage = (show, type, message) => {
+    dispatch(setNotificationBar({
+      show: show,
+      type: type,
+      message: t(message)
+    }))
+  };
 
   const getData = () => {
     API.get
@@ -73,6 +84,7 @@ export default function AppParameters({ pageOptions }) {
       .then((res) => {
         getData();
         getDocument(selectedParam);
+        showMessage(true, "success", "document_saved");
       })
       .finally(() => {});
   };

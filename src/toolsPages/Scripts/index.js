@@ -142,7 +142,7 @@ export default function Scripts({ pageOptions }) {
     dispatch(setNotificationBar({
       show: show,
       type: type,
-      message: message
+      message: t(message)
     }))
   };
 
@@ -156,20 +156,21 @@ export default function Scripts({ pageOptions }) {
         document,
       })
       .then((res) => {
-        showMessage(true, "success", "Documento salvo com sucesso!");
+        showMessage(true, "success", "document_saved");
         getData();
         getDocument(selectedScript);
       })
+      .catch(console.error)
       .finally(() => {});
   };
-
+  
   const deleteScript = ({ name }) => {
-    handleClose();
-    showMessage(true, "success", "Documento deletado com sucesso!");
-
     API.delete
       .script({ name })
-      .then((res) => {})
+      .then((res) => {
+        showMessage(true, "success", "document_deleted");
+        handleClose();
+      })
       .catch(console.error)
       .finally(() => {
         getData();
@@ -177,28 +178,30 @@ export default function Scripts({ pageOptions }) {
         setCurrentText("");
       });
   };
-
+  
   const editScriptName = ({ name, oldName }) => {
     API.put
       .scriptName({ name, oldName })
-      .then((res) => {})
+      .then((res) => {
+        showMessage(true, "success", "document_edited");
+      })
       .catch(console.error)
       .finally(() => {
         getData();
         setSelectedScript(name);
-        showMessage(true, "success", "Documento editado com sucesso!");
       });
   };
-
+  
   const createScript = ({ name }) => {
     API.post
       .script({ name })
-      .then((res) => {})
+      .then((res) => {
+        showMessage(true, "success", "document_created");
+      })
       .catch(console.error)
       .finally(() => {
         getData();
         setSelectedScript(name);
-        showMessage(true, "success", "Documento criado com sucesso!");
       });
   };
 
@@ -360,18 +363,18 @@ export default function Scripts({ pageOptions }) {
                   {t("delete")}
                 </Button>
                 <Dialog open={open} onClose={handleClose}>
-                  <DialogTitle>{"Confirmar exclusão?"}</DialogTitle>
+                  <DialogTitle>{t("confirm_exclusion")}</DialogTitle>
                   <DialogContent>
                     <DialogContentText>
-                      Você tem certeza que deseja excluir esse algoritmo?
+                      {t('sure')}
                     </DialogContentText>
                   </DialogContent>
                   <DialogActions>
                     <Button onClick={() => handleClose()} variant="contained" color="primary" autoFocus>
-                      Voltar
+                      {t('return')}
                     </Button>
                     <Button onClick={() => deleteScript({ name: selectedScript })} variant="contained" color="error">
-                      Confirma
+                      {t('confirm')}
                     </Button>
                   </DialogActions>
                 </Dialog>

@@ -131,7 +131,7 @@ export default function QueriesPipelines({ pageOptions }) {
     dispatch(setNotificationBar({
       show: show,
       type: type,
-      message: message
+      message: t(message)
     }))
   };
 
@@ -141,7 +141,7 @@ export default function QueriesPipelines({ pageOptions }) {
       .then((res) => {
         setScriptData(res?.documents ?? []);
       })
-      .finally(() => {});
+      .finally(() => { });
   };
 
   const getDocument = (selectedScript) => {
@@ -168,7 +168,7 @@ export default function QueriesPipelines({ pageOptions }) {
           JSON.stringify(res?.document?.pipeline ?? {}, undefined, 4)
         );
       })
-      .finally(() => {});
+      .finally(() => { });
   };
 
   const saveScript = () => {
@@ -190,20 +190,21 @@ export default function QueriesPipelines({ pageOptions }) {
         document,
       })
       .then((res) => {
-        showMessage(true, "success", "Documento salvo com sucesso!");
         getData();
         getDocument(selectedScript);
+        showMessage(true, "success", "document_saved");
       })
-      .finally(() => {});
+      .finally(() => { });
   };
 
   const deleteScript = ({ name }) => {
-    showMessage(true, "success", "Documento deletado com sucesso!");
     handleClose();
-    
+
     API.delete
       .queryPipelines({ name })
-      .then((res) => {})
+      .then((res) => {
+        showMessage(true, "success", "document_deleted");
+      })
       .catch(console.error)
       .finally(() => {
         getData();
@@ -218,24 +219,26 @@ export default function QueriesPipelines({ pageOptions }) {
   const editScriptName = ({ name, oldName }) => {
     API.put
       .queryPipelinesName({ name, oldName })
-      .then((res) => {})
+      .then((res) => {
+        showMessage(true, "success", "document_edited");
+      })
       .catch(console.error)
       .finally(() => {
         getData();
         setSelectedScript(name);
-        showMessage(true, "success", "Documento editado com sucesso!");
       });
   };
 
   const createScript = ({ name }) => {
     API.post
       .queryPipeline({ name })
-      .then((res) => {})
+      .then((res) => {
+        showMessage(true, "success", "document_created");
+      })
       .catch(console.error)
       .finally(() => {
         getData();
         setSelectedScript(name);
-        showMessage(true, "success", "Documento criado com sucesso!");
       });
   };
 
@@ -506,18 +509,18 @@ export default function QueriesPipelines({ pageOptions }) {
                       {t("delete")}
                     </Button>
                     <Dialog open={open} onClose={handleClose}>
-                      <DialogTitle>{"Confirmar exclusão?"}</DialogTitle>
+                      <DialogTitle>{t("confirm_exclusion")}</DialogTitle>
                       <DialogContent>
                         <DialogContentText>
-                          Você tem certeza que deseja excluir esse documento?
+                          {t('sure')}
                         </DialogContentText>
                       </DialogContent>
                       <DialogActions>
                         <Button onClick={() => handleClose()} variant="contained" color="primary" autoFocus>
-                          Voltar
+                          {t('return')}
                         </Button>
                         <Button onClick={() => deleteScript({ name: selectedScript })} variant="contained" color="error">
-                          Confirma
+                          {t('confirm')}
                         </Button>
                       </DialogActions>
                     </Dialog>
