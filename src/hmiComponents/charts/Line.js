@@ -83,6 +83,7 @@ export default function Line({ chart }) {
   // const [queryHasColors, setQueryHasColors] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
   const [colorScheme, setColorScheme] = useState("nivo");
+  const [bottomMargin, setBottomMargin] = useState(150);
   const [responsiveLegends, setResponsiveLegends] = useState([
     {
       anchor: "bottom",
@@ -214,7 +215,8 @@ export default function Line({ chart }) {
     }
     if (Object.keys(chart?.chartInfo).includes("legend_font_size")) {
       if (chart?.chartInfo?.legend_font_size === 0) {
-        setResponsiveLegends([])
+        setResponsiveLegends([]);
+        setBottomMargin(30);
       } else {
         _responsiveTheme.legends.text.fontSize = chart?.chartInfo?.legend_font_size;
         responsiveLegends[0].symbolSize = (chart?.chartInfo?.legend_font_size - 5) > 0 ? (chart?.chartInfo?.legend_font_size - 5) : chart?.chartInfo?.legend_font_size;
@@ -285,7 +287,7 @@ export default function Line({ chart }) {
               return <CustomTooltip value={value} id={id} color={color} total={total} value_type={value_type} floating_points={floating_points}/>;
             }}
             data={info}
-            margin={{ top: 20, right: 30, bottom: 150, left: 80 }}
+            margin={{ top: 20, right: 30, bottom: bottomMargin, left: 80 }}
             theme={responsiveTheme}
             colors={
               info.every((item) => item.color)

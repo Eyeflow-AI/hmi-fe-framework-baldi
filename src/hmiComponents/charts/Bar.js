@@ -53,14 +53,14 @@ export default function Bar({ chart }) {
   // const [queryHasColors, setQueryHasColors] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
   const [colorScheme, setColorScheme] = useState("nivo");
+  const [bottomMargin, setBottomMargin] = useState(150);
   const [responsiveLegends, setResponsiveLegends] = useState([
     {
       anchor: "bottom",
       direction: "column",
       justify: false,
-      translateY: 180,
-      translateX: -50,
-      itemsSpacing: 10,
+      translateY: 110,
+      itemsSpacing: 15,
       itemWidth: 10,
       itemHeight: 18,
       itemTextColor: "white",
@@ -167,6 +167,28 @@ export default function Bar({ chart }) {
       //     : false
       // );
     } else if (chart.result.length > 1) {
+      // let newKeys = chart.result.map((item) => item._id);
+      // let data = chart.result[0];
+      // let newInfo = [];
+      // let total = 0;
+      // Object.keys(data).forEach((item) => {
+      //   let _item = {
+      //     id: item,
+      //     [item]: data[item],
+      //   };
+      // total += data[item];
+      // if (
+      //   Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 &&
+      //   chart?.chartInfo?.colors_results?.[item] !== undefined
+      // ) {
+      //   _item.color = chart.chartInfo.colors_results[item];
+      // }
+
+      //   newInfo.push(_item);
+      // });
+      // setTotalEl(total)
+      // setInfo(newInfo);
+      // setKeys(newKeys);
       let newKeys = chart.result.map((item) => item._id);
       let data = chart.result;
       let newInfo = [];
@@ -202,6 +224,7 @@ export default function Bar({ chart }) {
     if (Object.keys(chart?.chartInfo).includes("legend_font_size")) {
       if (chart?.chartInfo?.legend_font_size === 0) {
         setResponsiveLegends([])
+        setBottomMargin(30);
       } else {
         _responsiveTheme.legends.text.fontSize = chart?.chartInfo?.legend_font_size;
         responsiveLegends[0].symbolSize = (chart?.chartInfo?.legend_font_size - 5) > 0 ? (chart?.chartInfo?.legend_font_size - 5) : chart?.chartInfo?.legend_font_size;
@@ -263,7 +286,7 @@ export default function Bar({ chart }) {
             data={info}
             // layout='horizontal'
             keys={keys}
-            margin={{ top: 10, right: 0, bottom: 30, left: 50 }}
+            margin={{ top: 10, right: 0, bottom: bottomMargin, left: 50 }}
             colors={
               info.every((item) => item.color)
                 ? info.map((item) => item.color)

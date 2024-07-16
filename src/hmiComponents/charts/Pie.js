@@ -51,6 +51,7 @@ export default function Bar({ chart }) {
   // const [queryHasColors, setQueryHasColors] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
   const [totalEl, setTotalEl] = useState(0);
+  const [bottomMargin, setBottomMargin] = useState(100);
   const [colorScheme, setColorScheme] = useState("nivo")
   const [responsivePieLegends, setResponsivePieLegends] = useState([
     {
@@ -100,9 +101,9 @@ export default function Bar({ chart }) {
   useEffect(() => {
     if (!chart?.result?.length) return;
     else {
-      setTotalEl(chart.result[0].total)
       // let newKeys = chart.result.map((item) => item._id);
       let data = chart.result;
+      let totalValue = 0;
       let newInfo = [];
       data.forEach((item) => {
         let _item = {
@@ -112,6 +113,7 @@ export default function Bar({ chart }) {
           value: item.value,
           total: item.total
         };
+        totalValue += item.value;
         if (
           Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 &&
           chart?.chartInfo?.colors_results?.[item._id] !== undefined
@@ -122,6 +124,7 @@ export default function Bar({ chart }) {
       });
       newInfo.sort((a, b) => a.id?.localeCompare(b.id));
       setInfo(newInfo);
+      setTotalEl(totalValue)
       // setKeys(newKeys);
       // setQueryHasColors(Object.keys(chart?.chartInfo?.colors_results ?? {}).length > 0 ? true : false);
     }
@@ -137,6 +140,7 @@ export default function Bar({ chart }) {
     if (Object.keys(chart?.chartInfo).includes("legend_font_size")) {
       if (chart?.chartInfo?.legend_font_size === 0) {
         setResponsivePieLegends([])
+        setBottomMargin(30)
       } else {
         _responsiveTheme.legends.text.fontSize = chart?.chartInfo?.legend_font_size;
         responsivePieLegends[0].symbolSize = (chart?.chartInfo?.legend_font_size - 5) > 0 ? (chart?.chartInfo?.legend_font_size - 5) : chart?.chartInfo?.legend_font_size;
@@ -202,7 +206,7 @@ export default function Bar({ chart }) {
             arcLinkLabelsStraightLength={0}
             arcLabelsSkipAngle={10}
             arcLinkLabelsSkipAngle={10}
-            margin={{ top: 100, right: 100, bottom: 100, left: 100 }}
+            margin={{ top: 100, right: 100, bottom: bottomMargin, left: 100 }}
             theme={responsiveTheme}
             legends={responsivePieLegends}
             colors={

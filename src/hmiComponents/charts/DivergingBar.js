@@ -154,6 +154,7 @@ export default function DivergingBar({ chart }) {
   const [loadingDownload, setLoadingDownload] = useState(false);
   const [maxValue, setMaxValue] = useState(0);
   const [minValue, setMinValue] = useState(0);
+  const [bottomMargin, setBottomMargin] = useState(150);
   const [legend, setLegend] = useState([]);
   // const [colorResults, setColorResults] = useState({});
   const [_chart, _setChart] = useState(null);
@@ -340,6 +341,9 @@ export default function DivergingBar({ chart }) {
         responsiveTheme.labels.text.fontSize;
       setResponsiveTheme(_responsiveTheme);
     }
+    if (Object.keys(chart?.chartInfo).includes("legend_font_size") && chart?.chartInfo?.legend_font_size === 0) {
+      setBottomMargin(30);
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [_chart]);
@@ -413,7 +417,7 @@ export default function DivergingBar({ chart }) {
             data={info}
             keys={keys}
             indexBy="period"
-            margin={{ top: 30, right: 50, bottom: 150, left: 50 }}
+            margin={{ top: 30, right: 50, bottom: bottomMargin, left: 50 }}
             colors={(i) => {
                 let color = i?.data?.[`${i.id}Color`];
                 return color;

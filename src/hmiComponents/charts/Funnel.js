@@ -76,6 +76,7 @@ export default function Funnel({ chart }) {
   // const [keys, setKeys] = useState([]);
   //const [queryHasColors, setQueryHasColors] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
+  const [bottomMargin, setBottomMargin] = useState(200);
   const [responsiveTheme, setResponsiveTheme] = useState({
     tooltip: {
       container: {
@@ -231,6 +232,9 @@ export default function Funnel({ chart }) {
       _responsiveTheme.labels.text.fontSize = chart?.chartInfo?.label_font_size;
     }
     setResponsiveTheme(_responsiveTheme);
+    if (Object.keys(chart?.chartInfo).includes("legend_font_size") && chart?.chartInfo?.legend_font_size === 0) {
+      setBottomMargin(30);
+    }
     // eslint-disable-next-line
   }, [chart]);
 
@@ -299,7 +303,7 @@ export default function Funnel({ chart }) {
               let id = i?.part?.data?.id;
               return <CustomTooltip color={color} value={value} id={t(id)} />;
             }}
-            margin={{ top: 20, right: 20, bottom: 200, left: 20 }}
+            margin={{ top: 20, right: 20, bottom: bottomMargin, left: 20 }}
             // width={chart.chartInfo.width}
             borderWidth={30}
             borderOpacity={0.3}
