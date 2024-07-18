@@ -219,7 +219,7 @@ export default function Bar({ chart }) {
               let color = info.datum.color;
               let floating_points = chart?.chartInfo?.value_floating_points || 2;
               let graph_value_type = chart?.chartInfo?.value_type ?? "percentage"
-              let total = info.datum.data.total;
+              let total = totalEl
               let value_type = 
               chart?.chartInfo?.tooltip_value_type ? chart?.chartInfo?.tooltip_value_type : (graph_value_type === "absolute" ? "percentage" : "absolute")
               let id = info.datum.data.id;
