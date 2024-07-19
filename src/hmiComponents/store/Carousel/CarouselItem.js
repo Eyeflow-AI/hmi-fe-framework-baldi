@@ -64,7 +64,6 @@ export default function CarouselItem({
   setComponentsInfo,
 }) {
   const { t } = useTranslation();
-
   let index = data?.index ?? "";
   let imageURL = data?.imageURL ?? conveyorIcon;
   let imageCaption = data?.imageCaption ?? "";
@@ -72,20 +71,12 @@ export default function CarouselItem({
     ? data.thumbStyle
     : style.itemImage;
   let status = data?.status ?? "";
-  let timestamp = Boolean(data?.timestamp) ? dateFormat(data?.timestamp) : "";
+  let footerText = Boolean(data?.timestamp) ? dateFormat(data?.timestamp) : Boolean(data?.footerText) ? data?.footerText : "";
   let tooltip = data?.tooltip ?? null;
   let label = data?.label ?? "";
-  let backgroundColor =
-    data?.backgroundColor && data?.backgroundColor !== ""
-      ? data?.backgroundColor
-      : colors.statuses[status];
+  let backgroundColor = data?.backgroundColor && data?.backgroundColor !== "" ? data?.backgroundColor : colors.statuses[status];
 
-  let boxStyle = Object.assign(
-    {
-      backgroundColor: selected ? backgroundColor : `${backgroundColor}90`,
-    },
-    selected ? style.selectedItemSx : style.itemSx
-  );
+  let boxStyle = Object.assign({ backgroundColor: selected ? backgroundColor : `${backgroundColor}90` }, selected ? style.selectedItemSx : style.itemSx);
 
   return (
     <Tooltip tooltip={tooltip}>
@@ -98,9 +89,7 @@ export default function CarouselItem({
             <Box marginBottom={-1}>
               <Typography variant="subtitle1">{label}</Typography>
             </Box>
-            <Box
-              className={status === "running" ? "animate-flicker" : undefined}
-            >
+            <Box className={status === "running" ? "animate-flicker" : undefined}>
               <Typography variant="subtitle2">{t(status)}</Typography>
             </Box>
           </Box>
@@ -115,7 +104,7 @@ export default function CarouselItem({
         )}
 
         <Box sx={style.itemFooter}>
-          <Typography variant="subtitle2">{timestamp}</Typography>
+          <Typography variant="subtitle2">{footerText}</Typography>
         </Box>
       </Box>
     </Tooltip>
