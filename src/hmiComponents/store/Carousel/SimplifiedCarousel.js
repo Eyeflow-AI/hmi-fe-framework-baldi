@@ -68,7 +68,7 @@ export default function SimplifiedCarousel({
   // const [_name, _setName] = useState("");
   const [data, setData] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
-
+  const [orientation, setOrientation] = useState("");
   useEffect(() => {
     if (
       componentsInfo &&
@@ -86,7 +86,7 @@ export default function SimplifiedCarousel({
       const component = componentsInfo?.find(
         (item) => item.tag === tag && item.name === name
       );
-      console.log({ Simplified: component });
+      setOrientation(metadata?.orientation ?? "vertical");
       setData(component);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -137,6 +137,7 @@ export default function SimplifiedCarousel({
       // componentsInfo={componentsInfo}
       // metadata={metadata}
       // setComponentsInfo={setComponentsInfo}
+      orientation={orientation}
       data={data}
       onClick={(item) => handleClick(item)}
       selectedItem={selectedItem}
