@@ -22,7 +22,7 @@ export default function Button({ name, tag, componentsInfo, style, metadata, sta
     fontWeight: "bold",
   });
   const [item, setItem] = useState(null);
-
+  const [variant, setVariant] = useState(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -47,6 +47,7 @@ export default function Button({ name, tag, componentsInfo, style, metadata, sta
       });
       // console.log({ component });
       setValue(component?.text);
+      setVariant(metadata?.variant);
       setItem(component);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -61,7 +62,6 @@ export default function Button({ name, tag, componentsInfo, style, metadata, sta
       })
     );
   };
-
   const handleClick = () => {
     let _componentsInfo = [...componentsInfo];
 
@@ -81,8 +81,9 @@ export default function Button({ name, tag, componentsInfo, style, metadata, sta
       sx={{
         ..._style,
       }}
-      variant="contained"
+      variant={variant ?? "contained"}
       onClick={() => handleClick()}
+      disabled={item?.disabled ?? false}
     >
       {value ?? metadata?.text}
     </MUIButton>

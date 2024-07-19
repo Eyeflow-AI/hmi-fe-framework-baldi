@@ -30,6 +30,7 @@ function button({ obj }) {
       ? obj.fnExecutor
       : "",
     fnName: Object.keys(obj).includes("fnName") ? obj.fnName : "",
+    disabled: Object.keys(obj).includes("disabled") ? obj.disabled : false,
   };
 }
 
