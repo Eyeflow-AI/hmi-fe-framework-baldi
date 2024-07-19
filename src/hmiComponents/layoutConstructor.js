@@ -13,8 +13,9 @@ import { Select, Autocomplete, RadioGroup } from "./store/Select";
 import { TextField } from "./store/Field";
 import { Image, Title, Table, Button } from "./store/General";
 import { Tooltip } from "./store/Wrapper";
-
+import { TimeLine } from "./store/Lines";
 import Box from "@mui/material/Box";
+import { IconButton } from "./store/Button"
 
 const store = {
   LabelBox: (props) => <LabelBox {...props} />,
@@ -34,12 +35,14 @@ const store = {
   Line: (props) => <Line {...props} />,
   Pie: (props) => <Pie {...props} />,
 
+  TimeLine: (props) => <TimeLine {...props} />,
   Select: (props) => <Select {...props} />,
   Autocomplete: (props) => <Autocomplete {...props} />,
   RadioGroup: (props) => <RadioGroup {...props} />,
 
   TextField: (props) => <TextField {...props} />,
 
+  IconButton: (props) => <IconButton {...props} />,
   Image: (props) => <Image {...props} />,
   Title: (props) => <Title {...props} />,
   Table: (props) => <Table {...props} />,
