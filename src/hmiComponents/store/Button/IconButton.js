@@ -1,5 +1,5 @@
 // React
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // Design
 import MUIIconButton from "@mui/material/IconButton";
@@ -7,7 +7,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 // Internal
 import Tooltip from "../Wrapper/Tooltip";
-import { setNotificationBar } from "../../../store/slices/app";
+import { setNotificationBar, setDialog } from "../../../store/slices/app";
 import eventsHandler from "../../../utils/functions/eventsHandler";
 
 // Third-party
@@ -38,10 +38,28 @@ export default function IconButton({
   componentsInfo,
   stationId,
   fnName,
+  tag, 
+  name
 }) {
   const dispatch = useDispatch();
   // console.log({ component, IconButtonbuttonData: tooltip });
   const [loading, setLoading] = useState(false);
+  const [item, setItem] = useState(null);
+
+  useEffect(() => {
+    if (
+      componentsInfo &&
+      typeof componentsInfo === "object" &&
+      Object.keys(componentsInfo).length > 0
+    ) {
+      const component = componentsInfo?.find(
+        (item) => item?.tag === tag && item?.name === name
+      ) ?? {};
+      console.log({component, componentsInfo, tag, name});
+      setItem(component);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [componentsInfo]);
 
   const handleNotificationBar = (message, severity) => {
     dispatch(
@@ -55,15 +73,25 @@ export default function IconButton({
 
   const handleClick = () => {
     setLoading(true);
-    eventsHandler({
-      componentsInfo,
-      item: component,
-      fnExecutor: "",
-      fnName,
-      stationId,
-      handleNotificationBar,
-      setLoading,
-    });
+    if (item?.on?.click === "openDialog") {
+      setLoading(false);
+      dispatch(
+        setDialog({
+          show: true,
+          title: 'dri'
+        })
+      );
+    } else {
+      eventsHandler({
+        componentsInfo,
+        item: component,
+        fnExecutor: "",
+        fnName,
+        stationId,
+        handleNotificationBar,
+        setLoading,
+      });
+    }
   };
 
   return (
