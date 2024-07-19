@@ -12,7 +12,7 @@ import LoadingPage from './components/LoadingPage';
 import ConfigProvider from './ConfigProvider';
 import StoreWrapper from './store/Wrapper';
 import NotificationBar from './components/NotificationBar';
-
+import OpenDialog from './components/OpenDialog';
 // Thirdy-Party
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
@@ -37,6 +37,7 @@ root.render(
             <BrowserRouter>
               <PrepareApp>
                 <NotificationBar />
+                <OpenDialog />
                 <App />
               </PrepareApp>
             </BrowserRouter>

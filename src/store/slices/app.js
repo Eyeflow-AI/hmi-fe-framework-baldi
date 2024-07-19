@@ -28,6 +28,11 @@ export const initialState = {
     message: "",
     type: "",
   },
+  dialog: {
+    show: false,
+    title: "",
+    fullWidth: false,
+  },
 };
 
 const appSlice = createSlice({
@@ -53,6 +58,9 @@ const appSlice = createSlice({
     },
     setNotificationBar: (state, action) => {
       state.notificationBar = { ...action.payload };
+    },
+    setDialog: (state, action) => {
+      state.dialog = { ...action.payload };
     },
   },
   extraReducers: (builder) => {
@@ -136,6 +144,7 @@ export const getAlerts = (state) => state.app.alerts ?? [];
 
 export const getFeConfig = (state) => state.app.feConfig;
 export const getNotificationBarInfo = (state) => state.app.notificationBar;
+export const getDialogInfo = (state) => state.app.dialog;
 
 export const getLanguageList = (state) => state.app.languageList;
 export const getAppBarButtonList = (state) => state.app.appBarButtonList;
@@ -144,5 +153,6 @@ export const setStationId = appSlice.actions.setStationId;
 export const setLanguageList = appSlice.actions.setLanguageList;
 export const setAppBarButtonList = appSlice.actions.setAppBarButtonList;
 export const setNotificationBar = appSlice.actions.setNotificationBar;
+export const setDialog = appSlice.actions.setDialog;
 
 export default appSlice;
