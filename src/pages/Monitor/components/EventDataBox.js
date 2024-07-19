@@ -15,7 +15,6 @@ const mainBoxSx = Object.assign({}, window.app_config.style.box, {
   overflowX: "auto",
   overflowY: "hidden",
   width: "100%",
-  height: "100%",
   whiteSpace: "pre-wrap", //TODO: Remove this line. Debug only
 });
 
@@ -33,7 +32,7 @@ export default function EventDataBox({
   // eslint-disable-next-line no-unused-vars
   const { width, height } = GetWindowDimentions();
   return (
-    <Box sx={styleSx.mainBox} height={height}>
+    <Box sx={styleSx.mainBox} height="100%">
       <LayoutConstructor
         config={config}
         componentsInfo={componentsInfo}
