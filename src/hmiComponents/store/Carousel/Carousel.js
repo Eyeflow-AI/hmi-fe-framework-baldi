@@ -33,6 +33,7 @@ export default function Carousel({
   itemMenuHeight = 200,
   conveyorIcon,
   setComponentsInfo,
+  orientation,
 }) {
   const { t } = useTranslation();
 
@@ -105,6 +106,7 @@ export default function Carousel({
                   width={width}
                   itemSize={itemMenuHeight}
                   itemCount={dataLength}
+                  layout={orientation}
                 >
                   {ItemRenderer}
                 </List>
