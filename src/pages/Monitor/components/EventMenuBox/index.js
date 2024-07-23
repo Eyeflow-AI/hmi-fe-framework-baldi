@@ -294,6 +294,19 @@ export default function EventMenuBox({
         // setLoading: setLoadingSelectedItem,
         setResponse: setItemInfo,
       });
+    } else if (
+      changeEventType === "internal-update" &&
+      !selectedItem
+    ) {
+      let query = selectedItem
+      let component = selectedItem?.on?.update
+      getComponentData({
+        query,
+        component,
+        stationId,
+        // setLoading: setLoadingSelectedItem,
+        setResponse: setItemInfo
+      })
     }
 
     // if (changeEventType !== "") {
@@ -331,6 +344,8 @@ export default function EventMenuBox({
     // página carregada e sem item selecionado
     if (!selectedItem && item?.output?.length > 0) {
       handleSelectItem(item.output[0], "internal-update");
+    } else if (selectedItem && item?.output?.length === 0) {
+      handleSelectItem(null, "internal-update");
     } else if (selectedItem && item?.output?.length > 0) {
       let _item = item?.output?.find((item) => item?._id === selectedItem?._id);
       if (
