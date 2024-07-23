@@ -80,64 +80,81 @@ export default function Monitor({ pageOptions }) {
             />
           </Box>
           <Box id="monitor-data-box" sx={style.dataBox}>
-            <Box
-              sx={{
-                display:
+            {!itemInfo ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100%",
+                  width: "100%",
+                  fontSize: "5rem",
+                }}
+              >
+                {t("no_data")}
+              </Box>
+            ) : (
+              <>
+              <Box
+                sx={{
+                  display:
+                    Object.keys(pageOptions.components.EventHeader).includes(
+                      "show"
+                    ) && !pageOptions.components.EventHeader.show
+                      ? "none"
+                      : "flex",
+                }}
+              >
+                {!loadingSelectedItem && itemInfo && (
+                  <>
+                    <EventAppBar
+                      config={pageOptions.components.EventAppBar}
+                      componentsInfo={itemInfo}
+                      stationId={stationId}
+                    />
+                    <EventHeader
+                      config={pageOptions.components.EventHeader}
+                      itemInfo={itemInfo}
+                    />
+                  </>
+                )}
+              </Box>
+              <Box
+                display="flex"
+                height={
                   Object.keys(pageOptions.components.EventHeader).includes(
                     "show"
                   ) && !pageOptions.components.EventHeader.show
-                    ? "none"
-                    : "flex",
-              }}
-            >
-              {!loadingSelectedItem && itemInfo && (
-                <>
-                  <EventAppBar
-                    config={pageOptions.components.EventAppBar}
+                    ? height
+                    : height - pageOptions.components.EventHeader.height
+                }
+              >
+                {!loadingSelectedItem && itemInfo ? (
+                  <EventDataBox
+                    config={pageOptions.components.EventDataBox}
                     componentsInfo={itemInfo}
+                    setComponentsInfo={setItemInfo}
                     stationId={stationId}
                   />
-                  <EventHeader
-                    config={pageOptions.components.EventHeader}
-                    itemInfo={itemInfo}
-                  />
-                </>
-              )}
-            </Box>
-            <Box
-              display="flex"
-              height={
-                Object.keys(pageOptions.components.EventHeader).includes(
-                  "show"
-                ) && !pageOptions.components.EventHeader.show
-                  ? height
-                  : height - pageOptions.components.EventHeader.height
-              }
-            >
-              {!loadingSelectedItem && itemInfo ? (
-                <EventDataBox
-                  config={pageOptions.components.EventDataBox}
-                  componentsInfo={itemInfo}
-                  setComponentsInfo={setItemInfo}
-                  stationId={stationId}
-                />
-              ) : (
-                loadingSelectedItem && (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      height: "100%",
-                      width: "100%",
-                      fontSize: "5rem",
-                    }}
-                  >
-                    {t("loading")}...
-                  </Box>
-                )
-              )}
-            </Box>
+                ) : (
+                  loadingSelectedItem && (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        height: "100%",
+                        width: "100%",
+                        fontSize: "5rem",
+                      }}
+                    >
+                      {t("loading")}...
+                    </Box>
+                  )
+                )}
+              </Box>
+            </>
+            )}
           </Box>
           <LayoutDialog
             open={Boolean(dialogStartInfo)}
