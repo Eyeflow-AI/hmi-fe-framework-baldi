@@ -131,7 +131,7 @@ export default function Autocomplete({
         options={list}
         // sx={{ width: 300 }}
         renderInput={(params) => (
-          <TextField {...params} label={metadata?.label} />
+          <TextField {...params} label={metadata?.label} helperText={metadata?.helperText} />
         )}
         value={value}
         onChange={(event, newValue) => {

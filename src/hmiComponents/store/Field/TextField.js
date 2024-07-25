@@ -17,7 +17,6 @@ export default function TextField({
   const [item, setItem] = useState(null);
   const [value, setValue] = useState("");
   const [disabled, setDisabled] = useState(false);
-  const error = false;
 
   useEffect(() => {
     if (
@@ -79,7 +78,7 @@ export default function TextField({
     <MUITextField
       value={value}
       onChange={handleChange}
-      helperText={error ? "Please enter a valid value" : ""}
+      helperText={metadata?.helperText ?? ""}
       label={metadata?.label ?? ""}
       disabled={disabled}
       sx={{
